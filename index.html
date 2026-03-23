@@ -1,26 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>EC Sansai — กำลังเชื่อมต่อ...</title>
-  <meta http-equiv="refresh" content="0;url=https://script.google.com/macros/s/AKfycbw1xURQV8p23AfqVZHKpPyhSrGKOV23sXorxPyS2ZWdCb1j7d_xZdjfGfiBOFdHgM4KeQ/exec">
-  <script>
-    // รับ query string แล้วส่งต่อ เช่น ?resetToken=xxx
-    var params = window.location.search;
-    if (params) {
-      window.location.replace(
-        "https://script.google.com/macros/s/AKfycbw1xURQV8p23AfqVZHKpPyhSrGKOV23sXorxPyS2ZWdCb1j7d_xZdjfGfiBOFdHgM4KeQ/exec" + params
-      );
-    } else {
-      window.location.replace(
-        "https://script.google.com/macros/s/AKfycbw1xURQV8p23AfqVZHKpPyhSrGKOV23sXorxPyS2ZWdCb1j7d_xZdjfGfiBOFdHgM4KeQ/exec"
-      );
+  <meta http-equiv="refresh" content="0; url=https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycby_GFp6PtqRmLWEqayleD9nBscQvBTm288Dm5YMUMSHgXbaie3FTTuvB276hfYN9M69VQ/exec/exec">
+  <title>EC Sansai — กำลังโหลด...</title>
+  <style>
+    body {
+      font-family: 'Sarabun', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f0f4f8;
+      flex-direction: column;
+      gap: 16px;
     }
-  </script>
+    .spinner {
+      width: 48px; height: 48px;
+      border: 5px solid #e0e0e0;
+      border-top-color: #2E86C1;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    p { color: #555; font-size: 18px; }
+    a { color: #2E86C1; font-size: 14px; }
+  </style>
 </head>
 <body>
-  <p style="font-family:sans-serif;text-align:center;padding:50px;">
-    กำลังเชื่อมต่อระบบ EC Sansai...
-  </p>
+  <div class="spinner"></div>
+  <p>กำลังเปิดระบบ EC Sansai...</p>
+  <a href="https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycby_GFp6PtqRmLWEqayleD9nBscQvBTm288Dm5YMUMSHgXbaie3FTTuvB276hfYN9M69VQ/exec/exec">
+    คลิกที่นี่หากไม่ redirect อัตโนมัติ
+  </a>
+  <script>
+    window.location.replace("https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycby_GFp6PtqRmLWEqayleD9nBscQvBTm288Dm5YMUMSHgXbaie3FTTuvB276hfYN9M69VQ/exec/exec");
+  </script>
 </body>
 </html>
