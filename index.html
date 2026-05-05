@@ -7488,68 +7488,6 @@ function removeNotifyRevisionFile() {
       if (idx > -1) _rptFileIds.splice(idx, 1);
       btn.closest('.file-item').remove();
     }
-    async function handleFileUpload() {
-  const fileInput = document.getElementById('reg-file-upload');
-  const file = fileInput.files[0];
-  
-  if (!file) {
-    alert('⚠ กรุณาเลือกไฟล์ก่อนอัปโหลด');
-    return;
-  }
-  
-  // Show loading indicator
-  const uploadBtn = document.getElementById('upload-btn');
-  const originalText = uploadBtn.textContent;
-  uploadBtn.textContent = 'กำลังอัปโหลด...';
-  uploadBtn.disabled = true;
-  
-  try {
-    const fileId = await uploadToGoogleDrive(file);
-    
-    // ✅ KEY FIX: Only show error if upload actually failed
-    if (fileId) {
-      // Upload succeeded - save fileId and proceed
-      document.getElementById('uploaded-file-id').value = fileId;
-      alert('✅ อัปโหลดไฟล์สำเร็จ');
-      
-      // Proceed to Step 3 (registration complete)
-      showStep(3);
-    } else {
-      // Upload failed - no fileId received
-      alert('⚠ การอัปโหลดล้มเหลว กรุณาลองอีกครั้ง');
-    }
-    
-  } catch (error) {
-    // ✅ Only show error on actual exceptions
-    console.error('Upload error:', error);
-    alert('⚠ ไม่สามารถอัปโหลดไฟล์ได้: ' + (error.message || 'กรุณาลองอีกครั้ง'));
-  } finally {
-    // Restore button state
-    uploadBtn.textContent = originalText;
-    uploadBtn.disabled = false;
-  }
-}
-
-async function uploadToGoogleDrive(file) {
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    const response = await fetch('YOUR_GOOGLE_APPS_SCRIPT_URL', {
-      method: 'POST',
-      body: formData
-    });
-    
-    const result = await response.json();
-    
-    // Return fileId if successful, null if failed
-    return result.fileId || null;
-    
-  } catch (error) {
-    console.error('Drive API error:', error);
-    throw error; // Re-throw to be caught by handleFileUpload
-  }
-}
 
     function doSubmitReport() {
       var projectCode = document.getElementById('rpt-project-select').value;
@@ -7873,134 +7811,7 @@ async function uploadToGoogleDrive(file) {
         .login(u, p);
     }
 
-    // Example: submitRegister
-    function submitRegister() {
-  var u = val('reg-username').trim();
-  if (!u) { showRegError('กรุณากรอก Username'); return; }
- 
-  var prefix = val('reg-prefix'),
-      fname  = val('reg-fname').trim(),
-      lname  = val('reg-lname').trim(),
-      phone  = val('reg-phone').trim(),
-      email  = val('reg-email').trim(),
-      pw     = val('reg-pass'),
-      faculty    = val('reg-faculty'),
-      department = val('reg-department'),
-      role       = val('reg-role') || 'researcher',
-      ethicsStatus = val('reg-ethics-training');
- 
-  var position;
-  var staffType = val('reg-staff-type');
-  if (staffType === 'internal') {
-    position = val('reg-internal-position');
-    if (position === 'อื่นๆ') {
-      position = val('reg-internal-position-other').trim() || 'อื่นๆ';
-    }
-  } else {
-    position = val('reg-external-position') || val('reg-position') || '';
-  }
- 
-  if (!ethicsStatus) { showRegError('กรุณาเลือกสถานะการอบรมจริยธรรม'); return; }
-  if (ethicsStatus === 'completed' && !ethicsCertificateFile) {
-    showRegError('กรุณาอัพโหลดใบประกาศนียบัตรการอบรมจริยธรรม'); return;
-  }
- 
-  var payload = {
-    username:   u,
-    email:      email,
-    password:   pw,
-    name:       (prefix + ' ' + fname + ' ' + lname).trim(),
-    nameEn:     document.getElementById('reg-name-en') ? document.getElementById('reg-name-en').value.trim() : '',
-    phone:      phone,
-    faculty:    faculty,
-    department: department,
-    position:   position,
-    roles:      role,
-    status:     'pending',
-    ethicsTrainingStatus: ethicsStatus,
-    ethicsTrainingFile:   ethicsCertificateFile ? ethicsCertificateFile.name : ''
-  };
- 
-  var btn = document.getElementById('btn-submit-reg');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin-sm"></span>';
-  showGlobalLoading('กำลังลงทะเบียน...');
- 
-  // ── ถ้ามีไฟล์ใบรับรอง → อัพโหลดก่อน แล้วค่อยลงทะเบียน ──
-  if (ethicsCertificateFile) {
-    var reader = new FileReader();
-    reader.onerror = function() {
-      hideGlobalLoading();
-      btn.disabled = false;
-      btn.textContent = '✅ ลงทะเบียน';
-      showRegError('ไม่สามารถอ่านไฟล์ได้ กรุณาลองใหม่อีกครั้ง');
-    };
-    reader.onload = function(e) {
-      var base64 = e.target.result.split(',')[1];
-      if (!base64) {
-        hideGlobalLoading();
-        btn.disabled = false;
-        btn.textContent = '✅ ลงทะเบียน';
-        showRegError('ไม่สามารถอ่านข้อมูลไฟล์ได้');
-        return;
-      }
- 
-      // ── ใช้ uploadFileForRegistration (ไม่ต้องการ session) ──
-      google.script.run
-        .withSuccessHandler(function(fileResult) {
-          if (fileResult && fileResult.success) {
-            // อัพโหลดสำเร็จ
-            payload.ethicsTrainingFileId  = fileResult.fileId  || '';
-            payload.ethicsTrainingFileUrl = fileResult.fileUrl || '';
-            submitRegisterWithPayload(payload, btn);
-          } else {
-            hideGlobalLoading();
-            btn.disabled = false;
-            btn.textContent = '✅ ลงทะเบียน';
-            var errMsg = (fileResult && fileResult.message) ? fileResult.message : 'ไม่ทราบสาเหตุ';
-            var continueWithout = confirm(
-              '⚠️ ไม่สามารถอัพโหลดใบรับรองได้\nสาเหตุ: ' + errMsg +
-              '\n\nต้องการดำเนินการลงทะเบียนต่อโดยไม่แนบไฟล์หรือไม่?\n' +
-              '(ท่านสามารถส่งเอกสารภายหลังได้)'
-            );
-            if (continueWithout) {
-              showGlobalLoading('กำลังลงทะเบียน...');
-              btn.disabled = true;
-              btn.innerHTML = '<span class="spin-sm"></span>';
-              submitRegisterWithPayload(payload, btn);
-            }
-          }
-        })
-        .withFailureHandler(function(err) {
-          hideGlobalLoading();
-          btn.disabled = false;
-          btn.textContent = '✅ ลงทะเบียน';
-          var continueWithout = confirm(
-            '⚠️ เกิดข้อผิดพลาดในการเชื่อมต่อขณะอัพโหลดไฟล์\n' +
-            'สาเหตุ: ' + (err && err.message ? err.message : 'ไม่ทราบสาเหตุ') +
-            '\n\nต้องการดำเนินการลงทะเบียนต่อโดยไม่แนบไฟล์หรือไม่?\n' +
-            '(ท่านสามารถส่งเอกสารภายหลังได้)'
-          );
-          if (continueWithout) {
-            showGlobalLoading('กำลังลงทะเบียน...');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spin-sm"></span>';
-            submitRegisterWithPayload(payload, btn);
-          }
-        })
-        // ✅ เปลี่ยนจาก uploadFileSecure → uploadFileForRegistration
-        .uploadFileForRegistration(
-          base64,
-          ethicsCertificateFile.name,
-          ethicsCertificateFile.type,
-          payload.username
-        );
-    };
-    reader.readAsDataURL(ethicsCertificateFile);
-  } else {
-    submitRegisterWithPayload(payload, btn);
-  }
-}
+    
 function showStep(stepNumber) {
   // Hide all steps
   document.getElementById('reg-step-1').style.display = 'none';
@@ -8013,44 +7824,137 @@ function showStep(stepNumber) {
   // Update step indicators if you have them
   updateStepIndicators(stepNumber);
 }
+// ============================================================
+//  ฟังก์ชันช่วยเหลือ: แปลงไฟล์เป็น Base64 แบบ Promise
+// ============================================================
+function fileToBase64(file) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      resolve(e.target.result.split(',')[1]); // เอาเฉพาะส่วน data จริงๆ
+    };
+    reader.onerror = function(e) {
+      reject(new Error('ไม่สามารถอ่านไฟล์ได้'));
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
-// ฟังก์ชันส่งข้อมูลลงทะเบียน
-function submitRegisterWithPayload(payload, btn) {
-  // ตรวจสอบ required fields ฝั่ง client ก่อนส่ง
+// ============================================================
+//  ฟังก์ชันลงทะเบียน (ปรับปรุงใหม่ด้วย Async/Await)
+// ============================================================
+async function submitRegister() {
+  // 1. รวบรวมข้อมูล
+  var u = val('reg-username').trim();
+  if (!u) { showRegError('กรุณากรอก Username'); return; }
+
+  var prefix = val('reg-prefix'),
+      fname  = val('reg-fname').trim(),
+      lname  = val('reg-lname').trim(),
+      phone  = val('reg-phone').trim(),
+      email  = val('reg-email').trim(),
+      pw     = val('reg-pass'),
+      faculty    = val('reg-faculty'),
+      department = val('reg-department'),
+      role       = val('reg-role') || 'researcher',
+      ethicsStatus = val('reg-ethics-training');
+
+  // ตรวจสอบตำแหน่ง (ภายใน/ภายนอก)
+  var position;
+  var orgType = val('reg-org-type');
+  if (orgType === 'internal') {
+    position = val('reg-internal-position');
+    if (position === 'อื่นๆ') position = val('reg-internal-position-other').trim() || 'อื่นๆ';
+  } else {
+    position = val('reg-external-position') || '';
+  }
+
+  // ตรวจสอบการอบรมจริยธรรม
+  if (!ethicsStatus) { showRegError('กรุณาเลือกสถานะการอบรมจริยธรรม'); return; }
+  if (ethicsStatus === 'completed' && !ethicsCertificateFile) {
+    showRegError('กรุณาอัพโหลดใบประกาศนียบัตรการอบรมจริยธรรม'); return;
+  }
+
+  // เตรียม Payload เบื้องต้น
+  var payload = {
+    username:   u,
+    email:      email,
+    password:   pw,
+    name:       (prefix + ' ' + fname + ' ' + lname).trim(),
+    nameEn:     document.getElementById('reg-name-en') ? val('reg-name-en').trim() : '',
+    phone:      phone,
+    faculty:    faculty,
+    department: department,
+    position:   position,
+    roles:      role,
+    status:     'pending',
+    ethicsTrainingStatus: ethicsStatus,
+    ethicsTrainingFile:   ethicsCertificateFile ? ethicsCertificateFile.name : ''
+  };
+
+  // ตรวจสอบข้อมูลบังคับก่อนส่ง
   var requiredFields = ['username','email','password','name','phone','faculty','department','position','roles'];
-  for (var ri = 0; ri < requiredFields.length; ri++) {
-    var rf = requiredFields[ri];
-    if (!payload[rf] || !String(payload[rf]).trim()) {
-      hideGlobalLoading();
-      btn.disabled = false;
-      btn.innerHTML = '✅ ลงทะเบียน';
-      showRegError('กรุณากรอก "' + rf + '" ให้ครบ');
-      return;
+  for (var i = 0; i < requiredFields.length; i++) {
+    if (!payload[requiredFields[i]]) {
+      showRegError('กรุณากรอกข้อมูลให้ครบถ้วน'); return;
     }
   }
-  google.script.run
-    .withSuccessHandler(function(res) {
-      hideGlobalLoading();
-      btn.disabled = false; 
-      btn.innerHTML = '✅ ลงทะเบียน';
-      if (res.success) {
-        [1, 2, 3].forEach(function(i) { 
-          document.getElementById('reg-step-' + i).style.display = 'none'; 
-        });
-        document.getElementById('reg-success').style.display = 'block';
-        hideRegError();
+
+  // 2. จัดการ UI (แสดง Loading)
+  var btn = document.getElementById('btn-submit-reg');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin-sm"></span> กำลังลงทะเบียน...';
+  showGlobalLoading('กำลังประมวลผล...');
+  hideRegError();
+
+  try {
+    // 3. ถ้ามีไฟล์ให้อัพโหลดก่อน
+    if (ethicsCertificateFile) {
+      showGlobalLoading('กำลังอัพโหลดใบรับรอง...');
+      var base64Data = await fileToBase64(ethicsCertificateFile);
+      
+      // อัพโหลดผ่าน GAS
+      var fileResult = await google.script.run.uploadFileForRegistration(
+        base64Data, 
+        ethicsCertificateFile.name, 
+        ethicsCertificateFile.type, 
+        payload.username
+      );
+
+      if (fileResult && fileResult.success) {
+        payload.ethicsTrainingFileId  = fileResult.fileId  || '';
+        payload.ethicsTrainingFileUrl = fileResult.fileUrl || '';
       } else {
-        showRegError(res.message || 'เกิดข้อผิดพลาด กรุณาตรวจสอบข้อมูลและลองอีกครั้ง');
+        throw new Error((fileResult && fileResult.message) ? fileResult.message : 'อัพโหลดไฟล์ไม่สำเร็จ');
       }
-    })
-    .withFailureHandler(function(e) {
-      hideGlobalLoading();
-      btn.disabled = false; 
-      btn.innerHTML = '✅ ลงทะเบียน';
-      showRegError('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + (e.message || 'โปรดลองอีกครั้ง'));
-    })
-    .registerUserSecure(payload);
+    }
+
+    // 4. บันทึกข้อมูลลงทะเบียน
+    showGlobalLoading('กำลังบันทึกข้อมูลบัญชี...');
+    var regResult = await google.script.run.registerUserSecure(payload);
+
+    if (regResult && regResult.success) {
+      // ลงทะเบียนสำเร็จ
+      [1, 2, 3].forEach(function(step) { 
+        document.getElementById('reg-step-' + step).style.display = 'none'; 
+      });
+      document.getElementById('reg-success').style.display = 'block';
+    } else {
+      throw new Error(regResult.message || 'บันทึกข้อมูลไม่สำเร็จ');
+    }
+
+  } catch (error) {
+    // จัดการเมื่อเกิด Error ในขั้นตอนใดๆ
+    console.error('Registration Error:', error);
+    showRegError('เกิดข้อผิดพลาด: ' + error.message);
+  } finally {
+    // 5. คืนค่า UI กลับสู่ปกติเสมอ ไม่ว่าจะสำเร็จหรือพัง
+    hideGlobalLoading();
+    btn.disabled = false;
+    btn.innerHTML = '✅ ลงทะเบียน';
+  }
 }
+
 
     // Example: submitNewProject
     function submitNewProject(e) {
