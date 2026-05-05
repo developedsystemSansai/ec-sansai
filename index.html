@@ -5720,13 +5720,29 @@ function loadUsersData() {
     return;
   }
   
-  var html = '<table><thead><tr><th>#</th><th>Username</th><th>ชื่อ</th><th>อีเมล</th><th>สิทธิ์</th><th>สถานะ</th><th>Actions</th></tr></thead><tbody>';
+  var html = '<table><thead><tr><th>#</th><th>Username</th><th>ชื่อ</th><th>อีเมล</th><th>สิทธิ์</th><th>สถานะ</th><th>จริยธรรม</th><th>Actions</th></tr></thead><tbody>';
   
   users.forEach(function(u, i) {
     var roles = String(u.roles || '');
     var isPend = roles.indexOf('pending_') !== -1 || String(u.status || '').toLowerCase() === 'pending';
     var rPill = isPend ? '<span class="pill pill-orange">⏳ รออนุมัติ</span>' : rolesPill(roles);
     
+    var ethicsStatus = String(u.ethics_training_status || '');
+    var ethicsBadge = '';
+    if (ethicsStatus === 'completed') {
+      var fileUrl = u.ethics_training_file_url || '';
+      var fileId = u.ethics_training_file_id || '';
+      var viewUrl = fileUrl || (fileId ? 'https://drive.google.com/file/d/' + fileId + '/view' : '');
+      ethicsBadge = viewUrl 
+        ? '<a href="' + viewUrl + '" target="_blank" title="ดูใบรับรอง" style="text-decoration:none"><span class="pill pill-green" style="cursor:pointer">✅ ผ่านแล้ว 📄</span></a>'
+        : '<span class="pill pill-green">✅ ผ่านแล้ว</span>';
+    } else if (ethicsStatus === 'in_progress') {
+      ethicsBadge = '<span class="pill pill-orange">⏳ อยู่ระหว่างอบรม</span>';
+    } else if (ethicsStatus === 'not_started') {
+      ethicsBadge = '<span class="pill pill-gray">❌ ยังไม่อบรม</span>';
+    } else {
+      ethicsBadge = '<span style="color:#aaa;font-size:11px">—</span>';
+    }
     html += '<tr>' +
       '<td>' + (i + 1) + '</td>' +
       '<td><strong>' + esc(u.username || '-') + '</strong></td>' +
@@ -5734,6 +5750,7 @@ function loadUsersData() {
       '<td style="font-size:12px">' + esc(u.email || '-') + '</td>' +
       '<td>' + rPill + '</td>' +
       '<td>' + pillStatus(String(u.status || 'active')) + '</td>' +
+      '<td style="text-align:center">' + ethicsBadge + '</td>' +
       '<td style="white-space:nowrap">' + userActionBtns(u, isPend) + '</td>' +
       '</tr>';
   });
