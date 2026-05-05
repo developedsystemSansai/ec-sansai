@@ -6301,7 +6301,40 @@ var ethicsCertificateFile = null;
   document.getElementById('reg-success').style.display = 'none'; 
   hideRegError(); 
 }
-    function regGoStep(n){ [1,2,3].forEach(function(i){ document.getElementById('reg-step-'+i).style.display=(i===n)?'block':'none'; var ind=document.getElementById('step-ind-'+i); ind.classList.remove('active','done'); if(i<n) ind.classList.add('done'); if(i===n) ind.classList.add('active'); }); hideRegError(); }
+    function regGoStep(n){
+      // Validation step 1 → 2
+      if (n === 2) {
+        var u = val('reg-username').trim();
+        if (!u || !/^[a-zA-Z0-9_]{4,20}$/.test(u)) { showRegError('Username ต้องเป็น a-z, 0-9, _ 4-20 ตัว'); return; }
+        var em = val('reg-email').trim();
+        if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { showRegError('กรุณากรอกอีเมลให้ถูกต้อง'); return; }
+        var pw = val('reg-pass'), pw2 = val('reg-pass2');
+        if (pw.length < 6) { showRegError('รหัสผ่านต้องมีอย่างน้อย 6 ตัว'); return; }
+        if (pw !== pw2) { showRegError('รหัสผ่านไม่ตรงกัน'); return; }
+      }
+      // Validation step 2 → 3
+      if (n === 3) {
+        var prefix = val('reg-prefix'), fn = val('reg-fname').trim(), ln = val('reg-lname').trim();
+        var ph = val('reg-phone').trim();
+        if (!prefix || !fn || !ln) { showRegError('กรุณากรอกคำนำหน้า ชื่อ และนามสกุล'); return; }
+        if (!ph || !/^0[0-9]{8,9}$/.test(ph)) { showRegError('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก'); return; }
+        var ethicsStatus = val('reg-ethics-training');
+        if (!ethicsStatus) { showRegError('กรุณาเลือกสถานะการอบรมจริยธรรม'); return; }
+        if (ethicsStatus === 'completed' && !ethicsCertificateFile) {
+          showRegError('กรุณาอัพโหลดใบประกาศนียบัตรการอบรมจริยธรรม'); return;
+        }
+      }
+      // แสดง/ซ่อน step panels
+      [1,2,3].forEach(function(i){
+        document.getElementById('reg-step-'+i).style.display=(i===n)?'block':'none';
+        var ind=document.getElementById('step-ind-'+i);
+        if (!ind) return;
+        ind.classList.remove('active','done');
+        if(i<n) ind.classList.add('done');
+        if(i===n) ind.classList.add('active');
+      });
+      hideRegError();
+    }
     function regStep1Next(){ var u=val('reg-username').trim(),em=val('reg-email').trim(),p1=val('reg-pass'),p2=val('reg-pass2'); if(!u||!em||!p1||!p2){ showRegError('กรุณากรอกข้อมูลให้ครบ'); return; } if(!/^[a-zA-Z0-9_]{4,20}$/.test(u)){ showRegError('Username ต้องเป็น a-z, 0-9, _ 4-20 ตัว'); return; } if(p1.length<6){ showRegError('รหัสผ่านต้องมีอย่างน้อย 6 ตัว'); return; } if(p1!==p2){ showRegError('รหัสผ่านไม่ตรงกัน'); return; } regGoStep(2); }
     function regStep2Next(){ var prefix=val('reg-prefix'),fn=val('reg-fname').trim(),ln=val('reg-lname').trim(),ph=val('reg-phone').trim(); if(!prefix||!fn||!ln){ showRegError('กรุณากรอกคำนำหน้า ชื่อ และนามสกุล'); return; } if(!ph||!/^0[0-9]{8,9}$/.test(ph)){ showRegError('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก'); return; } regGoStep(3); }
     function updateRegDept() { 
@@ -6338,9 +6371,6 @@ var ethicsCertificateFile = null;
     deptSel.innerHTML = '<option value="">-- ไม่พบกลุ่มงาน --</option>';
   }
 }
-// ตัวแปรเก็บข้อมูลไฟล์ใบประกาศนียบัตร
-var ethicsCertificateFile = null;
-
 // ฟังก์ชันสลับแสดง/ซ่อนส่วนอัพโหลดไฟล์
 function toggleEthicsUpload() {
   var status = document.getElementById('reg-ethics-training').value;
@@ -7938,85 +7968,6 @@ async function uploadToGoogleDrive(file) {
     // ไม่มีไฟล์ ส่งข้อมูลเลย
     submitRegisterWithPayload(payload, btn);
   }
-}
-function regGoStep(step) {
-  if (step === 2) {
-    // ตรวจสอบ Step 1
-    var un = val('reg-username').trim();
-    if (!un || un.length < 4 || un.length > 20) {
-      showRegError('Username ต้องมี 4-20 ตัวอักษร');
-      return;
-    }
-    if (!/^[a-zA-Z0-9_]+$/.test(un)) {
-      showRegError('Username ใช้ได้เฉพาะ a-z, 0-9, _');
-      return;
-    }
-    var em = val('reg-email').trim();
-    if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
-      showRegError('กรุณากรอกอีเมลให้ถูกต้อง');
-      return;
-    }
-    var pw = val('reg-pass');
-    var pw2 = val('reg-pass2');
-    if (pw.length < 6) {
-      showRegError('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร');
-      return;
-    }
-    if (pw !== pw2) {
-      showRegError('รหัสผ่านไม่ตรงกัน');
-      return;
-    }
-  }
-  
-  if (step === 3) {
-    // ตรวจสอบ Step 2
-    var prefix = val('reg-prefix');
-    var fname = val('reg-fname').trim();
-    var lname = val('reg-lname').trim();
-    var phone = val('reg-phone').trim();
-    
-    if (!prefix || !fname || !lname) {
-      showRegError('กรุณากรอกชื่อ-นามสกุลให้ครบถ้วน');
-      return;
-    }
-    
-    if (!phone || !/^0[0-9]{8,9}$/.test(phone)) {
-      showRegError('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (เช่น 0812345678)');
-      return;
-    }
-    
-    // ตรวจสอบการอบรมจริยธรรม
-    var ethicsStatus = val('reg-ethics-training');
-    if (!ethicsStatus) {
-      showRegError('กรุณาเลือกสถานะการอบรมจริยธรรม');
-      return;
-    }
-    
-    // ถ้าเลือก "ผ่านการอบรมแล้ว" ต้องอัพโหลดไฟล์
-    if (ethicsStatus === 'completed' && !ethicsCertificateFile) {
-      showRegError('กรุณาอัพโหลดใบประกาศนียบัตรการอบรมจริยธรรม');
-      return;
-    }
-  }
-  
-  // ซ่อน/แสดง step
-  [1, 2, 3].forEach(function(i) {
-    document.getElementById('reg-step-' + i).style.display = i === step ? 'block' : 'none';
-  });
-  
-  // อัพเดท indicator
-  [1, 2, 3].forEach(function(i) {
-    var ind = document.getElementById('reg-indicator-' + i);
-    if (i < step) {
-      ind.className = 'reg-step-indicator done';
-    } else if (i === step) {
-      ind.className = 'reg-step-indicator active';
-    } else {
-      ind.className = 'reg-step-indicator';
-    }
-  });
-  
-  hideRegError();
 }
 function showStep(stepNumber) {
   // Hide all steps
