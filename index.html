@@ -1,8 +1,143 @@
 <!DOCTYPE html>
     <html lang="th">
     <head>
+    <!--
+      ⚙️  GAS API Bridge — วาง Deployment URL ตรงนี้
+          GAS → Deploy → Manage Deployments → คัดลอก Web App URL
+    -->
+    <script>
+    (function() {
+      'use strict';
+
+      // ── ตั้งค่า URL ที่นี่ ─────────────────────────────────
+      var GAS_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+      // ─────────────────────────────────────────────────────
+
+      function callGAS(action, params) {
+        var body = JSON.stringify(Object.assign({ action: action }, params || {}));
+        return fetch(GAS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: body
+        }).then(function(r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        });
+      }
+
+      // ACTION_MAP: funcName → function(...args) → Promise
+      var M = {
+        login:                       function(u,p)              { return callGAS('login',                       {username:u, password:p}); },
+        logoutSecure:                function(sid,u)            { return callGAS('logoutSecure',                {sessionId:sid, username:u}); },
+        validateSession:             function(sid,u)            { return callGAS('validateSession',             {sessionId:sid, username:u}); },
+        getCsrfToken:                function(sid)              { return callGAS('getCsrfToken',                {sessionId:sid}); },
+        registerUserSecure:          function(pl)               { return callGAS('registerUserSecure',          {payload:pl}); },
+        requestPasswordResetSecure:  function(email)            { return callGAS('requestPasswordResetSecure',  {email:email}); },
+        resetPasswordSecure:         function(tok,np,cp)        { return callGAS('resetPasswordSecure',         {token:tok, newPassword:np, confirmPassword:cp}); },
+        validateResetToken:          function(tok)              { return callGAS('validateResetToken',          {token:tok}); },
+        getUserProfile:              function(sid,u)            { return callGAS('getUserProfile',              {sessionId:sid, username:u}); },
+        updateProfile:               function(sid,u,pl)         { return callGAS('updateProfile',              {sessionId:sid, username:u, payload:pl}); },
+        changePassword:              function(sid,u,op,np)      { return callGAS('changePassword',             {sessionId:sid, username:u, oldPassword:op, newPassword:np}); },
+        getAllUsers:                  function(sid,cu)           { return callGAS('getAllUsers',                 {sessionId:sid, callerUsername:cu}); },
+        deleteUser:                  function(sid,tu,au)        { return callGAS('deleteUser',                 {sessionId:sid, targetUsername:tu, adminUsername:au}); },
+        approveUser:                 function(sid,tu,au)        { return callGAS('approveUser',                {sessionId:sid, targetUsername:tu, adminUsername:au}); },
+        sendWelcomeEmailsToAllUsers: function()                 { return callGAS('sendWelcomeEmailsToAllUsers', {}); },
+        sendWelcomeEmailToUser:      function(sid,tu,cu)        { return callGAS('sendWelcomeEmailToUser',     {sessionId:sid, targetUsername:tu, callerUsername:cu}); },
+        sendUserNotificationEmail:   function(pl,au)            { return callGAS('sendUserNotificationEmail',  {payload:pl, adminUsername:au}); },
+        getAllProjectsRaw:            function(cu)               { return callGAS('getAllProjectsRaw',          {callerUsername:cu}); },
+        getAllProjectsWithType:       function(cu)               { return callGAS('getAllProjectsWithType',     {callerUsername:cu}); },
+        getMyProjectsWithRevision:   function(sid,u)            { return callGAS('getMyProjectsWithRevision',  {sessionId:sid, username:u}); },
+        saveOrUpdateProjectSecure:   function(pd,isUp)          { return callGAS('saveOrUpdateProjectSecure',  {projectData:pd, isUpdate:isUp}); },
+        updateProjectStatus:         function(pc,ns,su,note)    { return callGAS('updateProjectStatus',        {projectCode:pc, newStatus:ns, staffUsername:su, note:note}); },
+        verifyProjectDocuments:      function(pc,d,su,note)     { return callGAS('verifyProjectDocuments',     {projectCode:pc, decision:d, staffUsername:su, note:note}); },
+        setProjectType:              function(sid,pc,nt,cu)     { return callGAS('setProjectType',             {sessionId:sid, projectCode:pc, newType:nt, callerUsername:cu}); },
+        reviewRevisionByAdmin:       function(pl,su)            { return callGAS('reviewRevisionByAdmin',      {payload:pl, staffUsername:su}); },
+        submitRevision:              function(pl)               { return callGAS('submitRevision',             {payload:pl}); },
+        uploadFileSecure:            function(b64,fn,mime,pc,u,ft){ return callGAS('uploadFileSecure',        {base64Data:b64, fileName:fn, mimeType:mime, projectCode:pc, username:u, fileType:ft}); },
+        getUploadedFiles:            function(sid,pc,cu)        { return callGAS('getUploadedFiles',          {sessionId:sid, projectCode:pc, callerUsername:cu}); },
+        deleteUploadedFile:          function(sid,fid,u,del)    { return callGAS('deleteUploadedFile',        {sessionId:sid, fileId:fid, username:u, deleteDriveFile:del}); },
+        getClosureReportFiles:       function()                 { return callGAS('getClosureReportFiles',     {}); },
+        getCommitteeUsers:           function(cu)               { return callGAS('getCommitteeUsers',         {callerUsername:cu}); },
+        assignProjectMultiCommittee: function(pl,su)            { return callGAS('assignProjectMultiCommittee',{payload:pl, staffUsername:su}); },
+        getAssignedProjects:         function(sid,cu)           { return callGAS('getAssignedProjects',       {sessionId:sid, committeeUsername:cu}); },
+        submitEvaluation:            function(pl)               { return callGAS('submitEvaluation',          {payload:pl}); },
+        getEvaluationHistory:        function(sid,cu)           { return callGAS('getEvaluationHistory',      {sessionId:sid, committeeUsername:cu}); },
+        getCommitteeEvalSummary:     function(pc)               { return callGAS('getCommitteeEvalSummary',   {projectCode:pc}); },
+        sendResultToResearcher:      function(pl)               { return callGAS('sendResultToResearcher',    {payload:pl}); },
+        getDashboardStats:           function(sid,cu)           { return callGAS('getDashboardStats',         {sessionId:sid, committeeUsername:cu}); },
+        getStaffDashboardStats:      function(sid,cu)           { return callGAS('getStaffDashboardStats',    {sessionId:sid, callerUsername:cu}); },
+        getNotificationsForUser:     function(sid,u,r)          { return callGAS('getNotificationsForUser',   {sessionId:sid, username:u, roles:r}); },
+        getMeetings:                 function(sid,cu)           { return callGAS('getMeetings',               {sessionId:sid, callerUsername:cu}); },
+        saveMeeting:                 function(pl,su)            { return callGAS('saveMeeting',               {payload:pl, staffUsername:su}); },
+        submitMeetingReview:         function(pl)               { return callGAS('submitMeetingReview',       {payload:pl}); },
+        getMeetingMinutes:           function(u)                { return callGAS('getMeetingMinutes',         {username:u}); },
+        uploadMeetingMinutes:        function(pl,au)            { return callGAS('uploadMeetingMinutes',      {payload:pl, adminUsername:au}); },
+        deleteMeetingMinute:         function(mid,au)           { return callGAS('deleteMeetingMinute',       {minuteId:mid, adminUsername:au}); },
+        submitResearchReport:        function(pl)               { return callGAS('submitResearchReport',      {payload:pl}); },
+        reviewResearchReport:        function(pl,su)            { return callGAS('reviewResearchReport',      {payload:pl, staffUsername:su}); },
+        getAllResearchReports:        function(cu)               { return callGAS('getAllResearchReports',     {callerUsername:cu}); },
+        getApprovedProjectsForReporting: function(u)           { return callGAS('getApprovedProjectsForReporting',{username:u}); },
+        getResearchReports:          function(sid,u)            { return callGAS('getResearchReports',        {sessionId:sid, username:u}); },
+        recordPdpaConsent:           function(pl)               { return callGAS('recordPdpaConsent',         {payload:pl}); },
+      };
+
+      // ── GASRunner: รองรับ google.script.run.withXxx(fn).FUNC(args) ──
+      // Pattern ที่ใช้ใน codebase:
+      //   google.script.run
+      //     .withSuccessHandler(fn)
+      //     .withFailureHandler(fn)
+      //     .FUNC(args)
+      // หรือ
+      //   google.script.run.withSuccessHandler(fn).FUNC(args)
+      //
+      // วิธีการ: GASRunner เก็บ handlers แล้วทุก property access จะ return function
+      // ที่เรียก M[prop] แล้ว invoke handlers
+
+      function GASRunner() {
+        this._ok  = function() {};
+        this._err = function(e) { console.error('[GASBridge]', e); };
+        var self = this;
+
+        // สร้าง Proxy-like โดยใช้ defineProperty ใน loop
+        // เพื่อรองรับทุก funcName ใน M
+        var runner = this;
+        Object.keys(M).forEach(function(fn) {
+          runner[fn] = function() {
+            var args = arguments;
+            M[fn].apply(null, args)
+              .then(function(r) { self._ok(r); })
+              .catch(function(e) { self._err(e); });
+          };
+        });
+      }
+
+      GASRunner.prototype.withSuccessHandler = function(fn) {
+        this._ok = (typeof fn === 'function') ? fn : this._ok;
+        return this;
+      };
+      GASRunner.prototype.withFailureHandler = function(fn) {
+        this._err = (typeof fn === 'function') ? fn : this._err;
+        return this;
+      };
+
+      // google.script.run → new GASRunner() ทุกครั้งที่ถูกเข้าถึง
+      // ทำโดยใช้ getter บน object ที่ assign ให้ window.google
+      window.google = window.google || {};
+      window.google.script = window.google.script || {};
+
+      // ใช้ defineProperty เพื่อทำให้ .run สร้าง instance ใหม่ทุกครั้ง
+      Object.defineProperty(window.google.script, 'run', {
+        get: function() { return new GASRunner(); },
+        configurable: true
+      });
+
+      // เปิด console log สำหรับ debug (ลบออกได้หลัง deploy)
+      console.log('[GASBridge] ✅ โหลดสำเร็จ — GAS_URL:', GAS_URL);
+
+    })();
+    </script>
+
     <meta charset="UTF-8">
-    <meta name="gas-endpoint" content="https://script.google.com/macros/s/AKfycby_GFp6PtqRmLWEqayleD9nBscQvBTm288Dm5YMUMSHgXbaie3FTTuvB276hfYN9M69VQ/exec">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EC Online Submission — Sansai</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -3392,154 +3527,6 @@
       </div>
     </div>
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    // ============================================================
-    // 🌐 GAS API Bridge — แทนที่ google.script.run ด้วย fetch()
-    // ตั้งค่า GAS_ENDPOINT ให้ตรงกับ Deployment URL ของ GAS
-    // ============================================================
-    var GAS_ENDPOINT = (function() {
-      // อ่านจาก <meta name="gas-endpoint"> หรือ hardcode ไว้ที่นี่
-      var m = document.querySelector('meta[name="gas-endpoint"]');
-      return m ? m.getAttribute('content') : 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
-    })();
-
-    // callGAS — ส่ง POST ไป GAS แล้ว return Promise
-    function callGAS(action, params) {
-      var payload = Object.assign({ action: action }, params || {});
-      return fetch(GAS_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' }, // GAS ต้องการ text/plain เพื่อหลีกเลี่ยง CORS preflight
-        body: JSON.stringify(payload)
-      }).then(function(r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      });
-    }
-
-    // google.script.run shim — รักษา API เดิมไว้ทั้งหมด
-    // ใช้ Proxy pattern: google.script.run.withSuccessHandler(fn).FUNC(args)
-    var google = {
-      script: {
-        run: (function() {
-          function GASRunner() {
-            this._successHandler = function() {};
-            this._failureHandler = function(e) { console.error('GAS Error:', e); };
-          }
-          GASRunner.prototype.withSuccessHandler = function(fn) {
-            this._successHandler = fn;
-            return this;
-          };
-          GASRunner.prototype.withFailureHandler = function(fn) {
-            this._failureHandler = fn;
-            return this;
-          };
-
-          // action map: functionName → { action, paramsBuilder }
-          var ACTION_MAP = {
-            // Auth
-            login: function(u, p) { return callGAS('login', { username: u, password: p }); },
-            logoutSecure: function(sid, u) { return callGAS('logoutSecure', { sessionId: sid, username: u }); },
-            validateSession: function(sid, u) { return callGAS('validateSession', { sessionId: sid, username: u }); },
-            getCsrfToken: function(sid) { return callGAS('getCsrfToken', { sessionId: sid }); },
-            registerUserSecure: function(payload) { return callGAS('registerUserSecure', { payload: payload }); },
-            requestPasswordResetSecure: function(email) { return callGAS('requestPasswordResetSecure', { email: email }); },
-            resetPasswordSecure: function(token, np, cp) { return callGAS('resetPasswordSecure', { token: token, newPassword: np, confirmPassword: cp }); },
-            validateResetToken: function(token) { return callGAS('validateResetToken', { token: token }); },
-            // Profile
-            getUserProfile: function(sid, u) { return callGAS('getUserProfile', { sessionId: sid, username: u }); },
-            updateProfile: function(sid, u, payload) { return callGAS('updateProfile', { sessionId: sid, username: u, payload: payload }); },
-            changePassword: function(sid, u, op, np) { return callGAS('changePassword', { sessionId: sid, username: u, oldPassword: op, newPassword: np }); },
-            getAllUsers: function(sid, cu) { return callGAS('getAllUsers', { sessionId: sid, callerUsername: cu }); },
-            deleteUser: function(sid, tu, au) { return callGAS('deleteUser', { sessionId: sid, targetUsername: tu, adminUsername: au }); },
-            approveUser: function(sid, tu, au) { return callGAS('approveUser', { sessionId: sid, targetUsername: tu, adminUsername: au }); },
-            sendWelcomeEmailsToAllUsers: function() { return callGAS('sendWelcomeEmailsToAllUsers', {}); },
-            sendWelcomeEmailToUser: function(sid, tu, cu) { return callGAS('sendWelcomeEmailToUser', { sessionId: sid, targetUsername: tu, callerUsername: cu }); },
-            sendUserNotificationEmail: function(payload, au) { return callGAS('sendUserNotificationEmail', { payload: payload, adminUsername: au }); },
-            // Projects
-            getAllProjectsRaw: function(cu) { return callGAS('getAllProjectsRaw', { callerUsername: cu }); },
-            getAllProjectsWithType: function(cu) { return callGAS('getAllProjectsWithType', { callerUsername: cu }); },
-            getMyProjectsWithRevision: function(sid, u) { return callGAS('getMyProjectsWithRevision', { sessionId: sid, username: u }); },
-            saveOrUpdateProjectSecure: function(pd, isUpdate) { return callGAS('saveOrUpdateProjectSecure', { projectData: pd, isUpdate: isUpdate }); },
-            updateProjectStatus: function(pc, ns, su, note) { return callGAS('updateProjectStatus', { projectCode: pc, newStatus: ns, staffUsername: su, note: note }); },
-            verifyProjectDocuments: function(pc, d, su, note) { return callGAS('verifyProjectDocuments', { projectCode: pc, decision: d, staffUsername: su, note: note }); },
-            setProjectType: function(sid, pc, nt, cu) { return callGAS('setProjectType', { sessionId: sid, projectCode: pc, newType: nt, callerUsername: cu }); },
-            reviewRevisionByAdmin: function(payload, su) { return callGAS('reviewRevisionByAdmin', { payload: payload, staffUsername: su }); },
-            submitRevision: function(payload) { return callGAS('submitRevision', { payload: payload }); },
-            // Files
-            uploadFileSecure: function(b64, fn, mime, pc, u, ft) { return callGAS('uploadFileSecure', { base64Data: b64, fileName: fn, mimeType: mime, projectCode: pc, username: u, fileType: ft }); },
-            getUploadedFiles: function(sid, pc, cu) { return callGAS('getUploadedFiles', { sessionId: sid, projectCode: pc, callerUsername: cu }); },
-            deleteUploadedFile: function(sid, fid, u, del) { return callGAS('deleteUploadedFile', { sessionId: sid, fileId: fid, username: u, deleteDriveFile: del }); },
-            getClosureReportFiles: function() { return callGAS('getClosureReportFiles', {}); },
-            // Committee
-            getCommitteeUsers: function(cu) { return callGAS('getCommitteeUsers', { callerUsername: cu }); },
-            assignProjectMultiCommittee: function(payload, su) { return callGAS('assignProjectMultiCommittee', { payload: payload, staffUsername: su }); },
-            getAssignedProjects: function(sid, cu) { return callGAS('getAssignedProjects', { sessionId: sid, committeeUsername: cu }); },
-            submitEvaluation: function(payload) { return callGAS('submitEvaluation', { payload: payload }); },
-            getEvaluationHistory: function(sid, cu) { return callGAS('getEvaluationHistory', { sessionId: sid, committeeUsername: cu }); },
-            getCommitteeEvalSummary: function(pc) { return callGAS('getCommitteeEvalSummary', { projectCode: pc }); },
-            sendResultToResearcher: function(payload) { return callGAS('sendResultToResearcher', { payload: payload }); },
-            // Dashboard
-            getDashboardStats: function(sid, cu) { return callGAS('getDashboardStats', { sessionId: sid, committeeUsername: cu }); },
-            getStaffDashboardStats: function(sid, cu) { return callGAS('getStaffDashboardStats', { sessionId: sid, callerUsername: cu }); },
-            getNotificationsForUser: function(sid, u, r) { return callGAS('getNotificationsForUser', { sessionId: sid, username: u, roles: r }); },
-            // Meetings
-            getMeetings: function(sid, cu) { return callGAS('getMeetings', { sessionId: sid, callerUsername: cu }); },
-            saveMeeting: function(payload, su) { return callGAS('saveMeeting', { payload: payload, staffUsername: su }); },
-            submitMeetingReview: function(payload) { return callGAS('submitMeetingReview', { payload: payload }); },
-            getMeetingMinutes: function(u) { return callGAS('getMeetingMinutes', { username: u }); },
-            uploadMeetingMinutes: function(payload, au) { return callGAS('uploadMeetingMinutes', { payload: payload, adminUsername: au }); },
-            deleteMeetingMinute: function(mid, au) { return callGAS('deleteMeetingMinute', { minuteId: mid, adminUsername: au }); },
-            // Research
-            submitResearchReport: function(payload) { return callGAS('submitResearchReport', { payload: payload }); },
-            reviewResearchReport: function(payload, su) { return callGAS('reviewResearchReport', { payload: payload, staffUsername: su }); },
-            getAllResearchReports: function(cu) { return callGAS('getAllResearchReports', { callerUsername: cu }); },
-            getApprovedProjectsForReporting: function(u) { return callGAS('getApprovedProjectsForReporting', { username: u }); },
-            getResearchReports: function(sid, u) { return callGAS('getResearchReports', { sessionId: sid, username: u }); },
-            // PDPA
-            recordPdpaConsent: function(payload) { return callGAS('recordPdpaConsent', { payload: payload }); },
-          };
-
-          // Build Proxy object: google.script.run.FUNC(args) → Promise chain
-          var proxyHandler = {
-            get: function(target, funcName) {
-              if (funcName === 'withSuccessHandler' || funcName === 'withFailureHandler') {
-                return target[funcName].bind(target);
-              }
-              // Return a bound function that calls GAS and invokes handlers
-              return function() {
-                var args = Array.prototype.slice.call(arguments);
-                var gasCall = ACTION_MAP[funcName];
-                if (!gasCall) {
-                  console.error('[GASBridge] ไม่พบ action:', funcName);
-                  target._failureHandler(new Error('Unknown action: ' + funcName));
-                  return;
-                }
-                gasCall.apply(null, args)
-                  .then(function(result) { target._successHandler(result); })
-                  .catch(function(err) { target._failureHandler(err); });
-              };
-            }
-          };
-
-          // Return a factory: each access to google.script.run creates fresh runner
-          return new Proxy({
-            withSuccessHandler: function(fn) { var r = new GASRunner(); r._successHandler = fn; return new Proxy(r, proxyHandler); },
-            withFailureHandler: function(fn) { var r = new GASRunner(); r._failureHandler = fn; return new Proxy(r, proxyHandler); }
-          }, {
-            get: function(target, prop) {
-              if (prop === 'withSuccessHandler' || prop === 'withFailureHandler') return target[prop];
-              // Direct call without handler: google.script.run.FUNC(args)
-              return function() {
-                var args = Array.prototype.slice.call(arguments);
-                var gasCall = ACTION_MAP[prop];
-                if (!gasCall) { console.error('[GASBridge] Unknown:', prop); return; }
-                gasCall.apply(null, args).catch(function(e) { console.error('[GASBridge]', e); });
-              };
-            }
-          });
-        })()
-      }
-    };
-    // ── End GAS Bridge ────────────────────────────────────────
 
     // ════════════════════════
     var S = {
