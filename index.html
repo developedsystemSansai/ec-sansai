@@ -1287,7 +1287,7 @@
           <div class="section-divider">🔐 ข้อมูลสำหรับเข้าสู่ระบบ</div>
           <div class="form-group"><label>Username <span class="req">*</span></label><input type="text" id="reg-username" class="form-control" placeholder="a-z, 0-9, _ (4-20 ตัว)" oninput="checkUsernameFormat(this)"><div class="hint-text" id="username-hint">ใช้ตัวอักษร a-z, 0-9 ความยาว 4-20 ตัว</div></div>
           <div class="form-group"><label>อีเมล <span class="req">*</span></label><input type="email" id="reg-email" class="form-control"></div>
-          <div class="form-group"><label>รหัสผ่าน <span class="req">*</span></label><div class="password-wrap"><input type="password" id="reg-pass" class="form-control" oninput="checkStrength(this.value)"><button class="toggle-pw" type="button" onclick="togglePw('reg-pass',this)">👁</button></div><div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div><div class="hint-text" id="strength-label"></div></div>
+          <div class="form-group"><label>รหัสผ่าน <span class="req">*</span></label><div class="password-wrap"><input type="password" id="reg-pass" class="form-control" placeholder="อย่างน้อย 8 ตัว มีA-z+เลข เช่น Test1234" oninput="checkStrength(this.value)"><button class="toggle-pw" type="button" onclick="togglePw('reg-pass',this)">👁</button></div><div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div><div class="hint-text" id="strength-label"></div></div>
           <div class="form-group"><label>ยืนยันรหัสผ่าน <span class="req">*</span></label><div class="password-wrap"><input type="password" id="reg-pass2" class="form-control"><button class="toggle-pw" type="button" onclick="togglePw('reg-pass2',this)">👁</button></div></div>
           <div style="display:flex; gap:10px; margin-top:20px"><button class="btn-back-login" style="flex:1" onclick="showLoginPage()">← กลับ</button><button class="btn-register" style="flex:2" onclick="regStep1Next()">ถัดไป →</button></div>
         </div>
@@ -6309,7 +6309,8 @@ var ethicsCertificateFile = null;
         var em = val('reg-email').trim();
         if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { showRegError('กรุณากรอกอีเมลให้ถูกต้อง'); return; }
         var pw = val('reg-pass'), pw2 = val('reg-pass2');
-        if (pw.length < 6) { showRegError('รหัสผ่านต้องมีอย่างน้อย 6 ตัว'); return; }
+        if (pw.length < 8) { showRegError('รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร'); return; }
+        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(pw)) { showRegError('รหัสผ่านต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลข เช่น Test1234'); return; }
         if (pw !== pw2) { showRegError('รหัสผ่านไม่ตรงกัน'); return; }
       }
       // Validation step 2 → 3
@@ -6335,8 +6336,8 @@ var ethicsCertificateFile = null;
       });
       hideRegError();
     }
-    function regStep1Next(){ var u=val('reg-username').trim(),em=val('reg-email').trim(),p1=val('reg-pass'),p2=val('reg-pass2'); if(!u||!em||!p1||!p2){ showRegError('กรุณากรอกข้อมูลให้ครบ'); return; } if(!/^[a-zA-Z0-9_]{4,20}$/.test(u)){ showRegError('Username ต้องเป็น a-z, 0-9, _ 4-20 ตัว'); return; } if(p1.length<6){ showRegError('รหัสผ่านต้องมีอย่างน้อย 6 ตัว'); return; } if(p1!==p2){ showRegError('รหัสผ่านไม่ตรงกัน'); return; } regGoStep(2); }
-    function regStep2Next(){ var prefix=val('reg-prefix'),fn=val('reg-fname').trim(),ln=val('reg-lname').trim(),ph=val('reg-phone').trim(); if(!prefix||!fn||!ln){ showRegError('กรุณากรอกคำนำหน้า ชื่อ และนามสกุล'); return; } if(!ph||!/^0[0-9]{8,9}$/.test(ph)){ showRegError('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก'); return; } regGoStep(3); }
+    function regStep1Next(){ var u=val('reg-username').trim(),em=val('reg-email').trim(),p1=val('reg-pass'),p2=val('reg-pass2'); if(!u||!em||!p1||!p2){ showRegError('กรุณากรอกข้อมูลให้ครบ'); return; } if(!/^[a-zA-Z0-9_]{4,20}$/.test(u)){ showRegError('Username ต้องเป็น a-z, 0-9, _ 4-20 ตัว'); return; } if(p1.length<8){ showRegError('รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร'); return; } if(!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(p1)){ showRegError('รหัสผ่านต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลข เช่น Test1234'); return; } if(p1!==p2){ showRegError('รหัสผ่านไม่ตรงกัน'); return; } regGoStep(2); }
+    function regStep2Next(){ var prefix=val('reg-prefix'),fn=val('reg-fname').trim(),ln=val('reg-lname').trim(),ph=val('reg-phone').trim(); if(!prefix||!fn||!ln){ showRegError('กรุณากรอกคำนำหน้า ชื่อ และนามสกุล'); return; } if(!ph||!/^0[0-9]{8,9}$/.test(ph)){ showRegError('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก'); return; } var et=val('reg-ethics-training'); if(!et){ showRegError('กรุณาเลือกสถานะการอบรมจริยธรรม'); return; } if(et==='completed'&&!ethicsCertificateFile){ showRegError('กรุณาอัพโหลดใบประกาศนียบัตร'); return; } regGoStep(3); }
     function updateRegDept() { 
   var faculty = val('reg-faculty'); 
   var deptSel = document.getElementById('reg-department'); 
@@ -7916,7 +7917,7 @@ async function uploadToGoogleDrive(file) {
     username: document.getElementById('reg-username').value.trim(),
     email: document.getElementById('reg-email').value.trim(),
     password: document.getElementById('reg-pass').value,
-    name: prefix + fname + ' ' + lname,
+    name: (prefix + ' ' + fname + ' ' + lname).trim(),
     nameEn: document.getElementById('reg-name-en').value.trim(),
     phone: document.getElementById('reg-phone').value.trim(),
     faculty: faculty,
@@ -7984,12 +7985,23 @@ function showStep(stepNumber) {
 
 // ฟังก์ชันส่งข้อมูลลงทะเบียน
 function submitRegisterWithPayload(payload, btn) {
+  // ตรวจสอบ required fields ฝั่ง client ก่อนส่ง
+  var requiredFields = ['username','email','password','name','phone','faculty','department','position','roles'];
+  for (var ri = 0; ri < requiredFields.length; ri++) {
+    var rf = requiredFields[ri];
+    if (!payload[rf] || !String(payload[rf]).trim()) {
+      hideGlobalLoading();
+      btn.disabled = false;
+      btn.innerHTML = '✅ ลงทะเบียน';
+      showRegError('กรุณากรอก "' + rf + '" ให้ครบ');
+      return;
+    }
+  }
   google.script.run
     .withSuccessHandler(function(res) {
       hideGlobalLoading();
       btn.disabled = false; 
       btn.innerHTML = '✅ ลงทะเบียน';
-      
       if (res.success) {
         [1, 2, 3].forEach(function(i) { 
           document.getElementById('reg-step-' + i).style.display = 'none'; 
@@ -7997,14 +8009,14 @@ function submitRegisterWithPayload(payload, btn) {
         document.getElementById('reg-success').style.display = 'block';
         hideRegError();
       } else {
-        showRegError(res.message || 'เกิดข้อผิดพลาด');
+        showRegError(res.message || 'เกิดข้อผิดพลาด กรุณาตรวจสอบข้อมูลและลองอีกครั้ง');
       }
     })
     .withFailureHandler(function(e) {
       hideGlobalLoading();
       btn.disabled = false; 
       btn.innerHTML = '✅ ลงทะเบียน';
-      showRegError('เกิดข้อผิดพลาด: ' + e.message);
+      showRegError('เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + (e.message || 'โปรดลองอีกครั้ง'));
     })
     .registerUserSecure(payload);
 }
@@ -8317,7 +8329,7 @@ function showPage(page) {
   var el = document.getElementById(id); 
   if (el) el.style.display = visible ? 'flex' : 'none'; 
 }
-    function checkStrength(pw,fillId){ var fid=fillId||'strength-fill'; var score=0; if(pw.length>=6)score++; if(pw.length>=10)score++; if(/[A-Z]/.test(pw))score++; if(/[0-9]/.test(pw))score++; if(/[^A-Za-z0-9]/.test(pw))score++; var fills=['','#e53935','#fb8c00','#f0a500','#43a047','#2d8a52']; var labels=['','อ่อนมาก','อ่อน','ปานกลาง','แข็งแรง','แข็งแรงมาก']; var el=document.getElementById(fid); if(el){ el.style.width=(score*20)+'%'; el.style.background=fills[score]||fills[1]; } var sl=document.getElementById('strength-label'); if(sl){ sl.textContent=labels[score]||''; sl.style.color=fills[score]||fills[1]; } }
+    function checkStrength(pw,fillId){ var fid=fillId||'strength-fill'; var score=0; if(pw.length>=8)score++; if(pw.length>=12)score++; if(/[A-Z]/.test(pw))score++; if(/[0-9]/.test(pw))score++; if(/[^A-Za-z0-9]/.test(pw))score++; var fills=['','#e53935','#fb8c00','#f0a500','#43a047','#2d8a52']; var labels=['','อ่อนมาก','อ่อน','ปานกลาง','แข็งแรง','แข็งแรงมาก']; var el=document.getElementById(fid); if(el){ el.style.width=(score*20)+'%'; el.style.background=fills[score]||fills[1]; } var sl=document.getElementById('strength-label'); if(sl){ sl.textContent=labels[score]||''; sl.style.color=fills[score]||fills[1]; } }
     function checkUsernameFormat(inp){ var hint=document.getElementById('username-hint'); if(!hint) return; var v=inp.value; if(!v){ hint.textContent='ใช้ตัวอักษร a-z, 0-9 ความยาว 4-20 ตัว'; hint.style.color=''; return; } if(/^[a-zA-Z0-9_]{4,20}$/.test(v)){ hint.textContent='✅ รูปแบบถูกต้อง'; hint.style.color='var(--green-main)'; } else { hint.textContent='❌ ใช้ได้เฉพาะ a-z, A-Z, 0-9, _'; hint.style.color='var(--red)'; } }
     function togglePw(inputId,btn){ var inp=document.getElementById(inputId); if(!inp) return; inp.type=inp.type==='password'?'text':'password'; btn.textContent=inp.type==='password'?'👁':'🙈'; }
     function showToast(msg,type){ var c=document.getElementById('toast-container'); var t=document.createElement('div'); t.className='toast'+(type==='error'?' error':type==='warning'?' warning':''); t.textContent=(type==='error'?'❌ ':type==='warning'?'⚠ ':'✅ ')+msg; c.appendChild(t); setTimeout(function(){ t.remove(); },3500); }
