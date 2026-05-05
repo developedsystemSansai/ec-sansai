@@ -5813,7 +5813,36 @@ function showPendingUsers() {
 }
     function openAddUserModal(){ document.getElementById('user-form-title').textContent='➕ เพิ่มผู้ใช้งานใหม่'; document.getElementById('uf-edit-username').value=''; ['uf-username','uf-password','uf-name','uf-email','uf-phone','uf-faculty','uf-department','uf-position'].forEach(function(id){ document.getElementById(id).value=''; }); document.getElementById('uf-username').disabled=false; document.getElementById('uf-roles').value=''; document.getElementById('uf-status').value='active'; document.getElementById('uf-pass-req').style.display='inline'; document.getElementById('uf-pass-hint').textContent='อย่างน้อย 6 ตัวอักษร'; openModal('modal-user-form'); }
     function openEditUserModal(username){ var u=S.allUsers.find(function(x){ return x.username===username; }); if(!u){ showToast('ไม่พบข้อมูล','error'); return; } document.getElementById('user-form-title').textContent='✏️ แก้ไขผู้ใช้: '+username; document.getElementById('uf-edit-username').value=username; document.getElementById('uf-username').value=username; document.getElementById('uf-username').disabled=true; document.getElementById('uf-password').value=''; document.getElementById('uf-name').value=u.name||''; document.getElementById('uf-email').value=u.email||''; document.getElementById('uf-phone').value=u.phone||''; document.getElementById('uf-faculty').value=u.faculty||''; document.getElementById('uf-department').value=u.department||''; document.getElementById('uf-position').value=u.position||''; document.getElementById('uf-roles').value=String(u.roles||'').replace('pending_',''); document.getElementById('uf-status').value=String(u.status||'active').toLowerCase(); document.getElementById('uf-pass-req').style.display='none'; document.getElementById('uf-pass-hint').textContent='เว้นว่างหากไม่เปลี่ยนรหัสผ่าน'; openModal('modal-user-form'); }
-    function saveUser(){ var editUsername=val('uf-edit-username'),isEdit=!!editUsername; var username=val('uf-username').trim(),password=val('uf-password'),name=val('uf-name').trim(),email=val('uf-email').trim(),roles=val('uf-roles'),status=val('uf-status'); if(!isEdit&&!/^[a-zA-Z0-9_]{4,20}$/.test(username)){ showToast('Username ต้องเป็น a-z, 0-9, _ 4-20 ตัว','error'); return; } if(!isEdit&&password.length<6){ showToast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว','error'); return; } if(isEdit&&password&&password.length<6){ showToast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว','error'); return; } if(!name||!email||!roles){ showToast('กรุณากรอกข้อมูลให้ครบ','error'); return; } var btn=document.getElementById('uf-save-btn'); btn.disabled=true; btn.innerHTML='<span class="spin-sm"></span> กำลังบันทึก...'; var payload={username:isEdit?editUsername:username,password:password,name:name,email:email,phone:val('uf-phone').trim(),faculty:val('uf-faculty').trim(),department:val('uf-department').trim(),position:val('uf-position').trim(),roles:roles,status:status}; var onSuccess=function(res){ btn.disabled=false; btn.innerHTML='💾 บันทึก'; if(res&&res.success){ closeModal('modal-user-form'); showToast((isEdit?'แก้ไข':'เพิ่ม')+'ผู้ใช้สำเร็จ'); loadUsersData(); } else showToast('เกิดข้อผิดพลาด: '+((res&&res.message)||''),'error'); }; var onFail=function(e){ btn.disabled=false; btn.innerHTML='💾 บันทึก'; showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }; if(isEdit){ google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFail).updateUser(payload,S.user.username); } else { google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFail).createUser(payload,S.user.username); } }
+    function saveUser(){
+  var editUsername=val('uf-edit-username'), isEdit=!!editUsername;
+  var username=val('uf-username').trim(), password=val('uf-password'),
+      name=val('uf-name').trim(), email=val('uf-email').trim(),
+      roles=val('uf-roles'), status=val('uf-status');
+  if(!isEdit&&!/^[a-zA-Z0-9_]{4,20}$/.test(username)){ showToast('Username ต้องเป็น a-z, 0-9, _ 4-20 ตัว','error'); return; }
+  if(!isEdit&&password.length<6){ showToast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว','error'); return; }
+  if(isEdit&&password&&password.length<6){ showToast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว','error'); return; }
+  if(!name||!email||!roles){ showToast('กรุณากรอกข้อมูลให้ครบ','error'); return; }
+  var btn=document.getElementById('uf-save-btn');
+  btn.disabled=true; btn.innerHTML='<span class="spin-sm"></span> กำลังบันทึก...';
+  var payload={username:isEdit?editUsername:username, password:password,
+    name:name, email:email, phone:val('uf-phone').trim(),
+    faculty:val('uf-faculty').trim(), department:val('uf-department').trim(),
+    position:val('uf-position').trim(), roles:roles, status:status};
+  var action = isEdit ? 'updateUser' : 'createUser';
+  var body = isEdit
+    ? {payload:payload, adminUsername:S.user.username}
+    : {payload:payload, adminUsername:S.user.username};
+  callGAS(action, body)
+    .then(function(res){
+      btn.disabled=false; btn.innerHTML='💾 บันทึก';
+      if(res&&res.success){ closeModal('modal-user-form'); showToast((isEdit?'แก้ไข':'เพิ่ม')+'ผู้ใช้สำเร็จ'); loadUsersData(); }
+      else showToast('เกิดข้อผิดพลาด: '+((res&&res.message)||''),'error');
+    })
+    .catch(function(e){
+      btn.disabled=false; btn.innerHTML='💾 บันทึก';
+      showToast('เกิดข้อผิดพลาด: '+e.message,'error');
+    });
+}
     function approveUser(username){ if(!confirm('อนุมัติผู้ใช้ "'+username+'" ใช่หรือไม่?')) return; google.script.run.withSuccessHandler(function(res){ if(res&&res.success){ showToast('อนุมัติแล้ว'); loadUsersData(); } else showToast('เกิดข้อผิดพลาด: '+((res&&res.message)||''),'error'); }).withFailureHandler(function(e){ showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }).approveUser(S.user.sessionId, username, S.user.username); }
     function openDeleteUserModal(username,name){ S.pendingDelete=username; document.getElementById('delete-user-name').textContent=name+' ('+username+')'; openModal('modal-confirm-delete'); }
     function confirmDeleteUser(){ if(!S.pendingDelete){ showToast('ไม่พบผู้ใช้','error'); return; } var btn=document.getElementById('confirm-delete-btn'); btn.disabled=true; btn.innerHTML='<span class="spin-sm"></span>'; google.script.run.withSuccessHandler(function(res){ btn.disabled=false; btn.innerHTML='🗑 ลบ'; if(res&&res.success){ closeModal('modal-confirm-delete'); showToast('ลบแล้ว'); S.pendingDelete=''; loadUsersData(); } else showToast('เกิดข้อผิดพลาด: '+((res&&res.message)||''),'error'); }).withFailureHandler(function(err){ btn.disabled=false; btn.innerHTML='🗑 ลบ'; showToast('เกิดข้อผิดพลาด: '+err.message,'error'); }).deleteUser(S.user.sessionId, S.pendingDelete, S.user.username); }
