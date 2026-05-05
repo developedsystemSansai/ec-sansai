@@ -7934,39 +7934,76 @@ async function uploadToGoogleDrive(file) {
   btn.innerHTML = '<span class="spin-sm"></span>';
   showGlobalLoading('กำลังลงทะเบียน...');
   
-  // ถ้ามีไฟล์ ให้อัพโหลดก่อน
+  // ถ้ามีไฟล์ ให้อัพโหลดก่อน แล้วค่อยส่งข้อมูลลงทะเบียน
   if (ethicsCertificateFile) {
     var reader = new FileReader();
+    reader.onerror = function() {
+      hideGlobalLoading();
+      btn.disabled = false;
+      btn.textContent = '\u2705 ลงทะเบียน';
+      showRegError('ไม่สามารถอ่านไฟล์ได้ กรุณาลองใหม่อีกครั้ง');
+    };
     reader.onload = function(e) {
       var base64 = e.target.result.split(',')[1];
-      
-      // อัพโหลดไฟล์ไปที่ Drive
+      if (!base64) {
+        hideGlobalLoading();
+        btn.disabled = false;
+        btn.textContent = '\u2705 ลงทะเบียน';
+        showRegError('ไม่สามารถอ่านข้อมูลไฟล์ได้');
+        return;
+      }
+
+      // อัพโหลดไฟล์ไปที่ Drive โดยใช้ project code เป็น REG_<username>
       google.script.run
         .withSuccessHandler(function(fileResult) {
-          if (fileResult.success) {
-            payload.ethicsTrainingFileId = fileResult.fileId;
-            payload.ethicsTrainingFileUrl = fileResult.fileUrl;
-            
-            // ส่งข้อมูลลงทะเบียน
+          if (fileResult && fileResult.success) {
+            // อัพโหลดสำเร็จ — แนบ file ID เข้า payload แล้วส่ง register
+            payload.ethicsTrainingFileId  = fileResult.fileId  || '';
+            payload.ethicsTrainingFileUrl = fileResult.fileUrl || '';
             submitRegisterWithPayload(payload, btn);
           } else {
+            // อัพโหลดล้มเหลว — ถาม user ว่าจะดำเนินการต่อโดยไม่มีไฟล์หรือไม่
             hideGlobalLoading();
             btn.disabled = false;
-            btn.textContent = '✅ ลงทะเบียน';
-            showRegError('ไม่สามารถอัพโหลดไฟล์ได้: ' + (fileResult.message || ''));
+            btn.textContent = '\u2705 ลงทะเบียน';
+            var errMsg = (fileResult && fileResult.message) ? fileResult.message : 'ไม่ทราบสาเหตุ';
+            var continueWithout = confirm(
+              '\u26a0\ufe0f ไม่สามารถอัพโหลดใบรับรองได้\nสาเหตุ: ' + errMsg +
+              '\n\nต้องการดำเนินการลงทะเบียนต่อโดยไม่แนบไฟล์หรือไม่?\n' +
+              '(ท่านสามารถส่งเอกสารภายหลังได้)'
+            );
+            if (continueWithout) {
+              showGlobalLoading('กำลังลงทะเบียน...');
+              btn.disabled = true;
+              btn.innerHTML = '<span class="spin-sm"></span>';
+              submitRegisterWithPayload(payload, btn);
+            }
           }
         })
-        .withFailureHandler(function(e) {
+        .withFailureHandler(function(err) {
+          // Connection error ระหว่างอัพโหลด
           hideGlobalLoading();
           btn.disabled = false;
-          btn.textContent = '✅ ลงทะเบียน';
-          showRegError('เกิดข้อผิดพลาดในการอัพโหลดไฟล์: ' + e.message);
+          btn.textContent = '\u2705 ลงทะเบียน';
+          var continueWithout = confirm(
+            '\u26a0\ufe0f เกิดข้อผิดพลาดในการเชื่อมต่อขณะอัพโหลดไฟล์\n' +
+            'สาเหตุ: ' + (err && err.message ? err.message : 'ไม่ทราบสาเหตุ') +
+            '\n\nต้องการดำเนินการลงทะเบียนต่อโดยไม่แนบไฟล์หรือไม่?\n' +
+            '(ท่านสามารถส่งเอกสารภายหลังได้)'
+          );
+          if (continueWithout) {
+            showGlobalLoading('กำลังลงทะเบียน...');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spin-sm"></span>';
+            submitRegisterWithPayload(payload, btn);
+          }
         })
-        .uploadFileSecure(base64, ethicsCertificateFile.name, ethicsCertificateFile.type, 'REGISTER_TEMP', payload.username, 'ethics_certificate');
+        .uploadFileSecure(base64, ethicsCertificateFile.name, ethicsCertificateFile.type,
+                          'REG_' + payload.username, payload.username, 'ethics_certificate');
     };
     reader.readAsDataURL(ethicsCertificateFile);
   } else {
-    // ไม่มีไฟล์ ส่งข้อมูลเลย
+    // ไม่มีไฟล์ ส่งข้อมูลลงทะเบียนเลย
     submitRegisterWithPayload(payload, btn);
   }
 }
