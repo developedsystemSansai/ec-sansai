@@ -41,6 +41,8 @@
         updateProfile:               function(sid,u,pl)         { return callGAS('updateProfile',              {sessionId:sid, username:u, payload:pl}); },
         changePassword:              function(sid,u,op,np)      { return callGAS('changePassword',             {sessionId:sid, username:u, oldPassword:op, newPassword:np}); },
         getAllUsers:                  function(sid,cu)           { return callGAS('getAllUsers',                 {sessionId:sid, callerUsername:cu}); },
+        createUser:                  function(pl,au)            { return callGAS('createUser',                 {payload:pl, adminUsername:au}); },
+        updateUser:                  function(pl,au)            { return callGAS('updateUser',                 {payload:pl, adminUsername:au}); },
         deleteUser:                  function(sid,tu,au)        { return callGAS('deleteUser',                 {sessionId:sid, targetUsername:tu, adminUsername:au}); },
         approveUser:                 function(sid,tu,au)        { return callGAS('approveUser',                {sessionId:sid, targetUsername:tu, adminUsername:au}); },
         sendWelcomeEmailsToAllUsers: function()                 { return callGAS('sendWelcomeEmailsToAllUsers', {}); },
