@@ -1448,6 +1448,7 @@
       <option value="">-- เลือก --</option>
       <option value="researcher">นักวิจัย / ผู้ยื่นขอ</option>
       <option value="committee">กรรมการจริยธรรม</option>
+      <option value="committee,researcher">กรรมการจริยธรรม + ผู้วิจัย</option>
       <option value="staff">เจ้าหน้าที่ EC</option>
     </select>
     <div class="hint-text">⚠ สิทธิ์จะมีผลหลังผู้ดูแลระบบอนุมัติ</div>
@@ -3361,7 +3362,7 @@
             <div class="field-group"><label>เบอร์โทรศัพท์</label><input type="tel" class="form-control" id="uf-phone"></div>
           </div>
           <div class="form-row-2">
-            <div class="field-group"><label>สิทธิ์ <span class="req">*</span></label><select class="form-control" id="uf-roles"><option value="">-- เลือก --</option><option value="admin,staff">Admin + Staff</option><option value="staff">Staff</option><option value="committee">Committee</option><option value="researcher">Researcher</option></select></div>
+            <div class="field-group"><label>สิทธิ์ <span class="req">*</span></label><select class="form-control" id="uf-roles"><option value="">-- เลือก --</option><option value="admin,staff">Admin + Staff</option><option value="staff">Staff</option><option value="committee">Committee</option><option value="committee,researcher">Committee + Researcher</option><option value="researcher">Researcher</option></select></div>
             <div class="field-group"><label>สถานะ <span class="req">*</span></label><select class="form-control" id="uf-status"><option value="active">✅ Active</option><option value="pending">⏳ Pending</option><option value="inactive">❌ Inactive</option></select></div>
           </div>
           <div class="form-row-2">
@@ -3550,8 +3551,19 @@ var _evalCode = '';
     }
 
     function showLoginError(msg){ var el=document.getElementById('login-error'); el.textContent='⚠ '+msg; el.style.display='block'; }
-    var ROLE_LABELS={admin:'ผู้ดูแลระบบ',staff:'เจ้าหน้าที่',committee:'กรรมการ',researcher:'นักวิจัย'};
+    var ROLE_LABELS={admin:'ผู้ดูแลระบบ',staff:'เจ้าหน้าที่',committee:'กรรมการ',researcher:'นักวิจัย','committee,researcher':'กรรมการ + ผู้วิจัย'};
+
+    // Combo roles ที่เข้าระบบพร้อมกันได้โดยไม่ต้องเลือก → primary role สำหรับ UI
+    var COMBO_ROLES={
+      'committee,researcher':'committee',
+      'researcher,committee':'committee'
+    };
+
     function showRolePage(roles){
+      // ตรวจ combo ก่อน — ถ้าตรงให้เข้าระบบโดยตรงโดยไม่แสดงหน้าเลือก
+      var comboKey = roles.slice().sort().join(',');
+      if(COMBO_ROLES[comboKey]){ enterSystem(COMBO_ROLES[comboKey]); return; }
+
       hide('login-page'); show('role-page','flex');
       var c=document.getElementById('role-buttons'); c.innerHTML='';
       roles.forEach(function(r){ var b=document.createElement('button'); b.className='role-btn'; b.textContent=ROLE_LABELS[r]||r; b.onclick=(function(ro){ return function(){ enterSystem(ro); }; })(r); c.appendChild(b); });
@@ -3561,13 +3573,18 @@ var _evalCode = '';
     }
 
 function applyRoleUI(role){
-  var isAdmin = role==='admin' || (S.user.roles && S.user.roles.indexOf('admin') !== -1);
-  var isStaff = role==='staff' || isAdmin;
-  S._isAdmin = isAdmin; S._isStaff = isStaff;
-  S._isCommittee = role==='committee'; S._isResearcher = role==='researcher';
-  
-  console.log('User roles:', S.user.roles);
-  console.log('isAdmin:', isAdmin, 'isStaff:', isStaff);
+  // ใช้ roles array เสมอ รองรับกรณีมีหลาย role พร้อมกัน
+  var allRoles = (S.user && S.user.roles && S.user.roles.length) ? S.user.roles : [role];
+  var hasRole  = function(r){ return allRoles.indexOf(r) !== -1; };
+
+  var isAdmin = hasRole('admin');
+  var isStaff = hasRole('staff') || isAdmin;
+  S._isAdmin     = isAdmin;
+  S._isStaff     = isStaff;
+  S._isCommittee = hasRole('committee');
+  S._isResearcher= hasRole('researcher');
+
+  console.log('User roles:', allRoles, '| committee:', S._isCommittee, '| researcher:', S._isResearcher);
   
   // แสดง/ซ่อนเมนูตามสิทธิ์
   showEl('nav-accept',         S._isCommittee || isStaff || isAdmin);
@@ -3594,7 +3611,7 @@ function loadAllData(){
   renderDashboard();
   if(S._isCommittee || S._isStaff || S._isAdmin){ loadAssignments(); loadMeetings(); }
   if(S._isStaff || S._isAdmin){ loadStaffProjects(); loadAllReports(); }
-  if(S._isResearcher) loadMyProjects();
+  if(S._isResearcher){ loadMyProjects(); loadApprovedProjectsForReporting(); }
   loadNotifications();
   if(S._isAdmin) { loadUsersData(); loadMeetingMinutes(); }
   if(S._isCommittee) loadMeetingMinutes();
@@ -3666,11 +3683,20 @@ function showForgotMessage(type, text) {
     function renderDashboard(){
       var html='';
       if(S._isAdmin) html=renderAdminDashboard();
+      else if(S._isCommittee && S._isResearcher) html=renderComboDashboard();
       else if(S._isCommittee) html=renderCommitteeDashboard();
       else if(S._isStaff) html=renderStaffDashboard();
       else if(S._isResearcher) html=renderResearcherDashboard();
       else html='<div class="alert alert-info">ℹ️ ยินดีต้อนรับ</div>';
       document.getElementById('dash-content').innerHTML=html;
+    }
+    function renderComboDashboard(){
+      return '<div class="alert alert-info" style="margin-bottom:16px;display:flex;gap:8px;align-items:flex-start">'
+        +'<span style="font-size:18px">🎭</span>'
+        +'<div><strong>สวมสองบทบาท: กรรมการจริยธรรม + ผู้วิจัย</strong>'
+        +'<br><span style="font-size:13px;opacity:.8">เมนูด้านซ้ายรวมสิทธิ์ทั้งสองไว้แล้ว — สามารถยื่นโครงการและประเมินโครงการได้ในระบบเดียวกัน</span>'
+        +'</div></div>'
+        + renderCommitteeDashboard();
     }
     function renderAdminDashboard(){
       return '<div class="section-title" style="font-size:18px;margin-bottom:16px">Dashboard — แอดมิน</div>'+
@@ -7631,7 +7657,9 @@ async function uploadToGoogleDrive(file) {
   document.getElementById('user-avatar').textContent = (S.user.name || 'U').charAt(0).toUpperCase();
   document.getElementById('prof-name').value = S.user.name || '';
   // [SEC-FIX] email/phone/faculty/department จะถูก set หลังจาก getUserProfile() ตอบกลับ (ด้านล่าง)
-  document.getElementById('prof-role').value = ROLE_LABELS[role] || role;
+  var _allRoles = (S.user && S.user.roles && S.user.roles.length) ? S.user.roles : [role];
+  var _comboKey = _allRoles.slice().sort().join(',');
+  document.getElementById('prof-role').value = ROLE_LABELS[_comboKey] || ROLE_LABELS[role] || role;
   applyRoleUI(role);
   showPage('dashboard');
   loadAllData();
@@ -7737,7 +7765,14 @@ async function uploadToGoogleDrive(file) {
           if (res.success) {
             document.getElementById('login-error').style.display = 'none';
             S.user = res;
-            res.roles.length > 1 ? showRolePage(res.roles) : enterSystem(res.roles[0]);
+            var comboKey = res.roles.slice().sort().join(',');
+            if(COMBO_ROLES[comboKey]){
+              enterSystem(COMBO_ROLES[comboKey]);
+            } else if(res.roles.length > 1){
+              showRolePage(res.roles);
+            } else {
+              enterSystem(res.roles[0]);
+            }
           } else {
             showLoginError(res.message || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
           }
