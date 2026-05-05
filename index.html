@@ -98,41 +98,66 @@
       // วิธีการ: GASRunner เก็บ handlers แล้วทุก property access จะ return function
       // ที่เรียก M[prop] แล้ว invoke handlers
 
-      function GASRunner() {
-        this._ok  = function() {};
-        this._err = function(e) { console.error('[GASBridge]', e); };
-        var self = this;
+      // ── GASRunner ใหม่: ใช้ Proxy จริง รองรับทุกชื่อฟังก์ชัน ──────────────
+      // แก้ปัญหา: method ที่เพิ่มใน M ภายหลังไม่ถูก bind ใน instance เดิม
+      // วิธีนี้: ทุก property access จะตรวจ M ใหม่ทุกครั้ง ไม่ต้อง rebuild
+      function makeGASRunner() {
+        var _ok  = function() {};
+        var _err = function(e) { console.error('[GASBridge] Error:', e); };
 
-        // สร้าง Proxy-like โดยใช้ defineProperty ใน loop
-        // เพื่อรองรับทุก funcName ใน M
-        var runner = this;
+        var handler = {
+          withSuccessHandler: function(fn) {
+            if (typeof fn === 'function') _ok = fn;
+            return handler;
+          },
+          withFailureHandler: function(fn) {
+            if (typeof fn === 'function') _err = fn;
+            return handler;
+          }
+        };
+
+        // ใช้ Proxy ให้ทุก property access ที่ไม่ใช่ handler → ไปหาใน M
+        if (typeof Proxy !== 'undefined') {
+          return new Proxy(handler, {
+            get: function(target, prop) {
+              if (prop in target) return target[prop];
+              // ค้นหาใน M (รองรับทั้งชื่อที่มีและไม่มีใน M)
+              var fn = M[prop];
+              if (typeof fn === 'function') {
+                return function() {
+                  var args = arguments;
+                  fn.apply(null, args)
+                    .then(function(r) { _ok(r); })
+                    .catch(function(e) { _err(e); });
+                };
+              }
+              // fallback: ถ้าไม่มีใน M → แสดง error ชัดเจน
+              return function() {
+                var msg = '[GASBridge] ไม่พบฟังก์ชัน: "' + String(prop) + '" — กรุณาเพิ่มใน M map';
+                console.error(msg);
+                _err(new Error(msg));
+              };
+            }
+          });
+        }
+
+        // Fallback สำหรับ browser เก่าที่ไม่รองรับ Proxy
         Object.keys(M).forEach(function(fn) {
-          runner[fn] = function() {
+          handler[fn] = function() {
             var args = arguments;
             M[fn].apply(null, args)
-              .then(function(r) { self._ok(r); })
-              .catch(function(e) { self._err(e); });
+              .then(function(r) { _ok(r); })
+              .catch(function(e) { _err(e); });
           };
         });
+        return handler;
       }
 
-      GASRunner.prototype.withSuccessHandler = function(fn) {
-        this._ok = (typeof fn === 'function') ? fn : this._ok;
-        return this;
-      };
-      GASRunner.prototype.withFailureHandler = function(fn) {
-        this._err = (typeof fn === 'function') ? fn : this._err;
-        return this;
-      };
-
-      // google.script.run → new GASRunner() ทุกครั้งที่ถูกเข้าถึง
-      // ทำโดยใช้ getter บน object ที่ assign ให้ window.google
       window.google = window.google || {};
       window.google.script = window.google.script || {};
 
-      // ใช้ defineProperty เพื่อทำให้ .run สร้าง instance ใหม่ทุกครั้ง
       Object.defineProperty(window.google.script, 'run', {
-        get: function() { return new GASRunner(); },
+        get: function() { return makeGASRunner(); },
         configurable: true
       });
 
