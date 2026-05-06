@@ -5778,7 +5778,7 @@ function showPendingUsers() {
   filterUsersTable();
 }
     function rolesPill(roles){ var map={admin:'pill-red',staff:'pill-blue',committee:'pill-green',researcher:'pill-gray'}; return roles.split(',').map(function(r){ r=r.trim().replace('pending_',''); return '<span class="pill '+(map[r]||'pill-gray')+'" style="margin-right:2px">'+esc(r)+'</span>'; }).join(''); }
-    function userActionBtns(u,isPending){ var un=escAttr(u.username||''),nm=escAttr(u.name||u.username||''); var btns=''; if(isPending) btns+='<button class="btn btn-sm btn-primary" onclick="approveUser(\''+un+'\')">✅ อนุมัติ</button> '; btns+='<button class="btn btn-sm btn-accent" onclick="openEditUserModal(\''+un+'\')">✏️</button> '; if(u.username!==(S.user&&S.user.username)) btns+='<button class="btn btn-sm btn-danger" onclick="openDeleteUserModal(\''+un+'\',\''+nm+'\')">🗑</button>'; return btns; }
+
     function filterUsersTable() {
   var q = val('user-search-input').toLowerCase();
   var role = val('user-filter-role');
@@ -5832,16 +5832,17 @@ function showPendingUsers() {
   var body = isEdit
     ? {payload:payload, adminUsername:S.user.username}
     : {payload:payload, adminUsername:S.user.username};
-  callGAS(action, body)
-    .then(function(res){
+  google.script.run
+    .withSuccessHandler(function(res){
       btn.disabled=false; btn.innerHTML='💾 บันทึก';
       if(res&&res.success){ closeModal('modal-user-form'); showToast((isEdit?'แก้ไข':'เพิ่ม')+'ผู้ใช้สำเร็จ'); loadUsersData(); }
       else showToast('เกิดข้อผิดพลาด: '+((res&&res.message)||''),'error');
     })
-    .catch(function(e){
+    .withFailureHandler(function(e){
       btn.disabled=false; btn.innerHTML='💾 บันทึก';
       showToast('เกิดข้อผิดพลาด: '+e.message,'error');
-    });
+    })
+    [action](payload, S.user.username);
 }
     function approveUser(username){ if(!confirm('อนุมัติผู้ใช้ "'+username+'" ใช่หรือไม่?')) return; google.script.run.withSuccessHandler(function(res){ if(res&&res.success){ showToast('อนุมัติแล้ว'); loadUsersData(); } else showToast('เกิดข้อผิดพลาด: '+((res&&res.message)||''),'error'); }).withFailureHandler(function(e){ showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }).approveUser(S.user.sessionId, username, S.user.username); }
     function openDeleteUserModal(username,name){ S.pendingDelete=username; document.getElementById('delete-user-name').textContent=name+' ('+username+')'; openModal('modal-confirm-delete'); }
