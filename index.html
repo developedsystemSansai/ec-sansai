@@ -5780,22 +5780,21 @@ function loadUsersData() {
   var el = document.getElementById('users-table-container');
   if (el) el.innerHTML = '<div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div><p style="margin-top:8px">กำลังโหลดข้อมูลผู้ใช้...</p></div>';
   
-  // ✅ ตรวจสอบว่าเป็นแอดมินหรือไม่
   if (!S._isAdmin) {
     if (el) el.innerHTML = '<div class="empty-state"><div class="empty-icon">🔒</div><p>คุณไม่มีสิทธิ์เข้าถึงหน้านี้</p></div>';
     return;
   }
   
-  // ✅ ส่ง username ปัจจุบันไปด้วย
   google.script.run
     .withSuccessHandler(function(res) {
-      // 💡 จุดที่ปรับแก้: เช็ค success และดึงข้อมูลจาก res.data
+      // ตรวจสอบความสำเร็จและดึงข้อมูลจาก .data
       if (res && res.success) {
         S.allUsers = Array.isArray(res.data) ? res.data : [];
         renderUsersTable(S.allUsers);
         updatePendingBanner(S.allUsers);
-        S.committeesCache = []; // เคลียร์ cache กรรมการ
+        S.committeesCache = []; 
       } else {
+        // จัดการกรณี Backend ส่ง Error กลับมา
         var msg = res ? res.message : 'ไม่ทราบสาเหตุ';
         if (el) el.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><p>โหลดไม่สำเร็จ: ' + esc(msg) + '</p><button class="btn btn-primary btn-sm" onclick="loadUsersData()">🔄 ลองอีกครั้ง</button></div>';
       }
