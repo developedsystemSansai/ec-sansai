@@ -15,15 +15,40 @@
       var GAS_URL = 'https://script.google.com/macros/s/AKfycby_GFp6PtqRmLWEqayleD9nBscQvBTm288Dm5YMUMSHgXbaie3FTTuvB276hfYN9M69VQ/exec'; // ← เปลี่ยนตรงนี้
       // ─────────────────────────────────────────────────────
 
+      // ── Fetch with timeout helper ───────────────────────────
+      function _fetchWithTimeout(url, options, ms) {
+        ms = ms || 30000;
+        var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        if (controller) options.signal = controller.signal;
+        var timer = controller ? setTimeout(function(){ controller.abort(); }, ms) : null;
+        return fetch(url, options).finally(function(){
+          if (timer) clearTimeout(timer);
+        });
+      }
+
       function callGAS(action, params) {
         var body = JSON.stringify(Object.assign({ action: action }, params || {}));
-        return fetch(GAS_URL, {
+        return _fetchWithTimeout(GAS_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain' },
           body: body
-        }).then(function(r) {
+        }, 30000).then(function(r) {
           if (!r.ok) throw new Error('HTTP ' + r.status);
-          return r.json();
+          // ── ป้องกัน SyntaxError เมื่อ GAS ส่ง HTML แทน JSON ──
+          return r.text().then(function(text) {
+            if (!text || !text.trim()) return { success: false, message: 'Empty response' };
+            var jsonStart = text.indexOf('{');
+            var jsonEnd   = text.lastIndexOf('}');
+            if (jsonStart !== -1 && jsonEnd > jsonStart) {
+              try { return JSON.parse(text.substring(jsonStart, jsonEnd + 1)); }
+              catch(e) {}
+            }
+            var preview = text.replace(/<[^>]+>/g, '').trim().substring(0, 100);
+            throw new Error(preview || 'Invalid server response');
+          });
+        }).catch(function(e) {
+          if (e && e.name === 'AbortError') throw new Error('การเชื่อมต่อหมดเวลา กรุณาลองใหม่');
+          throw e;
         });
       }
 
@@ -4980,8 +5005,9 @@ function openReviewRevisionModal(projectCode) {
       projectCode: _revisionProjectCode,
       revisionNote: note,
       fileIds: _revisionFileIds.slice(),
-      callerUsername: S.user.username
-      // ✅ ไม่ต้องส่ง skipCommitteeReeval เพราะจะถูกกำหนดใน backend
+      callerUsername: S.user.username,
+      sessionId: S.user.sessionId   // ✅ เพิ่ม sessionId เพื่อ backend verify
+      // skipCommitteeReeval ถูกกำหนดใน backend
     });
 }
 
@@ -5573,7 +5599,8 @@ function submitAccept() {
       reviewerRole: role ? role.value : '1st',
       note: val('acc-note'),
       committeeUsername: S.user.username,
-      committeeName: S.user.name
+      committeeName: S.user.name,
+      sessionId: S.user.sessionId   // ✅ เพิ่ม sessionId
     });
 }
 
