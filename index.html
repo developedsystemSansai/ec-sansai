@@ -70,7 +70,9 @@
         sendResultToResearcher:      function(pl)               { return callGAS('sendResultToResearcher',    {payload:pl}); },
         getDashboardStats:           function(sid,cu)           { return callGAS('getDashboardStats',         {sessionId:sid, committeeUsername:cu}); },
         getStaffDashboardStats:      function(sid,cu)           { return callGAS('getStaffDashboardStats',    {sessionId:sid, callerUsername:cu}); },
-        getNotificationsForUser:     function(sid,u,r)          { return callGAS('getNotificationsForUser',   {sessionId:sid, username:u, roles:r}); },
+        getNotificationsForUser:         function(sid,u,r)          { return callGAS('getNotificationsForUser',   {sessionId:sid, username:u, roles:r}); },
+        markNotificationsRead:           function(rows)             { return callGAS('markNotificationsRead',       {rowNumbers:rows}); },
+        markAllNotificationsRead:        function(sid,u)            { return callGAS('markAllNotificationsRead',    {sessionId:sid, username:u}); },
         getMeetings:                 function(sid,cu)           { return callGAS('getMeetings',               {sessionId:sid, callerUsername:cu}); },
         saveMeeting:                 function(pl,su)            { return callGAS('saveMeeting',               {payload:pl, staffUsername:su}); },
         submitMeetingReview:         function(pl)               { return callGAS('submitMeetingReview',       {payload:pl}); },
@@ -5304,69 +5306,183 @@ function viewProjectFiles(projectCode) {
     // ════════════════════════════════════════
     function loadHistory(){ google.script.run.withSuccessHandler(function(res){ var rows=res.data||[]; var el=document.getElementById('history-table'); if(!el) return; if(!rows.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><p>ไม่มีประวัติ</p></div>'; return; } var html='<table><thead><tr><th>วันที่</th><th>รหัสโครงการ</th><th>มติ</th><th>สถานะ</th></tr></thead><tbody>'; rows.forEach(function(r){ html+='<tr><td>'+formatDate(r.timestamp)+'</td><td><strong>'+esc(r.project_code||'-')+'</strong></td><td><span class="pill pill-blue">'+esc(r.final_decision||'-')+'</span></td><td><span class="pill pill-green">ส่งแล้ว</span></td></tr>'; }); el.innerHTML=html+'</tbody></table>'; }).withFailureHandler(function(){}).getEvaluationHistory(S.user.sessionId, S.user.username); }
 
-    // ════════════════════════════════════════
-    // [FIX #4] NOTIFICATIONS — ทำงานสมบูรณ์
-    // ════════════════════════════════════════
+    // ════════════════════════════════════════════════════
+    // NOTIFICATIONS — ระบบแจ้งเตือนสมบูรณ์
+    // ════════════════════════════════════════════════════
+    var _notifPollTimer = null;
+
+    // โหลดและ render notification จาก GAS
     function loadNotifications(){
+      if (!S.user || !S.user.sessionId) return;
       google.script.run
         .withSuccessHandler(function(res){
-          var items=(res&&res.success)?(res.data||[]):[];
-          S.notifications=items;
+          var items = (res && res.success) ? (res.data || []) : [];
+          S.notifications = items;
           _renderNotifBadge(items);
-          _renderNotifList(items);
+          // render list เฉพาะถ้า panel เปิดอยู่
+          var modal = document.getElementById('modal-notif');
+          if (modal && modal.classList.contains('active')) {
+            _renderNotifList(items);
+          }
         })
         .withFailureHandler(function(e){
-          console.error('loadNotifications fail:',e.message);
-          S.notifications=[];
+          console.warn('[Notif] loadNotifications fail:', e && e.message);
         })
-        .getNotificationsForUser(S.user.sessionId, S.user.username, S.user.roles||[S.role]);
+        .getNotificationsForUser(S.user.sessionId, S.user.username, S.user.roles || [S.role]);
     }
 
+    // เริ่ม auto-poll ทุก 90 วินาทีหลัง login
+    function _startNotifPolling(){
+      if (_notifPollTimer) clearInterval(_notifPollTimer);
+      loadNotifications(); // โหลดครั้งแรกทันที
+      _notifPollTimer = setInterval(function(){
+        loadNotifications();
+      }, 90 * 1000);
+    }
+
+    // หยุด poll ตอน logout
+    function _stopNotifPolling(){
+      if (_notifPollTimer) { clearInterval(_notifPollTimer); _notifPollTimer = null; }
+    }
+
+    // แสดง badge จำนวนที่ยังไม่อ่าน
     function _renderNotifBadge(items){
-      var unread=items.filter(function(n){ return !n.is_read&&String(n.is_read)!=='true'&&n.is_read!==true; }).length;
-      var badge=document.getElementById('notif-badge');
-      if(badge){
-        if(unread>0){ badge.textContent=unread; badge.style.display='flex'; }
-        else badge.style.display='none';
+      var unread = items.filter(function(n){
+        var r = n.is_read;
+        return r !== true && String(r).toLowerCase() !== 'true' && String(r) !== '1';
+      }).length;
+      var badge = document.getElementById('notif-badge');
+      if (badge) {
+        if (unread > 0) {
+          badge.textContent = unread > 99 ? '99+' : String(unread);
+          badge.style.display = 'flex';
+        } else {
+          badge.style.display = 'none';
+        }
       }
     }
 
+    // render รายการ notification ใน panel
     function _renderNotifList(items){
-      var list=document.getElementById('notif-list'); if(!list) return;
-      if(!items.length){
-        list.innerHTML='<div class="empty-state" style="padding:40px 24px"><div class="empty-icon">🔕</div><p>ไม่มีการแจ้งเตือน</p></div>';
+      var list = document.getElementById('notif-list');
+      if (!list) return;
+      if (!items || !items.length) {
+        list.innerHTML = '<div class="empty-state" style="padding:40px 24px"><div class="empty-icon">🔕</div><p>ไม่มีการแจ้งเตือน</p></div>';
         return;
       }
-      list.innerHTML=items.map(function(n,idx){
-        var isRead=n.is_read===true||String(n.is_read)==='true'||String(n.is_read).toLowerCase()==='true';
-        return '<div class="notif-item" style="padding:12px 16px;border-bottom:1px solid var(--border)'+(isRead?';opacity:.7':'')+'" onclick="markNotifRead('+idx+')">'+
-          '<div class="notif-dot '+(isRead?'read':'unread')+'" style="flex-shrink:0;margin-top:4px"></div>'+
-          '<div style="flex:1">'+
-            '<div style="font-size:14px;font-weight:'+(isRead?'400':'600')+'">'+esc(n.message||'')+'</div>'+
-            '<div style="font-size:11px;color:var(--text-light);margin-top:3px">'+formatDate(n.timestamp)+(n.project_code?' | <strong>'+esc(n.project_code)+'</strong>':'')+'</div>'+
-          '</div>'+
-        '</div>';
+      // action type → icon map
+      var ACTION_ICON = {
+        'SUBMIT':           '📥', 'DOC_VERIFY_PASS':    '✅', 'DOC_VERIFY_FAIL': '⚠️',
+        'ASSIGN':           '📋', 'COMMITTEE_RESPONSE': '🔔', 'EVAL_SUBMIT':     '📝',
+        'EVAL_COMPLETE':    '✅', 'RESULT':             '📋', 'REVISION_SUBMIT': '✏️',
+        'REPORT_SUBMIT':    '📊', 'REPORT_REVIEW':      '📋', 'MEETING_MINUTES': '📄',
+        'MEETING_REVIEW':   '📋', 'MEETING_CREATE':     '📅', 'REGISTER':        '👤',
+        'APPROVE_USER':     '✅', 'SET_TYPE':           '🏷',
+      };
+      list.innerHTML = items.map(function(n, idx){
+        var isRead = n.is_read === true || String(n.is_read).toLowerCase() === 'true' || String(n.is_read) === '1';
+        var icon   = ACTION_ICON[n.action_type] || '🔔';
+        var pcHtml = n.project_code
+          ? '<span style="background:var(--green-pale);color:var(--green-dark);border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:4px">'+esc(n.project_code)+'</span>'
+          : '';
+        return '<div class="notif-item" style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer'+(isRead?';opacity:.65':'')+'" onclick="markNotifRead('+idx+')">'
+          + '<div style="font-size:18px;flex-shrink:0;line-height:1;margin-top:1px">'+icon+'</div>'
+          + '<div class="notif-dot '+(isRead?'read':'unread')+'" style="flex-shrink:0;margin-top:6px"></div>'
+          + '<div style="flex:1;min-width:0">'
+            + '<div style="font-size:13px;font-weight:'+(isRead?'400':'600')+';white-space:normal;word-break:break-word">'+esc(n.message||'')+'</div>'
+            + '<div style="font-size:11px;color:var(--text-light);margin-top:3px;display:flex;flex-wrap:wrap;gap:4px;align-items:center">'
+              + formatDate(n.timestamp) + pcHtml
+            + '</div>'
+          + '</div>'
+          + '</div>';
       }).join('');
     }
 
+    // เปิด panel → โหลดข้อมูลใหม่ + render list ทันที จาก cache แล้ว refresh หลัง GAS ตอบ
     function openNotifPanel(){
-      // รีโหลดก่อนแสดง
-      loadNotifications();
+      // render จาก cache ก่อน (เปิด modal ทันที)
       openModal('modal-notif');
+      _renderNotifList(S.notifications || []);
+      // แล้วโหลดข้อมูลใหม่จาก GAS (จะ render อีกรอบเมื่อได้รับ)
+      loadNotifications();
     }
 
+    // อ่าน notification รายการเดียว → บันทึกลง GAS + update UI
     function markNotifRead(idx){
-      if(!S.notifications[idx]) return;
-      S.notifications[idx].is_read=true;
+      var n = S.notifications && S.notifications[idx];
+      if (!n) return;
+      if (n.is_read === true || String(n.is_read).toLowerCase() === 'true') {
+        // ถ้าอ่านแล้ว — เปิดหน้าโครงการถ้ามี project_code
+        if (n.project_code) _handleNotifAction(n);
+        return;
+      }
+      // อัพเดต local state ทันที
+      n.is_read = true;
       _renderNotifBadge(S.notifications);
       _renderNotifList(S.notifications);
+
+      // บันทึกลง GAS (row id จาก n.id)
+      if (n.id) {
+        google.script.run
+          .withSuccessHandler(function(){})
+          .withFailureHandler(function(e){ console.warn('[Notif] markRead fail:', e && e.message); })
+          .markNotificationsRead([parseInt(n.id, 10)]);
+      }
+
+      // navigate ไปหน้าที่เกี่ยวข้อง
+      if (n.project_code) _handleNotifAction(n);
     }
 
+    // อ่านทั้งหมด → บันทึกลง GAS
     function markAllNotifRead(){
-      S.notifications.forEach(function(n){ n.is_read=true; });
+      if (!S.notifications || !S.notifications.length) return;
+      // อัพเดต local state ทันที
+      S.notifications.forEach(function(n){ n.is_read = true; });
       _renderNotifBadge(S.notifications);
       _renderNotifList(S.notifications);
-      showToast('อ่านทั้งหมดแล้ว');
+      showToast('อ่านทั้งหมดแล้ว ✅');
+
+      // บันทึกลง GAS
+      if (S.user && S.user.sessionId) {
+        google.script.run
+          .withSuccessHandler(function(res){
+            if (res && res.success) console.log('[Notif] markAll: updated', res.updated, 'rows');
+          })
+          .withFailureHandler(function(e){ console.warn('[Notif] markAllRead fail:', e && e.message); })
+          .markAllNotificationsRead(S.user.sessionId, S.user.username);
+      }
+    }
+
+    // navigate ไปยังหน้าที่เกี่ยวข้องกับ notification
+    function _handleNotifAction(n) {
+      closeModal('modal-notif');
+      var action = n.action_type || '';
+      var role   = S.role || '';
+      // staff/admin → จัดการโครงการ
+      if (action === 'SUBMIT' || action === 'DOC_VERIFY_PASS' || action === 'DOC_VERIFY_FAIL'
+          || action === 'EVAL_COMPLETE' || action === 'REVISION_SUBMIT' || action === 'REPORT_SUBMIT'
+          || action === 'SET_TYPE') {
+        if (role === 'admin' || role === 'staff') showPage('manage');
+      }
+      // committee → ตอบรับ/ประเมิน
+      else if (action === 'ASSIGN' || action === 'REVISION_SUBMIT') {
+        if (role === 'committee') showPage('accept');
+      }
+      else if (action === 'EVAL_SUBMIT' || action === 'COMMITTEE_RESPONSE') {
+        if (role === 'staff' || role === 'admin') showPage('manage');
+      }
+      // researcher → โครงการของฉัน
+      else if (action === 'DOC_VERIFY_PASS' || action === 'DOC_VERIFY_FAIL' || action === 'RESULT') {
+        if (role === 'researcher') showPage('my-projects');
+      }
+      // admin → จัดการผู้ใช้
+      else if (action === 'REGISTER' || action === 'APPROVE_USER') {
+        if (role === 'admin') showPage('users');
+      }
+      // meeting
+      else if (action === 'MEETING_REVIEW' || action === 'MEETING_MINUTES' || action === 'MEETING_CREATE') {
+        showPage('meetings');
+      }
     }
 
     // ============================================================
@@ -7727,6 +7843,8 @@ async function uploadToGoogleDrive(file) {
   showPage('dashboard');
   loadAllData();
   showToast('ยินดีต้อนรับ ' + S.user.name);
+  // เริ่ม auto-poll notifications ทุก 90 วินาที
+  _startNotifPolling();
   
   // [SEC-FIX] เก็บเฉพาะ sessionId + role ใน sessionStorage — ไม่มี PII
   try {
@@ -7799,6 +7917,8 @@ async function uploadToGoogleDrive(file) {
       } catch(e) {}
       S.user = null;
       S.role = null;
+      // หยุด notification polling
+      if (typeof _stopNotifPolling === 'function') _stopNotifPolling();
       // [SEC-FIX] clear sessionStorage (ไม่ใช้ localStorage อีกต่อไป)
       try { sessionStorage.clear(); } catch(e) {}
       // ล้าง localStorage เก่าถ้ายังหลงเหลืออยู่
