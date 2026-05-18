@@ -7,186 +7,380 @@
 <title>คณะกรรมการจริยธรรมการวิจัยในมนุษย์ — โรงพยาบาลสันทราย</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --n900:#0b1f35;--n800:#112844;--n700:#173454;--n600:#1e4068;--n400:#3d6491;
-  --n100:#dce7f3;--n50:#eef3f9;
-  --g700:#7c5c18;--g600:#9a7220;--g500:#b58a2a;--g400:#c9a037;
-  --g100:#f0e3c0;--g50:#f8f2e1;
-  --gr800:#164d34;--gr700:#1b5e3e;--gr100:#d6ede3;--gr50:#eaf4ee;
-  --r700:#7a1c1c;--r100:#f3d6d6;--r50:#faeaea;
-  --u900:#151e28;--u700:#344255;--u500:#5a6e85;--u400:#7a8fa8;
-  --u300:#a8b8cb;--u200:#d0dae6;--u100:#e8edf5;--u50:#f4f6fa;
-  --white:#fff;
-  --fs:clamp(14px,1.5vw,16px);
+/* ══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — Navy + Gold  (unified with index.html theme)
+══════════════════════════════════════════════════════════════ */
+:root {
+  --n900:#0b1f35; --n800:#112844; --n700:#173454; --n600:#1e4068;
+  --n400:#3d6491; --n100:#dce7f3; --n50:#eef3f9;
+  --g700:#7c5c18; --g600:#9a7220; --g500:#b58a2a; --g400:#c9a037;
+  --g100:#f0e3c0; --g50:#f8f2e1;
+  --gr800:#164d34; --gr700:#1b5e3e; --gr100:#d6ede3; --gr50:#eaf4ee;
+  --r700:#b91c1c; --r50:#fef2f2;
+  --u900:#151e28; --u700:#344255; --u500:#5a6e85;
+  --u300:#a8b8cb; --u200:#d0dae6; --u100:#e8edf5; --u50:#f4f6fa;
+  --white:#ffffff;
   --ff:'Sarabun','Helvetica Neue',Arial,sans-serif;
   --ffs:'Noto Serif Thai',Georgia,serif;
-  --ease-out:cubic-bezier(.22,1,.36,1);
-  --ease-std:cubic-bezier(.25,1,.5,1);
-  --sh-sm:0 2px 8px rgba(11,31,53,.1);
-  --sh-md:0 4px 18px rgba(11,31,53,.13);
-  --r:4px;--rlg:8px;
+  --ease:cubic-bezier(.22,1,.36,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:var(--fs);scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:var(--ff);color:var(--u700);background:var(--white);line-height:1.65;-webkit-font-smoothing:antialiased}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--ff);color:var(--u700);background:var(--white);
+     line-height:1.65;-webkit-font-smoothing:antialiased}
 img{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 ul{list-style:none}
 button{font-family:inherit;cursor:pointer}
 .container{max-width:1128px;margin-inline:auto;padding-inline:2rem}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 /* reveal */
-.rev{opacity:0;transform:translateY(14px);transition:opacity .55s var(--ease-out),transform .55s var(--ease-out)}
+.rev{opacity:0;transform:translateY(14px);
+  transition:opacity .55s var(--ease),transform .55s var(--ease)}
 .rev.in{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){.rev{opacity:1!important;transform:none!important;transition:none!important}*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media(prefers-reduced-motion:reduce){
+  .rev{opacity:1!important;transform:none!important;transition:none!important}
+}
 
-/* ribbon */
-.ribbon{height:4px;background:linear-gradient(90deg,var(--n800) 0% 33.33%,var(--g500) 33.33% 66.66%,var(--gr700) 66.66% 100%)}
+/* ── Ribbon ── */
+.ribbon{height:4px;background:linear-gradient(90deg,
+  var(--n800) 0% 33.33%,var(--g500) 33.33% 66.66%,var(--gr700) 66.66% 100%)}
 
-/* header */
-.hdr{position:sticky;top:0;z-index:300;background:var(--n900);border-bottom:1px solid rgba(255,255,255,.06);box-shadow:0 2px 16px rgba(0,0,0,.3)}
-.hdr-in{display:flex;align-items:center;gap:1.2rem;padding-block:11px;max-width:1128px;margin-inline:auto;padding-inline:2rem}
-.hdr-logo{height:48px;width:auto;object-fit:contain;flex-shrink:0;opacity:.96}
+/* ══════════════════════════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════════════════════ */
+.hdr{position:sticky;top:0;z-index:300;background:var(--n900);
+  border-bottom:2px solid var(--g500);box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.hdr-in{display:flex;align-items:center;gap:1.2rem;padding-block:11px;
+  max-width:1128px;margin-inline:auto;padding-inline:2rem}
+.hdr-logo{height:48px;width:auto;object-fit:contain;flex-shrink:0}
 .hdr-sep{width:1px;height:38px;background:rgba(255,255,255,.16);flex-shrink:0}
 .hdr-id{flex:1;min-width:0}
-.hdr-id h1{font-family:var(--ffs);font-size:.875rem;font-weight:600;color:#fff;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hdr-id p{font-size:.72rem;font-weight:400;color:rgba(255,255,255,.42);letter-spacing:.02em;margin-top:2px}
+.hdr-id h1{font-family:var(--ffs);font-size:.875rem;font-weight:600;color:#fff;
+  line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-id p{font-size:.72rem;color:rgba(255,255,255,.42);letter-spacing:.02em;margin-top:2px}
 .hdr-nav{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
 
-/* buttons */
-.btn{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--ff);font-size:.84rem;font-weight:600;padding:.5rem 1.1rem;border-radius:var(--r);border:1.5px solid transparent;transition:background .18s var(--ease-std),border-color .18s var(--ease-std),color .18s var(--ease-std),transform .18s var(--ease-std),box-shadow .18s var(--ease-std);white-space:nowrap;line-height:1}
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--ff);
+  font-size:.84rem;font-weight:600;padding:.5rem 1.1rem;border-radius:4px;
+  border:1.5px solid transparent;
+  transition:background .18s var(--ease),border-color .18s,color .18s,
+             transform .18s,box-shadow .18s;white-space:nowrap;line-height:1}
 .btn svg{flex-shrink:0}
-.btn-ghost{background:transparent;color:rgba(255,255,255,.72);border-color:rgba(255,255,255,.22)}
+.btn-ghost{background:transparent;color:rgba(255,255,255,.72);
+  border-color:rgba(255,255,255,.22)}
 .btn-ghost:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.4);color:#fff}
-.btn-ghost:active{transform:scale(.98)}
 .btn-gold{background:var(--g500);color:var(--n900);border-color:var(--g500)}
-.btn-gold:hover{background:var(--g400);border-color:var(--g400);transform:translateY(-1px);box-shadow:0 4px 14px rgba(181,138,42,.35)}
-.btn-gold:active{transform:none;box-shadow:none}
+.btn-gold:hover{background:var(--g400);border-color:var(--g400);
+  transform:translateY(-1px);box-shadow:0 4px 14px rgba(181,138,42,.35)}
 .btn-gold-lg{font-size:1rem;padding:.7rem 1.75rem}
-.btn-wht{background:transparent;color:rgba(255,255,255,.8);border-color:rgba(255,255,255,.28);font-weight:500;font-size:1rem;padding:.7rem 1.4rem}
+.btn-wht{background:transparent;color:rgba(255,255,255,.8);
+  border-color:rgba(255,255,255,.28);font-weight:500;font-size:1rem;padding:.7rem 1.4rem}
 .btn-wht:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.5);color:#fff}
-.btn-wht:active{transform:scale(.98)}
 
-/* hero */
+/* ══════════════════════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════════════════════ */
 .hero{background:var(--n900);position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0,transparent 95px,rgba(255,255,255,.018) 95px,rgba(255,255,255,.018) 96px);pointer-events:none}
-.hero::after{content:'';position:absolute;top:-80px;left:-60px;width:600px;height:600px;background:radial-gradient(ellipse at center,rgba(30,64,104,.7) 0%,transparent 70%);pointer-events:none}
-.hero-stripe{position:absolute;left:0;top:15%;bottom:15%;width:3px;background:linear-gradient(180deg,transparent,var(--g500) 30%,var(--g500) 70%,transparent);opacity:.65}
-.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:1fr 300px;gap:4rem;align-items:center;padding-block:76px 84px}
-
-.eyebrow{display:inline-flex;align-items:center;gap:.75rem;font-size:.65rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--g400);margin-bottom:1.2rem}
-.eyebrow::before,.eyebrow::after{content:'';display:block;height:1px;width:18px;background:var(--g500);opacity:.7}
-
-.hero-title{font-family:var(--ffs);font-size:clamp(1.5rem,3vw,2.25rem);font-weight:700;color:#fff;line-height:1.45;margin-bottom:1rem;letter-spacing:.005em}
+.hero::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,transparent 0,transparent 95px,
+    rgba(255,255,255,.018) 95px,rgba(255,255,255,.018) 96px);pointer-events:none}
+.hero::after{content:'';position:absolute;top:-80px;left:-60px;
+  width:600px;height:600px;
+  background:radial-gradient(ellipse at center,rgba(30,64,104,.7) 0%,transparent 70%);
+  pointer-events:none}
+.hero-stripe{position:absolute;left:0;top:15%;bottom:15%;width:3px;
+  background:linear-gradient(180deg,transparent,var(--g500) 30%,var(--g500) 70%,transparent);
+  opacity:.65}
+.hero-in{position:relative;z-index:1;display:grid;
+  grid-template-columns:1fr 300px;gap:4rem;align-items:center;
+  padding-block:72px 80px}
+.eyebrow{display:inline-flex;align-items:center;gap:.75rem;
+  font-size:.65rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--g400);margin-bottom:1.2rem}
+.eyebrow::before,.eyebrow::after{content:'';display:block;height:1px;
+  width:18px;background:var(--g500);opacity:.7}
+.hero-title{font-family:var(--ffs);font-size:clamp(1.5rem,3vw,2.25rem);
+  font-weight:700;color:#fff;line-height:1.45;margin-bottom:1rem}
 .hero-title mark{background:none;color:var(--g400)}
-.hero-desc{font-size:1rem;color:rgba(255,255,255,.52);line-height:1.9;max-width:54ch;margin-bottom:2.5rem}
+.hero-desc{font-size:1rem;color:rgba(255,255,255,.52);line-height:1.9;
+  max-width:54ch;margin-bottom:2.5rem}
 .hero-cta{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
-
 .hero-stats{display:flex;flex-direction:column;gap:1rem}
-.stat{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-left:2.5px solid var(--g500);border-radius:var(--r);padding:1.2rem 1.4rem;transition:background .2s}
+.stat{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);
+  border-left:2.5px solid var(--g500);border-radius:4px;
+  padding:1.2rem 1.4rem;transition:background .2s}
 .stat:hover{background:rgba(255,255,255,.08)}
-.stat-val{font-family:var(--ffs);font-size:1.4rem;font-weight:600;color:var(--g400);line-height:1;margin-bottom:.4rem}
+.stat-val{font-family:var(--ffs);font-size:1.4rem;font-weight:600;
+  color:var(--g400);line-height:1;margin-bottom:.4rem}
 .stat-lbl{font-size:.72rem;color:rgba(255,255,255,.45);line-height:1.55}
 
-/* sections */
+/* ══════════════════════════════════════════════════════════════
+   SECTIONS
+══════════════════════════════════════════════════════════════ */
 .sec{padding-block:5rem}
 .sec-alt{background:var(--u50)}
 .sec-gold{background:var(--g50);border-top:1.5px solid var(--g100);border-bottom:1.5px solid var(--g100)}
 .sec-head{margin-bottom:3rem}
-.sec-eye{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--g600);display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
+.sec-eye{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--g600);display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
 .sec-eye::after{content:'';height:1px;width:36px;background:var(--u200)}
-.sec-ttl{font-family:var(--ffs);font-size:1.5rem;font-weight:700;color:var(--n800);line-height:1.4}
-.sec-dsc{font-size:.875rem;color:var(--u500);margin-top:.75rem;line-height:1.8;max-width:60ch}
+.sec-ttl{font-family:var(--ffs);font-size:1.5rem;font-weight:700;
+  color:var(--n800);line-height:1.4}
+.sec-dsc{font-size:.875rem;color:var(--u500);margin-top:.75rem;
+  line-height:1.8;max-width:60ch}
 
-/* process */
-.proc{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative}
-.proc::before{content:'';position:absolute;top:26px;left:calc(10% + 4px);right:calc(10% + 4px);height:1px;background:repeating-linear-gradient(90deg,var(--u200) 0,var(--u200) 5px,transparent 5px,transparent 10px);z-index:0}
-.proc-step{display:flex;flex-direction:column;align-items:center;text-align:center;padding-inline:.75rem;position:relative;z-index:1}
-.proc-circ{width:52px;height:52px;border-radius:50%;background:var(--white);border:1.5px solid var(--u200);display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;color:var(--u400);transition:border-color .2s,box-shadow .2s,color .2s;box-shadow:var(--sh-sm)}
-.proc-circ.act{border-color:var(--g500);color:var(--g600);box-shadow:0 0 0 5px var(--g100)}
-.proc-ttl{font-size:.84rem;font-weight:700;color:var(--n700);margin-bottom:.5rem;line-height:1.4}
+/* ══════════════════════════════════════════════════════════════
+   CALENDAR SECTION
+══════════════════════════════════════════════════════════════ */
+.cal-layout{display:grid;grid-template-columns:1fr 320px;gap:2.5rem;align-items:start}
+
+/* Calendar widget */
+.cal-widget{background:var(--white);border:1px solid var(--u200);border-radius:8px;
+  box-shadow:0 2px 12px rgba(11,31,53,.08);overflow:hidden}
+
+.cal-nav{display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.25rem;background:var(--n900);border-bottom:2px solid var(--g500)}
+.cal-nav-title{font-family:var(--ffs);font-size:1rem;font-weight:600;color:#fff}
+.cal-nav-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  color:rgba(255,255,255,.8);border-radius:4px;width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:background .15s}
+.cal-nav-btn:hover{background:rgba(255,255,255,.16);color:#fff}
+
+.cal-grid{padding:.75rem}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);
+  margin-bottom:.25rem}
+.cal-weekday{text-align:center;font-size:.7rem;font-weight:700;
+  color:var(--u400);padding:.4rem 0;letter-spacing:.04em}
+.cal-weekday:first-child{color:var(--r700)}  /* อาทิตย์ */
+.cal-weekday:last-child{color:var(--n600)}   /* เสาร์ */
+
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  border-radius:4px;font-size:.8rem;font-weight:400;color:var(--u700);
+  cursor:default;position:relative;transition:background .15s}
+.cal-day.other-month{color:var(--u300)}
+.cal-day.today{background:var(--n100);color:var(--n800);font-weight:700}
+.cal-day.has-meeting{cursor:pointer}
+.cal-day.has-meeting::after{
+  content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
+  width:5px;height:5px;border-radius:50%;background:var(--g500)}
+.cal-day.has-meeting.fullboard::after{background:var(--r700)}
+.cal-day.has-meeting.expedited::after{background:var(--g500)}
+.cal-day.has-meeting.exempt::after{background:var(--gr700)}
+.cal-day.selected{background:var(--g500);color:var(--n900);font-weight:700}
+.cal-day.selected::after{background:var(--n900)!important}
+.cal-day.sun{color:var(--r700)}
+.cal-day.sat{color:var(--n600)}
+.cal-day.other-month.sun,.cal-day.other-month.sat{color:var(--u300)}
+
+/* Legend */
+.cal-legend{display:flex;gap:1rem;padding:.75rem 1.25rem;
+  border-top:1px solid var(--u100);background:var(--u50);flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:.4rem;
+  font-size:.7rem;color:var(--u500)}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* Meeting list sidebar */
+.meeting-list-box{background:var(--white);border:1px solid var(--u200);
+  border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(11,31,53,.07)}
+.mlb-header{background:var(--n900);padding:.9rem 1.25rem;
+  font-family:var(--ffs);font-size:.9rem;font-weight:600;color:#fff;
+  display:flex;align-items:center;gap:.6rem;border-bottom:2px solid var(--g500)}
+.mlb-body{max-height:380px;overflow-y:auto}
+.mlb-body::-webkit-scrollbar{width:4px}
+.mlb-body::-webkit-scrollbar-track{background:transparent}
+.mlb-body::-webkit-scrollbar-thumb{background:var(--u200);border-radius:2px}
+
+.meeting-item{padding:.9rem 1.1rem;border-bottom:1px solid var(--u100);
+  display:flex;gap:.85rem;align-items:flex-start;
+  transition:background .15s;cursor:pointer}
+.meeting-item:last-child{border-bottom:none}
+.meeting-item:hover{background:var(--u50)}
+.meeting-item.active{background:var(--g50);border-left:3px solid var(--g500)}
+
+.mi-date-badge{flex-shrink:0;width:44px;text-align:center;
+  background:var(--n800);border-radius:4px;padding:5px 3px;color:#fff}
+.mi-date-badge .day{font-family:var(--ffs);font-size:1.15rem;font-weight:600;line-height:1}
+.mi-date-badge .mon{font-size:.6rem;opacity:.6;margin-top:2px;letter-spacing:.03em}
+
+.mi-info{flex:1;min-width:0}
+.mi-title{font-size:.82rem;font-weight:600;color:var(--u900);
+  line-height:1.45;margin-bottom:.3rem;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.mi-meta{font-size:.7rem;color:var(--u400);display:flex;flex-wrap:wrap;gap:.3rem}
+.mi-type{display:inline-flex;font-size:.6rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;padding:1px 6px;border-radius:2px;white-space:nowrap}
+.mi-type.fullboard{background:var(--r50);color:var(--r700)}
+.mi-type.expedited{background:var(--g50);color:var(--g600)}
+.mi-type.exempt{background:var(--gr50);color:var(--gr800)}
+.mi-type.other{background:var(--u100);color:var(--u500)}
+
+.mlb-empty{padding:2.5rem 1rem;text-align:center;
+  color:var(--u400);font-size:.84rem}
+.mlb-loading{padding:1.5rem;text-align:center;color:var(--u400)}
+.mlb-loading span{display:inline-block;width:22px;height:22px;
+  border:2px solid var(--u200);border-top-color:var(--g500);
+  border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.5rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Selected day detail */
+.day-detail{padding:.75rem 1.1rem;background:var(--n900);
+  border-top:1.5px solid var(--g500)}
+.day-detail-title{font-size:.7rem;font-weight:700;color:var(--g400);
+  letter-spacing:.07em;text-transform:uppercase;margin-bottom:.5rem}
+.day-detail-empty{font-size:.78rem;color:rgba(255,255,255,.4)}
+.day-detail-item{font-size:.8rem;color:rgba(255,255,255,.8);
+  padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.day-detail-item:last-child{border-bottom:none}
+.day-detail-item strong{color:var(--g400)}
+
+/* ══════════════════════════════════════════════════════════════
+   PROCESS STEPS
+══════════════════════════════════════════════════════════════ */
+.proc{display:grid;grid-template-columns:repeat(5,1fr);position:relative}
+.proc::before{content:'';position:absolute;top:26px;
+  left:calc(10% + 4px);right:calc(10% + 4px);height:1px;
+  background:repeating-linear-gradient(90deg,var(--u200) 0,var(--u200) 5px,
+    transparent 5px,transparent 10px);z-index:0}
+.proc-step{display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding-inline:.75rem;position:relative;z-index:1}
+.proc-circ{width:52px;height:52px;border-radius:50%;background:var(--white);
+  border:1.5px solid var(--u200);display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.2rem;color:var(--u400);
+  transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 4px rgba(11,31,53,.07)}
+.proc-circ.act{border-color:var(--g500);color:var(--g600);
+  box-shadow:0 0 0 5px var(--g100)}
+.proc-ttl{font-size:.84rem;font-weight:700;color:var(--n700);
+  margin-bottom:.5rem;line-height:1.4}
 .proc-dsc{font-size:.72rem;color:var(--u500);line-height:1.65}
 
-/* type cards */
+/* ══════════════════════════════════════════════════════════════
+   TYPE CARDS
+══════════════════════════════════════════════════════════════ */
 .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
-.tc{background:var(--white);border:1px solid var(--u200);border-top-width:3px;border-radius:var(--rlg);padding:2rem 1.5rem;transition:box-shadow .22s var(--ease-std),transform .22s var(--ease-std)}
-.tc:hover{box-shadow:var(--sh-md);transform:translateY(-3px)}
+.tc{background:var(--white);border:1px solid var(--u200);border-top-width:3px;
+  border-radius:8px;padding:2rem 1.5rem;
+  transition:box-shadow .22s var(--ease),transform .22s var(--ease)}
+.tc:hover{box-shadow:0 4px 20px rgba(11,31,53,.12);transform:translateY(-3px)}
 .tc-blue{border-top-color:var(--n600)}
 .tc-amber{border-top-color:var(--g500)}
 .tc-red{border-top-color:var(--r700)}
-.tc-icon{width:40px;height:40px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem}
+.tc-icon{width:40px;height:40px;border-radius:4px;display:flex;
+  align-items:center;justify-content:center;margin-bottom:1.2rem}
 .tc-blue .tc-icon{background:var(--n50);color:var(--n600)}
 .tc-amber .tc-icon{background:var(--g50);color:var(--g600)}
 .tc-red .tc-icon{background:var(--r50);color:var(--r700)}
-.tc-tag{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-bottom:.75rem}
+.tc-tag{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-bottom:.75rem}
 .tc-blue .tc-tag{background:var(--n100);color:var(--n600)}
 .tc-amber .tc-tag{background:var(--g100);color:var(--g700)}
-.tc-red .tc-tag{background:var(--r100);color:var(--r700)}
-.tc h3{font-family:var(--ffs);font-size:1rem;font-weight:700;color:var(--n800);margin-bottom:.75rem;line-height:1.45}
+.tc-red .tc-tag{background:var(--r50);color:var(--r700)}
+.tc h3{font-family:var(--ffs);font-size:1rem;font-weight:700;
+  color:var(--n800);margin-bottom:.75rem;line-height:1.45}
 .tc p{font-size:.84rem;color:var(--u500);line-height:1.8;margin-bottom:1rem}
-.tc ul li{font-size:.78rem;color:var(--u700);padding-block:5px;border-bottom:1px solid var(--u100);display:flex;gap:.5rem;align-items:flex-start;line-height:1.5}
+.tc ul li{font-size:.78rem;color:var(--u700);padding-block:5px;
+  border-bottom:1px solid var(--u100);display:flex;gap:.5rem;
+  align-items:flex-start;line-height:1.5}
 .tc ul li:last-child{border-bottom:none}
-.tc ul li::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--u300);flex-shrink:0;margin-top:7px}
+.tc ul li::before{content:'';width:3px;height:3px;border-radius:50%;
+  background:var(--u300);flex-shrink:0;margin-top:7px}
 
-/* docs */
-.docs4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.5rem}
-.dc{background:var(--white);border:1px solid rgba(181,138,42,.2);border-radius:var(--r);padding:1.4rem 1.2rem}
-.dc-seq{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g600);margin-bottom:.5rem}
-.dc h4{font-size:.84rem;font-weight:700;color:var(--n800);margin-bottom:.5rem;line-height:1.45}
-.dc p{font-size:.72rem;color:var(--u500);line-height:1.72}
-
-/* news layout */
+/* ══════════════════════════════════════════════════════════════
+   NEWS + QUICK BOX
+══════════════════════════════════════════════════════════════ */
 .news-lay{display:grid;grid-template-columns:1fr 320px;gap:4rem;align-items:start}
-.news-item{display:flex;gap:1.2rem;padding-block:1.2rem;border-bottom:1px solid var(--u100);align-items:flex-start}
+.news-item{display:flex;gap:1.2rem;padding-block:1.2rem;
+  border-bottom:1px solid var(--u100);align-items:flex-start}
 .news-item:first-child{border-top:1px solid var(--u100)}
-.news-date{flex-shrink:0;width:46px;background:var(--n800);border-radius:var(--r);padding:6px 4px;text-align:center}
-.news-date .d{font-family:var(--ffs);font-size:1.25rem;font-weight:600;color:#fff;line-height:1}
-.news-date .m{font-size:.62rem;color:rgba(255,255,255,.55);margin-top:3px;letter-spacing:.03em}
-.ntag{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:2px;margin-bottom:.25rem}
+.news-date{flex-shrink:0;width:46px;background:var(--n800);
+  border-radius:4px;padding:6px 4px;text-align:center}
+.news-date .d{font-family:var(--ffs);font-size:1.25rem;font-weight:600;
+  color:#fff;line-height:1}
+.news-date .m{font-size:.62rem;color:rgba(255,255,255,.55);margin-top:3px}
+.ntag{display:inline-block;font-size:.62rem;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;
+  border-radius:2px;margin-bottom:.25rem}
 .ntag-new{background:var(--gr100);color:var(--gr800)}
 .ntag-imp{background:var(--g100);color:var(--g700)}
 .ntag-inf{background:var(--n100);color:var(--n600)}
-.ntit{font-size:.84rem;font-weight:600;color:var(--u900);line-height:1.5;margin-bottom:3px;transition:color .15s}
+.ntit{font-size:.84rem;font-weight:600;color:var(--u900);
+  line-height:1.5;margin-bottom:3px;transition:color .15s}
 .news-item:hover .ntit{color:var(--n600)}
 .ndsc{font-size:.72rem;color:var(--u400);line-height:1.7}
-.news-more{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.25rem;font-size:.84rem;font-weight:600;color:var(--n700);border:none;border-bottom:1.5px solid rgba(23,52,84,.35);padding-bottom:1px;background:none;font-family:inherit;cursor:pointer;transition:color .15s,border-color .15s}
+.news-more{display:inline-flex;align-items:center;gap:.5rem;
+  margin-top:1.25rem;font-size:.84rem;font-weight:600;color:var(--n700);
+  border:none;border-bottom:1.5px solid rgba(23,52,84,.35);padding-bottom:1px;
+  background:none;font-family:inherit;cursor:pointer;
+  transition:color .15s,border-color .15s}
 .news-more:hover{color:var(--g600);border-color:var(--g400)}
 
-/* quick box */
-.qbox{background:var(--n900);border-radius:var(--rlg);padding:2rem;position:sticky;top:80px}
-.qbox-ttl{font-family:var(--ffs);font-size:1rem;font-weight:600;color:var(--g400);display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.08)}
-.qa{display:flex;align-items:center;gap:.75rem;width:100%;padding:.7rem 1rem;border-radius:var(--r);border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.055);color:rgba(255,255,255,.78);font-family:var(--ff);font-size:.84rem;font-weight:500;text-align:left;margin-bottom:.5rem;transition:background .18s,border-color .18s,color .18s;cursor:pointer}
+/* Quick Box */
+.qbox{background:var(--n900);border-radius:8px;padding:2rem;
+  position:sticky;top:80px}
+.qbox-ttl{font-family:var(--ffs);font-size:1rem;font-weight:600;color:var(--g400);
+  display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;
+  padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.qa{display:flex;align-items:center;gap:.75rem;width:100%;
+  padding:.7rem 1rem;border-radius:4px;border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.055);color:rgba(255,255,255,.78);
+  font-family:var(--ff);font-size:.84rem;font-weight:500;text-align:left;
+  margin-bottom:.5rem;transition:background .18s,border-color .18s,color .18s;cursor:pointer}
 .qa:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);color:#fff}
-.qa:active{transform:scale(.99)}
 .qa-prim{background:var(--g500);border-color:var(--g500);color:var(--n900);font-weight:700}
 .qa-prim:hover{background:var(--g400);border-color:var(--g400);color:var(--n900)}
-.qa-ico{width:32px;height:32px;border-radius:var(--r);background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:rgba(255,255,255,.6)}
+.qa-ico{width:32px;height:32px;border-radius:4px;background:rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  color:rgba(255,255,255,.6)}
 .qa-prim .qa-ico{background:rgba(11,31,53,.18);color:var(--n900)}
 .qa-lbl{line-height:1.1}
 .qa-sub{display:block;font-size:.68rem;font-weight:400;opacity:.58;margin-top:2px}
-.qc{margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.07);font-size:.72rem;line-height:1.85;color:rgba(255,255,255,.38)}
+.qc{margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.07);
+  font-size:.72rem;line-height:1.85;color:rgba(255,255,255,.38)}
 .qc strong{color:rgba(255,255,255,.62)}
 .qc a{color:var(--g400)}
-.qc a:hover{color:var(--g300,#d9b958)}
 
-/* footer */
+/* ══════════════════════════════════════════════════════════════
+   DOC CARDS
+══════════════════════════════════════════════════════════════ */
+.docs4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.5rem}
+.dc{background:var(--white);border:1px solid rgba(181,138,42,.2);border-radius:4px;padding:1.4rem 1.2rem}
+.dc-seq{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g600);margin-bottom:.5rem}
+.dc h4{font-size:.84rem;font-weight:700;color:var(--n800);margin-bottom:.5rem;line-height:1.45}
+.dc p{font-size:.72rem;color:var(--u500);line-height:1.72}
+
+/* ══════════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════════ */
 .ftr{background:var(--n900);border-top:2px solid var(--g500);padding-block:3rem 2rem}
-.ftr-g{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:3rem;padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:1.5rem}
-.fcol h4{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);margin-bottom:1rem}
+.ftr-g{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:3rem;
+  padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:1.5rem}
+.fcol h4{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g400);margin-bottom:1rem}
 .fcol p,.fcol a{font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.9;display:block;transition:color .15s}
 .fcol a:hover{color:var(--g400)}
-.fbot{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;color:rgba(255,255,255,.25);flex-wrap:wrap;gap:.75rem}
-.pdpa{display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:4px 12px;font-size:.68rem;color:rgba(255,255,255,.35)}
+.fbot{display:flex;justify-content:space-between;align-items:center;
+  font-size:.72rem;color:rgba(255,255,255,.25);flex-wrap:wrap;gap:.75rem}
+.pdpa{display:inline-flex;align-items:center;gap:.5rem;
+  border:1px solid rgba(255,255,255,.1);border-radius:20px;
+  padding:4px 12px;font-size:.68rem;color:rgba(255,255,255,.35)}
 
-/* responsive */
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════════ */
 @media(max-width:960px){
   .hero-in{grid-template-columns:1fr;gap:2.5rem;padding-block:48px 56px}
   .hero-stats{flex-direction:row;flex-wrap:wrap}
   .stat{flex:1;min-width:140px}
   .hero-title{font-size:1.65rem}
+  .cal-layout{grid-template-columns:1fr}
   .proc{grid-template-columns:1fr;gap:1.5rem}
   .proc::before{display:none}
   .proc-step{flex-direction:row;text-align:left;gap:1rem}
@@ -205,7 +399,6 @@ button{font-family:inherit;cursor:pointer}
   .hero-title{font-size:1.35rem}
   .sec{padding-block:3rem}
   .hero-in{padding-block:40px 48px}
-  .hdr-in{padding-inline:1rem}
 }
 </style>
 </head>
@@ -213,6 +406,9 @@ button{font-family:inherit;cursor:pointer}
 
 <div class="ribbon" aria-hidden="true"></div>
 
+<!-- ══════════════════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════════════════ -->
 <header class="hdr">
   <div class="hdr-in">
     <img class="hdr-logo"
@@ -237,6 +433,9 @@ button{font-family:inherit;cursor:pointer}
   </div>
 </header>
 
+<!-- ══════════════════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════════════════ -->
 <section class="hero" aria-labelledby="hero-h">
   <div class="hero-stripe" aria-hidden="true"></div>
   <div class="container">
@@ -248,7 +447,7 @@ button{font-family:inherit;cursor:pointer}
         </h1>
         <p class="hero-desc">
           โรงพยาบาลสันทราย เปิดให้บริการยื่นเอกสาร ติดตามสถานะ และรับผลการพิจารณาผ่านระบบออนไลน์
-          ดำเนินการตามมาตรฐาน ICH-GCP และแนวทางของสำนักงานคณะกรรมการวิจัยแห่งชาติ (วช.)
+          ดำเนินการตามมาตรฐาน ICH-GCP และแนวทางของ วช.
         </p>
         <div class="hero-cta">
           <button class="btn btn-gold btn-gold-lg" onclick="SITE.goLogin()">
@@ -259,9 +458,9 @@ button{font-family:inherit;cursor:pointer}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
             ลงทะเบียนครั้งแรก
           </button>
-          <a class="btn btn-wht" href="#process">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            ขั้นตอนการยื่น
+          <a class="btn btn-wht" href="#calendar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            ปฏิทินการประชุม
           </a>
         </div>
       </div>
@@ -283,40 +482,119 @@ button{font-family:inherit;cursor:pointer}
   </div>
 </section>
 
-<section class="sec" id="process" aria-labelledby="proc-h">
+<!-- ══════════════════════════════════════════════════════════════
+     CALENDAR SECTION
+══════════════════════════════════════════════════════════════ -->
+<section class="sec" id="calendar" aria-labelledby="cal-h">
+  <div class="container">
+    <div class="sec-head rev">
+      <div class="sec-eye">ปฏิทินการประชุม</div>
+      <h2 class="sec-ttl" id="cal-h">กำหนดการประชุมคณะกรรมการจริยธรรม</h2>
+      <p class="sec-dsc">ตรวจสอบวันประชุมเพื่อวางแผนการยื่นเอกสาร — ควรยื่นล่วงหน้าอย่างน้อย 15 วันทำการ</p>
+    </div>
+
+    <div class="cal-layout rev">
+      <!-- Calendar widget -->
+      <div>
+        <div class="cal-widget" role="application" aria-label="ปฏิทินการประชุม">
+          <!-- Nav -->
+          <div class="cal-nav">
+            <button class="cal-nav-btn" id="cal-prev" aria-label="เดือนก่อนหน้า">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="cal-nav-title" id="cal-title">โหลดปฏิทิน...</div>
+            <button class="cal-nav-btn" id="cal-next" aria-label="เดือนถัดไป">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+          <!-- Days -->
+          <div class="cal-grid">
+            <div class="cal-weekdays" aria-hidden="true">
+              <div class="cal-weekday">อา</div><div class="cal-weekday">จ</div>
+              <div class="cal-weekday">อ</div><div class="cal-weekday">พ</div>
+              <div class="cal-weekday">พฤ</div><div class="cal-weekday">ศ</div>
+              <div class="cal-weekday">ส</div>
+            </div>
+            <div class="cal-days" id="cal-days" role="grid" aria-label="วันในเดือน"></div>
+          </div>
+          <!-- Legend -->
+          <div class="cal-legend" aria-label="คำอธิบายสี">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--r700)"></div>Full Board
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--g500)"></div>Expedited
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--gr700)"></div>Exempt
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--n400)"></div>ประชุมทั่วไป
+            </div>
+          </div>
+          <!-- Selected day detail -->
+          <div class="day-detail" id="day-detail" style="display:none">
+            <div class="day-detail-title" id="day-detail-date"></div>
+            <div id="day-detail-items"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meeting list sidebar -->
+      <div>
+        <div class="meeting-list-box">
+          <div class="mlb-header">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            การประชุมที่กำลังจะมาถึง
+          </div>
+          <div class="mlb-body" id="meeting-list-body">
+            <div class="mlb-loading">
+              <span></span>กำลังโหลดข้อมูล...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PROCESS
+══════════════════════════════════════════════════════════════ -->
+<section class="sec sec-alt" id="process" aria-labelledby="proc-h">
   <div class="container">
     <div class="sec-head rev">
       <div class="sec-eye">ขั้นตอน</div>
       <h2 class="sec-ttl" id="proc-h">ขั้นตอนการยื่นขอรับการพิจารณาจริยธรรมการวิจัย</h2>
-      <p class="sec-dsc">กระบวนการพิจารณาดำเนินการตามมาตรฐานสากล ICH-GCP และแนวทางของสำนักงานคณะกรรมการวิจัยแห่งชาติ (วช.)</p>
+      <p class="sec-dsc">กระบวนการพิจารณาดำเนินการตามมาตรฐานสากล ICH-GCP และแนวทางของ วช.</p>
     </div>
     <div class="proc" role="list">
       <div class="proc-step rev" role="listitem" style="transition-delay:.05s">
-        <div class="proc-circ act" aria-hidden="true">
+        <div class="proc-circ act">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </div>
         <div><div class="proc-ttl">ลงทะเบียน / เข้าสู่ระบบ</div><div class="proc-dsc">สมัครบัญชีผู้ใช้ รอการอนุมัติจากเจ้าหน้าที่ก่อนใช้งาน</div></div>
       </div>
       <div class="proc-step rev" role="listitem" style="transition-delay:.13s">
-        <div class="proc-circ" aria-hidden="true">
+        <div class="proc-circ">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         </div>
         <div><div class="proc-ttl">กรอกข้อมูลและแนบเอกสาร</div><div class="proc-dsc">กรอกรายละเอียดโครงการและอัพโหลดเอกสารประกอบครบถ้วน</div></div>
       </div>
       <div class="proc-step rev" role="listitem" style="transition-delay:.21s">
-        <div class="proc-circ" aria-hidden="true">
+        <div class="proc-circ">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         </div>
         <div><div class="proc-ttl">เจ้าหน้าที่ตรวจสอบ</div><div class="proc-dsc">ตรวจความครบถ้วนก่อนนำส่งให้คณะกรรมการพิจารณา</div></div>
       </div>
       <div class="proc-step rev" role="listitem" style="transition-delay:.29s">
-        <div class="proc-circ" aria-hidden="true">
+        <div class="proc-circ">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
         <div><div class="proc-ttl">คณะกรรมการพิจารณา</div><div class="proc-dsc">กรรมการประเมินและลงมติตามประเภทการพิจารณาที่กำหนด</div></div>
       </div>
       <div class="proc-step rev" role="listitem" style="transition-delay:.37s">
-        <div class="proc-circ" aria-hidden="true">
+        <div class="proc-circ">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
         <div><div class="proc-ttl">รับผลการพิจารณา</div><div class="proc-dsc">รับผลผ่านระบบและ Email พร้อมเอกสารรับรองอย่างเป็นทางการ</div></div>
@@ -325,55 +603,64 @@ button{font-family:inherit;cursor:pointer}
   </div>
 </section>
 
-<section class="sec sec-alt" aria-labelledby="type-h">
+<!-- ══════════════════════════════════════════════════════════════
+     REVIEW TYPES
+══════════════════════════════════════════════════════════════ -->
+<section class="sec" aria-labelledby="type-h">
   <div class="container">
     <div class="sec-head rev">
       <div class="sec-eye">ประเภทการพิจารณา</div>
       <h2 class="sec-ttl" id="type-h">ประเภทการพิจารณาจริยธรรมการวิจัย</h2>
-      <p class="sec-dsc">คณะกรรมการดำเนินการพิจารณาใน 3 ระดับ ตามระดับความเสี่ยงและลักษณะของโครงการวิจัย</p>
+      <p class="sec-dsc">คณะกรรมการดำเนินการพิจารณาใน 3 ระดับ ตามระดับความเสี่ยงของโครงการวิจัย</p>
     </div>
     <div class="cards3">
       <article class="tc tc-blue rev" style="transition-delay:.06s">
-        <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <span class="tc-tag">Exempt Review</span>
         <h3>การพิจารณาแบบยกเว้น</h3>
-        <p>โครงการที่มีความเสี่ยงต่ำมาก ใช้ข้อมูลทุติยภูมิหรือข้อมูลที่ไม่ระบุตัวตน ไม่เกี่ยวข้องกับกลุ่มเปราะบาง</p>
+        <p>โครงการที่มีความเสี่ยงต่ำมาก ใช้ข้อมูลทุติยภูมิหรือข้อมูลที่ไม่ระบุตัวตน</p>
         <ul><li>การวิจัยเชิงสังเกตที่ไม่รุกราน</li><li>การวิเคราะห์ข้อมูลย้อนหลัง</li><li>การศึกษาจากเอกสารทางการแพทย์</li></ul>
       </article>
       <article class="tc tc-amber rev" style="transition-delay:.14s">
-        <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
         <span class="tc-tag">Expedited Review</span>
         <h3>การพิจารณาแบบเร่งด่วน</h3>
-        <p>โครงการที่มีความเสี่ยงต่ำกว่าระดับขั้นต่ำ พิจารณาโดยประธานหรือกรรมการที่ได้รับมอบหมาย</p>
+        <p>โครงการที่มีความเสี่ยงต่ำ พิจารณาโดยประธานหรือกรรมการที่ได้รับมอบหมาย</p>
         <ul><li>การเก็บตัวอย่างเลือดปริมาณน้อย</li><li>การสำรวจและสัมภาษณ์ที่ไม่กระทบ</li><li>การวิจัยด้านพฤติกรรมศาสตร์</li></ul>
       </article>
       <article class="tc tc-red rev" style="transition-delay:.22s">
-        <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
         <span class="tc-tag">Full Board Review</span>
         <h3>การพิจารณาแบบเต็มรูปแบบ</h3>
-        <p>โครงการที่มีความเสี่ยงสูง เกี่ยวข้องกับกลุ่มเปราะบาง หรือมีขั้นตอนที่อาจส่งผลต่อผู้เข้าร่วม</p>
+        <p>โครงการที่มีความเสี่ยงสูง เกี่ยวข้องกับกลุ่มเปราะบาง หรือการทดลองทางคลินิก</p>
         <ul><li>การทดลองทางคลินิก (Clinical Trial)</li><li>การวิจัยในกลุ่มเด็กและผู้ด้อยโอกาส</li><li>การวิจัยเกี่ยวกับยาและเครื่องมือแพทย์</li></ul>
       </article>
     </div>
   </div>
 </section>
 
+<!-- ══════════════════════════════════════════════════════════════
+     DOCS
+══════════════════════════════════════════════════════════════ -->
 <section class="sec sec-gold" aria-labelledby="docs-h">
   <div class="container">
     <div class="sec-head rev">
       <div class="sec-eye" style="color:var(--g600)">เตรียมเอกสาร</div>
       <h2 class="sec-ttl" id="docs-h">เอกสารที่ต้องเตรียมก่อนยื่น</h2>
-      <p class="sec-dsc">กรุณาเตรียมเอกสารให้ครบถ้วนก่อนเริ่มกระบวนการ เพื่อลดระยะเวลาการตรวจสอบและเพิ่มความรวดเร็วในการพิจารณา</p>
+      <p class="sec-dsc">กรุณาเตรียมเอกสารให้ครบถ้วนก่อนเริ่มกระบวนการ เพื่อลดระยะเวลาการตรวจสอบ</p>
     </div>
     <div class="docs4">
-      <div class="dc rev" style="transition-delay:.05s"><div class="dc-seq">เอกสาร 01</div><h4>โครงร่างการวิจัย (Research Protocol)</h4><p>ฉบับล่าสุด ระบุวันที่และหมายเลขเวอร์ชัน รูปแบบ PDF พร้อมลายเซ็นผู้วิจัยหลัก</p></div>
-      <div class="dc rev" style="transition-delay:.12s"><div class="dc-seq">เอกสาร 02</div><h4>หนังสือชี้แจงและยินยอม (ICF)</h4><p>เอกสารอธิบายโครงการสำหรับผู้เข้าร่วม ภาษาที่เข้าใจง่าย ตรวจสอบตามแบบฟอร์ม EC</p></div>
-      <div class="dc rev" style="transition-delay:.19s"><div class="dc-seq">เอกสาร 03</div><h4>ประวัติและคุณสมบัติผู้วิจัย (CV)</h4><p>CV ผู้วิจัยหลักและผู้ร่วมวิจัยทุกคน พร้อมใบรับรองการอบรมจริยธรรมการวิจัย</p></div>
-      <div class="dc rev" style="transition-delay:.26s"><div class="dc-seq">เอกสาร 04</div><h4>แบบฟอร์ม EC สันทราย (EC-SS-001)</h4><p>แบบฟอร์มยื่นขอของโรงพยาบาลสันทราย กรอกข้อมูลครบทุกช่อง ดาวน์โหลดจากระบบ</p></div>
+      <div class="dc rev" style="transition-delay:.05s"><div class="dc-seq">เอกสาร 01</div><h4>โครงร่างการวิจัย (Research Protocol)</h4><p>ฉบับล่าสุด ระบุวันที่และเวอร์ชัน PDF พร้อมลายเซ็นผู้วิจัยหลัก</p></div>
+      <div class="dc rev" style="transition-delay:.12s"><div class="dc-seq">เอกสาร 02</div><h4>หนังสือชี้แจงและยินยอม (ICF)</h4><p>เอกสารอธิบายโครงการสำหรับผู้เข้าร่วม ภาษาที่เข้าใจง่าย</p></div>
+      <div class="dc rev" style="transition-delay:.19s"><div class="dc-seq">เอกสาร 03</div><h4>ประวัติและคุณสมบัติผู้วิจัย (CV)</h4><p>CV ผู้วิจัยหลักและผู้ร่วมวิจัยทุกคน พร้อมใบรับรองการอบรม</p></div>
+      <div class="dc rev" style="transition-delay:.26s"><div class="dc-seq">เอกสาร 04</div><h4>แบบฟอร์ม EC สันทราย (EC-SS-001)</h4><p>แบบฟอร์มยื่นขอของโรงพยาบาลสันทราย กรอกข้อมูลครบทุกช่อง</p></div>
     </div>
   </div>
 </section>
 
+<!-- ══════════════════════════════════════════════════════════════
+     NEWS + QUICK ACTIONS
+══════════════════════════════════════════════════════════════ -->
 <section class="sec" id="news" aria-labelledby="news-h">
   <div class="container">
     <div class="news-lay">
@@ -385,36 +672,36 @@ button{font-family:inherit;cursor:pointer}
         <div id="nlist" role="feed" aria-label="รายการประกาศ"></div>
         <button class="news-more" id="nbtn" style="display:none" aria-expanded="false">
           ดูประกาศทั้งหมด
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </button>
       </div>
       <aside aria-label="การดำเนินการด่วน">
         <div class="qbox">
           <div class="qbox-ttl">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
             การดำเนินการด่วน
           </div>
           <button class="qa qa-prim" onclick="SITE.goLogin()">
-            <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg></div>
+            <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg></div>
             <span class="qa-lbl">เข้าสู่ระบบ<span class="qa-sub">สำหรับผู้มีบัญชีอยู่แล้ว</span></span>
           </button>
           <button class="qa" onclick="SITE.goRegister()">
-            <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
+            <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
             <span class="qa-lbl">ลงทะเบียนผู้ใช้ใหม่<span class="qa-sub">สำหรับผู้วิจัยที่ยังไม่มีบัญชี</span></span>
           </button>
           <a class="qa" href="#process">
-            <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
             <span class="qa-lbl">ขั้นตอนการยื่น<span class="qa-sub">ดูกระบวนการพิจารณาทั้งหมด</span></span>
           </a>
-          <button class="qa" onclick="SITE.goDownload()">
-            <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-            <span class="qa-lbl">ดาวน์โหลดแบบฟอร์ม<span class="qa-sub">EC-SS-001 (ปรับปรุง 2568)</span></span>
-          </button>
+          <a class="qa" href="#calendar">
+            <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+            <span class="qa-lbl">ปฏิทินการประชุม<span class="qa-sub">ตรวจสอบวันประชุมที่กำลังจะมาถึง</span></span>
+          </a>
           <div class="qc">
             <strong>ติดต่อสอบถาม</strong><br>
             กลุ่มงานพัฒนาคุณภาพและมาตรฐาน<br>
             โรงพยาบาลสันทราย โทร. 053-849-300 ต่อ 1234<br>
-            อีเมล: <a href="mailto:sireetorn.wa@sansaihospital.go.th">sireetorn.wa@sansaihospital.go.th</a><br>
+            อีเมล: <a href="mailto:ec@sansaihospital.go.th">ec@sansaihospital.go.th</a><br>
             วันจันทร์–ศุกร์ เวลา 08.30–16.30 น.
           </div>
         </div>
@@ -423,124 +710,396 @@ button{font-family:inherit;cursor:pointer}
   </div>
 </section>
 
-<footer class="ftr" aria-label="ส่วนท้ายเว็บไซต์">
+<!-- ══════════════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════════════ -->
+<footer class="ftr">
   <div class="container">
     <div class="ftr-g">
-      <div class="fcol">
-        <h4>โรงพยาบาลสันทราย</h4>
+      <div class="fcol"><h4>โรงพยาบาลสันทราย</h4>
         <p>เลขที่ 201 หมู่ 11 ตำบลหนองจ๊อม</p>
         <p>อำเภอสันทราย จังหวัดเชียงใหม่ 50210</p>
         <p style="margin-top:.5rem">โทรศัพท์: 053-849-300</p>
-        <p>โทรสาร: 053-849-301</p>
         <p>เขตสุขภาพที่ 1 · กระทรวงสาธารณสุข</p>
       </div>
-      <div class="fcol">
-        <h4>ระบบ EC Online</h4>
+      <div class="fcol"><h4>ระบบ EC Online</h4>
         <a href="#" onclick="SITE.goLogin()">เข้าสู่ระบบ</a>
         <a href="#" onclick="SITE.goRegister()">ลงทะเบียนผู้ใช้ใหม่</a>
         <a href="#process">ขั้นตอนการยื่น</a>
-        <a href="#" onclick="SITE.goDownload()">ดาวน์โหลดแบบฟอร์ม</a>
+        <a href="#calendar">ปฏิทินการประชุม</a>
         <a href="#news">ประกาศและข่าวสาร</a>
       </div>
-      <div class="fcol">
-        <h4>นโยบายและกฎระเบียบ</h4>
+      <div class="fcol"><h4>นโยบายและกฎระเบียบ</h4>
         <a href="#">นโยบายความเป็นส่วนตัว (PDPA)</a>
         <a href="#">เงื่อนไขการใช้งาน</a>
         <a href="#">มาตรฐาน ICH-GCP</a>
         <a href="#">แนวทาง NECAST</a>
-        <a href="#">สิทธิของผู้เข้าร่วมวิจัย</a>
       </div>
     </div>
     <div class="fbot">
       <span>© พ.ศ. 2568 โรงพยาบาลสันทราย · ระบบ EC Online Submission v1.0 · พัฒนาโดยกลุ่มงานพัฒนาคุณภาพและมาตรฐาน</span>
       <span class="pdpa">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         PDPA Compliant · พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
       </span>
     </div>
   </div>
 </footer>
 
+<!-- ══════════════════════════════════════════════════════════════
+     SCRIPT
+══════════════════════════════════════════════════════════════ -->
 <script>
 'use strict';
-/* ══════════════════════════════════════════════════════
-   CONFIG — แก้เฉพาะส่วนนี้
-══════════════════════════════════════════════════════ */
-var APP_URL      = 'app.html';
-var DOWNLOAD_URL = '#';
 
-/* ── ประกาศ / ข่าวสาร ────────────────────────────────
-   tag: 'new' | 'imp' | 'inf'
-   เพิ่มรายการใหม่ที่ต้น array เสมอ
-─────────────────────────────────────────────────── */
+/* ─── CONFIG ──────────────────────────────────────────────────
+   แก้ค่าที่นี่เท่านั้น
+─────────────────────────────────────────────────────────────── */
+var GAS_URL  = 'https://script.google.com/macros/s/AKfycby_GFp6PtqRmLWEqayleD9nBscQvBTm288Dm5YMUMSHgXbaie3FTTuvB276hfYN9M69VQ/exec';
+var APP_URL  = 'index.html';   /* path ของระบบ login/app */
+var NEWS_SHOW = 3;             /* จำนวนข่าวที่แสดง default */
+
+/* ─── ประกาศ / ข่าวสาร ────────────────────────────────────────
+   tag: 'new' | 'imp' | 'inf'  |  เพิ่มรายการใหม่ที่ต้น array
+─────────────────────────────────────────────────────────────── */
 var NEWS = [
-  { tag:'new', tagTh:'ใหม่',  date:{d:'15',m:'พ.ค. 68'},
+  { tag:'new', tagTh:'ใหม่',   date:{d:'15',m:'พ.ค. 68'},
     title:'เปิดให้บริการระบบ EC Online Submission เวอร์ชัน 1.0',
-    desc:'โรงพยาบาลสันทรายเปิดให้บริการระบบยื่นจริยธรรมออนไลน์เพื่ออำนวยความสะดวกแก่ผู้วิจัยทุกท่าน ตั้งแต่บัดนี้เป็นต้นไป', url:'#' },
-  { tag:'imp', tagTh:'สำคัญ', date:{d:'01',m:'พ.ค. 68'},
+    desc:'โรงพยาบาลสันทรายเปิดให้บริการระบบยื่นจริยธรรมออนไลน์เพื่ออำนวยความสะดวกแก่ผู้วิจัยทุกท่าน' },
+  { tag:'imp', tagTh:'สำคัญ',  date:{d:'01',m:'พ.ค. 68'},
     title:'กำหนดการประชุม Full Board ประจำเดือนพฤษภาคม 2568',
-    desc:'การประชุมพิจารณาแบบเต็มรูปแบบ กำหนดวันศุกร์ที่ 30 พฤษภาคม 2568 ผู้วิจัยต้องยื่นเอกสารล่วงหน้าอย่างน้อย 15 วันทำการ', url:'#' },
-  { tag:'inf', tagTh:'ข้อมูล',date:{d:'20',m:'เม.ย. 68'},
+    desc:'ต้องยื่นเอกสารล่วงหน้าอย่างน้อย 15 วันทำการ ดูปฏิทินด้านบนเพื่อตรวจสอบวันประชุม' },
+  { tag:'inf', tagTh:'ข้อมูล', date:{d:'20',m:'เม.ย. 68'},
     title:'แบบฟอร์ม EC-SS-001 ปรับปรุงใหม่ (เวอร์ชัน 2568)',
-    desc:'ปรับปรุงให้สอดคล้องกับแนวทาง NECAST ปี 2567 กรุณาดาวน์โหลดแบบฟอร์มใหม่ก่อนยื่นทุกครั้ง', url:'#' },
-  { tag:'inf', tagTh:'ข้อมูล',date:{d:'10',m:'เม.ย. 68'},
+    desc:'ปรับปรุงให้สอดคล้องกับแนวทาง NECAST ปี 2567 กรุณาดาวน์โหลดแบบฟอร์มใหม่ก่อนยื่นทุกครั้ง' },
+  { tag:'inf', tagTh:'ข้อมูล', date:{d:'10',m:'เม.ย. 68'},
     title:'นโยบาย PDPA: แนวปฏิบัติการจัดการข้อมูลผู้เข้าร่วมวิจัย',
-    desc:'ผู้วิจัยทุกโครงการต้องแสดงมาตรการคุ้มครองข้อมูลตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562', url:'#' }
+    desc:'ผู้วิจัยทุกโครงการต้องแสดงมาตรการคุ้มครองข้อมูลตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562' }
 ];
-var NEWS_SHOW = 3;
 
-/* ── Site navigation ─────────────────────────────── */
+/* ─── Navigation ──────────────────────────────────────────── */
 var SITE = {
-  goLogin:    function(){ window.location.href = APP_URL; },
-  goRegister: function(){ window.location.href = APP_URL+'?action=register'; },
-  goDownload: function(){ if(DOWNLOAD_URL!=='#') window.open(DOWNLOAD_URL,'_blank'); }
+  goLogin:    function() { window.location.href = APP_URL; },
+  goRegister: function() { window.location.href = APP_URL + '?action=register'; }
 };
 
-/* ── Render news ─────────────────────────────────── */
-(function(){
+/* ══════════════════════════════════════════════════════════════
+   CALENDAR ENGINE
+══════════════════════════════════════════════════════════════ */
+var CAL = {
+  meetings: [],       // raw meetings from GAS
+  meetingMap: {},     // { 'YYYY-MM-DD': [meeting, ...] }
+  viewYear:  0,
+  viewMonth: 0,       // 0-based
+  selectedDate: null,
+
+  TH_MONTHS: ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน',
+              'พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม',
+              'กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'],
+  TH_MONTHS_SHORT: ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.',
+                    'ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'],
+
+  /* ── init ── */
+  init: function() {
+    var now = new Date();
+    this.viewYear  = now.getFullYear();
+    this.viewMonth = now.getMonth();
+    this.fetchMeetings();
+
+    var self = this;
+    document.getElementById('cal-prev').addEventListener('click', function() {
+      self.viewMonth--;
+      if (self.viewMonth < 0) { self.viewMonth = 11; self.viewYear--; }
+      self.render();
+    });
+    document.getElementById('cal-next').addEventListener('click', function() {
+      self.viewMonth++;
+      if (self.viewMonth > 11) { self.viewMonth = 0; self.viewYear++; }
+      self.render();
+    });
+  },
+
+  /* ── fetch from GAS ── */
+  fetchMeetings: function() {
+    var self = this;
+    var body = JSON.stringify({ action: 'getPublicMeetings' });
+
+    fetch(GAS_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body: body })
+      .then(function(r) { return r.text(); })
+      .then(function(text) {
+        var jsonStart = text.indexOf('{');
+        var jsonEnd   = text.lastIndexOf('}');
+        if (jsonStart !== -1 && jsonEnd > jsonStart) {
+          try {
+            var res = JSON.parse(text.substring(jsonStart, jsonEnd + 1));
+            self.meetings = (res && res.success && Array.isArray(res.data)) ? res.data : [];
+          } catch(e) { self.meetings = []; }
+        }
+        self.buildMap();
+        self.render();
+        self.renderMeetingList();
+      })
+      .catch(function() {
+        self.meetings = [];
+        self.buildMap();
+        self.render();
+        self.renderMeetingList();
+      });
+  },
+
+  /* ── build date → meetings map ── */
+  buildMap: function() {
+    this.meetingMap = {};
+    var self = this;
+    this.meetings.forEach(function(m) {
+      if (!m.meeting_date) return;
+      var d = new Date(m.meeting_date);
+      if (isNaN(d.getTime())) return;
+      var key = d.getFullYear() + '-' +
+        String(d.getMonth()+1).padStart(2,'0') + '-' +
+        String(d.getDate()).padStart(2,'0');
+      if (!self.meetingMap[key]) self.meetingMap[key] = [];
+      self.meetingMap[key].push(m);
+    });
+  },
+
+  /* ── detect meeting type ── */
+  getMeetingType: function(meetings) {
+    var types = meetings.map(function(m) {
+      var t = String(m.type || m.title || '').toLowerCase();
+      if (t.indexOf('full') !== -1 || t.indexOf('fullboard') !== -1) return 'fullboard';
+      if (t.indexOf('expedited') !== -1 || t.indexOf('เร่งด่วน') !== -1) return 'expedited';
+      if (t.indexOf('exempt') !== -1 || t.indexOf('ยกเว้น') !== -1) return 'exempt';
+      return 'other';
+    });
+    // priority: fullboard > expedited > exempt > other
+    if (types.indexOf('fullboard') !== -1) return 'fullboard';
+    if (types.indexOf('expedited') !== -1) return 'expedited';
+    if (types.indexOf('exempt') !== -1) return 'exempt';
+    return 'other';
+  },
+
+  /* ── render calendar grid ── */
+  render: function() {
+    var y = this.viewYear, m = this.viewMonth;
+    var BE = y + 543;
+
+    document.getElementById('cal-title').textContent =
+      this.TH_MONTHS[m] + ' ' + BE;
+
+    var firstDay = new Date(y, m, 1).getDay(); // 0=Sun
+    var daysInMonth = new Date(y, m+1, 0).getDate();
+    var daysInPrevMonth = new Date(y, m, 0).getDate();
+    var today = new Date();
+    var todayKey = today.getFullYear() + '-' +
+      String(today.getMonth()+1).padStart(2,'0') + '-' +
+      String(today.getDate()).padStart(2,'0');
+
+    var self = this;
+    var grid = document.getElementById('cal-days');
+    var cells = [];
+
+    // prev month trailing
+    for (var i = firstDay - 1; i >= 0; i--) {
+      var day = daysInPrevMonth - i;
+      var dm = m - 1 < 0 ? 11 : m - 1;
+      var dy = m - 1 < 0 ? y - 1 : y;
+      var key = dy + '-' + String(dm+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+      cells.push({ day: day, key: key, cls: 'other-month', col: (firstDay - 1 - i) % 7 });
+    }
+
+    // current month
+    for (var d = 1; d <= daysInMonth; d++) {
+      var key = y + '-' + String(m+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+      var col = (firstDay + d - 1) % 7;
+      cells.push({ day: d, key: key, cls: '', col: col });
+    }
+
+    // next month leading
+    var total = cells.length;
+    var remainder = total % 7 === 0 ? 0 : 7 - (total % 7);
+    for (var nd = 1; nd <= remainder; nd++) {
+      var nm = m + 1 > 11 ? 0 : m + 1;
+      var ny = m + 1 > 11 ? y + 1 : y;
+      var key = ny + '-' + String(nm+1).padStart(2,'0') + '-' + String(nd).padStart(2,'0');
+      cells.push({ day: nd, key: key, cls: 'other-month', col: (total + nd - 1) % 7 });
+    }
+
+    grid.innerHTML = cells.map(function(c) {
+      var cls = 'cal-day ' + c.cls;
+      var dow = c.col;
+      if (dow === 0) cls += ' sun';
+      if (dow === 6) cls += ' sat';
+      if (c.key === todayKey) cls += ' today';
+      if (c.key === self.selectedDate) cls += ' selected';
+
+      var hasMeeting = !!self.meetingMap[c.key];
+      if (hasMeeting) {
+        var mtype = self.getMeetingType(self.meetingMap[c.key]);
+        cls += ' has-meeting ' + mtype;
+      }
+
+      var dateAttr = 'data-date="' + c.key + '"';
+      var click = hasMeeting ? ' onclick="CAL.selectDate(\'' + c.key + '\')"' : '';
+      var ariaLabel = c.day + ' ' + self.TH_MONTHS_SHORT[m] +
+        (hasMeeting ? ' (มีการประชุม)' : '');
+      return '<div class="' + cls + '" ' + dateAttr + click +
+             ' role="gridcell" aria-label="' + ariaLabel + '">' +
+             c.day + '</div>';
+    }).join('');
+  },
+
+  /* ── select a date with meetings ── */
+  selectDate: function(dateKey) {
+    this.selectedDate = dateKey;
+    this.render();
+
+    var meetings = this.meetingMap[dateKey] || [];
+    var detailEl = document.getElementById('day-detail');
+    var dateEl   = document.getElementById('day-detail-date');
+    var itemsEl  = document.getElementById('day-detail-items');
+
+    if (!meetings.length) { detailEl.style.display = 'none'; return; }
+
+    var d = new Date(dateKey);
+    var BE = d.getFullYear() + 543;
+    dateEl.textContent = d.getDate() + ' ' + this.TH_MONTHS[d.getMonth()] + ' ' + BE;
+
+    var self = this;
+    itemsEl.innerHTML = meetings.map(function(m) {
+      var mtype = self.getMeetingType([m]);
+      var typeLabels = { fullboard:'Full Board', expedited:'Expedited', exempt:'Exempt', other:'ประชุม' };
+      return '<div class="day-detail-item">' +
+        '<strong>' + typeLabels[mtype] + ':</strong> ' + escH(m.title || '(ไม่ระบุชื่อ)') +
+        (m.location ? ' <span style="font-size:.7rem;opacity:.6">— ' + escH(m.location) + '</span>' : '') +
+        '</div>';
+    }).join('');
+
+    detailEl.style.display = 'block';
+
+    // highlight ใน meeting list
+    document.querySelectorAll('.meeting-item').forEach(function(el) {
+      el.classList.toggle('active', el.dataset.date === dateKey);
+    });
+    var activeItem = document.querySelector('.meeting-item.active');
+    if (activeItem) activeItem.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  },
+
+  /* ── render upcoming meeting list ── */
+  renderMeetingList: function() {
+    var listEl = document.getElementById('meeting-list-body');
+    var now = new Date(); now.setHours(0,0,0,0);
+
+    // เอาเฉพาะอนาคต + เรียงตามวัน
+    var upcoming = this.meetings
+      .filter(function(m) {
+        if (!m.meeting_date) return false;
+        var d = new Date(m.meeting_date);
+        return !isNaN(d.getTime()) && d >= now;
+      })
+      .sort(function(a, b) {
+        return new Date(a.meeting_date) - new Date(b.meeting_date);
+      })
+      .slice(0, 12); // max 12 รายการ
+
+    if (!upcoming.length) {
+      listEl.innerHTML = '<div class="mlb-empty">ยังไม่มีการประชุมที่กำหนดไว้<br><small style="color:var(--u300)">ข้อมูลจาก Google Sheet</small></div>';
+      return;
+    }
+
+    var self = this;
+    listEl.innerHTML = upcoming.map(function(m) {
+      var d = new Date(m.meeting_date);
+      var day   = d.getDate();
+      var mon   = self.TH_MONTHS_SHORT[d.getMonth()];
+      var BE    = String(d.getFullYear() + 543).slice(-2);
+      var mtype = self.getMeetingType([m]);
+      var typeLabel = { fullboard:'Full Board', expedited:'Expedited', exempt:'Exempt', other:'ประชุม' }[mtype];
+      var dateKey = d.getFullYear() + '-' +
+        String(d.getMonth()+1).padStart(2,'0') + '-' +
+        String(d.getDate()).padStart(2,'0');
+      var statusDot = m.status ? ' <span style="font-size:.7rem;color:var(--u400)">· ' + escH(m.status) + '</span>' : '';
+
+      return '<div class="meeting-item" data-date="' + dateKey + '" onclick="CAL.selectDate(\'' + dateKey + '\')">' +
+        '<div class="mi-date-badge">' +
+          '<div class="day">' + day + '</div>' +
+          '<div class="mon">' + mon + ' \'' + BE + '</div>' +
+        '</div>' +
+        '<div class="mi-info">' +
+          '<div class="mi-title">' + escH(m.title || '(ไม่ระบุชื่อ)') + '</div>' +
+          '<div class="mi-meta">' +
+            '<span class="mi-type ' + mtype + '">' + typeLabel + '</span>' +
+            (m.location ? '<span>' + escH(m.location) + '</span>' : '') +
+            statusDot +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+};
+
+/* ══════════════════════════════════════════════════════════════
+   NEWS RENDER
+══════════════════════════════════════════════════════════════ */
+(function() {
   var list = document.getElementById('nlist');
   var btn  = document.getElementById('nbtn');
-  if(!list) return;
-  function e(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-  NEWS.forEach(function(n,i){
+  if (!list) return;
+
+  NEWS.forEach(function(n, i) {
     var art = document.createElement('article');
-    art.className='news-item rev';
-    art.style.transitionDelay=(i*55)+'ms';
-    var bO = n.url&&n.url!=='#' ? '<a href="'+e(n.url)+'" target="_blank" rel="noopener">' : '<div>';
-    var bC = n.url&&n.url!=='#' ? '</a>' : '</div>';
+    art.className = 'news-item rev';
+    art.style.transitionDelay = (i * 55) + 'ms';
     art.innerHTML =
-      '<div class="news-date" aria-hidden="true"><div class="d">'+e(n.date.d)+'</div><div class="m">'+e(n.date.m)+'</div></div>'+
-      '<div><span class="ntag ntag-'+e(n.tag)+'">'+e(n.tagTh)+'</span>'+bO+'<div class="ntit">'+e(n.title)+'</div>'+bC+
-      (n.desc?'<p class="ndsc">'+e(n.desc)+'</p>':'')+'</div>';
-    if(i>=NEWS_SHOW) art.style.display='none';
+      '<div class="news-date" aria-hidden="true"><div class="d">' + escH(n.date.d) + '</div><div class="m">' + escH(n.date.m) + '</div></div>' +
+      '<div>' +
+        '<span class="ntag ntag-' + escH(n.tag) + '">' + escH(n.tagTh) + '</span>' +
+        '<div class="ntit">' + escH(n.title) + '</div>' +
+        (n.desc ? '<p class="ndsc">' + escH(n.desc) + '</p>' : '') +
+      '</div>';
+    if (i >= NEWS_SHOW) art.style.display = 'none';
     list.appendChild(art);
   });
-  if(NEWS.length>NEWS_SHOW){
-    btn.style.display='inline-flex';
-    var open=false;
-    btn.addEventListener('click',function(){
-      open=!open;
-      btn.setAttribute('aria-expanded',open);
-      list.querySelectorAll('.news-item').forEach(function(el,i){ if(i>=NEWS_SHOW) el.style.display=open?'':'none'; });
-      btn.firstChild.textContent = open?'แสดงน้อยลง ':'ดูประกาศทั้งหมด ';
+
+  if (NEWS.length > NEWS_SHOW) {
+    btn.style.display = 'inline-flex';
+    var open = false;
+    btn.addEventListener('click', function() {
+      open = !open;
+      btn.setAttribute('aria-expanded', open);
+      list.querySelectorAll('.news-item').forEach(function(el, i) {
+        if (i >= NEWS_SHOW) el.style.display = open ? '' : 'none';
+      });
+      btn.firstChild.textContent = open ? 'แสดงน้อยลง ' : 'ดูประกาศทั้งหมด ';
     });
   }
 })();
 
-/* ── Scroll-reveal ───────────────────────────────── */
-(function(){
+/* ══════════════════════════════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════════════════════════════ */
+(function() {
   var els = document.querySelectorAll('.rev');
-  if(!('IntersectionObserver' in window)){ els.forEach(function(el){el.classList.add('in');}); return; }
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
-  },{ threshold:.08, rootMargin:'0px 0px -28px 0px' });
-  els.forEach(function(el){ io.observe(el); });
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(function(el) { el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold:.08, rootMargin:'0px 0px -24px 0px' });
+  els.forEach(function(el) { io.observe(el); });
 })();
 
-/* ── ?action=register passthrough ───────────────── */
-(function(){
-  try{ var p=new URLSearchParams(window.location.search); if(p.get('action')==='register') window.location.replace(APP_URL+'#register'); }catch(e){}
-})();
+/* ── Utility ── */
+function escH(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Init Calendar ── */
+CAL.init();
 </script>
 </body>
 </html>
