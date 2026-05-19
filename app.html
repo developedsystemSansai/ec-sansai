@@ -151,59 +151,51 @@
     /* ═══════════════════════════════════════════════════════════
        EC Online Submission — Sansai Hospital
        Design: Institutional Sharp Minimalism
-       Font: Sarabun (Thai) + Noto Serif Thai (Headings) | Numerals: Arabic
+       Font: Sarabun (Thai) + Prompt (Headings) | Numerals: Arabic
     ═══════════════════════════════════════════════════════════ */
-    
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;600;700&family=Sarabun:wght@300;400;500;600;700&family=Fira+Code&display=swap');
 
     :root {
-      /* ── Navy + Gold institutional theme (EC Sansai) ── */
-      /* Replaces green for unified landing↔app experience */
+      /* ── Navy + Gold — EC Sansai unified theme ─────────────────────
+         --green-* remapped to navy for backward compat with existing CSS
+      ──────────────────────────────────────────────────────────────── */
+      --green-dark:    #0b1f35;
+      --green-main:    #1e4068;
+      --green-mid:     #3d6491;
+      --green-light:   #dce7f3;
+      --green-pale:    #eef3f9;
 
-      /* Primary nav / hero colour */
-      --green-dark:    #0b1f35;   /* was green-dark  → navy-900 */
-      --green-main:    #1e4068;   /* was green-main  → navy-600 */
-      --green-mid:     #3d6491;   /* was green-mid   → navy-400 */
-      --green-light:   #dce7f3;   /* was green-light → navy-100 */
-      --green-pale:    #eef3f9;   /* was green-pale  → navy-50  */
-
-      /* Gold accent */
-      --accent:        #b58a2a;   /* gold-500 */
-      --accent-light:  #f8f2e1;   /* gold-50  */
+      --accent:        #b58a2a;
+      --accent-light:  #f8f2e1;
       --gold:          #b58a2a;
       --gold-dark:     #9a7220;
       --gold-light:    #f0e3c0;
 
-      /* Status colours — unchanged */
+      --status-green:       #1b5e3e;
+      --status-green-light: #eaf4ee;
       --red:           #b91c1c;
       --red-light:     #fef2f2;
       --blue:          #1a5276;
       --blue-light:    #eaf2f8;
       --purple:        #5b2c6f;
       --purple-light:  #f3eef8;
-      --green-status:  #1b5e3e;   /* keep true green for status pills */
-      --green-status-light: #eaf4ee;
 
-      /* Neutral text — tinted navy-grey */
       --text-dark:     #151e28;
       --text-mid:      #344255;
       --text-light:    #5a6e85;
 
-      /* Surfaces */
       --border:        #cdd3db;
       --white:         #ffffff;
       --bg:            #f4f6fa;
       --surface:       #ffffff;
 
-      /* Shadow */
       --shadow-sm:     0 1px 3px rgba(11,31,53,.07);
-      --shadow-md:     0 3px 12px rgba(11,31,53,.1);
+      --shadow-md:     0 3px 12px rgba(11,31,53,.10);
       --shadow-lg:     0 6px 24px rgba(11,31,53,.13);
 
-      /* Shape */
       --radius:        5px;
       --radius-lg:     9px;
 
-      /* Typography */
       --text-xs:       0.75rem;
       --text-sm:       0.8125rem;
       --text-base:     0.9375rem;
@@ -211,7 +203,6 @@
       --text-lg:       1.125rem;
       --text-xl:       1.25rem;
 
-      /* Easing */
       --ease-out: cubic-bezier(.22,1,.36,1);
     }
 
@@ -260,10 +251,10 @@
     .login-card {
       background: var(--white);
       border-radius: var(--radius-lg);
-      box-shadow: 0 8px 40px rgba(0,0,0,.35);
+      box-shadow: var(--shadow-lg);
       padding: 40px 36px;
       width: 100%; max-width: 420px;
-      animation: slideUp .35s var(--ease-out);
+      animation: slideUp .35s ease;
       border-top: 3px solid var(--gold);
     }
     .login-logo { text-align: center; margin-bottom: 28px; }
@@ -286,14 +277,14 @@
     }
     .btn-login {
       width: 100%; padding: 11px;
-      background: var(--gold); color: var(--green-dark);
+      background: var(--gold); color: var(--green-dark); font-weight:700;
       border: none; border-radius: var(--radius);
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: var(--text-base); font-weight: 600;
       cursor: pointer; transition: background .15s;
       margin-top: 8px; letter-spacing: .3px;
     }
-    .btn-login:hover { background: var(--green-dark); }
+    .btn-login:hover { background:var(--gold-dark,#9a7220); transform:translateY(-1px); box-shadow:0 4px 14px rgba(181,138,42,.35); }
     .btn-login:disabled { background: #b0c0b8; cursor: not-allowed; }
     .login-link-row {
       text-align: center; margin-top: 14px;
@@ -315,11 +306,11 @@
       width: 100%; max-width: 600px;
       overflow: hidden;
       animation: slideUp .35s ease;
-      border-top: 3px solid var(--green-main);
+      border-top: 3px solid var(--gold);
     }
     .register-header {
-      background: var(--green-dark);
       border-bottom: 2px solid var(--gold);
+      background: var(--green-dark);
       padding: 24px 28px; text-align: center; color: var(--white);
     }
     .register-header h2 {
@@ -387,7 +378,7 @@
       padding: 36px; width: 100%; max-width: 340px;
       text-align: center;
       animation: slideUp .3s ease;
-      border-top: 3px solid var(--green-main);
+      border-top: 3px solid var(--gold);
     }
     .role-card h3 { font-family: 'Noto Serif Thai', 'Sarabun', serif; color: var(--green-dark); margin-bottom: 6px; font-size: var(--text-lg); }
     .role-card p  { font-size: var(--text-sm); color: var(--text-light); margin-bottom: 24px; }
@@ -406,12 +397,12 @@
     #main-app { display: none; min-height: 100vh; }
 
     .top-nav {
-      background: var(--green-dark);   /* navy-900 via token remap */
+      background: var(--green-dark);
       color: var(--white);
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 24px; height: 54px;
       position: sticky; top: 0; z-index: 100;
-      box-shadow: 0 2px 12px rgba(0,0,0,.28);
+      box-shadow: 0 2px 16px rgba(0,0,0,.28);
       border-bottom: 2px solid var(--gold);
     }
     .top-nav-left  { display: flex; align-items: center; gap: 14px; }
@@ -423,7 +414,7 @@
       letter-spacing: .2px;
     }
     .notif-btn {
-      background: transparent;
+      background: rgba(255,255,255,.1);
       border: none; border-radius: 4px;
       width: 34px; height: 34px;
       color: var(--white); cursor: pointer;
@@ -498,15 +489,7 @@
       border-left-color: var(--gold);
       font-weight: 600;
     }
-    .sidebar-nav a .icon {
-      font-size: 0; /* SVG-only */
-      width: 18px; height: 18px;
-      flex-shrink: 0;
-      display: inline-flex; align-items: center;
-      color: var(--text-light);
-    }
-    .sidebar-nav a.active .icon,
-    .sidebar-nav a:hover .icon { color: var(--gold); }
+    .sidebar-nav a .icon { font-size: 15px; width: 18px; text-align: center; opacity: .7; }
     .sidebar-nav a.active .icon { opacity: 1; }
     .sidebar-divider { height: 1px; background: var(--border); margin: 6px 14px; }
     .badge-count {
@@ -568,10 +551,10 @@
       overflow: hidden; margin-bottom: 20px;
     }
     .table-card-header {
+      border-left: 3px solid var(--gold);
       padding: 12px 18px;
       border-bottom: 1px solid var(--border);
       background: var(--green-pale);
-      border-left: 3px solid var(--gold);
       display: flex; align-items: center;
       justify-content: space-between;
       flex-wrap: wrap; gap: 8px;
@@ -621,7 +604,7 @@
       letter-spacing: .2px;
     }
     .btn-primary { background: var(--gold); color: var(--green-dark); font-weight:700; }
-    .btn-primary:hover { background: var(--green-dark); }
+    .btn-primary:hover { background:var(--gold-dark,#9a7220); transform:translateY(-1px); }
     .btn-accent  { background: var(--accent); color: var(--white); }
     .btn-accent:hover  { background: #a87300; }
     .btn-danger  { background: var(--red); color: var(--white); }
@@ -653,7 +636,7 @@
       width: 100%; max-width: 540px; max-height: 90vh;
       overflow-y: auto;
       animation: slideUp .2s ease;
-      border-top: 3px solid var(--green-main);
+      border-top: 3px solid var(--gold);
     }
     .modal-lg  { max-width: 740px; }
     .modal-xl  { max-width: 900px; }
@@ -701,8 +684,8 @@
     }
     .form-control:focus {
       outline: none;
-      border-color: var(--green-main);
-      box-shadow: 0 0 0 3px rgba(33,122,71,.1);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(181,138,42,.15);
     }
     textarea.form-control { resize: vertical; min-height: 78px; }
     .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -752,7 +735,7 @@
       border-bottom: 2px solid transparent; margin-bottom: -1.5px;
       white-space: nowrap; transition: all .12s;
     }
-    .tab-btn.active { color: var(--green-main); border-bottom-color: var(--green-main); font-weight: 700; }
+    .tab-btn.active { color: var(--green-main); border-bottom-color: var(--gold); font-weight: 700; }
     .tab-btn:hover  { color: var(--green-main); }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
@@ -1200,7 +1183,8 @@
       .stat-card .num { font-size: 1.1rem; }
       .stat-card .label { font-size: 10px; }
       .content { padding: 10px 8px 76px; }
-      .table-card-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .table-card-header {
+      border-left: 3px solid var(--gold); flex-direction: column; align-items: flex-start; gap: 6px; }
       .btn { font-size: var(--text-xs); padding: 6px 11px; }
       .btn-sm { font-size: 11px; padding: 3px 7px; }
       .pill { font-size: 10px; padding: 1px 7px; }
@@ -1234,39 +1218,28 @@
     .srt-opt-card.selected { border-color: var(--green-main); background: var(--green-pale); }
     .srt-opt-card input[type="radio"] { margin-top: 3px; flex-shrink: 0; }
 
-    /* ── Institutional ribbon — matches landing page ── */
     .inst-ribbon {
       height: 4px;
-      background: linear-gradient(
-        90deg,
+      background: linear-gradient(90deg,
         var(--green-dark) 0% 33.33%,
         var(--gold)       33.33% 66.66%,
-        var(--green-status,#1b5e3e) 66.66% 100%
+        var(--status-green,#1b5e3e) 66.66% 100%
       );
-      position: relative; z-index: 200;
     }
-    /* ── section-title upgrade → serif ── */
-    .section-title {
-      font-family: 'Noto Serif Thai', 'Sarabun', serif !important;
-    }
-    /* ── form-control focus ring — gold ── */
-    .form-control:focus {
-      border-color: var(--gold) !important;
-      box-shadow: 0 0 0 3px rgba(181,138,42,.15) !important;
-    }
-    /* ── pill / tag buttons in nav — gold active ── */
-    .tab-btn.active {
-      background: var(--gold) !important;
-      color: var(--green-dark) !important;
-      border-color: var(--gold) !important;
-    }
-    /* ── dashboard stat cards — gold top accent ── */
-    .stat-card {
-      border-top: 2.5px solid var(--gold) !important;
-    }
-    /* ── breadcrumb link — navy ── */
-    .breadcrumb a { color: var(--green-main); }
-    .breadcrumb a:hover { color: var(--gold); text-decoration: underline; }
+
+    /* ── EC Sansai Theme Polish ── */
+    .inst-ribbon{height:4px;background:linear-gradient(90deg,var(--green-dark) 0% 33.33%,var(--gold) 33.33% 66.66%,var(--status-green,#1b5e3e) 66.66% 100%)}
+    .page-title,.section-title,.modal-header h3,.nav-title{font-family:'Noto Serif Thai','Sarabun',serif!important}
+    .form-control:focus,.form-control:focus-visible{border-color:var(--gold)!important;box-shadow:0 0 0 3px rgba(181,138,42,.15)!important;outline:none}
+    .stat-card{border-top:3px solid var(--gold)!important}
+    .table-card-header{border-left:3px solid var(--gold)!important}
+    .modal-header{border-bottom:2px solid var(--gold)!important}
+    .sidebar-nav a.active .icon,.sidebar-nav a:hover .icon{color:var(--gold)}
+    .sidebar-nav a .icon{font-size:0;width:18px;height:18px;display:inline-flex;align-items:center;flex-shrink:0}
+    .login-logo h2{font-family:'Noto Serif Thai','Sarabun',serif!important;color:var(--green-dark)!important}
+    .pill-green{background:var(--status-green-light,#eaf4ee)!important;color:var(--status-green,#1b5e3e)!important}
+    .breadcrumb a{color:var(--green-main)}.breadcrumb a:hover{color:var(--gold);text-decoration:underline}
+
     </style>
     </head>
     <body>
@@ -1301,9 +1274,7 @@
       <label>รหัสผ่าน (Password)</label>
       <div class="password-wrap">
         <input type="password" id="inp-pass" class="form-control" placeholder="กรอกรหัสผ่าน" autocomplete="current-password">
-        <button class="toggle-pw" type="button" class="toggle-pw" type="button" onclick="togglePw('inp-pass',this)" aria-label="แสดง/ซ่อนรหัสผ่าน">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        </button>
+        <button class="toggle-pw" type="button" onclick="togglePw('inp-pass',this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div>
       <!-- ✅ เพิ่มลิงก์ลืมรหัสผ่านไว้ที่นี่ ภายใน form-group -->
       <div style="text-align: right; margin-top: 4px;">
@@ -1316,7 +1287,7 @@
     <!-- ✅ SEC-FIX: Privacy Notice -->
     <div style="margin-top:18px;padding:12px 14px;background:#f2faf5;border-radius:8px;border:1px solid #c8dfd0;">
       <p style="font-size:11px;color:#3d5c46;line-height:1.7;margin:0;">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><strong>นโยบายความเป็นส่วนตัว</strong><br>
+        🔒 <strong>นโยบายความเป็นส่วนตัว</strong><br>
         ระบบนี้เก็บรวบรวมข้อมูลส่วนบุคคลของท่าน เช่น ชื่อ อีเมล เบอร์โทร และข้อมูลโครงการวิจัย 
         เพื่อวัตถุประสงค์ในการบริหารจัดการงานวิจัยของโรงพยาบาลสันทรายเท่านั้น 
         ข้อมูลของท่านได้รับการปกป้องตาม <strong>พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA)</strong><br>
@@ -1347,15 +1318,15 @@
         </div>
         <div id="reg-error" class="error-msg" style="display:none; margin:12px 28px 0"></div>
         <div id="reg-step-1" class="register-body">
-          <div class="section-divider">ข้อมูลสำหรับเข้าสู่ระบบ</div>
+          <div class="section-divider">🔐 ข้อมูลสำหรับเข้าสู่ระบบ</div>
           <div class="form-group"><label>Username <span class="req">*</span></label><input type="text" id="reg-username" class="form-control" placeholder="a-z, 0-9, _ (4-20 ตัว)" oninput="checkUsernameFormat(this)"><div class="hint-text" id="username-hint">ใช้ตัวอักษร a-z, 0-9 ความยาว 4-20 ตัว</div></div>
           <div class="form-group"><label>อีเมล <span class="req">*</span></label><input type="email" id="reg-email" class="form-control"></div>
-          <div class="form-group"><label>รหัสผ่าน <span class="req">*</span></label><div class="password-wrap"><input type="password" id="reg-pass" class="form-control" placeholder="อย่างน้อย 8 ตัว มีA-z+เลข เช่น Test1234" oninput="checkStrength(this.value)"><button class="toggle-pw" type="button" onclick="togglePw('reg-pass',this)">👁</button></div><div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div><div class="hint-text" id="strength-label"></div></div>
-          <div class="form-group"><label>ยืนยันรหัสผ่าน <span class="req">*</span></label><div class="password-wrap"><input type="password" id="reg-pass2" class="form-control"><button class="toggle-pw" type="button" onclick="togglePw('reg-pass2',this)">👁</button></div></div>
+          <div class="form-group"><label>รหัสผ่าน <span class="req">*</span></label><div class="password-wrap"><input type="password" id="reg-pass" class="form-control" placeholder="อย่างน้อย 8 ตัว มีA-z+เลข เช่น Test1234" oninput="checkStrength(this.value)"><button class="toggle-pw" type="button" onclick="togglePw('reg-pass',this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div><div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div><div class="hint-text" id="strength-label"></div></div>
+          <div class="form-group"><label>ยืนยันรหัสผ่าน <span class="req">*</span></label><div class="password-wrap"><input type="password" id="reg-pass2" class="form-control"><button class="toggle-pw" type="button" onclick="togglePw('reg-pass2',this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
           <div style="display:flex; gap:10px; margin-top:20px"><button class="btn-back-login" style="flex:1" onclick="showLoginPage()">← กลับ</button><button class="btn-register" style="flex:2" onclick="regStep1Next()">ถัดไป →</button></div>
         </div>
         <div id="reg-step-2" class="register-body" style="display:none">
-          <div class="section-divider">ข้อมูลส่วนตัว</div>
+          <div class="section-divider">👤 ข้อมูลส่วนตัว</div>
           <div class="form-group">
   <label>คำนำหน้า <span class="req">*</span></label>
   <select id="reg-prefix" class="form-control">
@@ -1386,7 +1357,7 @@
           <div class="form-group"><label>ชื่อ-นามสกุล ภาษาอังกฤษ</label><input type="text" id="reg-name-en" class="form-control"></div>
           <div class="form-group"><label>เบอร์โทรศัพท์ <span class="req">*</span></label><input type="tel" id="reg-phone" class="form-control" maxlength="10"></div>
           <!-- การอบรมจริยธรรม -->
-  <div class="section-divider">การอบรมจริยธรรมการวิจัยในมนุษย์</div>
+  <div class="section-divider">📚 การอบรมจริยธรรมการวิจัยในมนุษย์</div>
   
   <div class="form-group">
     <label>สถานะการอบรม <span class="req">*</span></label>
@@ -1436,7 +1407,7 @@
           <div style="display:flex; gap:10px; margin-top:20px"><button class="btn-back-login" style="flex:1" onclick="regGoStep(1)">← ย้อนกลับ</button><button class="btn-register" style="flex:2" onclick="regStep2Next()">ถัดไป →</button></div>
         </div>
         <div id="reg-step-3" class="register-body" style="display:none">
-  <div class="section-divider">ข้อมูลหน่วยงาน</div>
+  <div class="section-divider">🏥 ข้อมูลหน่วยงาน</div>
   
   <!-- เลือกประเภทหน่วยงาน -->
   <div class="form-group">
@@ -2085,7 +2056,7 @@
           <div class="nav-title">EC Online Submission<br><span style="font-size:11px; font-weight:400; opacity:.7">โรงพยาบาลสันทราย</span></div>
         </div>
         <div class="top-nav-right">
-          <button class="notif-btn" onclick="openNotifPanel()" title="การแจ้งเตือน">
+          <button class="notif-btn" onclick="openNotifPanel()" title="การแจ้งเตือน" aria-label="การแจ้งเตือน">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
               <span class="notif-badge" id="notif-badge">0</span>
             </button>
@@ -2095,11 +2066,9 @@
               <span id="user-display-name">ผู้ใช้</span> ▾
             </button>
             <div class="dropdown-menu" id="user-dropdown">
-              <a onclick="showPage('profile')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:6px;vertical-align:-2px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>ข้อมูลส่วนตัว</a>
+              <a onclick="showPage('profile')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>ข้อมูลส่วนตัว</a>
               <hr>
-              <a onclick="doLogout()" style="color:var(--red)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-right:6px;vertical-align:-2px"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>ออกจากระบบ</a>
+              <a onclick="doLogout()" style="color:var(--red)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>ออกจากระบบ</a>
             </div>
           </div>
         </div>
@@ -2113,7 +2082,7 @@
             <a onclick="showPage('meeting')" id="nav-meeting" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-3"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/></svg></span>การประชุม</a>
             <a onclick="showPage('staff-projects')" id="nav-staff-projects" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>จัดการโครงการ</a>
             <div class="sidebar-divider"></div>
-            <a onclick="showPage('history')" id="nav-history"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>ประวัติงานวิจัย</a>
+            <a onclick="showPage('history')" id="nav-history"><span class="icon">🗂</span>ประวัติงานวิจัย</a>
             <a onclick="showPage('my-projects')" id="nav-my-projects" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>โครงการของฉัน</a>
             <a onclick="showPage('submit')" id="nav-submit" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span>ยื่นโครงการใหม่</a>
             <a onclick="showPage('documents')" id="nav-documents" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>ดาวน์โหลดแบบฟอร์ม</a>
@@ -2135,7 +2104,7 @@
             
             <!-- ประกาศสำคัญ (ติดด้านบนสุดของหน้า Dashboard) -->
             <div id="dashboard-announcement">
-              <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg></div>
+              <div class="icon">📢</div>
               <div class="content">
                 <h4>ประกาศสำคัญสำหรับผู้ยื่นขอพิจารณาจริยธรรม</h4>
                 <p>กรุณาอ่านแนวทางปฏิบัติก่อนยื่นโครงการทุกครั้ง</p>
@@ -2650,9 +2619,9 @@
               <div class="table-card">
                 <div class="table-card-header"><h3>🔐 เปลี่ยนรหัสผ่าน</h3></div>
                 <div style="padding:20px">
-                  <div class="field-group"><label>รหัสผ่านเดิม</label><div class="password-wrap"><input type="password" id="pw-old" class="form-control"><button class="toggle-pw" type="button" onclick="togglePw('pw-old',this)">👁</button></div></div>
-                  <div class="field-group"><label>รหัสผ่านใหม่</label><div class="password-wrap"><input type="password" id="pw-new" class="form-control" oninput="checkStrength(this.value,'pw-strength')"><button class="toggle-pw" type="button" onclick="togglePw('pw-new',this)">👁</button></div><div class="strength-bar"><div class="strength-fill" id="pw-strength"></div></div></div>
-                  <div class="field-group"><label>ยืนยันรหัสผ่านใหม่</label><div class="password-wrap"><input type="password" id="pw-new2" class="form-control"><button class="toggle-pw" type="button" onclick="togglePw('pw-new2',this)">👁</button></div></div>
+                  <div class="field-group"><label>รหัสผ่านเดิม</label><div class="password-wrap"><input type="password" id="pw-old" class="form-control"><button class="toggle-pw" type="button" onclick="togglePw('pw-old',this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+                  <div class="field-group"><label>รหัสผ่านใหม่</label><div class="password-wrap"><input type="password" id="pw-new" class="form-control" oninput="checkStrength(this.value,'pw-strength')"><button class="toggle-pw" type="button" onclick="togglePw('pw-new',this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div><div class="strength-bar"><div class="strength-fill" id="pw-strength"></div></div></div>
+                  <div class="field-group"><label>ยืนยันรหัสผ่านใหม่</label><div class="password-wrap"><input type="password" id="pw-new2" class="form-control"><button class="toggle-pw" type="button" onclick="togglePw('pw-new2',this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
                   <button class="btn btn-accent" style="width:100%" onclick="changePassword()">🔐 เปลี่ยนรหัสผ่าน</button>
                 </div>
               </div>
@@ -3424,7 +3393,7 @@
           <input type="hidden" id="uf-edit-username">
           <div class="form-row-2">
             <div class="field-group"><label>Username <span class="req">*</span></label><input type="text" class="form-control" id="uf-username"></div>
-            <div class="field-group"><label>รหัสผ่าน <span class="req" id="uf-pass-req">*</span></label><div class="password-wrap"><input type="password" class="form-control" id="uf-password"><button class="toggle-pw" type="button" onclick="togglePw('uf-password',this)">👁</button></div><div class="hint-text" id="uf-pass-hint"></div></div>
+            <div class="field-group"><label>รหัสผ่าน <span class="req" id="uf-pass-req">*</span></label><div class="password-wrap"><input type="password" class="form-control" id="uf-password"><button class="toggle-pw" type="button" onclick="togglePw('uf-password',this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div><div class="hint-text" id="uf-pass-hint"></div></div>
           </div>
           <div class="field-group"><label>ชื่อ - นามสกุล <span class="req">*</span></label><input type="text" class="form-control" id="uf-name"></div>
           <div class="form-row-2">
@@ -5853,18 +5822,28 @@ function loadUsersData() {
     return;
   }
   
-  // ✅ ส่ง username ปัจจุบันไปด้วย
-  google.script.run
-    .withSuccessHandler(function(users) {
-      S.allUsers = Array.isArray(users) ? users : [];
+  // ✅ callGAS (frontend รันบน GitHub Pages — ไม่ใช้ google.script.run)
+  M.getAllUsers(S.user.sessionId, S.user.username)
+    .then(function(res) {
+      var users;
+      if (Array.isArray(res)) {
+        users = res;
+      } else if (res && res.success && Array.isArray(res.data)) {
+        users = res.data;
+      } else if (res && res.success === false) {
+        if (el) el.innerHTML = '<div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="1.5" style="margin:0 auto 12px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><p style="color:var(--red)">' + esc((res && res.message) || 'ไม่มีสิทธิ์เข้าถึง') + '</p><button class="btn btn-primary btn-sm" onclick="loadUsersData()">ลองอีกครั้ง</button></div>';
+        return;
+      } else {
+        users = [];
+      }
+      S.allUsers = users;
       renderUsersTable(S.allUsers);
       updatePendingBanner(S.allUsers);
-      S.committeesCache = []; // เคลียร์ cache กรรมการ
+      S.committeesCache = [];
     })
-    .withFailureHandler(function(e) {
-      if (el) el.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><p>โหลดไม่สำเร็จ: ' + esc(e.message) + '</p><button class="btn btn-primary btn-sm" onclick="loadUsersData()">🔄 ลองอีกครั้ง</button></div>';
-    })
-    .getAllUsers(S.user.sessionId, S.user.username);
+    .catch(function(e) {
+      if (el) el.innerHTML = '<div class="empty-state"><p style="color:var(--red)">โหลดไม่สำเร็จ: ' + esc(e && e.message ? e.message : 'ไม่ทราบสาเหตุ') + '</p><button class="btn btn-primary btn-sm" onclick="loadUsersData()">ลองอีกครั้ง</button></div>';
+    });
 }
     function updatePendingBanner(users) {
   var pending = users.filter(function(u) {
@@ -6014,21 +5993,64 @@ function showPendingUsers() {
   var body = isEdit
     ? {payload:payload, adminUsername:S.user.username}
     : {payload:payload, adminUsername:S.user.username};
-  google.script.run
-    .withSuccessHandler(function(res){
-      btn.disabled=false; btn.innerHTML='💾 บันทึก';
-      if(res&&res.success){ closeModal('modal-user-form'); showToast((isEdit?'แก้ไข':'เพิ่ม')+'ผู้ใช้สำเร็จ'); loadUsersData(); }
-      else showToast('เกิดข้อผิดพลาด: '+((res&&res.message)||''),'error');
+  var call = isEdit
+    ? M.updateUser(payload, S.user.username)
+    : M.createUser(payload, S.user.username);
+  call
+    .then(function(res) {
+      btn.disabled = false; btn.innerHTML = '💾 บันทึก';
+      if (res && res.success) {
+        closeModal('modal-user-form');
+        showToast((isEdit ? 'แก้ไข' : 'เพิ่ม') + 'ผู้ใช้สำเร็จ');
+        loadUsersData();
+      } else {
+        showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
+      }
     })
-    .withFailureHandler(function(e){
-      btn.disabled=false; btn.innerHTML='💾 บันทึก';
-      showToast('เกิดข้อผิดพลาด: '+e.message,'error');
-    })
-    [action](payload, S.user.username);
+    .catch(function(e) {
+      btn.disabled = false; btn.innerHTML = '💾 บันทึก';
+      showToast('เกิดข้อผิดพลาด: ' + (e && e.message ? e.message : ''), 'error');
+    });
 }
-    function approveUser(username){ if(!confirm('อนุมัติผู้ใช้ "'+username+'" ใช่หรือไม่?')) return; google.script.run.withSuccessHandler(function(res){ if(res&&res.success){ showToast('อนุมัติแล้ว'); loadUsersData(); } else showToast('เกิดข้อผิดพลาด: '+((res&&res.message)||''),'error'); }).withFailureHandler(function(e){ showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }).approveUser(S.user.sessionId, username, S.user.username); }
+    function approveUser(username) {
+  if (!confirm('อนุมัติผู้ใช้ "' + username + '" ใช่หรือไม่?')) return;
+  showToast('กำลังอนุมัติ...');
+  M.approveUser(S.user.sessionId, username, S.user.username)
+    .then(function(res) {
+      if (res && res.success) {
+        showToast('อนุมัติผู้ใช้ ' + username + ' แล้ว');
+        loadUsersData();
+      } else {
+        showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
+      }
+    })
+    .catch(function(e) {
+      showToast('เกิดข้อผิดพลาด: ' + (e && e.message ? e.message : ''), 'error');
+    });
+}
     function openDeleteUserModal(username,name){ S.pendingDelete=username; document.getElementById('delete-user-name').textContent=name+' ('+username+')'; openModal('modal-confirm-delete'); }
-    function confirmDeleteUser(){ if(!S.pendingDelete){ showToast('ไม่พบผู้ใช้','error'); return; } var btn=document.getElementById('confirm-delete-btn'); btn.disabled=true; btn.innerHTML='<span class="spin-sm"></span>'; google.script.run.withSuccessHandler(function(res){ btn.disabled=false; btn.innerHTML='🗑 ลบ'; if(res&&res.success){ closeModal('modal-confirm-delete'); showToast('ลบแล้ว'); S.pendingDelete=''; loadUsersData(); } else showToast('เกิดข้อผิดพลาด: '+((res&&res.message)||''),'error'); }).withFailureHandler(function(err){ btn.disabled=false; btn.innerHTML='🗑 ลบ'; showToast('เกิดข้อผิดพลาด: '+err.message,'error'); }).deleteUser(S.user.sessionId, S.pendingDelete, S.user.username); }
+    function confirmDeleteUser() {
+  if (!S.pendingDelete) { showToast('ไม่พบผู้ใช้', 'error'); return; }
+  var btn = document.getElementById('confirm-delete-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin-sm"></span> กำลังลบ...';
+  M.deleteUser(S.user.sessionId, S.pendingDelete, S.user.username)
+    .then(function(res) {
+      btn.disabled = false; btn.innerHTML = 'ลบ';
+      if (res && res.success) {
+        closeModal('modal-confirm-delete');
+        showToast('ลบผู้ใช้ ' + S.pendingDelete + ' แล้ว');
+        S.pendingDelete = '';
+        loadUsersData();
+      } else {
+        showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
+      }
+    })
+    .catch(function(e) {
+      btn.disabled = false; btn.innerHTML = 'ลบ';
+      showToast('เกิดข้อผิดพลาด: ' + (e && e.message ? e.message : ''), 'error');
+    });
+}
 
     // ════════════════════════════════════════
     // WELCOME EMAIL — ส่งทั้งหมด
@@ -6069,25 +6091,23 @@ function showPendingUsers() {
       var btn = document.getElementById('btn-confirm-welcome-all');
       if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังส่ง...'; }
 
-      google.script.run
-        .withSuccessHandler(function(result) {
-          if (btn) { btn.disabled = true; btn.innerHTML = '✅ ส่งเรียบร้อยแล้ว'; }
+      M.sendWelcomeEmailsToAllUsers()
+        .then(function(result) {
+          if (btn) { btn.disabled = true; btn.innerHTML = 'ส่งเรียบร้อยแล้ว'; }
           closeModal('modal-welcome-all');
-          showToast('📧 ' + (result || 'ส่ง Welcome Email เรียบร้อย'), 'success');
-          loadUsersData(); // reload เพื่ออัพเดต email_sent
-          // อัพเดตปุ่มหลัก
+          showToast((typeof result === 'string' ? result : 'ส่ง Welcome Email เรียบร้อย'), 'success');
+          loadUsersData();
           var mainBtn = document.getElementById('btn-send-welcome-all');
           if (mainBtn) {
             mainBtn.disabled = true;
-            mainBtn.style.background = '#4caf50';
-            mainBtn.innerHTML = '✅ ส่ง Welcome Email แล้ว';
+            mainBtn.style.background = 'var(--status-green)';
+            mainBtn.innerHTML = 'ส่ง Welcome Email แล้ว';
           }
         })
-        .withFailureHandler(function(e) {
-          if (btn) { btn.disabled = false; btn.innerHTML = '📧 ส่งอีเมลทั้งหมด'; }
-          showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
-        })
-        .sendWelcomeEmailsToAllUsers();
+        .catch(function(e) {
+          if (btn) { btn.disabled = false; btn.innerHTML = 'ส่งอีเมลทั้งหมด'; }
+          showToast('เกิดข้อผิดพลาด: ' + (e && e.message ? e.message : ''), 'error');
+        });
     }
 
     // ════════════════════════════════════════
@@ -6128,27 +6148,26 @@ function showPendingUsers() {
       var btn = document.getElementById('btn-confirm-welcome-one');
       if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังส่ง...'; }
 
-      google.script.run
-        .withSuccessHandler(function(res) {
+      M.sendWelcomeEmailToUser(S.user.sessionId, username, S.user.username)
+        .then(function(res) {
           if (res && res.success) {
-            if (btn) { btn.disabled = true; btn.innerHTML = '✅ ส่งแล้ว'; }
+            if (btn) { btn.disabled = true; btn.innerHTML = 'ส่งแล้ว'; }
             var sentEl = document.getElementById('welcome-one-already-sent');
             var formEl = document.getElementById('welcome-one-form');
             if (sentEl) sentEl.style.display = 'block';
             if (formEl) formEl.style.display = 'none';
-            showToast('📧 ส่ง Welcome Email ให้ ' + username + ' แล้ว', 'success');
+            showToast('ส่ง Welcome Email ให้ ' + username + ' แล้ว', 'success');
             closeModal('modal-welcome-one');
             loadUsersData();
           } else {
-            if (btn) { btn.disabled = false; btn.innerHTML = '📧 ส่งอีเมล'; }
-            showToast('ส่งไม่สำเร็จ: ' + ((res && res.message)||'ไม่ทราบสาเหตุ'), 'error');
+            if (btn) { btn.disabled = false; btn.innerHTML = 'ส่งอีเมล'; }
+            showToast('ส่งไม่สำเร็จ: ' + ((res && res.message) || 'ไม่ทราบสาเหตุ'), 'error');
           }
         })
-        .withFailureHandler(function(e) {
-          if (btn) { btn.disabled = false; btn.innerHTML = '📧 ส่งอีเมล'; }
-          showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
-        })
-        .sendWelcomeEmailToUser(S.user.sessionId, username, S.user.username);
+        .catch(function(e) {
+          if (btn) { btn.disabled = false; btn.innerHTML = 'ส่งอีเมล'; }
+          showToast('เกิดข้อผิดพลาด: ' + (e && e.message ? e.message : ''), 'error');
+        });
     }
 
     // ════════════════════════════════════════
