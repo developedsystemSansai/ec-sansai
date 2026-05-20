@@ -3575,6 +3575,14 @@
     <script>
 
     // ════════════════════════
+    // Bridge: ดึง M จาก window scope (set โดย GASBridge script)
+    // ใช้ getter เพื่อรองรับกรณี script โหลดก่อน window.M พร้อม
+    function getM() {
+      var m = window.M;
+      if (!m) { console.error('[AppBridge] M is not defined — ตรวจสอบ GASBridge script'); }
+      return m;
+    }
+    // ════════════════════════
     var S = {
       user: null, role: null, currentPage: 'dashboard',
       assignments: [], allUsers: [], staffProjects: [],
@@ -5827,7 +5835,7 @@ function loadUsersData() {
   }
   
   // ✅ callGAS (frontend รันบน GitHub Pages — ไม่ใช้ google.script.run)
-  M.getAllUsers(S.user.sessionId, S.user.username)
+  getM().getAllUsers(S.user.sessionId, S.user.username)
     .then(function(res) {
       var users;
       if (Array.isArray(res)) {
@@ -6016,8 +6024,8 @@ function showPendingUsers() {
     ? {payload:payload, adminUsername:S.user.username}
     : {payload:payload, adminUsername:S.user.username};
   var call = isEdit
-    ? M.updateUser(payload, S.user.username)
-    : M.createUser(payload, S.user.username);
+    ? getM().updateUser(payload, S.user.username)
+    : getM().createUser(payload, S.user.username);
   call
     .then(function(res) {
       btn.disabled = false; btn.innerHTML = '💾 บันทึก';
@@ -6037,7 +6045,7 @@ function showPendingUsers() {
     function approveUser(username) {
   if (!confirm('อนุมัติผู้ใช้ "' + username + '" ใช่หรือไม่?')) return;
   showToast('กำลังอนุมัติ...');
-  M.approveUser(S.user.sessionId, username, S.user.username)
+  getM().approveUser(S.user.sessionId, username, S.user.username)
     .then(function(res) {
       if (res && res.success) {
         showToast('อนุมัติผู้ใช้ ' + username + ' แล้ว');
@@ -6056,7 +6064,7 @@ function showPendingUsers() {
   var btn = document.getElementById('confirm-delete-btn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spin-sm"></span> กำลังลบ...';
-  M.deleteUser(S.user.sessionId, S.pendingDelete, S.user.username)
+  getM().deleteUser(S.user.sessionId, S.pendingDelete, S.user.username)
     .then(function(res) {
       btn.disabled = false; btn.innerHTML = 'ลบ';
       if (res && res.success) {
@@ -6113,7 +6121,7 @@ function showPendingUsers() {
       var btn = document.getElementById('btn-confirm-welcome-all');
       if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังส่ง...'; }
 
-      M.sendWelcomeEmailsToAllUsers()
+      getM().sendWelcomeEmailsToAllUsers()
         .then(function(result) {
           if (btn) { btn.disabled = true; btn.innerHTML = 'ส่งเรียบร้อยแล้ว'; }
           closeModal('modal-welcome-all');
@@ -6170,7 +6178,7 @@ function showPendingUsers() {
       var btn = document.getElementById('btn-confirm-welcome-one');
       if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังส่ง...'; }
 
-      M.sendWelcomeEmailToUser(S.user.sessionId, username, S.user.username)
+      getM().sendWelcomeEmailToUser(S.user.sessionId, username, S.user.username)
         .then(function(res) {
           if (res && res.success) {
             if (btn) { btn.disabled = true; btn.innerHTML = 'ส่งแล้ว'; }
@@ -8660,7 +8668,7 @@ function showPage(page) {
       var btn = document.getElementById('send-email-btn');
       btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังส่ง...';
 
-      M.sendUserNotificationEmail(payload, S.user.username)
+      getM().sendUserNotificationEmail(payload, S.user.username)
         .then(function(res) {
           btn.disabled = false; btn.innerHTML = '📧 ส่งอีเมล';
           if (res && res.success) {
