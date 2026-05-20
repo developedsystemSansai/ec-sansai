@@ -755,7 +755,8 @@ button{font-family:inherit;cursor:pointer}
 /* ─── CONFIG ──────────────────────────────────────────────────
    แก้ค่าที่นี่เท่านั้น
 ─────────────────────────────────────────────────────────────── */
-var GAS_URL  = 'https://script.google.com/macros/s/AKfycby_GFp6PtqRmLWEqayleD9nBscQvBTm288Dm5YMUMSHgXbaie3FTTuvB276hfYN9M69VQ/exec';
+// ✅ แก้ใหม่
+var GAS_URL = window.EC_CONFIG ? window.EC_CONFIG.GAS_URL : '';
 var APP_URL  = 'app.html';   /* path ของระบบ login/app */
 var NEWS_SHOW = 3;             /* จำนวนข่าวที่แสดง default */
 
@@ -822,9 +823,9 @@ var CAL = {
   /* ── fetch from GAS ── */
   fetchMeetings: function() {
     var self = this;
-    var body = JSON.stringify({ action: 'getPublicMeetings' });
-
-    fetch(GAS_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body: body })
+    // ✅ แก้ใหม่
+var body = JSON.stringify({ action: 'getPublicMeetings', origin: window.location.origin });
+fetch(GAS_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body: body })
       .then(function(r) { return r.text(); })
       .then(function(text) {
         var jsonStart = text.indexOf('{');
