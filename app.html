@@ -17,7 +17,8 @@ var GAS_URL = window.EC_CONFIG ? window.EC_CONFIG.GAS_URL : '';
       // ─────────────────────────────────────────────────────
 
       function callGAS(action, params) {
-        var body = JSON.stringify(Object.assign({ action: action }, params || {}));
+        // ✅ แก้ใหม่ — เพิ่ม origin
+var body = JSON.stringify(Object.assign({ action: action, origin: window.location.origin }, params || {}));
         return fetch(GAS_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain' },
