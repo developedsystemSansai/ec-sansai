@@ -3393,7 +3393,7 @@
           <input type="hidden" id="uf-edit-username">
           <div class="form-row-2">
             <div class="field-group"><label>Username <span class="req">*</span></label><input type="text" class="form-control" id="uf-username"></div>
-            <div class="field-group"><label>รหัสผ่าน <span class="req" id="uf-pass-req">*</span></label><div class="password-wrap"><input type="password" class="form-control" id="uf-password"><button class="toggle-pw" type="button" onclick="togglePw('uf-password',this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div><div class="hint-text" id="uf-pass-hint"></div></div>
+            <div class="field-group"><label>รหัสผ่าน <span class="req" id="uf-pass-req">*</span></label><div class="password-wrap"><input type="password" class="form-control" id="uf-password" oninput="checkPwStrength(this.value)"><button class="toggle-pw" type="button" onclick="togglePw('uf-password',this)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div><div class="hint-text" id="uf-pass-hint"></div></div>
           </div>
           <div class="field-group"><label>ชื่อ - นามสกุล <span class="req">*</span></label><input type="text" class="form-control" id="uf-name"></div>
           <div class="form-row-2">
@@ -5926,6 +5926,13 @@ function userActionBtns(u, isPending) {
     }
   }
 
+  // ปุ่มส่งอีเมลแจ้ง (เฉพาะ admin)
+  if (S._isAdmin) {
+    btns += '<button class="btn btn-sm" '
+      + 'style="background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;border-radius:5px;padding:3px 8px;cursor:pointer;font-size:12px" '
+      + 'onclick="openSendEmailModal(\'' + un + '\')" title="ส่งอีเมลแจ้งผู้ใช้">📨 ส่งอีเมล</button> ';
+  }
+
   // ไม่ให้ลบตัวเอง
   if (u.username !== (S.user && S.user.username)) {
     btns += '<button class="btn btn-sm btn-danger" onclick="openDeleteUserModal(\'' + un + '\',\'' + nm + '\')">🗑 ลบ</button>';
@@ -5972,16 +5979,27 @@ function showPendingUsers() {
   
   renderUsersTable(f);
 }
-    function openAddUserModal(){ document.getElementById('user-form-title').textContent='➕ เพิ่มผู้ใช้งานใหม่'; document.getElementById('uf-edit-username').value=''; ['uf-username','uf-password','uf-name','uf-email','uf-phone','uf-faculty','uf-department','uf-position'].forEach(function(id){ document.getElementById(id).value=''; }); document.getElementById('uf-username').disabled=false; document.getElementById('uf-roles').value=''; document.getElementById('uf-status').value='active'; document.getElementById('uf-pass-req').style.display='inline'; document.getElementById('uf-pass-hint').textContent='อย่างน้อย 6 ตัวอักษร'; openModal('modal-user-form'); }
+    function openAddUserModal(){ document.getElementById('user-form-title').textContent='➕ เพิ่มผู้ใช้งานใหม่'; document.getElementById('uf-edit-username').value=''; ['uf-username','uf-password','uf-name','uf-email','uf-phone','uf-faculty','uf-department','uf-position'].forEach(function(id){ document.getElementById(id).value=''; }); document.getElementById('uf-username').disabled=false; document.getElementById('uf-roles').value=''; document.getElementById('uf-status').value='active'; document.getElementById('uf-pass-req').style.display='inline'; document.getElementById('uf-pass-hint').textContent='อย่างน้อย 8 ตัว มีตัวพิมพ์เล็ก+ใหญ่+เลข เช่น Test1234'; openModal('modal-user-form'); }
     function openEditUserModal(username){ var u=S.allUsers.find(function(x){ return x.username===username; }); if(!u){ showToast('ไม่พบข้อมูล','error'); return; } document.getElementById('user-form-title').textContent='✏️ แก้ไขผู้ใช้: '+username; document.getElementById('uf-edit-username').value=username; document.getElementById('uf-username').value=username; document.getElementById('uf-username').disabled=true; document.getElementById('uf-password').value=''; document.getElementById('uf-name').value=u.name||''; document.getElementById('uf-email').value=u.email||''; document.getElementById('uf-phone').value=u.phone||''; document.getElementById('uf-faculty').value=u.faculty||''; document.getElementById('uf-department').value=u.department||''; document.getElementById('uf-position').value=u.position||''; document.getElementById('uf-roles').value=String(u.roles||'').replace('pending_',''); document.getElementById('uf-status').value=String(u.status||'active').toLowerCase(); document.getElementById('uf-pass-req').style.display='none'; document.getElementById('uf-pass-hint').textContent='เว้นว่างหากไม่เปลี่ยนรหัสผ่าน'; openModal('modal-user-form'); }
-    function saveUser(){
+    // Helper: ตรวจความแข็งแกร่งรหัสผ่านสำหรับ user form (admin)
+    function checkPwStrength(pw) {
+      var hintEl = document.getElementById('uf-pass-hint');
+      if (!hintEl) return;
+      if (!pw) { hintEl.textContent = 'อย่างน้อย 8 ตัว มีตัวพิมพ์เล็ก+ใหญ่+เลข เช่น Test1234'; hintEl.style.color = 'var(--text-light)'; return; }
+      var ok = pw.length >= 8 && /[a-z]/.test(pw) && /[A-Z]/.test(pw) && /\d/.test(pw);
+      hintEl.textContent = ok ? '✅ รหัสผ่านผ่านเกณฑ์' : '⚠️ ต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ ตัวเลข อย่างน้อย 8 ตัว';
+      hintEl.style.color = ok ? 'var(--green-main)' : 'var(--red)';
+    }
+        function saveUser(){
   var editUsername=val('uf-edit-username'), isEdit=!!editUsername;
   var username=val('uf-username').trim(), password=val('uf-password'),
       name=val('uf-name').trim(), email=val('uf-email').trim(),
       roles=val('uf-roles'), status=val('uf-status');
   if(!isEdit&&!/^[a-zA-Z0-9_]{4,20}$/.test(username)){ showToast('Username ต้องเป็น a-z, 0-9, _ 4-20 ตัว','error'); return; }
-  if(!isEdit&&password.length<6){ showToast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว','error'); return; }
-  if(isEdit&&password&&password.length<6){ showToast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว','error'); return; }
+  if(!isEdit&&password.length<8){ showToast('รหัสผ่านต้องมีอย่างน้อย 8 ตัว','error'); return; }
+  if(!isEdit&&!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)){ showToast('รหัสผ่านต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลข','error'); return; }
+  if(isEdit&&password&&password.length<8){ showToast('รหัสผ่านต้องมีอย่างน้อย 8 ตัว','error'); return; }
+  if(isEdit&&password&&!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)){ showToast('รหัสผ่านต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลข','error'); return; }
   if(!name||!email||!roles){ showToast('กรุณากรอกข้อมูลให้ครบ','error'); return; }
   var btn=document.getElementById('uf-save-btn');
   btn.disabled=true; btn.innerHTML='<span class="spin-sm"></span> กำลังบันทึก...';
@@ -8638,8 +8656,8 @@ function showPage(page) {
       var btn = document.getElementById('send-email-btn');
       btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังส่ง...';
 
-      google.script.run
-        .withSuccessHandler(function(res) {
+      M.sendUserNotificationEmail(payload, S.user.username)
+        .then(function(res) {
           btn.disabled = false; btn.innerHTML = '📧 ส่งอีเมล';
           if (res && res.success) {
             closeModal('modal-send-email');
@@ -8648,11 +8666,10 @@ function showPage(page) {
             showToast((res && res.message) || 'เกิดข้อผิดพลาด', 'error');
           }
         })
-        .withFailureHandler(function(e) {
+        .catch(function(e) {
           btn.disabled = false; btn.innerHTML = '📧 ส่งอีเมล';
-          showToast(e.message || 'เกิดข้อผิดพลาด', 'error');
-        })
-        .sendUserNotificationEmail(payload, S.user.username);
+          showToast((e && e.message) || 'เกิดข้อผิดพลาด', 'error');
+        });
     }
 
     // ═══════════════════════════════════════════════════════════════
