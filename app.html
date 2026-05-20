@@ -12,7 +12,8 @@
       // ── ตั้งค่า URL ที่นี่ ─────────────────────────────────
       // ⚠️ TODO: แทนที่ด้วย GAS Deployment URL จริงของคุณ
       // วิธีได้ URL: GAS Editor → Deploy → Manage deployments → Web App URL
-      var GAS_URL = 'https://script.google.com/macros/s/AKfycby_GFp6PtqRmLWEqayleD9nBscQvBTm288Dm5YMUMSHgXbaie3FTTuvB276hfYN9M69VQ/exec'; // ← เปลี่ยนตรงนี้
+      // ✅ แก้ใหม่
+var GAS_URL = window.EC_CONFIG ? window.EC_CONFIG.GAS_URL : '';
       // ─────────────────────────────────────────────────────
 
       function callGAS(action, params) {
