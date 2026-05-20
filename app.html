@@ -161,13 +161,13 @@
 
     :root {
       /* ── Navy + Gold — EC Sansai unified theme ─────────────────────
-         --green-* remapped to navy for backward compat with existing CSS
+         --navy-* = Navy palette (renamed from --green-* for clarity)
       ──────────────────────────────────────────────────────────────── */
-      --green-dark:    #0b1f35;
-      --green-main:    #1e4068;
-      --green-mid:     #3d6491;
-      --green-light:   #dce7f3;
-      --green-pale:    #eef3f9;
+      --navy-dark:    #0b1f35;
+      --navy-main:    #1e4068;
+      --navy-mid:     #3d6491;
+      --navy-light:   #dce7f3;
+      --navy-pale:    #eef3f9;
 
       --accent:        #b58a2a;
       --accent-light:  #f8f2e1;
@@ -225,7 +225,7 @@
     /* ── LOADING ── */
     #loading-overlay {
       position: fixed; inset: 0;
-      background: var(--green-dark);
+      background: var(--navy-dark);
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       z-index: 9999; transition: opacity .4s;
@@ -249,7 +249,7 @@
     #login-page {
       min-height: 100vh; display: none;
       align-items: center; justify-content: center;
-      background: var(--green-dark);
+      background: var(--navy-dark);
       padding: 24px;
     }
     .login-card {
@@ -266,7 +266,7 @@
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: var(--text-base);
       font-weight: 600;
-      color: var(--green-dark);
+      color: var(--navy-dark);
       margin-top: 12px;
       line-height: 1.5;
     }
@@ -281,7 +281,7 @@
     }
     .btn-login {
       width: 100%; padding: 11px;
-      background: var(--gold); color: var(--green-dark); font-weight:700;
+      background: var(--gold); color: var(--navy-dark); font-weight:700;
       border: none; border-radius: var(--radius);
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: var(--text-base); font-weight: 600;
@@ -294,13 +294,13 @@
       text-align: center; margin-top: 14px;
       font-size: var(--text-sm); color: var(--text-light);
     }
-    .login-link-row a { color: var(--green-main); font-weight: 600; cursor: pointer; }
+    .login-link-row a { color: var(--navy-main); font-weight: 600; cursor: pointer; }
 
     /* ── REGISTER ── */
     #register-page {
       min-height: 100vh; display: none;
       align-items: flex-start; justify-content: center;
-      background: var(--green-dark);
+      background: var(--navy-dark);
       padding: 28px 20px;
     }
     .register-card {
@@ -314,7 +314,7 @@
     }
     .register-header {
       border-bottom: 2px solid var(--gold);
-      background: var(--green-dark);
+      background: var(--navy-dark);
       padding: 24px 28px; text-align: center; color: var(--white);
     }
     .register-header h2 {
@@ -326,33 +326,33 @@
     .section-divider {
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: var(--text-sm); font-weight: 600;
-      color: var(--green-dark);
+      color: var(--navy-dark);
       padding: 8px 0 6px;
-      border-bottom: 2px solid var(--green-light);
+      border-bottom: 2px solid var(--navy-light);
       margin-bottom: 16px;
       letter-spacing: .3px;
     }
     .btn-register {
       width: 100%; padding: 12px;
-      background: var(--green-main); color: var(--white);
+      background: var(--navy-main); color: var(--white);
       border: none; border-radius: var(--radius);
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: var(--text-base); font-weight: 600;
       cursor: pointer; transition: background .15s;
     }
-    .btn-register:hover { background: var(--green-dark); }
+    .btn-register:hover { background: var(--navy-dark); }
     .btn-register:disabled { background: #b0c0b8; cursor: not-allowed; }
     .btn-back-login {
       width: 100%; padding: 10px;
       background: transparent;
-      color: var(--green-main);
+      color: var(--navy-main);
       border: 1.5px solid var(--border);
       border-radius: var(--radius);
       font-family: 'Sarabun', sans-serif;
       font-size: var(--text-sm); font-weight: 600;
       cursor: pointer; transition: all .15s;
     }
-    .btn-back-login:hover { background: var(--green-pale); border-color: var(--green-main); }
+    .btn-back-login:hover { background: var(--navy-pale); border-color: var(--navy-main); }
 
     /* Step indicator */
     .step-item { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 0 0 auto; }
@@ -363,17 +363,17 @@
       font-size: var(--text-sm); font-weight: 700;
       transition: all .25s;
     }
-    .step-item.active .step-circle { background: var(--green-main); color: var(--white); }
-    .step-item.done .step-circle  { background: var(--green-dark); color: var(--white); }
+    .step-item.active .step-circle { background: var(--navy-main); color: var(--white); }
+    .step-item.done .step-circle  { background: var(--navy-dark); color: var(--white); }
     .step-label { font-size: 11px; color: var(--text-light); white-space: nowrap; }
-    .step-item.active .step-label, .step-item.done .step-label { color: var(--green-main); }
+    .step-item.active .step-label, .step-item.done .step-label { color: var(--navy-main); }
     .step-line { flex: 1; height: 1.5px; background: var(--border); align-self: center; min-width: 28px; margin: 0 4px 14px; }
 
     /* ── ROLE ── */
     #role-page {
       min-height: 100vh; display: none;
       align-items: center; justify-content: center;
-      background: var(--green-dark); padding: 20px;
+      background: var(--navy-dark); padding: 20px;
     }
     .role-card {
       background: var(--white);
@@ -384,24 +384,24 @@
       animation: slideUp .3s ease;
       border-top: 3px solid var(--gold);
     }
-    .role-card h3 { font-family: 'Noto Serif Thai', 'Sarabun', serif; color: var(--green-dark); margin-bottom: 6px; font-size: var(--text-lg); }
+    .role-card h3 { font-family: 'Noto Serif Thai', 'Sarabun', serif; color: var(--navy-dark); margin-bottom: 6px; font-size: var(--text-lg); }
     .role-card p  { font-size: var(--text-sm); color: var(--text-light); margin-bottom: 24px; }
     .role-btn {
       width: 100%; padding: 12px; margin-bottom: 8px;
-      background: var(--green-main); color: var(--white);
+      background: var(--navy-main); color: var(--white);
       border: none; border-radius: var(--radius);
       font-family: 'Sarabun', sans-serif;
       font-size: var(--text-base); font-weight: 600;
       cursor: pointer; transition: all .15s;
       letter-spacing: .2px;
     }
-    .role-btn:hover { background: var(--green-dark); }
+    .role-btn:hover { background: var(--navy-dark); }
 
     /* ── MAIN APP ── */
     #main-app { display: none; min-height: 100vh; }
 
     .top-nav {
-      background: var(--green-dark);
+      background: var(--navy-dark);
       color: var(--white);
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 24px; height: 54px;
@@ -444,7 +444,7 @@
     .user-menu-btn:hover { background: rgba(255,255,255,.2); }
     .avatar {
       width: 26px; height: 26px;
-      background: var(--green-mid); border-radius: 4px;
+      background: var(--navy-mid); border-radius: 4px;
       display: flex; align-items: center; justify-content: center;
       font-size: var(--text-sm); font-weight: 700;
     }
@@ -464,7 +464,7 @@
       font-size: var(--text-sm); color: var(--text-dark);
       text-decoration: none; transition: background .1s; cursor: pointer;
     }
-    .dropdown-menu a:hover { background: var(--green-pale); }
+    .dropdown-menu a:hover { background: var(--navy-pale); }
     .dropdown-menu hr { border: none; border-top: 1px solid var(--border); margin: 3px 0; }
 
     /* ── SIDEBAR ── */
@@ -486,10 +486,10 @@
       border-left: 2px solid transparent;
       transition: all .12s; cursor: pointer;
     }
-    .sidebar-nav a:hover { background: var(--green-pale); color: var(--green-main); }
+    .sidebar-nav a:hover { background: var(--navy-pale); color: var(--navy-main); }
     .sidebar-nav a.active {
-      background: var(--green-light);
-      color: var(--green-dark);
+      background: var(--navy-light);
+      color: var(--navy-dark);
       border-left-color: var(--gold);
       font-weight: 600;
     }
@@ -498,7 +498,7 @@
     .sidebar-divider { height: 1px; background: var(--border); margin: 6px 14px; }
     .badge-count {
       margin-left: auto;
-      background: var(--green-main); color: var(--white);
+      background: var(--navy-main); color: var(--white);
       border-radius: 10px; padding: 1px 7px;
       font-size: 11px; font-weight: 700;
     }
@@ -524,12 +524,12 @@
       transition: box-shadow .15s, border-color .15s;
       display: flex; justify-content: space-between; align-items: flex-start;
     }
-    .stat-card:hover { box-shadow: var(--shadow-md); border-color: var(--green-mid); }
+    .stat-card:hover { box-shadow: var(--shadow-md); border-color: var(--navy-mid); }
     .stat-card .label { font-size: var(--text-xs); color: var(--text-light); font-weight: 500; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .5px; }
     .stat-card .num {
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: 1.5rem; font-weight: 700;
-      color: var(--green-dark);
+      color: var(--navy-dark);
       font-variant-numeric: tabular-nums;
     }
     .stat-card .num.orange { color: var(--accent); }
@@ -538,7 +538,7 @@
     .stat-icon {
       width: 34px; height: 34px;
       border-radius: var(--radius);
-      background: var(--green-light);
+      background: var(--navy-light);
       display: flex; align-items: center; justify-content: center;
       font-size: 15px;
     }
@@ -558,7 +558,7 @@
       border-left: 3px solid var(--gold);
       padding: 12px 18px;
       border-bottom: 1px solid var(--border);
-      background: var(--green-pale);
+      background: var(--navy-pale);
       display: flex; align-items: center;
       justify-content: space-between;
       flex-wrap: wrap; gap: 8px;
@@ -566,7 +566,7 @@
     .table-card-header h3 {
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: var(--text-base); font-weight: 600;
-      color: var(--green-dark);
+      color: var(--navy-dark);
     }
     table { width: 100%; border-collapse: collapse; }
     thead th {
@@ -578,7 +578,7 @@
     }
     tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
     tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: var(--green-pale); }
+    tbody tr:hover { background: var(--navy-pale); }
     tbody td { padding: 10px 14px; font-size: var(--text-sm); vertical-align: middle; }
 
     /* ── PILLS ── */
@@ -588,7 +588,7 @@
       font-size: var(--text-xs); font-weight: 600;
       letter-spacing: .2px;
     }
-    .pill-green  { background: var(--green-light); color: var(--green-dark); }
+    .pill-green  { background: var(--navy-light); color: var(--navy-dark); }
     .pill-orange { background: var(--accent-light); color: #7a5200; }
     .pill-red    { background: var(--red-light); color: var(--red); }
     .pill-blue   { background: var(--blue-light); color: var(--blue); }
@@ -607,17 +607,17 @@
       display: inline-flex; align-items: center; gap: 5px;
       letter-spacing: .2px;
     }
-    .btn-primary { background: var(--gold); color: var(--green-dark); font-weight:700; }
+    .btn-primary { background: var(--gold); color: var(--navy-dark); font-weight:700; }
     .btn-primary:hover { background:var(--gold-dark,#9a7220); transform:translateY(-1px); }
     .btn-accent  { background: var(--accent); color: var(--white); }
     .btn-accent:hover  { background: #a87300; }
     .btn-danger  { background: var(--red); color: var(--white); }
     .btn-danger:hover  { background: #9c2a1f; }
     .btn-outline {
-      background: transparent; color: var(--green-main);
+      background: transparent; color: var(--navy-main);
       border: 1.5px solid var(--border);
     }
-    .btn-outline:hover { background: var(--green-light); border-color: var(--green-main); }
+    .btn-outline:hover { background: var(--navy-light); border-color: var(--navy-main); }
     .btn-blue  { background: var(--blue); color: var(--white); }
     .btn-blue:hover  { background: #134561; }
     .btn-teal  { background: #00695c; color: var(--white); }
@@ -648,14 +648,14 @@
       padding: 16px 22px;
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
-      background: var(--green-pale);
+      background: var(--navy-pale);
       border-radius: var(--radius-lg) var(--radius-lg) 0 0;
       position: sticky; top: 0; z-index: 1;
     }
     .modal-header h3 {
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: var(--text-base); font-weight: 600;
-      color: var(--green-dark);
+      color: var(--navy-dark);
     }
     .modal-close {
       background: none; border: none;
@@ -704,9 +704,9 @@
     .form-section h5 {
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: var(--text-base); font-weight: 600;
-      color: var(--green-dark);
+      color: var(--navy-dark);
       margin-bottom: 16px; padding-bottom: 10px;
-      border-bottom: 1.5px solid var(--green-light);
+      border-bottom: 1.5px solid var(--navy-light);
       display: flex; align-items: center; gap: 7px;
     }
     .radio-group { display: flex; gap: 18px; padding: 4px 0; flex-wrap: wrap; }
@@ -739,8 +739,8 @@
       border-bottom: 2px solid transparent; margin-bottom: -1.5px;
       white-space: nowrap; transition: all .12s;
     }
-    .tab-btn.active { color: var(--green-main); border-bottom-color: var(--gold); font-weight: 700; }
-    .tab-btn:hover  { color: var(--green-main); }
+    .tab-btn.active { color: var(--navy-main); border-bottom-color: var(--gold); font-weight: 700; }
+    .tab-btn:hover  { color: var(--navy-main); }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
@@ -748,23 +748,23 @@
     .section-title {
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: var(--text-base); font-weight: 600;
-      color: var(--green-dark); margin-bottom: 14px;
+      color: var(--navy-dark); margin-bottom: 14px;
       display: flex; align-items: center; gap: 8px;
-      padding-left: 10px; border-left: 3px solid var(--green-main);
+      padding-left: 10px; border-left: 3px solid var(--navy-main);
     }
     .breadcrumb { font-size: var(--text-xs); color: var(--text-light); margin-bottom: 14px; }
-    .breadcrumb a { color: var(--green-main); text-decoration: none; cursor: pointer; }
+    .breadcrumb a { color: var(--navy-main); text-decoration: none; cursor: pointer; }
     .page-title {
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: var(--text-xl); font-weight: 700;
-      color: var(--green-dark); margin-bottom: 18px;
+      color: var(--navy-dark); margin-bottom: 18px;
     }
     .dash-recent-title {
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: var(--text-base); font-weight: 600;
-      color: var(--green-dark); margin-bottom: 10px;
+      color: var(--navy-dark); margin-bottom: 10px;
       display: flex; align-items: center; gap: 7px;
-      padding-left: 10px; border-left: 3px solid var(--green-main);
+      padding-left: 10px; border-left: 3px solid var(--navy-main);
     }
 
     /* ── ALERTS ── */
@@ -774,7 +774,7 @@
       display: flex; align-items: flex-start; gap: 9px;
     }
     .alert-info    { background: var(--blue-light); color: var(--blue); border: 1px solid #a9cfe6; }
-    .alert-success { background: var(--green-light); color: var(--green-dark); border: 1px solid var(--green-mid); }
+    .alert-success { background: var(--navy-light); color: var(--navy-dark); border: 1px solid var(--navy-mid); }
     .alert-warning { background: var(--accent-light); color: #7a5200; border: 1px solid #e0b866; }
     .alert-danger  { background: var(--red-light); color: var(--red); border: 1px solid #e8a8a3; }
 
@@ -790,7 +790,7 @@
       border-radius: 50%;
       animation: spin .6s linear infinite; vertical-align: middle;
     }
-    .spin-sm.dark { border-color: rgba(0,0,0,.15); border-top-color: var(--green-dark); }
+    .spin-sm.dark { border-color: rgba(0,0,0,.15); border-top-color: var(--navy-dark); }
     .search-bar {
       display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
       background: var(--white); padding: 12px 14px;
@@ -807,10 +807,10 @@
       transition: background .1s;
     }
     .project-row-card:last-child { border-bottom: none; }
-    .project-row-card:hover { background: var(--green-pale); }
+    .project-row-card:hover { background: var(--navy-pale); }
     .project-row-code {
       font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: var(--text-sm);
-      font-weight: 700; color: var(--green-dark); min-width: 130px;
+      font-weight: 700; color: var(--navy-dark); min-width: 130px;
     }
     .project-row-title { flex: 1; font-size: var(--text-sm); color: var(--text-dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .project-row-pi     { font-size: var(--text-xs); color: var(--text-light); min-width: 110px; text-align: right; }
@@ -819,13 +819,13 @@
 
     /* ── DOC VERIFY BADGE ── */
     .doc-verify-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 4px; font-size: var(--text-xs); font-weight: 600; }
-    .doc-verify-badge.verified   { background: var(--green-light); color: var(--green-dark); }
+    .doc-verify-badge.verified   { background: var(--navy-light); color: var(--navy-dark); }
     .doc-verify-badge.unverified { background: var(--accent-light); color: #7a5200; }
     .doc-verify-badge.rejected   { background: var(--red-light); color: var(--red); }
 
     /* ── ASSIGN ── */
-    .assign-project-card { background: var(--green-pale); border: 1px solid var(--green-light); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 18px; }
-    .assign-project-card .proj-code { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: var(--text-lg); font-weight: 700; color: var(--green-dark); }
+    .assign-project-card { background: var(--navy-pale); border: 1px solid var(--navy-light); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 18px; }
+    .assign-project-card .proj-code { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: var(--text-lg); font-weight: 700; color: var(--navy-dark); }
     .assign-project-card .proj-title { font-size: var(--text-sm); color: var(--text-mid); margin-top: 3px; }
     .assign-project-card .proj-meta  { font-size: var(--text-xs); color: var(--text-light); margin-top: 3px; }
     .project-select-wrap { position: relative; }
@@ -834,12 +834,12 @@
     .committee-checkbox-list { max-height: 240px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); padding: 6px; }
     .committee-item { display: flex; align-items: flex-start; gap: 9px; padding: 9px 10px; border-radius: 4px; cursor: pointer; transition: background .1s; border-bottom: 1px solid var(--border); }
     .committee-item:last-child { border-bottom: none; }
-    .committee-item:hover { background: var(--green-pale); }
-    .committee-item input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--green-main); margin-top: 2px; flex-shrink: 0; cursor: pointer; }
+    .committee-item:hover { background: var(--navy-pale); }
+    .committee-item input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--navy-main); margin-top: 2px; flex-shrink: 0; cursor: pointer; }
     .committee-item .comm-name { font-weight: 600; font-size: var(--text-sm); color: var(--text-dark); }
     .committee-item .comm-dept { font-size: var(--text-xs); color: var(--text-light); }
     .committee-item .comm-email { font-size: 11px; color: var(--blue); }
-    .selected-count { font-size: var(--text-sm); color: var(--green-main); font-weight: 700; margin-top: 7px; }
+    .selected-count { font-size: var(--text-sm); color: var(--navy-main); font-weight: 700; margin-top: 7px; }
     .email-badge { background: var(--blue-light); color: var(--blue); border-radius: 4px; padding: 1px 7px; font-size: 11px; font-weight: 600; margin-left: 5px; }
 
     /* ── DOCS / UPLOAD ── */
@@ -849,9 +849,9 @@
       display: flex; align-items: center; gap: 12px;
       transition: border-color .15s; box-shadow: var(--shadow-sm);
     }
-    .doc-card:hover { border-color: var(--green-main); }
+    .doc-card:hover { border-color: var(--navy-main); }
     .doc-card .doc-no {
-      width: 30px; height: 30px; background: var(--green-main); color: var(--white);
+      width: 30px; height: 30px; background: var(--navy-main); color: var(--white);
       border-radius: 4px; display: flex; align-items: center; justify-content: center;
       font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: var(--text-sm); font-weight: 700; flex-shrink: 0;
     }
@@ -859,19 +859,19 @@
     .doc-card .doc-title small { display: block; font-weight: 400; color: var(--text-light); font-size: var(--text-xs); margin-top: 1px; }
     .doc-progress { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-top: 14px; }
     .doc-progress-bar-wrap { background: var(--border); border-radius: 3px; height: 8px; overflow: hidden; margin: 8px 0; }
-    .doc-progress-bar { height: 100%; border-radius: 3px; background: var(--green-main); transition: width .4s; }
+    .doc-progress-bar { height: 100%; border-radius: 3px; background: var(--navy-main); transition: width .4s; }
     .doc-progress-bar.warning { background: var(--accent); }
     .upload-area { border: 2px dashed var(--border); border-radius: var(--radius); padding: 20px; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; background: var(--bg); }
-    .upload-area:hover { border-color: var(--green-main); background: var(--green-pale); }
+    .upload-area:hover { border-color: var(--navy-main); background: var(--navy-pale); }
     .file-item { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; background: var(--bg); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 6px; }
     .upload-slot-optional { background: var(--white); border: 1.5px dashed var(--border); border-radius: var(--radius); padding: 9px 12px; margin-bottom: 5px; }
 
     /* ── CUSTOM RADIO ── */
     .custom-radio { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: var(--radius); margin-bottom: 7px; cursor: pointer; transition: all .12s; }
-    .custom-radio:hover { border-color: var(--green-main); background: var(--green-pale); }
-    .custom-radio input[type=radio] { accent-color: var(--green-main); width: 15px; height: 15px; }
+    .custom-radio:hover { border-color: var(--navy-main); background: var(--navy-pale); }
+    .custom-radio input[type=radio] { accent-color: var(--navy-main); width: 15px; height: 15px; }
     .custom-radio label { margin: 0; cursor: pointer; font-size: var(--text-sm); }
-    .custom-radio.selected { border-color: var(--green-main); background: var(--green-light); }
+    .custom-radio.selected { border-color: var(--navy-main); background: var(--navy-light); }
 
     /* ── EVAL ── */
     .eval-question { background: var(--bg); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; border: 1px solid var(--border); }
@@ -881,15 +881,15 @@
 
     /* ── NOTIFICATIONS ── */
     .notif-item { display: flex; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
-    .notif-item:hover { background: var(--green-pale); }
+    .notif-item:hover { background: var(--navy-pale); }
     .notif-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
-    .notif-dot.unread { background: var(--green-main); }
+    .notif-dot.unread { background: var(--navy-main); }
     .notif-dot.read   { background: #ccc; }
 
     /* ── TOAST ── */
     #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9000; display: flex; flex-direction: column; gap: 7px; }
     .toast {
-      background: var(--green-dark); color: var(--white);
+      background: var(--navy-dark); color: var(--white);
       border-radius: var(--radius); padding: 10px 16px;
       font-size: var(--text-sm); box-shadow: var(--shadow-md);
       animation: slideUp .2s ease; max-width: 310px;
@@ -916,10 +916,10 @@
       transition: color .12s; -webkit-tap-highlight-color: transparent;
     }
     .bottom-nav-item .bn-icon { font-size: 18px; line-height: 1; }
-    .bottom-nav-item.active { color: var(--green-main); }
+    .bottom-nav-item.active { color: var(--navy-main); }
     .bottom-nav-item.active::after {
       content: ''; position: absolute; top: 0; left: 25%; right: 25%;
-      height: 2px; background: var(--green-main); border-radius: 0 0 2px 2px;
+      height: 2px; background: var(--navy-main); border-radius: 0 0 2px 2px;
     }
     .bottom-nav-badge {
       position: absolute; top: 4px; right: calc(50% - 18px);
@@ -942,21 +942,21 @@
 
     /* ── CONTACT SECTION ── */
     .contact-section { background: var(--white); border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; margin-bottom: 18px; }
-    .contact-header { background: var(--green-dark); padding: 18px 22px; display: flex; align-items: center; gap: 12px; }
+    .contact-header { background: var(--navy-dark); padding: 18px 22px; display: flex; align-items: center; gap: 12px; }
     .contact-header-icon { width: 40px; height: 40px; background: rgba(255,255,255,.12); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
     .contact-header-text h3 { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: var(--text-base); font-weight: 600; color: var(--white); margin-bottom: 2px; }
     .contact-header-text p  { font-size: var(--text-xs); color: rgba(255,255,255,.65); }
     .contact-body { padding: 18px 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .contact-card { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; background: var(--green-pale); border: 1px solid var(--green-light); border-radius: var(--radius); transition: all .15s; text-decoration: none; color: inherit; cursor: default; }
+    .contact-card { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; background: var(--navy-pale); border: 1px solid var(--navy-light); border-radius: var(--radius); transition: all .15s; text-decoration: none; color: inherit; cursor: default; }
     .contact-card.clickable { cursor: pointer; }
-    .contact-card.clickable:hover { border-color: var(--green-main); background: var(--green-light); box-shadow: var(--shadow-sm); }
+    .contact-card.clickable:hover { border-color: var(--navy-main); background: var(--navy-light); box-shadow: var(--shadow-sm); }
     .contact-card-icon { width: 36px; height: 36px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
-    .ci-green  { background: var(--green-light); }
+    .ci-green  { background: var(--navy-light); }
     .ci-blue   { background: var(--blue-light); }
     .ci-green2 { background: #e0f2f1; }
     .ci-line   { background: #d4f5de; }
     .contact-card-body .cc-label { font-size: 10px; font-weight: 700; color: var(--text-light); letter-spacing: .5px; text-transform: uppercase; margin-bottom: 2px; }
-    .contact-card-body .cc-value { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: var(--text-sm); font-weight: 700; color: var(--green-dark); line-height: 1.3; }
+    .contact-card-body .cc-value { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: var(--text-sm); font-weight: 700; color: var(--navy-dark); line-height: 1.3; }
     .contact-card-body .cc-sub   { font-size: var(--text-xs); color: var(--text-light); margin-top: 1px; }
     .line-badge { display: inline-flex; align-items: center; gap: 4px; background: #06c755; color: var(--white); border-radius: 20px; padding: 3px 9px; font-size: var(--text-xs); font-weight: 700; margin-top: 5px; cursor: pointer; transition: background .12s; }
     .line-badge:hover { background: #04a040; }
@@ -968,7 +968,7 @@
     .faq-trigger-btn {
       position: fixed; bottom: 76px; right: 20px;
       width: 46px; height: 46px;
-      background: var(--green-main); color: var(--white);
+      background: var(--navy-main); color: var(--white);
       border: none; border-radius: 50%;
       font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: 18px; font-weight: 700;
@@ -977,7 +977,7 @@
       display: flex; align-items: center; justify-content: center;
       transition: all .15s; z-index: 300;
     }
-    .faq-trigger-btn:hover { background: var(--green-dark); transform: scale(1.06); }
+    .faq-trigger-btn:hover { background: var(--navy-dark); transform: scale(1.06); }
     .faq-trigger-btn::before {
       content: ''; position: absolute; inset: -5px; border-radius: 50%;
       border: 1.5px solid rgba(33,122,71,.3);
@@ -986,12 +986,12 @@
     @keyframes faqPulse { 0% { transform: scale(.9); opacity: 1; } 70% { transform: scale(1.35); opacity: 0; } 100% { transform: scale(1.35); opacity: 0; } }
     .faq-trigger-tooltip {
       position: absolute; right: 54px;
-      background: var(--green-dark); color: var(--white);
+      background: var(--navy-dark); color: var(--white);
       font-family: 'Sarabun', sans-serif; font-size: var(--text-xs); font-weight: 600;
       padding: 5px 9px; border-radius: 5px; white-space: nowrap;
       pointer-events: none; opacity: 0; transform: translateX(5px); transition: all .15s;
     }
-    .faq-trigger-tooltip::after { content: ''; position: absolute; top: 50%; right: -4px; transform: translateY(-50%); border: 4px solid transparent; border-left-color: var(--green-dark); border-right: 0; }
+    .faq-trigger-tooltip::after { content: ''; position: absolute; top: 50%; right: -4px; transform: translateY(-50%); border: 4px solid transparent; border-left-color: var(--navy-dark); border-right: 0; }
     .faq-trigger-btn:hover .faq-trigger-tooltip { opacity: 1; transform: translateX(0); }
 
     /* ── FAQ PANEL ── */
@@ -1000,36 +1000,36 @@
     .faq-panel { width: 100%; max-width: 460px; height: 92vh; background: var(--white); border-radius: var(--radius-lg) var(--radius-lg) 0 0; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); animation: faqSlideUp .28s cubic-bezier(.22,1,.36,1); overflow: hidden; }
     @media (min-width: 600px) { .faq-overlay { align-items: flex-start; justify-content: flex-end; padding: 10px; } .faq-panel { height: calc(100vh - 20px); border-radius: var(--radius-lg); } }
     @keyframes faqSlideUp { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: translateY(0); } }
-    .faq-panel-header { padding: 16px 18px 14px; background: var(--green-dark); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .faq-panel-header { padding: 16px 18px 14px; background: var(--navy-dark); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
     .faq-panel-header h3 { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: var(--text-base); font-weight: 600; color: var(--white); display: flex; align-items: center; gap: 7px; }
     .faq-close-btn { background: rgba(255,255,255,.15); border: none; border-radius: 5px; width: 30px; height: 30px; color: var(--white); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .12s; }
     .faq-close-btn:hover { background: rgba(255,255,255,.28); }
-    .faq-search-wrap { padding: 10px 14px; background: var(--green-pale); border-bottom: 1px solid var(--border); flex-shrink: 0; position: relative; }
+    .faq-search-wrap { padding: 10px 14px; background: var(--navy-pale); border-bottom: 1px solid var(--border); flex-shrink: 0; position: relative; }
     .faq-search-input { width: 100%; padding: 8px 32px 8px 12px; border: 1.5px solid var(--border); border-radius: 20px; font-family: 'Sarabun', sans-serif; font-size: var(--text-sm); background: var(--white); outline: none; transition: border-color .15s; }
-    .faq-search-input:focus { border-color: var(--green-main); }
+    .faq-search-input:focus { border-color: var(--navy-main); }
     .faq-cats { display: flex; gap: 5px; padding: 9px 14px; overflow-x: auto; border-bottom: 1px solid var(--border); flex-shrink: 0; scrollbar-width: none; }
     .faq-cats::-webkit-scrollbar { display: none; }
     .faq-cat-btn { flex-shrink: 0; padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--white); font-family: 'Sarabun', sans-serif; font-size: var(--text-xs); font-weight: 600; color: var(--text-mid); cursor: pointer; transition: all .12s; white-space: nowrap; }
-    .faq-cat-btn:hover { border-color: var(--green-main); color: var(--green-main); }
-    .faq-cat-btn.active { background: var(--green-main); border-color: var(--green-main); color: var(--white); }
+    .faq-cat-btn:hover { border-color: var(--navy-main); color: var(--navy-main); }
+    .faq-cat-btn.active { background: var(--navy-main); border-color: var(--navy-main); color: var(--white); }
     .faq-body { flex: 1; overflow-y: auto; padding: 10px 14px 22px; }
     .faq-body::-webkit-scrollbar { width: 3px; }
     .faq-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
     .faq-group { margin-bottom: 6px; }
     .faq-group-label { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-light); padding: 10px 0 5px; }
     .faq-item { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 5px; overflow: hidden; transition: border-color .15s; }
-    .faq-item.open { border-color: var(--green-mid); }
+    .faq-item.open { border-color: var(--navy-mid); }
     .faq-item.hidden { display: none; }
     .faq-q { width: 100%; background: none; border: none; padding: 11px 12px; text-align: left; cursor: pointer; display: flex; align-items: flex-start; gap: 9px; font-family: 'Sarabun', sans-serif; font-size: var(--text-sm); font-weight: 600; color: var(--text-dark); transition: background .1s; line-height: 1.5; }
-    .faq-q:hover { background: var(--green-pale); }
-    .faq-item.open .faq-q { background: var(--green-pale); color: var(--green-dark); }
-    .faq-q-icon { width: 20px; height: 20px; background: var(--green-light); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); flex-shrink: 0; margin-top: 1px; }
+    .faq-q:hover { background: var(--navy-pale); }
+    .faq-item.open .faq-q { background: var(--navy-pale); color: var(--navy-dark); }
+    .faq-q-icon { width: 20px; height: 20px; background: var(--navy-light); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); flex-shrink: 0; margin-top: 1px; }
     .faq-q-text { flex: 1; }
     .faq-arrow { font-size: 10px; color: var(--text-light); flex-shrink: 0; transition: transform .22s; margin-top: 3px; }
-    .faq-item.open .faq-arrow { transform: rotate(180deg); color: var(--green-main); }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); color: var(--navy-main); }
     .faq-a { max-height: 0; overflow: hidden; transition: max-height .32s cubic-bezier(.4,0,.2,1); }
     .faq-item.open .faq-a { max-height: 600px; }
-    .faq-a-inner { padding: 0 12px 12px 41px; font-size: var(--text-sm); color: var(--text-mid); line-height: 1.75; border-top: 1px solid var(--green-light); }
+    .faq-a-inner { padding: 0 12px 12px 41px; font-size: var(--text-sm); color: var(--text-mid); line-height: 1.75; border-top: 1px solid var(--navy-light); }
     .faq-a-inner a { color: var(--blue); font-weight: 600; }
     .faq-a-inner ul { padding-left: 14px; margin-top: 5px; }
     .faq-a-inner li { margin-bottom: 3px; }
@@ -1037,8 +1037,8 @@
     .faq-a-inner .info-box { background: var(--blue-light); border-left: 2px solid var(--blue); border-radius: 0 4px 4px 0; padding: 7px 10px; margin-top: 7px; font-size: var(--text-sm); color: #0d3d6e; }
     .faq-no-results { text-align: center; padding: 36px 18px; color: var(--text-light); display: none; }
     .faq-no-results .nr-icon { font-size: 36px; margin-bottom: 7px; }
-    .faq-contact-strip { background: var(--green-pale); border: 1px solid var(--green-light); border-radius: var(--radius); padding: 12px 14px; margin-top: 14px; text-align: center; font-size: var(--text-sm); color: var(--text-mid); }
-    .faq-contact-strip strong { color: var(--green-dark); }
+    .faq-contact-strip { background: var(--navy-pale); border: 1px solid var(--navy-light); border-radius: var(--radius); padding: 12px 14px; margin-top: 14px; text-align: center; font-size: var(--text-sm); color: var(--text-mid); }
+    .faq-contact-strip strong { color: var(--navy-dark); }
     .faq-contact-strip .faq-line-btn { display: inline-flex; align-items: center; gap: 5px; background: #06c755; color: var(--white); border-radius: 20px; padding: 5px 12px; font-size: var(--text-sm); font-weight: 700; margin-top: 7px; cursor: pointer; border: none; transition: background .12s; }
     .faq-contact-strip .faq-line-btn:hover { background: #04a040; }
 
@@ -1099,14 +1099,14 @@
     /* ── REPORT TYPE CARDS ── */
     .report-type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-bottom: 18px; }
     .report-type-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px; cursor: pointer; transition: all .15s; text-align: center; }
-    .report-type-card:hover { border-color: var(--green-main); background: var(--green-pale); }
-    .report-type-card.selected { border-color: var(--green-main); background: var(--green-light); }
+    .report-type-card:hover { border-color: var(--navy-main); background: var(--navy-pale); }
+    .report-type-card.selected { border-color: var(--navy-main); background: var(--navy-light); }
     .report-type-card .rt-icon { font-size: 28px; margin-bottom: 6px; }
-    .report-type-card .rt-label { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-weight: 600; font-size: var(--text-sm); color: var(--green-dark); margin-bottom: 3px; }
+    .report-type-card .rt-label { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-weight: 600; font-size: var(--text-sm); color: var(--navy-dark); margin-bottom: 3px; }
     .report-type-card .rt-desc { font-size: var(--text-xs); color: var(--text-light); line-height: 1.4; }
     .report-stat-pill { padding: 7px 14px; border-radius: 4px; font-size: var(--text-xs); font-weight: 700; display: flex; align-items: center; gap: 5px; }
     .rsp-pending  { background: var(--accent-light); color: #7a5200; }
-    .rsp-approved { background: var(--green-light); color: var(--green-dark); }
+    .rsp-approved { background: var(--navy-light); color: var(--navy-dark); }
     .rsp-revise   { background: var(--red-light); color: var(--red); }
     .report-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 10px; box-shadow: var(--shadow-sm); }
     .report-card .rc-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
@@ -1114,8 +1114,8 @@
     .report-card .rc-meta  { font-size: var(--text-xs); color: var(--text-light); }
     .report-card .rc-note  { background: var(--accent-light); border-left: 2px solid var(--accent); padding: 7px 10px; border-radius: 0 var(--radius) var(--radius) 0; font-size: var(--text-sm); margin-top: 9px; }
     .report-status-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-    .approved-project-card { background: var(--green-pale); border: 1.5px solid var(--green-light); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-    .approved-project-card .apc-code { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: var(--text-base); font-weight: 700; color: var(--green-dark); }
+    .approved-project-card { background: var(--navy-pale); border: 1.5px solid var(--navy-light); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .approved-project-card .apc-code { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: var(--text-base); font-weight: 700; color: var(--navy-dark); }
 
     /* ── MINUTES ── */
     .minute-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; transition: all .12s; box-shadow: var(--shadow-sm); }
@@ -1135,7 +1135,7 @@
     /* ── SCROLLBAR ── */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--green-mid); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--navy-mid); }
 
     /* ── CODE / PRE (docs page) ── */
     code { background: #f0f4f8; border-radius: 4px; padding: 1px 7px; font-family: 'Fira Code', monospace; font-size: var(--text-sm); color: #c0392b; }
@@ -1210,29 +1210,29 @@
       border: 1.5px solid var(--border); border-radius: var(--radius);
       padding: 12px 16px; cursor: pointer; transition: all .15s; margin-bottom: 8px; display: block;
     }
-    .email-type-card:hover, .email-type-card.selected { border-color: var(--green-main); background: var(--green-pale); }
-    .email-type-card input[type="radio"] { margin-right: 8px; accent-color: var(--green-main); }
+    .email-type-card:hover, .email-type-card.selected { border-color: var(--navy-main); background: var(--navy-pale); }
+    .email-type-card input[type="radio"] { margin-right: 8px; accent-color: var(--navy-main); }
     /* ── set-review-type option card ── */
     .srt-opt-card {
       display: flex; align-items: flex-start; gap: 10px;
       padding: 12px; border: 1.5px solid var(--border); border-radius: 8px;
       cursor: pointer; margin-bottom: 8px; transition: all .15s;
     }
-    .srt-opt-card:hover { border-color: var(--green-main); background: var(--green-pale); }
-    .srt-opt-card.selected { border-color: var(--green-main); background: var(--green-pale); }
+    .srt-opt-card:hover { border-color: var(--navy-main); background: var(--navy-pale); }
+    .srt-opt-card.selected { border-color: var(--navy-main); background: var(--navy-pale); }
     .srt-opt-card input[type="radio"] { margin-top: 3px; flex-shrink: 0; }
 
     .inst-ribbon {
       height: 4px;
       background: linear-gradient(90deg,
-        var(--green-dark) 0% 33.33%,
+        var(--navy-dark) 0% 33.33%,
         var(--gold)       33.33% 66.66%,
         var(--status-green,#1b5e3e) 66.66% 100%
       );
     }
 
     /* ── EC Sansai Theme Polish ── */
-    .inst-ribbon{height:4px;background:linear-gradient(90deg,var(--green-dark) 0% 33.33%,var(--gold) 33.33% 66.66%,var(--status-green,#1b5e3e) 66.66% 100%)}
+    .inst-ribbon{height:4px;background:linear-gradient(90deg,var(--navy-dark) 0% 33.33%,var(--gold) 33.33% 66.66%,var(--status-green,#1b5e3e) 66.66% 100%)}
     .page-title,.section-title,.modal-header h3,.nav-title{font-family:'Noto Serif Thai','Sarabun',serif!important}
     .form-control:focus,.form-control:focus-visible{border-color:var(--gold)!important;box-shadow:0 0 0 3px rgba(181,138,42,.15)!important;outline:none}
     .stat-card{border-top:3px solid var(--gold)!important}
@@ -1240,9 +1240,9 @@
     .modal-header{border-bottom:2px solid var(--gold)!important}
     .sidebar-nav a.active .icon,.sidebar-nav a:hover .icon{color:var(--gold)}
     .sidebar-nav a .icon{font-size:0;width:18px;height:18px;display:inline-flex;align-items:center;flex-shrink:0}
-    .login-logo h2{font-family:'Noto Serif Thai','Sarabun',serif!important;color:var(--green-dark)!important}
+    .login-logo h2{font-family:'Noto Serif Thai','Sarabun',serif!important;color:var(--navy-dark)!important}
     .pill-green{background:var(--status-green-light,#eaf4ee)!important;color:var(--status-green,#1b5e3e)!important}
-    .breadcrumb a{color:var(--green-main)}.breadcrumb a:hover{color:var(--gold);text-decoration:underline}
+    .breadcrumb a{color:var(--navy-main)}.breadcrumb a:hover{color:var(--gold);text-decoration:underline}
 
     </style>
     </head>
@@ -1256,7 +1256,7 @@
 
     <!-- LOGIN PAGE -->
 <div class="inst-ribbon" aria-hidden="true"></div>
-    <div id="login-page" style="display:none; align-items:center; justify-content:center; background:var(--green-dark);">
+    <div id="login-page" style="display:none; align-items:center; justify-content:center; background:var(--navy-dark);">
   <div class="login-card">
     <div class="login-logo">
       <div style="display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
@@ -1282,15 +1282,15 @@
       </div>
       <!-- ✅ เพิ่มลิงก์ลืมรหัสผ่านไว้ที่นี่ ภายใน form-group -->
       <div style="text-align: right; margin-top: 4px;">
-        <a onclick="openForgotPasswordModal()" style="color: var(--green-main); font-size: 13px; cursor: pointer; text-decoration: underline;">ลืมรหัสผ่าน?</a>
+        <a onclick="openForgotPasswordModal()" style="color: var(--navy-main); font-size: 13px; cursor: pointer; text-decoration: underline;">ลืมรหัสผ่าน?</a>
       </div>
     </div>
     <button class="btn-login" id="btn-login-submit" onclick="doLogin()">เข้าสู่ระบบ</button>
     <p class="login-link-row" style="margin-top:14px">ยังไม่มีบัญชี? <a onclick="showRegisterPage()">สมัครสมาชิก / ลงทะเบียน</a></p>
 
     <!-- ✅ SEC-FIX: Privacy Notice -->
-    <div style="margin-top:18px;padding:12px 14px;background:#f2faf5;border-radius:8px;border:1px solid #c8dfd0;">
-      <p style="font-size:11px;color:#3d5c46;line-height:1.7;margin:0;">
+    <div style="margin-top:18px;padding:12px 14px;background:var(--navy-pale);border-radius:8px;border:1px solid var(--navy-light);">
+      <p style="font-size:11px;color:var(--text-mid);line-height:1.7;margin:0;">
         🔒 <strong>นโยบายความเป็นส่วนตัว</strong><br>
         ระบบนี้เก็บรวบรวมข้อมูลส่วนบุคคลของท่าน เช่น ชื่อ อีเมล เบอร์โทร และข้อมูลโครงการวิจัย 
         เพื่อวัตถุประสงค์ในการบริหารจัดการงานวิจัยของโรงพยาบาลสันทรายเท่านั้น 
@@ -1302,7 +1302,7 @@
 </div>
 
     <!-- REGISTER PAGE -->
-    <div id="register-page" style="display:none; align-items:flex-start; justify-content:center; background:var(--green-dark); overflow-y:auto;">
+    <div id="register-page" style="display:none; align-items:flex-start; justify-content:center; background:var(--navy-dark); overflow-y:auto;">
       <div class="register-card">
         <div class="register-header">
           <div style="margin-bottom:10px; display:flex; align-items:center; justify-content:center;">
@@ -1385,7 +1385,7 @@
       <div style="padding:12px; background:#f0f9f4; border:1px solid #2d8a52; border-radius:8px; display:flex; align-items:center; gap:10px">
         <span style="font-size:24px">📄</span>
         <div style="flex:1">
-          <div id="ethics-cert-filename" style="font-weight:500; color:#1a6b3a"></div>
+          <div id="ethics-cert-filename" style="font-weight:500; color:var(--status-green)"></div>
           <div id="ethics-cert-filesize" style="font-size:13px; color:#666"></div>
         </div>
         <button type="button" onclick="removeEthicsCert()" style="background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:13px">ลบ</button>
@@ -1395,7 +1395,7 @@
 
   <!-- ข้อความแจ้งเตือน (แสดงเมื่อเลือก "ยังไม่ได้อบรม") -->
   <div id="ethics-info-section" style="display:none">
-    <div style="padding:16px; background:#fff8e1; border-left:4px solid #f0a500; border-radius:8px; margin-top:10px">
+    <div style="padding:16px; background:var(--gold-light); border-left:4px solid var(--gold); border-radius:8px; margin-top:10px">
       <div style="display:flex; gap:12px; align-items:start">
         <span style="font-size:24px">ℹ️</span>
         <div>
@@ -1500,7 +1500,7 @@
   </div>
 </div>
         <div id="reg-success" style="display:none">
-          <div style="text-align:center; padding:40px 28px"><div style="font-size:64px; margin-bottom:16px">🎉</div><h3 style="font-family:'Noto Serif Thai','Sarabun',serif; color:var(--green-dark); margin-bottom:8px">ลงทะเบียนสำเร็จ!</h3><p style="color:var(--text-light)">ระบบได้รับข้อมูลของท่านแล้ว<br>กรุณารอการอนุมัติจากผู้ดูแลระบบ หรือติดต่อเจ้าหน้าที่ 053 921 199 ต่อ 168</p><button class="btn-register" onclick="showLoginPage()" style="max-width:260px; margin:16px auto 0">กลับหน้าเข้าสู่ระบบ</button></div>
+          <div style="text-align:center; padding:40px 28px"><div style="font-size:64px; margin-bottom:16px">🎉</div><h3 style="font-family:'Noto Serif Thai','Sarabun',serif; color:var(--navy-dark); margin-bottom:8px">ลงทะเบียนสำเร็จ!</h3><p style="color:var(--text-light)">ระบบได้รับข้อมูลของท่านแล้ว<br>กรุณารอการอนุมัติจากผู้ดูแลระบบ หรือติดต่อเจ้าหน้าที่ 053 921 199 ต่อ 168</p><button class="btn-register" onclick="showLoginPage()" style="max-width:260px; margin:16px auto 0">กลับหน้าเข้าสู่ระบบ</button></div>
         </div>
       </div>
     </div>
@@ -1551,7 +1551,7 @@
   <!-- ที่อยู่ -->
   <div class="contact-row">
     <div class="contact-row-icon">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#2d8a52" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--status-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/>
         <circle cx="12" cy="10" r="3"/>
       </svg>
@@ -1595,7 +1595,7 @@
 </div>
 
         <div class="contact-popup-footer">
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#f0a500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
           </svg>
           <span>จันทร์–ศุกร์ <strong style="color:var(--text-dark)">08.30–16.00 น.</strong></span>
@@ -2238,7 +2238,7 @@
                   <h3 id="meeting-review-title">ตรวจสอบมติการประชุม</h3>
                   <button class="btn btn-primary" onclick="confirmMeetingReview()">✅ ยืนยันมติ</button>
                 </div>
-                <div style="padding:12px 16px;border-top:1px solid var(--border);background:var(--green-pale);display:flex;gap:24px;flex-wrap:wrap;font-size:13px">
+                <div style="padding:12px 16px;border-top:1px solid var(--border);background:var(--navy-pale);display:flex;gap:24px;flex-wrap:wrap;font-size:13px">
                   <span>📅 <strong id="rv-date"></strong></span>
                   <span>📍 <strong id="rv-location"></strong></span>
                   <span>🔖 <strong id="rv-status"></strong></span>
@@ -2247,7 +2247,7 @@
               <div style="display:flex;gap:16px;flex-wrap:wrap">
                 <div style="width:240px;flex-shrink:0">
                   <div class="table-card">
-                    <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:700;font-size:13px;color:var(--green-dark)">วาระการประชุม</div>
+                    <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:700;font-size:13px;color:var(--navy-dark)">วาระการประชุม</div>
                     <div id="agenda-nav" style="padding:8px"></div>
                   </div>
                 </div>
@@ -2650,9 +2650,9 @@
       <div id="more-menu" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#fff; border-radius:var(--radius-lg) var(--radius-lg) 0 0; z-index:401; padding:16px; box-shadow:var(--shadow-lg);">
         <div style="width:36px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 16px;"></div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-          <button style="padding:14px; background:var(--green-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="showPage('history'); closeMoreMenu()">🗂 ประวัติ</button>
-          <button style="padding:14px; background:var(--green-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="showPage('profile'); closeMoreMenu()">👤 โปรไฟล์</button>
-          <button style="padding:14px; background:var(--green-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="openNotifPanel(); closeMoreMenu()">🔔 แจ้งเตือน</button>
+          <button style="padding:14px; background:var(--navy-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="showPage('history'); closeMoreMenu()">🗂 ประวัติ</button>
+          <button style="padding:14px; background:var(--navy-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="showPage('profile'); closeMoreMenu()">👤 โปรไฟล์</button>
+          <button style="padding:14px; background:var(--navy-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="openNotifPanel(); closeMoreMenu()">🔔 แจ้งเตือน</button>
           <button style="padding:14px; background:var(--red-light); border:1.5px solid #f5bcb8; border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px; color:var(--red);" onclick="doLogout(); closeMoreMenu()">🚪 ออกจากระบบ</button>
         </div>
       </div>
@@ -2665,11 +2665,11 @@
       <div class="modal modal-lg">
         <div class="modal-header"><h3>📎 เอกสารของโครงการ</h3><button class="modal-close" onclick="closeModal('modal-view-files')">✕</button></div>
         <div class="modal-body">
-          <div id="vf-project-info" style="background:var(--green-pale); padding:12px 16px; border-radius:var(--radius); margin-bottom:16px; font-size:14px;"></div>
+          <div id="vf-project-info" style="background:var(--navy-pale); padding:12px 16px; border-radius:var(--radius); margin-bottom:16px; font-size:14px;"></div>
           <div id="vf-file-list"></div>
           <!-- [FIX #1] ปุ่มตรวจสอบเอกสาร -->
           <div id="vf-verify-section" style="margin-top:20px; border-top:2px solid var(--border); padding-top:16px">
-            <div style="font-family:'Noto Serif Thai','Sarabun',serif; font-weight:700; color:var(--green-dark); margin-bottom:12px">✅ ผลการตรวจสอบเอกสาร</div>
+            <div style="font-family:'Noto Serif Thai','Sarabun',serif; font-weight:700; color:var(--navy-dark); margin-bottom:12px">✅ ผลการตรวจสอบเอกสาร</div>
             <div class="field-group"><label>หมายเหตุ (ถ้าเอกสารไม่ครบ ระบุรายการที่ขาด)</label><textarea id="vf-verify-note" class="form-control" rows="3" placeholder="เช่น: ขาด IS.03, IS.05..."></textarea></div>
             <div style="display:flex; gap:10px; flex-wrap:wrap">
               <button class="btn btn-primary" style="flex:1; min-width:140px" onclick="doVerifyDocs('approved')">✅ เอกสารครบ — อนุมัติ</button>
@@ -2685,7 +2685,7 @@
       <div class="modal">
         <div class="modal-header"><h3>📥 ตอบรับการอ่านงานวิจัย</h3><button class="modal-close" onclick="closeModal('modal-accept')">✕</button></div>
         <div class="modal-body">
-          <div id="accept-modal-info" style="padding:12px; background:var(--green-pale); border-radius:8px; margin-bottom:16px; font-weight:700; color:var(--green-dark);"></div>
+          <div id="accept-modal-info" style="padding:12px; background:var(--navy-pale); border-radius:8px; margin-bottom:16px; font-weight:700; color:var(--navy-dark);"></div>
           <div class="field-group"><label>การตอบรับ</label><div class="radio-group"><label><input type="radio" name="acc_dec" value="accept" checked> ✅ ตอบรับ</label><label><input type="radio" name="acc_dec" value="reject"> ❌ ปฏิเสธ</label></div></div>
           <div class="field-group"><label>บทบาท</label><div class="radio-group"><label><input type="radio" name="acc_role" value="1st" checked> 1st Reviewer</label><label><input type="radio" name="acc_role" value="2nd"> 2nd Reviewer</label><label><input type="radio" name="acc_role" value="3rd"> 3rd Reviewer</label></div></div>
           <div class="field-group"><label>หมายเหตุ</label><textarea id="acc-note" class="form-control" rows="3"></textarea></div>
@@ -2702,7 +2702,7 @@
       <div class="modal modal-lg">
         <div class="modal-header"><h3>📝 ประเมินงานวิจัย</h3><button class="modal-close" onclick="closeModal('modal-eval')">✕</button></div>
         <div class="modal-body">
-          <div id="eval-modal-info" style="padding:12px; background:var(--green-pale); border-radius:8px; margin-bottom:16px; font-weight:700; color:var(--green-dark)"></div>
+          <div id="eval-modal-info" style="padding:12px; background:var(--navy-pale); border-radius:8px; margin-bottom:16px; font-weight:700; color:var(--navy-dark)"></div>
           <div class="tab-bar">
             <button class="tab-btn active" onclick="switchSubTab(this,'eval-tab-r')">นักวิจัย</button>
             <button class="tab-btn" onclick="switchSubTab(this,'eval-tab-d')">เอกสาร</button>
@@ -2958,7 +2958,7 @@
           <button class="modal-close" onclick="closeModal('modal-review-report')">✕</button>
         </div>
         <div class="modal-body">
-          <div id="review-report-info" style="background:var(--green-pale);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px"></div>
+          <div id="review-report-info" style="background:var(--navy-pale);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px"></div>
           <div id="review-report-files" style="margin-bottom:16px"></div>
           <div class="field-group">
             <label>หมายเหตุ / ผลการตรวจสอบ</label>
@@ -3027,8 +3027,8 @@
               <div class="field-group"><label>📝 หมายเหตุ</label><input type="text" id="qa-note" class="form-control" placeholder="หมายเหตุเพิ่มเติม"></div>
             </div>
           </div>
-          <div id="qa-summary" style="display:none; background:var(--green-pale); border:1.5px solid var(--green-light); border-radius:var(--radius); padding:14px; margin-top:8px">
-            <div style="font-weight:700; font-size:13px; color:var(--green-dark); margin-bottom:6px">📋 สรุปการมอบหมาย</div>
+          <div id="qa-summary" style="display:none; background:var(--navy-pale); border:1.5px solid var(--navy-light); border-radius:var(--radius); padding:14px; margin-top:8px">
+            <div style="font-weight:700; font-size:13px; color:var(--navy-dark); margin-bottom:6px">📋 สรุปการมอบหมาย</div>
             <div id="qa-summary-content" style="font-size:13px; color:var(--text-mid)"></div>
           </div>
           <!-- แสดงผลลัพธ์การมอบหมาย (กรณีบางคนซ้ำ) -->
@@ -3057,7 +3057,7 @@
         <!-- หัวข้อ -->
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
           <span style="font-size: 22px;">📋</span>
-          <span style="font-family: 'Noto Serif Thai', 'Sarabun', serif; font-weight: 700; font-size: 16px; color: #1a6b3a;">
+          <span style="font-family: 'Noto Serif Thai', 'Sarabun', serif; font-weight: 700; font-size: 16px; color: var(--status-green);">
             คำอธิบายสถานะโครงการ
           </span>
         </div>
@@ -3187,15 +3187,15 @@
       
       <!-- ข้อมูลโครงการ (ตัวอย่าง) -->
       <input type="hidden" id="us-project-code" value="Sansai-2568-0023">
-      <div id="us-project-info" style="padding: 16px; background: #e8f5ee; border-radius: 10px; margin-bottom: 20px; border: 1px solid #c8dfd0;">
+      <div id="us-project-info" style="padding: 16px; background: var(--navy-pale); border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--navy-light);">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
           <span style="font-size: 18px;">📁</span>
-          <span style="font-family: 'Noto Serif Thai', 'Sarabun', serif; font-weight: 700; font-size: 16px; color: #1a6b3a;">Sansai-2568-0023</span>
+          <span style="font-family: 'Noto Serif Thai', 'Sarabun', serif; font-weight: 700; font-size: 16px; color: var(--status-green);">Sansai-2568-0023</span>
         </div>
         <div style="font-size: 14px; color: #2e7d32; margin-left: 26px;">
           การศึกษาประสิทธิผลของสารสกัดหญ้าดอกขาวในการลดระดับน้ำตาลในเลือด
         </div>
-        <div style="display: flex; gap: 16px; margin-top: 8px; margin-left: 26px; font-size: 13px; color: #3d5c46;">
+        <div style="display: flex; gap: 16px; margin-top: 8px; margin-left: 26px; font-size: 13px; color: var(--text-mid);">
           <span>👤 หัวหน้า: นายสมชาย ใจดี</span>
           <span>📅 ยื่น: 15/01/2568</span>
         </div>
@@ -3203,10 +3203,10 @@
       
       <!-- Dropdown เลือกสถานะใหม่ -->
       <div class="field-group" style="margin-bottom: 20px;">
-        <label style="display: block; font-size: 14px; font-weight: 700; color: #3d5c46; margin-bottom: 8px;">
+        <label style="display: block; font-size: 14px; font-weight: 700; color: var(--text-mid); margin-bottom: 8px;">
           สถานะใหม่ <span style="color: #d93025;">*</span>
         </label>
-        <select id="us-status" class="form-control" style="width: 100%; padding: 12px 16px; border: 1.5px solid #c8dfd0; border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 15px; background: white;">
+        <select id="us-status" class="form-control" style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--navy-light); border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 15px; background: white;">
           <option value="รอพิจารณา">รอพิจารณา</option>
           <option value="ผ่านตรวจเอกสาร">ผ่านตรวจเอกสาร</option>
           <option value="เอกสารไม่ครบ">เอกสารไม่ครบ</option>
@@ -3221,18 +3221,18 @@
       
       <!-- หมายเหตุ (optional) -->
       <div class="field-group" style="margin-bottom: 16px;">
-        <label style="display: block; font-size: 14px; font-weight: 700; color: #3d5c46; margin-bottom: 8px;">
+        <label style="display: block; font-size: 14px; font-weight: 700; color: var(--text-mid); margin-bottom: 8px;">
           หมายเหตุ
         </label>
-        <textarea id="us-note" class="form-control" rows="3" style="width: 100%; padding: 12px 16px; border: 1.5px solid #c8dfd0; border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 14px; resize: vertical;" placeholder="ระบุเหตุผลในการเปลี่ยนแปลง (ถ้ามี)..."></textarea>
+        <textarea id="us-note" class="form-control" rows="3" style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--navy-light); border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 14px; resize: vertical;" placeholder="ระบุเหตุผลในการเปลี่ยนแปลง (ถ้ามี)..."></textarea>
       </div>
       
     </div>
     
     <!-- Footer -->
-    <div class="modal-footer" style="padding: 16px 24px; border-top: 1.5px solid #c8dfd0; display: flex; gap: 12px; justify-content: flex-end;">
-      <button class="btn btn-outline" onclick="closeModal('modal-update-status')" style="padding: 10px 24px; background: transparent; color: #2d8a52; border: 1.5px solid #2d8a52; border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;">ยกเลิก</button>
-      <button class="btn btn-primary" onclick="doUpdateProjectStatus()" style="padding: 10px 28px; background: #2d8a52; color: white; border: none; border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+    <div class="modal-footer" style="padding: 16px 24px; border-top: 1.5px solid var(--navy-light); display: flex; gap: 12px; justify-content: flex-end;">
+      <button class="btn btn-outline" onclick="closeModal('modal-update-status')" style="padding: 10px 24px; background: transparent; color: var(--navy-main); border: 1.5px solid var(--navy-main); border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;">ยกเลิก</button>
+      <button class="btn btn-primary" onclick="doUpdateProjectStatus()" style="padding: 10px 28px; background: var(--navy-main); color: white; border: none; border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
         💾 บันทึก
       </button>
     </div>
@@ -3323,7 +3323,7 @@
     <div class="modal-body">
       
       <!-- ข้อมูลโครงการ -->
-      <div id="notify-proj-info" style="background:var(--green-pale);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px"></div>
+      <div id="notify-proj-info" style="background:var(--navy-pale);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px"></div>
       
       <!-- สรุปผลประเมิน -->
       <div id="notify-eval-summary" style="margin-bottom:20px"></div>
@@ -3457,7 +3457,7 @@
             <input type="text" id="email-subject-pw" class="form-control" value="[EC Sansai] กรุณาตั้งรหัสผ่านของท่าน" placeholder="หัวเรื่อง">
             <div style="margin-top:10px">
               <label style="font-size:13px;color:var(--text-mid);cursor:pointer">
-                <input type="checkbox" id="include-reset-link" checked style="margin-right:6px;accent-color:var(--green-main)">
+                <input type="checkbox" id="include-reset-link" checked style="margin-right:6px;accent-color:var(--navy-main)">
                 แนบลิงก์ตั้งรหัสผ่านในอีเมล
               </label>
             </div>
@@ -3481,12 +3481,12 @@
     <!-- Modal: ส่ง Welcome Email ทั้งหมด -->
     <div class="modal-overlay" id="modal-welcome-all" onclick="if(event.target===this)closeModal('modal-welcome-all')">
       <div class="modal" style="max-width:480px">
-        <div class="modal-header" style="background:linear-gradient(135deg,#1a5c35,#2d8a52)">
+        <div class="modal-header" style="background:linear-gradient(135deg,var(--navy-dark),var(--navy-main))">
           <h3 style="color:#fff">📧 ส่ง Welcome Email ทั้งหมด</h3>
           <button class="modal-close" style="color:#fff;opacity:.8" onclick="closeModal('modal-welcome-all')">✕</button>
         </div>
         <div class="modal-body">
-          <div id="welcome-all-preview" style="background:var(--green-pale);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;font-size:13px;min-height:56px">
+          <div id="welcome-all-preview" style="background:var(--navy-pale);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;font-size:13px;min-height:56px">
             <span style="color:var(--text-light)">กำลังโหลดข้อมูล...</span>
           </div>
           <div style="background:#fff8e1;border-left:4px solid #ffc107;border-radius:0 6px 6px 0;padding:12px 14px;font-size:13px;color:#856404;line-height:1.8;margin-bottom:8px">
@@ -3499,7 +3499,7 @@
         <div class="modal-footer">
           <button class="btn btn-outline" onclick="closeModal('modal-welcome-all')">ยกเลิก</button>
           <button class="btn btn-primary" id="btn-confirm-welcome-all" onclick="doSendWelcomeAll()"
-            style="background:linear-gradient(135deg,#1a5c35,#2d8a52);border:none">
+            style="background:linear-gradient(135deg,var(--navy-dark),var(--navy-main));border:none">
             📧 ส่งอีเมลทั้งหมด
           </button>
         </div>
@@ -3509,12 +3509,12 @@
     <!-- Modal: ส่ง Welcome Email ทีละคน -->
     <div class="modal-overlay" id="modal-welcome-one" onclick="if(event.target===this)closeModal('modal-welcome-one')">
       <div class="modal" style="max-width:460px">
-        <div class="modal-header" style="background:linear-gradient(135deg,#1a5c35,#2d8a52)">
+        <div class="modal-header" style="background:linear-gradient(135deg,var(--navy-dark),var(--navy-main))">
           <h3 style="color:#fff">📧 ส่ง Welcome Email</h3>
           <button class="modal-close" style="color:#fff;opacity:.8" onclick="closeModal('modal-welcome-one')">✕</button>
         </div>
         <div class="modal-body">
-          <div id="welcome-one-info" style="background:var(--green-pale);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;font-size:14px"></div>
+          <div id="welcome-one-info" style="background:var(--navy-pale);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;font-size:14px"></div>
           <div id="welcome-one-already-sent" style="display:none;background:#e8f5e9;border:1.5px solid #66bb6a;border-radius:var(--radius);padding:14px 16px;font-size:13px;color:#2e7d32;margin-bottom:12px">
             ✅ ส่งอีเมลต้อนรับให้ผู้ใช้นี้แล้ว — ไม่สามารถส่งซ้ำได้
           </div>
@@ -3527,7 +3527,7 @@
         <div class="modal-footer">
           <button class="btn btn-outline" onclick="closeModal('modal-welcome-one')">ยกเลิก</button>
           <button class="btn btn-primary" id="btn-confirm-welcome-one" onclick="doSendWelcomeOne()"
-            style="background:linear-gradient(135deg,#1a5c35,#2d8a52);border:none">
+            style="background:linear-gradient(135deg,var(--navy-dark),var(--navy-main));border:none">
             📧 ส่งอีเมล
           </button>
         </div>
@@ -3543,9 +3543,9 @@
         </div>
         <div class="modal-body">
           <div style="font-size:13px;color:var(--text-light);margin-bottom:4px">โครงการ:</div>
-          <div style="font-size:14px;font-weight:700;color:var(--green-dark);margin-bottom:16px" id="srt-project-code"></div>
+          <div style="font-size:14px;font-weight:700;color:var(--navy-dark);margin-bottom:16px" id="srt-project-code"></div>
           <label class="srt-opt-card" id="srt-opt-exempt" onclick="selectReviewType('exempt')">
-            <input type="radio" name="srt-type" value="exempt" style="accent-color:#2d8a52">
+            <input type="radio" name="srt-type" value="exempt" style="accent-color:var(--navy-main)">
             <div>
               <div style="font-weight:700;font-size:14px">🟢 การยกเว้น <span style="font-weight:400;font-size:12px">(Exempt review)</span></div>
               <div style="font-size:12px;color:var(--text-light);margin-top:2px">สำหรับวิจัยความเสี่ยงต่ำมาก — ไม่ต้องผ่านคณะกรรมการครบชุด</div>
@@ -4049,7 +4049,7 @@ function renderStaffProjectsTable(projects) {
 
     html += '<tr><td>' + (i + 1) + '</td>'
       + '<td><strong>' + esc(p.project_code || '-') + '</strong>'
-      + (isRevision ? '<br><small style="color:#f0a500">✏️ แก้ไข</small>' : '')
+      + (isRevision ? '<br><small style="color:var(--gold)">✏️ แก้ไข</small>' : '')
       + (skipReeval ? '<br><small style="color:#1565c0">👤 แอดมินตรวจ</small>' : '')
       + '</td>'
       + '<td style="max-width:200px">' + esc(p.title_th || '-') + '</td>'
@@ -5063,7 +5063,7 @@ function viewProjectFiles(projectCode) {
           '</div>';
       } else {
         modalContent = '<div style="padding:0 0 16px 0">' +
-          '<div style="background:var(--green-pale);padding:12px 16px;border-radius:var(--radius);margin:0 0 16px 0;font-size:14px">' +
+          '<div style="background:var(--navy-pale);padding:12px 16px;border-radius:var(--radius);margin:0 0 16px 0;font-size:14px">' +
           '<strong>' + esc(projectCode) + '</strong><br>' +
           '<span style="color:var(--text-light)">พบ ' + files.length + ' ไฟล์</span>' +
           '</div>';
@@ -5296,9 +5296,9 @@ function viewProjectFiles(projectCode) {
       AGENDA.forEach(function(item) {
         var div = document.createElement('div');
         div.style.cssText = 'padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;margin-bottom:4px;';
-        div.innerHTML = '<div style="font-weight:700;color:var(--green-dark)">' + esc(item.title) + '</div>' +
+        div.innerHTML = '<div style="font-weight:700;color:var(--navy-dark)">' + esc(item.title) + '</div>' +
                         '<div style="color:var(--text-light);font-size:11px">' + esc(item.subtitle) + '</div>';
-        div.onmouseover = function() { this.style.background = 'var(--green-pale)'; };
+        div.onmouseover = function() { this.style.background = 'var(--navy-pale)'; };
         div.onmouseout  = function() { this.style.background = ''; };
         div.onclick = (function(a) { return function() { renderAgendaDetail(a); }; })(item);
         nav.appendChild(div);
@@ -5430,7 +5430,7 @@ function viewProjectFiles(projectCode) {
         var isRead = n.is_read === true || String(n.is_read).toLowerCase() === 'true' || String(n.is_read) === '1';
         var icon   = ACTION_ICON[n.action_type] || '🔔';
         var pcHtml = n.project_code
-          ? '<span style="background:var(--green-pale);color:var(--green-dark);border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:4px">'+esc(n.project_code)+'</span>'
+          ? '<span style="background:var(--navy-pale);color:var(--navy-dark);border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:4px">'+esc(n.project_code)+'</span>'
           : '';
         return '<div class="notif-item" style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer'+(isRead?';opacity:.65':'')+'" onclick="markNotifRead('+idx+')">'
           + '<div style="font-size:18px;flex-shrink:0;line-height:1;margin-top:1px">'+icon+'</div>'
@@ -6000,7 +6000,7 @@ function showPendingUsers() {
       if (!pw) { hintEl.textContent = 'อย่างน้อย 8 ตัว มีตัวพิมพ์เล็ก+ใหญ่+เลข เช่น Test1234'; hintEl.style.color = 'var(--text-light)'; return; }
       var ok = pw.length >= 8 && /[a-z]/.test(pw) && /[A-Z]/.test(pw) && /\d/.test(pw);
       hintEl.textContent = ok ? '✅ รหัสผ่านผ่านเกณฑ์' : '⚠️ ต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ ตัวเลข อย่างน้อย 8 ตัว';
-      hintEl.style.color = ok ? 'var(--green-main)' : 'var(--red)';
+      hintEl.style.color = ok ? 'var(--navy-main)' : 'var(--red)';
     }
         function saveUser(){
   var editUsername=val('uf-edit-username'), isEdit=!!editUsername;
@@ -6111,7 +6111,7 @@ function showPendingUsers() {
             return '<span style="display:block;padding:2px 0;color:var(--text-mid)">' + (i+1) + '. ' + esc(u.name||u.username) + ' &lt;' + esc(u.email||'-') + '&gt;</span>';
           }).join('');
           if (toSend.length > 8) listHtml += '<span style="color:var(--text-light);font-size:12px">... และอีก ' + (toSend.length-8) + ' คน</span>';
-          prev.innerHTML = '<div style="font-weight:700;color:var(--green-dark);margin-bottom:8px">📋 จะส่งให้ <strong style="font-size:15px">' + toSend.length + '</strong> คน (ส่งแล้ว ' + alreadySent.length + ' คน)</div>' + listHtml;
+          prev.innerHTML = '<div style="font-weight:700;color:var(--navy-dark);margin-bottom:8px">📋 จะส่งให้ <strong style="font-size:15px">' + toSend.length + '</strong> คน (ส่งแล้ว ' + alreadySent.length + ' คน)</div>' + listHtml;
         }
       }
       openModal('modal-welcome-all');
@@ -6157,7 +6157,7 @@ function showPendingUsers() {
       var btn    = document.getElementById('btn-confirm-welcome-one');
 
       if (infoEl) infoEl.innerHTML =
-        '<span style="color:var(--green-dark);font-weight:700">👤 ' + esc(u.name||username) + '</span><br>' +
+        '<span style="color:var(--navy-dark);font-weight:700">👤 ' + esc(u.name||username) + '</span><br>' +
         '<span style="font-size:12px;color:var(--text-light)">Username: ' + esc(username) + ' &nbsp;|&nbsp; อีเมล: ' + esc(u.email||'-') + '</span>';
 
       if (alreadySent) {
@@ -6295,7 +6295,7 @@ function showPendingUsers() {
           if(r&&r.success){
             if(_uploadedByType[fileType]){ var idx=_uploadedFileIds.indexOf(_uploadedByType[fileType]); if(idx>-1) _uploadedFileIds.splice(idx,1); }
             _uploadedByType[fileType]=r.fileId; _uploadedFileIds.push(r.fileId);
-            if(statusEl){ var vb=r.fileUrl?'<a href="'+esc(r.fileUrl)+'" target="_blank" class="btn btn-sm btn-outline">👁 ดู</a>':''; statusEl.innerHTML='<div style="display:flex;align-items:center;gap:10px;background:var(--green-pale);border:1.5px solid var(--green-light);border-radius:8px;padding:8px 12px;margin-top:4px"><span>✅</span><div style="flex:1"><div style="font-weight:700;font-size:13px">'+esc(file.name)+'</div><div style="font-size:11px;color:var(--text-light)">'+formatFileSize(file.size)+'</div></div>'+vb+'<button type="button" class="btn btn-sm btn-danger" onclick="removeUploadedFile(\''+escAttr(fileType)+'\',\''+escAttr(r.fileId)+'\',this)">🗑</button></div>'; }
+            if(statusEl){ var vb=r.fileUrl?'<a href="'+esc(r.fileUrl)+'" target="_blank" class="btn btn-sm btn-outline">👁 ดู</a>':''; statusEl.innerHTML='<div style="display:flex;align-items:center;gap:10px;background:var(--navy-pale);border:1.5px solid var(--navy-light);border-radius:8px;padding:8px 12px;margin-top:4px"><span>✅</span><div style="flex:1"><div style="font-weight:700;font-size:13px">'+esc(file.name)+'</div><div style="font-size:11px;color:var(--text-light)">'+formatFileSize(file.size)+'</div></div>'+vb+'<button type="button" class="btn btn-sm btn-danger" onclick="removeUploadedFile(\''+escAttr(fileType)+'\',\''+escAttr(r.fileId)+'\',this)">🗑</button></div>'; }
             renderDocumentCompleteness(); showToast('✅ อัพโหลดสำเร็จ');
           } else { if(statusEl) statusEl.innerHTML='<div style="font-size:12px;color:var(--red);padding:6px 0">❌ '+(r&&r.message)+'</div>'; showToast('อัพโหลดไม่สำเร็จ','error'); }
         }).withFailureHandler(function(e){ if(statusEl) statusEl.innerHTML='<div style="font-size:12px;color:var(--red);padding:6px 0">❌ '+esc(e.message||'')+'</div>'; })
@@ -6315,7 +6315,7 @@ function showPendingUsers() {
       // นับ optional ด้วย
       var optUploaded=UPLOAD_SLOTS_OPTIONAL.filter(function(s){ return !!_uploadedByType[s.type]; }).length;
       var optInfo=optUploaded>0?'<div style="font-size:12px;color:var(--blue);margin-top:4px">📎 เอกสารเพิ่มเติม: '+optUploaded+' ไฟล์</div>':'';
-      el.innerHTML='<div class="doc-progress"><strong style="font-size:13px">'+(isComplete?'✅':'⚠️')+' เอกสารบังคับ: '+uploaded+'/'+total+'</strong>'+optInfo+'<div class="doc-progress-bar-wrap"><div class="doc-progress-bar'+(isComplete?'':' warning')+'" style="width:'+pct+'%"></div></div>'+(isComplete?'<div style="background:var(--green-light);color:var(--green-dark);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600">✅ เอกสารบังคับครบถ้วน พร้อมยื่น</div>':'<div><strong style="font-size:12px;color:var(--red)">เอกสารบังคับที่ยังขาด:</strong><ul class="doc-missing">'+missing.map(function(m){ return '<li>'+esc(m)+'</li>'; }).join('')+'</ul></div>')+'</div>';
+      el.innerHTML='<div class="doc-progress"><strong style="font-size:13px">'+(isComplete?'✅':'⚠️')+' เอกสารบังคับ: '+uploaded+'/'+total+'</strong>'+optInfo+'<div class="doc-progress-bar-wrap"><div class="doc-progress-bar'+(isComplete?'':' warning')+'" style="width:'+pct+'%"></div></div>'+(isComplete?'<div style="background:var(--navy-light);color:var(--navy-dark);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600">✅ เอกสารบังคับครบถ้วน พร้อมยื่น</div>':'<div><strong style="font-size:12px;color:var(--red)">เอกสารบังคับที่ยังขาด:</strong><ul class="doc-missing">'+missing.map(function(m){ return '<li>'+esc(m)+'</li>'; }).join('')+'</ul></div>')+'</div>';
     }
 
     function formatFileSize(bytes){ if(!bytes) return '0 B'; var k=1024,s=['B','KB','MB','GB'],i=Math.floor(Math.log(bytes)/Math.log(k)); return (bytes/Math.pow(k,i)).toFixed(1)+' '+s[i]; }
@@ -6750,7 +6750,7 @@ function updateAdminDirectAttachmentSection() {
   if (result === 'รับรอง') {
     html = `
       <label style="display:block; font-weight:600; color:var(--text-mid); margin-bottom:8px">
-        📎 แนบไฟล์ <strong style="color:var(--green-dark)">หนังสือรับรอง</strong> 
+        📎 แนบไฟล์ <strong style="color:var(--navy-dark)">หนังสือรับรอง</strong> 
         <span style="color:var(--red)">*</span>
       </label>
       <div class="alert alert-info" style="margin-bottom:12px; font-size:13px">
@@ -7081,7 +7081,7 @@ function updateNotifyAttachmentSection() {
     html = `
       <div class="field-group" style="margin-bottom:16px">
         <label style="display:block; font-weight:600; color:var(--text-mid); margin-bottom:8px">
-          📎 แนบไฟล์ <strong style="color:var(--green-dark)">หนังสือรับรอง</strong>
+          📎 แนบไฟล์ <strong style="color:var(--navy-dark)">หนังสือรับรอง</strong>
           <span style="color:var(--red)">*</span>
         </label>
         <div class="alert alert-info" style="margin-bottom:12px; font-size:13px">
@@ -8578,7 +8578,7 @@ function showPage(page) {
   if (el) el.style.display = visible ? 'flex' : 'none'; 
 }
     function checkStrength(pw,fillId){ var fid=fillId||'strength-fill'; var score=0; if(pw.length>=8)score++; if(pw.length>=12)score++; if(/[A-Z]/.test(pw))score++; if(/[0-9]/.test(pw))score++; if(/[^A-Za-z0-9]/.test(pw))score++; var fills=['','#e53935','#fb8c00','#f0a500','#43a047','#2d8a52']; var labels=['','อ่อนมาก','อ่อน','ปานกลาง','แข็งแรง','แข็งแรงมาก']; var el=document.getElementById(fid); if(el){ el.style.width=(score*20)+'%'; el.style.background=fills[score]||fills[1]; } var sl=document.getElementById('strength-label'); if(sl){ sl.textContent=labels[score]||''; sl.style.color=fills[score]||fills[1]; } }
-    function checkUsernameFormat(inp){ var hint=document.getElementById('username-hint'); if(!hint) return; var v=inp.value; if(!v){ hint.textContent='ใช้ตัวอักษร a-z, 0-9 ความยาว 4-20 ตัว'; hint.style.color=''; return; } if(/^[a-zA-Z0-9_]{4,20}$/.test(v)){ hint.textContent='✅ รูปแบบถูกต้อง'; hint.style.color='var(--green-main)'; } else { hint.textContent='❌ ใช้ได้เฉพาะ a-z, A-Z, 0-9, _'; hint.style.color='var(--red)'; } }
+    function checkUsernameFormat(inp){ var hint=document.getElementById('username-hint'); if(!hint) return; var v=inp.value; if(!v){ hint.textContent='ใช้ตัวอักษร a-z, 0-9 ความยาว 4-20 ตัว'; hint.style.color=''; return; } if(/^[a-zA-Z0-9_]{4,20}$/.test(v)){ hint.textContent='✅ รูปแบบถูกต้อง'; hint.style.color='var(--navy-main)'; } else { hint.textContent='❌ ใช้ได้เฉพาะ a-z, A-Z, 0-9, _'; hint.style.color='var(--red)'; } }
     function togglePw(inputId,btn){ var inp=document.getElementById(inputId); if(!inp) return; inp.type=inp.type==='password'?'text':'password'; btn.textContent=inp.type==='password'?'👁':'🙈'; }
     function showToast(msg,type){ var c=document.getElementById('toast-container'); var t=document.createElement('div'); t.className='toast'+(type==='error'?' error':type==='warning'?' warning':''); t.textContent=(type==='error'?'❌ ':type==='warning'?'⚠ ':'✅ ')+msg; c.appendChild(t); setTimeout(function(){ t.remove(); },3500); }
     document.addEventListener('keydown',function(e){ if(e.key==='Enter'&&document.getElementById('login-page').style.display==='flex') doLogin(); });
@@ -8791,7 +8791,7 @@ function showPage(page) {
     <style>
     #privacy-banner {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
-      background: #fff; border-top: 3px solid #2d8a52;
+      background: #fff; border-top: 3px solid var(--gold);
       box-shadow: 0 -4px 24px rgba(0,0,0,.15);
       padding: 16px 24px; display: flex; align-items: flex-start;
       gap: 20px; flex-wrap: wrap;
@@ -8801,24 +8801,24 @@ function showPage(page) {
     #privacy-banner.hidden { display: none; }
     .pb-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
     .pb-text { flex: 1; min-width: 260px; }
-    .pb-text h4 { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: 14px; font-weight: 700; color: #1a2e1e; margin: 0 0 4px; }
-    .pb-text p { font-size: 12px; color: #3d5c46; line-height: 1.7; margin: 0; }
-    .pb-text a { color: #2d8a52; font-weight: 600; text-decoration: underline; cursor: pointer; }
+    .pb-text h4 { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: 14px; font-weight: 700; color: var(--navy-dark); margin: 0 0 4px; }
+    .pb-text p { font-size: 12px; color: var(--text-mid); line-height: 1.7; margin: 0; }
+    .pb-text a { color: var(--gold); font-weight: 600; text-decoration: underline; cursor: pointer; }
     .pb-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
     .pb-btn-accept {
-      padding: 10px 24px; background: #2d8a52; color: #fff;
+      padding: 10px 24px; background: var(--navy-main); color: #fff;
       border: none; border-radius: 8px; font-family: 'Noto Serif Thai', 'Sarabun', serif;
       font-size: 14px; font-weight: 600; cursor: pointer; transition: background .2s;
       white-space: nowrap;
     }
-    .pb-btn-accept:hover { background: #1a6b3a; }
+    .pb-btn-accept:hover { background: var(--navy-dark); }
     .pb-btn-settings {
-      padding: 10px 20px; background: transparent; color: #2d8a52;
-      border: 1.5px solid #2d8a52; border-radius: 8px;
+      padding: 10px 20px; background: transparent; color: var(--navy-main);
+      border: 1.5px solid var(--navy-main); border-radius: 8px;
       font-family: 'Sarabun', sans-serif; font-size: 13px;
       font-weight: 600; cursor: pointer; transition: all .2s; white-space: nowrap;
     }
-    .pb-btn-settings:hover { background: #f2faf5; }
+    .pb-btn-settings:hover { background: var(--navy-pale); }
 
     /* Modal ตั้งค่า */
     #privacy-modal-overlay {
@@ -8832,18 +8832,18 @@ function showPage(page) {
       animation: slideUp .3s ease;
     }
     .pm-header {
-      background: #1a6b3a; padding: 20px 24px; border-radius: 16px 16px 0 0;
+      background: var(--navy-dark); padding: 20px 24px; border-radius: 16px 16px 0 0; border-bottom: 2px solid var(--gold);
       display: flex; justify-content: space-between; align-items: center;
     }
     .pm-header h3 { font-family: 'Noto Serif Thai', 'Sarabun', serif; color: #fff; font-size: 16px; margin: 0; }
     .pm-header button { background: rgba(255,255,255,.2); border: none; color: #fff; border-radius: 50%; width: 32px; height: 32px; font-size: 16px; cursor: pointer; }
     .pm-body { padding: 24px; }
-    .pm-section { margin-bottom: 16px; padding: 16px; background: #f2faf5; border-radius: 10px; border: 1px solid #c8dfd0; }
+    .pm-section { margin-bottom: 16px; padding: 16px; background: var(--navy-pale); border-radius: 10px; border: 1px solid var(--navy-light); }
     .pm-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 12px; }
-    .pm-section h4 { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: 14px; color: #1a6b3a; margin: 0; display: flex; align-items: center; gap: 8px; flex: 1; }
-    .pm-section p { font-size: 12px; color: #3d5c46; line-height: 1.7; margin: 0; }
-    .pm-section.required h4::after { content: "จำเป็น"; font-size: 10px; background: #2d8a52; color: #fff; padding: 2px 8px; border-radius: 20px; font-weight: 400; }
-    .pm-footer { padding: 16px 24px; border-top: 1px solid #e8f5ee; display: flex; gap: 10px; justify-content: flex-end; }
+    .pm-section h4 { font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: 14px; color: var(--navy-dark); margin: 0; display: flex; align-items: center; gap: 8px; flex: 1; }
+    .pm-section p { font-size: 12px; color: var(--text-mid); line-height: 1.7; margin: 0; }
+    .pm-section.required h4::after { content: "จำเป็น"; font-size: 10px; background: var(--navy-main); color: #fff; padding: 2px 8px; border-radius: 20px; font-weight: 400; }
+    .pm-footer { padding: 16px 24px; border-top: 1px solid var(--navy-light); display: flex; gap: 10px; justify-content: flex-end; }
     /* Toggle Switch */
     .pm-toggle { position: relative; flex-shrink: 0; }
     .pm-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
@@ -8857,15 +8857,15 @@ function showPage(page) {
       width: 18px; height: 18px; background: #fff; border-radius: 50%;
       transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.3);
     }
-    .pm-toggle input:checked + .pm-toggle-slider { background: #2d8a52; }
+    .pm-toggle input:checked + .pm-toggle-slider { background: var(--gold); }
     .pm-toggle input:checked + .pm-toggle-slider::after { transform: translateX(20px); }
-    .pm-toggle input:disabled + .pm-toggle-slider { background: #2d8a52; cursor: not-allowed; opacity: .7; }
+    .pm-toggle input:disabled + .pm-toggle-slider { background: var(--navy-mid); cursor: not-allowed; opacity: .7; }
     .pm-toggle input:disabled + .pm-toggle-slider::after { transform: translateX(20px); }
     </style>
 
     <!-- Banner HTML -->
     <div id="privacy-banner">
-      <div class="pb-icon">🔒</div>
+      <div class="pb-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy-main)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
       <div class="pb-text">
         <h4>นโยบายความเป็นส่วนตัวและการคุ้มครองข้อมูลส่วนบุคคล (PDPA)</h4>
         <p>
@@ -8886,11 +8886,11 @@ function showPage(page) {
     <div id="privacy-modal-overlay">
       <div class="privacy-modal">
         <div class="pm-header">
-          <h3>🔒 ตั้งค่าความเป็นส่วนตัว</h3>
+          <h3>ตั้งค่าความเป็นส่วนตัว</h3>
           <button id="btn-close-privacy-modal">✕</button>
         </div>
         <div class="pm-body">
-          <p style="font-size:13px;color:#3d5c46;margin-bottom:20px;line-height:1.7;">
+          <p style="font-size:13px;color:var(--text-mid);margin-bottom:20px;line-height:1.7;">
             โรงพยาบาลสันทรายให้ความสำคัญกับความเป็นส่วนตัวของท่าน
             ท่านสามารถเลือกเปิด/ปิดการใช้ข้อมูลในแต่ละประเภทได้ตามต้องการ
             (ยกเว้นข้อมูลที่จำเป็น ซึ่งไม่สามารถปิดได้)
@@ -8899,7 +8899,7 @@ function showPage(page) {
           <!-- ข้อมูลจำเป็น (บังคับ ปิดไม่ได้) -->
           <div class="pm-section required">
             <div class="pm-section-header">
-              <h4>🔐 ข้อมูลที่จำเป็นต้องใช้</h4>
+              <h4>ข้อมูลที่จำเป็นต้องใช้</h4>
               <label class="pm-toggle">
                 <input type="checkbox" id="consent-required" checked disabled>
                 <span class="pm-toggle-slider"></span>
@@ -8911,7 +8911,7 @@ function showPage(page) {
           <!-- การแจ้งเตือนอีเมล -->
           <div class="pm-section">
             <div class="pm-section-header">
-              <h4>📧 การแจ้งเตือนทางอีเมล</h4>
+              <h4>การแจ้งเตือนทางอีเมล</h4>
               <label class="pm-toggle">
                 <input type="checkbox" id="consent-email" checked>
                 <span class="pm-toggle-slider"></span>
@@ -8923,7 +8923,7 @@ function showPage(page) {
           <!-- Audit Log -->
           <div class="pm-section">
             <div class="pm-section-header">
-              <h4>📋 การบันทึก Audit Log</h4>
+              <h4>การบันทึก Audit Log</h4>
               <label class="pm-toggle">
                 <input type="checkbox" id="consent-audit" checked>
                 <span class="pm-toggle-slider"></span>
@@ -8933,19 +8933,19 @@ function showPage(page) {
           </div>
 
           <!-- ติดต่อ DPO -->
-          <div class="pm-section" style="background:#fff8e7;border-color:#f0a500;">
-            <h4>📞 ติดต่อเจ้าหน้าที่คุ้มครองข้อมูล (DPO)</h4>
+          <div class="pm-section" style="background:var(--gold-light);border-color:var(--gold);">
+            <h4>ติดต่อเจ้าหน้าที่คุ้มครองข้อมูล (DPO)</h4>
             <p>
               หากท่านต้องการใช้สิทธิ์ตาม PDPA เช่น ขอดูข้อมูล แก้ไข หรือลบข้อมูลส่วนตัว<br>
               โทร: <strong>053 921 199 ต่อ 168</strong><br>
-              อีเมล: <strong><a href="/cdn-cgi/l/email-protection#f98a908b9c9c8d968b97d78e98b98a98978a989091968a89908d9895d79e96d78d91" style="color:var(--green-main);"><span class="__cf_email__" data-cfemail="611208130404150e130f4f16002112000f120008090e12110815000d4f060e4f1509">[email&#160;protected]</span></a></strong><br>
+              อีเมล: <strong><a href="/cdn-cgi/l/email-protection#f98a908b9c9c8d968b97d78e98b98a98978a989091968a89908d9895d79e96d78d91" style="color:var(--navy-main);"><span class="__cf_email__" data-cfemail="611208130404150e130f4f16002112000f120008090e12110815000d4f060e4f1509">[email&#160;protected]</span></a></strong><br>
               วันทำการ: จันทร์ – ศุกร์ เวลา 08:30 – 16:00 น.
             </p>
           </div>
         </div>
         <div class="pm-footer">
           <button class="pb-btn-settings" id="btn-close-privacy-modal2">ปิด</button>
-          <button class="pb-btn-accept" id="btn-save-privacy">💾 บันทึกการตั้งค่า</button>
+          <button class="pb-btn-accept" id="btn-save-privacy">บันทึกการตั้งค่า</button>
         </div>
       </div>
     </div>
@@ -8956,8 +8956,8 @@ function showPage(page) {
     <div id="copyright-footer" style="
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      background: linear-gradient(90deg, #0f4027, #1a6b3a 50%, #0f4027);
-      border-top: 2px solid #f0a500;
+      background: linear-gradient(90deg, #0b1f35, #1e4068 50%, #0b1f35);
+      border-top: 2px solid var(--gold);
       padding: 7px 24px;
       display: flex;
       align-items: center;
@@ -8966,7 +8966,7 @@ function showPage(page) {
       box-shadow: 0 -2px 12px rgba(0,0,0,0.25);
     ">
       <span style="font-size:12px; color:rgba(255,255,255,0.55); letter-spacing:0.3px;">
-        Developed by <strong style="color:#ffd166;">Chanthakon Chikan</strong>
+        Developed by <strong style="color:var(--gold-400,#c9a037);">Chanthakon Chikan</strong>
       </span>
       <span style="font-size:12px; color:rgba(255,255,255,0.55); letter-spacing:0.3px;">
         Copyright &copy; 2026 &nbsp;|&nbsp; <strong style="color:rgba(255,255,255,0.75);">Sansai Hospital</strong>
@@ -9111,4 +9111,4 @@ function showPage(page) {
     #copyright-footer {
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      background: linear-gradient(90deg, #0b3a1e 0%, #1a6b3a 50%, #0b3a1e 100%);
+      background: linear-gradient(90deg, #0b1f35 0%, #1e4068 50%, #0b1f35 100%);
