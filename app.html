@@ -137,6 +137,10 @@
         configurable: true
       });
 
+      // Export M และ callGAS ออกสู่ global scope เพื่อให้ฟังก์ชันภายนอกเรียกใช้ได้
+      window.M = M;
+      window.callGAS = callGAS;
+
       // เปิด console log สำหรับ debug (ลบออกได้หลัง deploy)
       console.log('[GASBridge] ✅ โหลดสำเร็จ — GAS_URL:', GAS_URL);
 
