@@ -1247,6 +1247,94 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     .pill-green{background:var(--status-green-light,#eaf4ee)!important;color:var(--status-green,#1b5e3e)!important}
     .breadcrumb a{color:var(--navy-main)}.breadcrumb a:hover{color:var(--gold);text-decoration:underline}
 
+    /* ═══════════════════════════════════════════════════
+       FR.01 — แบบรายงานสรุปผลการวิจัย (ปิดโครงการ)
+    ═══════════════════════════════════════════════════ */
+    #modal-fr01 .modal { max-width: 860px; width: 96%; }
+    #modal-fr01 .modal-body { padding: 0; }
+    .fr01-wrap {
+      font-family: 'Sarabun','TH Sarabun New',sans-serif;
+      font-size: 15px; color: #111; padding: 24px 28px 16px;
+    }
+    .fr01-header-box {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 12px; gap: 16px;
+    }
+    .fr01-form-code { font-size: 22px; font-weight: 800; color: #1a3a6b; letter-spacing: 1px; white-space: nowrap; }
+    .fr01-title-center { text-align: center; flex: 1; }
+    .fr01-title-center .t1 { font-size: 18px; font-weight: 800; color: #1a3a6b; }
+    .fr01-title-center .t2 { font-size: 13px; color: #555; font-style: italic; }
+    .fr01-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+    .fr01-table td, .fr01-table th {
+      border: 1.5px solid #2c4a8a; padding: 6px 10px;
+      vertical-align: middle; font-size: 14px; line-height: 1.5;
+    }
+    .fr01-table td.label-cell {
+      background: #eef2f9; font-weight: 600; color: #1a3a6b;
+      white-space: nowrap; width: 1%;
+    }
+    .fr01-table td.header-row {
+      background: #1a3a6b; color: #fff; font-weight: 700;
+      font-size: 14px; text-align: center; padding: 8px;
+    }
+    .fr01-table td.sub-header {
+      background: #d6e4f7; font-weight: 700; color: #1a3a6b; font-size: 13px;
+    }
+    .fr01-input {
+      border: none; border-bottom: 1.5px solid #2c4a8a; outline: none;
+      font-family: 'Sarabun',sans-serif; font-size: 14px; color: #111;
+      background: transparent; width: 100%; padding: 2px 4px; box-sizing: border-box;
+    }
+    .fr01-input:focus { border-bottom-color: #e67e22; background: #fffbf0; }
+    .fr01-input.inline { width: auto; min-width: 60px; }
+    .fr01-textarea {
+      border: 1px solid #2c4a8a; border-radius: 4px;
+      font-family: 'Sarabun',sans-serif; font-size: 14px; color: #111;
+      width: 100%; resize: vertical; min-height: 80px;
+      padding: 6px 8px; box-sizing: border-box; background: #fafcff;
+    }
+    .fr01-textarea:focus { border-color: #e67e22; outline: none; }
+    .fr01-count-row td:last-child { text-align: center; width: 120px; }
+    .fr01-count-input {
+      border: none; border-bottom: 1.5px solid #2c4a8a;
+      font-family: 'Sarabun',sans-serif; font-size: 14px; color: #111;
+      background: transparent; width: 70px; text-align: center; outline: none;
+    }
+    .fr01-count-input:focus { border-bottom-color: #e67e22; background: #fffbf0; }
+    .fr01-radio-row { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+    .fr01-radio-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; }
+    .fr01-radio-row input[type="radio"],
+    .fr01-radio-row input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: #1a3a6b; }
+    .fr01-sign-zone { display: flex; justify-content: flex-end; margin-top: 16px; padding: 0 8px; }
+    .fr01-sign-box { text-align: center; min-width: 280px; }
+    .fr01-sign-line { border-bottom: 1.5px solid #111; height: 40px; margin-bottom: 6px; }
+    .fr01-date-row {
+      display: flex; gap: 8px; align-items: center;
+      justify-content: center; margin-top: 10px; font-size: 14px;
+    }
+    .fr01-note { font-size: 12px; color: #555; font-style: italic; margin: 4px 0; padding-left: 8px; }
+    .fr01-btn-bar {
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end;
+      padding: 16px 28px; border-top: 1px solid var(--border); background: var(--bg);
+      flex-shrink: 0;
+    }
+    @media print {
+      body > * { display: none !important; }
+      #fr01-print-area { display: block !important; }
+      #fr01-print-area * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      #fr01-print-area {
+        position: fixed; inset: 0; background: #fff; z-index: 99999;
+        padding: 15mm 18mm 12mm; box-sizing: border-box;
+      }
+      .fr01-input { border: none !important; }
+      .fr01-textarea { border: 1px solid #999 !important; }
+      .fr01-count-input { border: none !important; border-bottom: 1px solid #999 !important; }
+      .fr01-btn-bar,
+      .fr01-no-print { display: none !important; }
+      #modal-fr01 .modal-header .modal-close { display: none !important; }
+      .fr01-table td.header-row { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
     </style>
     </head>
     <body>
@@ -2949,6 +3037,173 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <div class="modal-footer">
           <button class="btn btn-outline" onclick="closeModal('modal-submit-report')">ยกเลิก</button>
           <button class="btn btn-primary" id="rpt-submit-btn" onclick="doSubmitReport()">📤 ยื่นรายงาน</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ===============================================================
+         Modal: FR.01 แบบรายงานสรุปผลการวิจัย (ปิดโครงการ)
+    ================================================================ -->
+    <div class="modal-overlay" id="modal-fr01">
+      <div class="modal modal-xl" style="max-height:94vh;display:flex;flex-direction:column;">
+        <div class="modal-header">
+          <h3>FR.01 - แบบรายงานสรุปผลการวิจัย (ปิดโครงการ)</h3>
+          <button class="modal-close" onclick="closeFr01Modal()">X</button>
+        </div>
+        <div class="modal-body" style="overflow-y:auto;flex:1;">
+          <div id="fr01-print-area">
+            <div class="fr01-wrap">
+
+              <div class="fr01-header-box">
+                <div class="fr01-form-code">FR.01</div>
+                <div class="fr01-title-center">
+                  <div class="t1">แบบรายงานสรุปผลการวิจัย</div>
+                  <div class="t2">(Final Report Form)</div>
+                </div>
+                <div style="min-width:60px"></div>
+              </div>
+
+              <table class="fr01-table">
+                <tr>
+                  <td style="width:50%"><strong>หมายเลขโครงการ</strong>&nbsp;
+                    <input class="fr01-input inline" id="fr01-project-code" type="text" placeholder="เช่น EC-001/2567" style="width:calc(100% - 120px)">
+                  </td>
+                  <td style="width:50%"><strong>วันที่รับรอง</strong>&nbsp;
+                    <input class="fr01-input inline" id="fr01-approved-date" type="date" style="width:calc(100% - 90px)">
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                    <strong>ชื่อโครงการ</strong>&nbsp;(ไทย)
+                    <input class="fr01-input" id="fr01-title-th" type="text" placeholder="ชื่อโครงการภาษาไทย" style="margin-top:4px">
+                    <div style="margin-top:8px">(English)
+                    <input class="fr01-input" id="fr01-title-en" type="text" placeholder="Research Project Title (English)" style="margin-top:4px"></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="label-cell">ผู้วิจัยหลัก</td>
+                  <td><input class="fr01-input" id="fr01-researcher" type="text" placeholder="ชื่อ-นามสกุล ผู้วิจัยหลัก"></td>
+                </tr>
+                <tr>
+                  <td><strong>เบอร์โทร</strong>&nbsp;<input class="fr01-input inline" id="fr01-phone" type="tel" placeholder="0xx-xxx-xxxx" style="width:140px"></td>
+                  <td><strong>Email:</strong>&nbsp;<input class="fr01-input inline" id="fr01-email" type="email" placeholder="email@example.com" style="width:calc(100% - 65px)"></td>
+                </tr>
+                <tr>
+                  <td class="label-cell">สถานที่ติดต่อ</td>
+                  <td><input class="fr01-input" id="fr01-address" type="text" placeholder="หน่วยงาน / ที่อยู่"></td>
+                </tr>
+                <tr>
+                  <td class="label-cell">ผู้ให้ทุนวิจัย (Sponsor)</td>
+                  <td><input class="fr01-input" id="fr01-sponsor" type="text" placeholder="ชื่อแหล่งทุน / ผู้ให้ทุน"></td>
+                </tr>
+              </table>
+
+              <table class="fr01-table">
+                <tr><td class="header-row" colspan="2">การดำเนินการวิจัย ณ สถานที่วิจัย</td></tr>
+                <tr>
+                  <td colspan="2">
+                    ได้ดำเนินการวิจัยแล้วหรือไม่
+                    <div class="fr01-radio-row" style="margin-top:6px">
+                      <label><input type="radio" name="fr01-conducted" value="yes" id="fr01-cond-yes" onchange="fr01ToggleConducted()"> ดำเนินการแล้ว *</label>
+                      <label><input type="radio" name="fr01-conducted" value="no" id="fr01-cond-no" onchange="fr01ToggleConducted()"> ไม่ได้ดำเนินการ (ตอบข้อ 1.2 แล้วข้ามไปตอบข้อ 5)</label>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <div id="fr01-conducted-section">
+                <table class="fr01-table">
+                  <tr><td class="sub-header" colspan="2">1.1 จำนวนผู้เข้ารับการวิจัย</td></tr>
+                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่ต้องการ (Number of required participants)</td><td><input class="fr01-count-input" id="fr01-required" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td>จำนวนผู้ที่ให้ความยินยอมเข้ารับการวิจัย (Number of consented participants)</td><td><input class="fr01-count-input" id="fr01-consented" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่ไม่ผ่านการคัดกรอง (Number of screen-fail participants)</td><td><input class="fr01-count-input" id="fr01-screenfail" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่ถอนตัวออกจากโครงการ (Number of withdrew participants)</td><td><input class="fr01-count-input" id="fr01-withdrew" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่เสียชีวิต (Number of dead participants)</td><td><input class="fr01-count-input" id="fr01-dead" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่อยู่ในระหว่างการรักษา (Number of active participants)</td><td><input class="fr01-count-input" id="fr01-active" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่อยู่ในระหว่างการติดตาม (Number of follow-up participants)</td><td><input class="fr01-count-input" id="fr01-followup" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่เสร็จสิ้นการวิจัย (Number of completed or inactive participants)</td><td><input class="fr01-count-input" id="fr01-completed" type="number" min="0" placeholder="0"> ราย</td></tr>
+                </table>
+
+                <table class="fr01-table">
+                  <tr><td class="sub-header" colspan="2">1.2 ข้อมูลเกี่ยวกับเหตุการณ์ไม่พึงประสงค์ชนิดร้ายแรง (SAE/SUSARs) และเหตุการณ์ไม่พึงประสงค์ (unanticipated problems) ณ สถานที่วิจัย</td></tr>
+                  <tr>
+                    <td style="width:72%">มีเหตุการณ์ไม่พึงประสงค์ชนิดร้ายแรง (SAE) หรือ SUSARs ซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td>
+                    <td><div class="fr01-radio-row"><label><input type="radio" name="fr01-sae" value="no"> ไม่มี</label><label><input type="radio" name="fr01-sae" value="yes"> มี โปรดแนบรายงาน</label></div></td>
+                  </tr>
+                  <tr>
+                    <td>มีเหตุการณ์ไม่คาดคิดซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td>
+                    <td><div class="fr01-radio-row"><label><input type="radio" name="fr01-unanticipated" value="no"> ไม่มี</label><label><input type="radio" name="fr01-unanticipated" value="yes"> มี โปรดแนบรายงาน</label></div></td>
+                  </tr>
+                </table>
+                <p class="fr01-note">* หากเป็นรายงานครั้งแรกให้แนบสำเนาเอกสารแสดงยินยอมของผู้เข้ารับการวิจัยคนแรกมาด้วย</p>
+              </div>
+
+              <table class="fr01-table">
+                <tr><td class="header-row" colspan="2">ข้อมูลเกี่ยวกับการดำเนินการวิจัย</td></tr>
+                <tr><td style="width:72%">มีการเปลี่ยนแปลงวิธีวิจัย (Protocol Violation) ซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-violation" value="no"> ไม่มี</label><label><input type="radio" name="fr01-violation" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
+                <tr><td>มีการดำเนินการวิจัยที่แตกต่างจากที่ระบุไว้ในโครงร่างการวิจัย (Protocol deviation) ซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-deviation" value="no"> ไม่มี</label><label><input type="radio" name="fr01-deviation" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
+                <tr><td>มีการเปลี่ยนแปลงผู้รับผิดชอบโครงการวิจัยซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-pi-change" value="no"> ไม่มี</label><label><input type="radio" name="fr01-pi-change" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
+                <tr><td>มีการเปลี่ยนแปลงเอกสารเกี่ยวกับโครงการวิจัยซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-doc-change" value="no"> ไม่มี</label><label><input type="radio" name="fr01-doc-change" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
+                <tr><td>มีอาสาสมัครร้องเรียนเกี่ยวกับโครงการวิจัยของท่านในช่วงเวลาของรายงานนี้หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-complaint-r" value="no"> ไม่มี</label><label><input type="radio" name="fr01-complaint-r" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
+              </table>
+
+              <table class="fr01-table">
+                <tr><td class="header-row" colspan="2">ข้อมูลเกี่ยวกับหัวข้อการวิจัย</td></tr>
+                <tr><td style="width:72%">มีการเปลี่ยนแปลงความรู้ใหม่ที่เกี่ยวข้องกับการดำเนินการวิจัยนี้หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-new-knowledge" value="no"> ไม่มี</label><label><input type="radio" name="fr01-new-knowledge" value="yes"> มี โปรดแนบข้อมูล</label></div></td></tr>
+                <tr><td>มีข้อมูลเพิ่มเติมที่เกี่ยวข้องกับความเสี่ยงหรือประโยชน์ของโครงการวิจัยหรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-risk-benefit" value="no"> ไม่มี</label><label><input type="radio" name="fr01-risk-benefit" value="yes"> มี โปรดแนบข้อมูล</label></div></td></tr>
+                <tr><td>ในช่วงเวลาที่รายงาน มีข่าวที่เกี่ยวข้องกับการวิจัยและอาจส่งผลต่อทัศนคติของประชาชนหรือการตัดสินใจเข้าร่วมโครงการวิจัยของอาสาสมัครในโครงการของท่านหรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-media" value="no"> ไม่มี</label><label><input type="radio" name="fr01-media" value="yes"> มี โปรดแนบข้อมูล</label></div></td></tr>
+              </table>
+
+              <table class="fr01-table">
+                <tr><td class="header-row">สรุปผลการวิจัยเบื้องต้นตามวัตถุประสงค์ของการวิจัย<span style="font-weight:400;font-size:12px;display:block;margin-top:2px">หากไม่ได้ดำเนินการวิจัยให้ชี้แจงเหตุผล</span></td></tr>
+                <tr><td style="padding:8px"><textarea class="fr01-textarea" id="fr01-summary" rows="6" placeholder="กรอกสรุปผลการวิจัยเบื้องต้นตามวัตถุประสงค์ / เหตุผลที่ไม่ได้ดำเนินการวิจัย..."></textarea></td></tr>
+              </table>
+
+              <p class="fr01-note">* หากเป็นรายงานครั้งแรกให้แนบสำเนาเอกสารแสดงยินยอมของผู้เข้ารับการวิจัยคนแรกมาด้วย</p>
+
+              <div style="margin-top:16px;padding:0 4px;font-size:14px;line-height:1.8">
+                ข้าพเจ้าขอรับรองว่าได้ตรวจสอบความถูกต้องของข้อมูล และรายงานตามความเป็นจริงทุกประการ
+              </div>
+              <div class="fr01-sign-zone">
+                <div class="fr01-sign-box">
+                  <div class="fr01-sign-line"></div>
+                  <div style="font-size:14px">ลงนามผู้วิจัย .........................................................</div>
+                  <div style="font-size:13px;color:#555;margin-top:4px">(.........................................................)</div>
+                  <div class="fr01-date-row">
+                    วันที่
+                    <input class="fr01-input inline" id="fr01-sign-day"   type="text" placeholder="วว"     style="width:34px;text-align:center">
+                    /
+                    <input class="fr01-input inline" id="fr01-sign-month" type="text" placeholder="เดือน"  style="width:88px;text-align:center">
+                    /
+                    <input class="fr01-input inline" id="fr01-sign-year"  type="text" placeholder="ปปปป"   style="width:48px;text-align:center">
+                  </div>
+                  <div style="font-size:13px;color:#555;margin-top:8px;display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap">
+                    ฉบับที่ <input class="fr01-input inline" id="fr01-round-no" type="text" placeholder="1" style="width:34px;text-align:center">
+                    &nbsp;วันที่ <input class="fr01-input inline" id="fr01-sign-date2" type="date" style="width:auto">
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top:20px;border-top:1px dashed #aac;padding-top:14px" class="fr01-no-print">
+                <div style="font-size:13px;font-weight:700;color:#1a3a6b;margin-bottom:6px">แนบไฟล์เพิ่มเติม (ถ้ามี)</div>
+                <input type="file" class="form-control" id="fr01-file-input" accept=".pdf,.docx,.doc,.xlsx,.jpg,.jpeg,.png" multiple onchange="handleFr01FileUpload(this)">
+                <div class="hint-text">รองรับ PDF, Word, Excel, รูปภาพ | ไม่เกิน 10MB ต่อไฟล์</div>
+                <div id="fr01-file-list" style="margin-top:8px"></div>
+              </div>
+              <div style="margin-top:12px" class="fr01-no-print">
+                <label style="font-size:13px;font-weight:700;color:#1a3a6b">หมายเหตุ / ข้อมูลเพิ่มเติมสำหรับ EC</label>
+                <textarea class="fr01-textarea" id="fr01-ec-note" rows="3" placeholder="หมายเหตุเพิ่มเติมถึงคณะกรรมการฯ (ถ้ามี)"></textarea>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="fr01-btn-bar fr01-no-print">
+          <button class="btn btn-outline" onclick="closeFr01Modal()">ยกเลิก</button>
+          <button class="btn btn-outline" onclick="printFr01()" style="background:#f0f4ff">พิมพ์ / บันทึก PDF</button>
+          <button class="btn btn-primary" id="fr01-submit-btn" onclick="doSubmitFr01()">ยื่นรายงานปิดโครงการ</button>
         </div>
       </div>
     </div>
@@ -7660,6 +7915,18 @@ function removeNotifyRevisionFile() {
       }
       // แสดง expiry date สำหรับ renewal
       document.getElementById('rpt-expiry-row').style.display = type === 'renewal' ? 'block' : 'none';
+      // ปิดโครงการ: เปิด FR.01 modal
+      if (type === 'closure') {
+        var projectCode = document.getElementById('rpt-project-select').value;
+        if (!projectCode) {
+          showToast('กรุณาเลือกโครงการก่อน', 'error');
+          card.classList.remove('selected');
+          document.getElementById('rpt-type-selected').value = '';
+          _selectedReportType = '';
+          return;
+        }
+        openFr01Modal(projectCode);
+      }
     }
 
     function handleReportFileUpload(input) {
@@ -8784,6 +9051,193 @@ function showPage(page) {
           showToast(e.message || 'เกิดข้อผิดพลาด', 'error');
         })
         .setProjectType(S.user.sessionId, _srtCurrentCode, _srtSelectedType, S.user.username);
+    }
+
+
+    // ============================================================
+    //  FR.01 Functions
+    // ============================================================
+    var _fr01FileIds = [];
+    var _fr01ProjectCode = '';
+
+    function openFr01Modal(projectCode) {
+      _fr01FileIds = [];
+      _fr01ProjectCode = projectCode;
+      ['fr01-project-code','fr01-approved-date','fr01-title-th','fr01-title-en',
+       'fr01-researcher','fr01-phone','fr01-email','fr01-address','fr01-sponsor',
+       'fr01-required','fr01-consented','fr01-screenfail','fr01-withdrew',
+       'fr01-dead','fr01-active','fr01-followup','fr01-completed',
+       'fr01-summary','fr01-ec-note',
+       'fr01-sign-day','fr01-sign-month','fr01-sign-year','fr01-round-no','fr01-sign-date2'
+      ].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+      document.querySelectorAll('[name^="fr01-"]').forEach(function(r) { r.checked = false; });
+      document.getElementById('fr01-file-list').innerHTML = '';
+      document.getElementById('fr01-conducted-section').style.display = 'block';
+      document.getElementById('fr01-project-code').value = projectCode;
+      var sel = document.getElementById('rpt-project-select');
+      var opt = sel ? sel.options[sel.selectedIndex] : null;
+      if (opt) { document.getElementById('fr01-title-th').value = opt.getAttribute('data-title') || ''; }
+      if (S && S.user) {
+        document.getElementById('fr01-researcher').value = S.user.name    || '';
+        document.getElementById('fr01-email').value      = S.user.email   || '';
+        document.getElementById('fr01-phone').value      = S.user.phone   || '';
+        document.getElementById('fr01-address').value    = S.user.faculty || '';
+      }
+      var round = 1;
+      if (typeof _allReports !== 'undefined' && Array.isArray(_allReports)) {
+        round = _allReports.filter(function(r) {
+          return r.project_code === projectCode && r.report_type === 'closure';
+        }).length + 1;
+      }
+      document.getElementById('fr01-round-no').value = String(round);
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2,'0');
+      var mth = ['\u0e21\u0e01\u0e23\u0e32\u0e04\u0e21','\u0e01\u0e38\u0e21\u0e20\u0e32\u0e1e\u0e31\u0e19\u0e18\u0e4c','\u0e21\u0e35\u0e19\u0e32\u0e04\u0e21','\u0e40\u0e21\u0e29\u0e32\u0e22\u0e19',
+                  '\u0e1e\u0e24\u0e29\u0e20\u0e32\u0e04\u0e21','\u0e21\u0e34\u0e16\u0e38\u0e19\u0e32\u0e22\u0e19','\u0e01\u0e23\u0e01\u0e0e\u0e32\u0e04\u0e21','\u0e2a\u0e34\u0e07\u0e2b\u0e32\u0e04\u0e21',
+                  '\u0e01\u0e31\u0e19\u0e22\u0e32\u0e22\u0e19','\u0e15\u0e38\u0e25\u0e32\u0e04\u0e21','\u0e1e\u0e24\u0e28\u0e08\u0e34\u0e01\u0e32\u0e22\u0e19','\u0e18\u0e31\u0e19\u0e27\u0e32\u0e04\u0e21'];
+      document.getElementById('fr01-sign-day').value   = dd;
+      document.getElementById('fr01-sign-month').value = mth[today.getMonth()];
+      document.getElementById('fr01-sign-year').value  = String(today.getFullYear() + 543);
+      document.getElementById('fr01-sign-date2').value = today.toISOString().slice(0,10);
+      openModal('modal-fr01');
+    }
+
+    function fr01ToggleConducted() {
+      var yes = document.getElementById('fr01-cond-yes');
+      document.getElementById('fr01-conducted-section').style.display = (yes && yes.checked) ? 'block' : 'none';
+    }
+
+    function handleFr01FileUpload(input) {
+      var listEl = document.getElementById('fr01-file-list');
+      Array.from(input.files).forEach(function(file) {
+        if (file.size > 10 * 1024 * 1024) { showToast('\u0e44\u0e1f\u0e25\u0e4c ' + file.name + ' \u0e43\u0e2b\u0e0d\u0e48\u0e40\u0e01\u0e34\u0e19 10MB', 'error'); return; }
+        var row = document.createElement('div'); row.className = 'file-item';
+        row.innerHTML = '<div style="font-size:13px">&#128206; ' + esc(file.name) + ' <span class="spin-sm dark" style="width:14px;height:14px;display:inline-block"></span></div>';
+        listEl.appendChild(row);
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          google.script.run
+            .withSuccessHandler(function(r) {
+              if (r && r.success) {
+                _fr01FileIds.push(r.fileId);
+                row.innerHTML = '<div style="font-size:13px">&#9989; ' + esc(file.name) + ' <small>(' + formatFileSize(file.size) + ')</small></div>'
+                  + '<div style="display:flex;gap:6px">'
+                  + (r.fileUrl ? '<a href="' + esc(r.fileUrl) + '" target="_blank" class="btn btn-sm btn-outline">&#128065;</a>' : '')
+                  + '<button class="btn btn-sm btn-danger" onclick="removeFr01File(\'' + escAttr(r.fileId) + '\',this)">&#128465;</button></div>';
+              } else {
+                row.innerHTML = '<div style="font-size:13px;color:var(--red)">&#10060; ' + esc(file.name) + '</div>';
+              }
+            })
+            .withFailureHandler(function(e) {
+              row.innerHTML = '<div style="color:var(--red);font-size:13px">&#10060; ' + esc(e.message||'\u0e2d\u0e31\u0e1b\u0e42\u0e2b\u0e25\u0e14\u0e25\u0e49\u0e21\u0e40\u0e2b\u0e25\u0e27') + '</div>';
+            })
+            .uploadFileSecure(ev.target.result.split(',')[1], file.name, file.type, _fr01ProjectCode, S.user.username, 'research_report_closure');
+        };
+        reader.readAsDataURL(file);
+      });
+      input.value = '';
+    }
+
+    function removeFr01File(fileId, btn) {
+      var idx = _fr01FileIds.indexOf(fileId);
+      if (idx > -1) _fr01FileIds.splice(idx, 1);
+      btn.closest('.file-item').remove();
+    }
+
+    function printFr01() {
+      document.querySelectorAll('.fr01-no-print').forEach(function(el) {
+        el.setAttribute('data-pd', el.style.display || '');
+        el.style.display = 'none';
+      });
+      window.print();
+      setTimeout(function() {
+        document.querySelectorAll('.fr01-no-print').forEach(function(el) {
+          el.style.display = el.getAttribute('data-pd') || '';
+        });
+      }, 800);
+    }
+
+    function closeFr01Modal() {
+      closeModal('modal-fr01');
+      document.querySelectorAll('.report-type-card').forEach(function(c) { c.classList.remove('selected'); });
+      document.getElementById('rpt-type-selected').value = '';
+      _selectedReportType = '';
+    }
+
+    function doSubmitFr01() {
+      var projectCode = _fr01ProjectCode;
+      if (!projectCode) { showToast('\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e23\u0e2b\u0e31\u0e2a\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23', 'error'); return; }
+      var conducted = document.querySelector('input[name="fr01-conducted"]:checked');
+      if (!conducted) { showToast('\u0e01\u0e23\u0e38\u0e13\u0e32\u0e23\u0e30\u0e1a\u0e38\u0e27\u0e48\u0e32\u0e44\u0e14\u0e49\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23\u0e27\u0e34\u0e08\u0e31\u0e22\u0e41\u0e25\u0e49\u0e27\u0e2b\u0e23\u0e37\u0e2d\u0e44\u0e21\u0e48', 'error'); return; }
+      var summary = document.getElementById('fr01-summary').value.trim();
+      if (!summary) { showToast('\u0e01\u0e23\u0e38\u0e13\u0e32\u0e01\u0e23\u0e2d\u0e01\u0e2a\u0e23\u0e38\u0e1b\u0e1c\u0e25\u0e01\u0e32\u0e23\u0e27\u0e34\u0e08\u0e31\u0e22 (\u0e02\u0e49\u0e2d 5)', 'error'); return; }
+      function rVal(name) { var el = document.querySelector('input[name="'+name+'"]:checked'); return el ? el.value : ''; }
+      var formData = {
+        conductedResearch: conducted.value,
+        participants: {
+          required:   document.getElementById('fr01-required').value   || '0',
+          consented:  document.getElementById('fr01-consented').value  || '0',
+          screenFail: document.getElementById('fr01-screenfail').value || '0',
+          withdrew:   document.getElementById('fr01-withdrew').value   || '0',
+          dead:       document.getElementById('fr01-dead').value       || '0',
+          active:     document.getElementById('fr01-active').value     || '0',
+          followUp:   document.getElementById('fr01-followup').value   || '0',
+          completed:  document.getElementById('fr01-completed').value  || '0'
+        },
+        sae:           rVal('fr01-sae'),
+        unanticipated: rVal('fr01-unanticipated'),
+        violation:     rVal('fr01-violation'),
+        deviation:     rVal('fr01-deviation'),
+        piChange:      rVal('fr01-pi-change'),
+        docChange:     rVal('fr01-doc-change'),
+        complaint:     rVal('fr01-complaint-r'),
+        newKnowledge:  rVal('fr01-new-knowledge'),
+        riskBenefit:   rVal('fr01-risk-benefit'),
+        media:         rVal('fr01-media'),
+        summary:       summary,
+        approvedDate:  document.getElementById('fr01-approved-date').value,
+        titleTh:       document.getElementById('fr01-title-th').value,
+        titleEn:       document.getElementById('fr01-title-en').value,
+        researcher:    document.getElementById('fr01-researcher').value,
+        phone:         document.getElementById('fr01-phone').value,
+        email:         document.getElementById('fr01-email').value,
+        address:       document.getElementById('fr01-address').value,
+        sponsor:       document.getElementById('fr01-sponsor').value,
+        roundNo:       document.getElementById('fr01-round-no').value,
+        signDate:      document.getElementById('fr01-sign-date2').value
+      };
+      var ecNote = document.getElementById('fr01-ec-note').value;
+      var noteText = '[FR.01]\n' + (ecNote ? ecNote + '\n' : '') + '---\n' + JSON.stringify(formData, null, 2);
+      var btn = document.getElementById('fr01-submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spin-sm"></span> \u0e01\u0e33\u0e25\u0e31\u0e07\u0e22\u0e37\u0e48\u0e19...';
+      google.script.run
+        .withSuccessHandler(function(res) {
+          btn.disabled = false;
+          btn.textContent = '\u0e22\u0e37\u0e48\u0e19\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19\u0e1b\u0e34\u0e14\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23';
+          if (res && res.success) {
+            closeModal('modal-fr01');
+            closeModal('modal-submit-report');
+            showToast('\u0e22\u0e37\u0e48\u0e19\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19\u0e1b\u0e34\u0e14\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23 (FR.01) \u0e04\u0e23\u0e31\u0e49\u0e07\u0e17\u0e35\u0e48 ' + res.round + ' \u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08');
+            if (typeof loadMyReports === 'function') loadMyReports();
+            if (typeof loadApprovedProjectsForReporting === 'function') loadApprovedProjectsForReporting();
+          } else {
+            showToast('\u0e40\u0e01\u0e34\u0e14\u0e02\u0e49\u0e2d\u0e1c\u0e34\u0e14\u0e1e\u0e25\u0e32\u0e14: ' + ((res && res.message) || ''), 'error');
+          }
+        })
+        .withFailureHandler(function(e) {
+          btn.disabled = false;
+          btn.textContent = '\u0e22\u0e37\u0e48\u0e19\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19\u0e1b\u0e34\u0e14\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23';
+          showToast('\u0e40\u0e01\u0e34\u0e14\u0e02\u0e49\u0e2d\u0e1c\u0e34\u0e14\u0e1e\u0e25\u0e32\u0e14: ' + (e.message || ''), 'error');
+        })
+        .submitResearchReport({
+          projectCode:    projectCode,
+          reportType:     'closure',
+          callerUsername: S.user.username,
+          fileIds:        _fr01FileIds.slice(),
+          note:           noteText,
+          expiryDate:     ''
+        });
     }
 
     </script>
