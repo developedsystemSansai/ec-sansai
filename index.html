@@ -172,9 +172,9 @@ button{font-family:inherit;cursor:pointer}
 .cal-day.has-meeting::after{
   content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
   width:5px;height:5px;border-radius:50%;background:var(--g500)}
-.cal-day.has-meeting.fullboard::after{background:var(--r700)}
+.cal-day.has-meeting.fullboard::after{background:var(--g500)}
 .cal-day.has-meeting.expedited::after{background:var(--g500)}
-.cal-day.has-meeting.exempt::after{background:var(--gr700)}
+.cal-day.has-meeting.exempt::after{background:var(--g500)}
 .cal-day.selected{background:var(--g500);color:var(--n900);font-weight:700}
 .cal-day.selected::after{background:var(--n900)!important}
 .cal-day.sun{color:var(--r700)}
@@ -374,6 +374,45 @@ button{font-family:inherit;cursor:pointer}
   padding:4px 12px;font-size:.68rem;color:rgba(255,255,255,.35)}
 
 /* ══════════════════════════════════════════════════════════════
+   REVIEW STATS DASHBOARD
+══════════════════════════════════════════════════════════════ */
+.review-stats{background:var(--n900);border-radius:8px;
+  padding:1.5rem 1.75rem;margin-bottom:2.5rem;
+  border:1px solid rgba(255,255,255,.08)}
+.rs-header{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--g400);display:flex;align-items:center;gap:.55rem;margin-bottom:1.25rem}
+.rs-updated{margin-left:auto;font-size:.65rem;font-weight:400;letter-spacing:0;
+  text-transform:none;color:rgba(255,255,255,.28)}
+.rs-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:1px;
+  background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.rs-card{background:var(--n800);padding:1.1rem 1.4rem;
+  transition:background .18s}
+.rs-card:hover{background:rgba(255,255,255,.06)}
+.rs-total{background:rgba(181,138,42,.12);border-right:1px solid rgba(181,138,42,.25)}
+.rs-total .rs-val{color:var(--g400)}
+.rs-total .rs-lbl{color:rgba(255,255,255,.42)}
+.rs-badge{font-size:.58rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  padding:2px 7px;border-radius:2px;display:inline-block;margin-bottom:.6rem}
+.rs-exempt   .rs-badge{background:var(--n100);color:var(--n600)}
+.rs-expedited .rs-badge{background:var(--g100);color:var(--g700)}
+.rs-fullboard .rs-badge{background:var(--r50);color:var(--r700)}
+.rs-val{font-family:var(--ffs);font-size:1.75rem;font-weight:700;
+  color:#fff;line-height:1;margin-bottom:.35rem}
+.rs-exempt   .rs-val{color:var(--n400)}
+.rs-expedited .rs-val{color:var(--g400)}
+.rs-fullboard .rs-val{color:#e57373}
+.rs-lbl{font-size:.68rem;color:rgba(255,255,255,.38);line-height:1.4}
+@media(max-width:960px){
+  .rs-grid{grid-template-columns:1fr 1fr}
+  .rs-total{grid-column:1/-1;border-right:none;
+    border-bottom:1px solid rgba(181,138,42,.25)}
+}
+@media(max-width:600px){
+  .rs-grid{grid-template-columns:1fr}
+  .rs-total{grid-column:1}
+}
+
+/* ══════════════════════════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════════════════════════ */
 @media(max-width:960px){
@@ -521,16 +560,7 @@ button{font-family:inherit;cursor:pointer}
           <!-- Legend -->
           <div class="cal-legend" aria-label="คำอธิบายสี">
             <div class="legend-item">
-              <div class="legend-dot" style="background:var(--r700)"></div>Full Board
-            </div>
-            <div class="legend-item">
-              <div class="legend-dot" style="background:var(--g500)"></div>Expedited
-            </div>
-            <div class="legend-item">
-              <div class="legend-dot" style="background:var(--gr700)"></div>Exempt
-            </div>
-            <div class="legend-item">
-              <div class="legend-dot" style="background:var(--n400)"></div>ประชุมทั่วไป
+              <div class="legend-dot" style="background:var(--g500)"></div>การประชุม
             </div>
           </div>
           <!-- Selected day detail -->
@@ -614,6 +644,37 @@ button{font-family:inherit;cursor:pointer}
       <h2 class="sec-ttl" id="type-h">ประเภทการพิจารณาจริยธรรมการวิจัย</h2>
       <p class="sec-dsc">คณะกรรมการดำเนินการพิจารณาใน 3 ระดับ ตามระดับความเสี่ยงของโครงการวิจัย</p>
     </div>
+
+    <!-- ── Review Stats Dashboard ──────────────────────────────── -->
+    <div class="review-stats rev" id="review-stats" aria-label="สถิติโครงการในระบบ">
+      <div class="rs-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        โครงการที่อยู่ในการพิจารณา
+        <span class="rs-updated" id="rs-updated">กำลังโหลด...</span>
+      </div>
+      <div class="rs-grid">
+        <div class="rs-card rs-total">
+          <div class="rs-val" id="rs-total">—</div>
+          <div class="rs-lbl">โครงการทั้งหมด</div>
+        </div>
+        <div class="rs-card rs-exempt">
+          <div class="rs-badge">Exempt Review</div>
+          <div class="rs-val" id="rs-exempt">—</div>
+          <div class="rs-lbl">การพิจารณาแบบยกเว้น</div>
+        </div>
+        <div class="rs-card rs-expedited">
+          <div class="rs-badge">Expedited Review</div>
+          <div class="rs-val" id="rs-expedited">—</div>
+          <div class="rs-lbl">การพิจารณาแบบเร่งด่วน</div>
+        </div>
+        <div class="rs-card rs-fullboard">
+          <div class="rs-badge">Full Board Review</div>
+          <div class="rs-val" id="rs-fullboard">—</div>
+          <div class="rs-lbl">การพิจารณาแบบเต็มรูปแบบ</div>
+        </div>
+      </div>
+    </div>
+
     <div class="cards3">
       <article class="tc tc-blue rev" style="transition-delay:.06s">
         <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
@@ -1102,6 +1163,61 @@ function escH(s) {
 
 /* ── Init Calendar ── */
 CAL.init();
+
+/* ══════════════════════════════════════════════════════════════
+   REVIEW STATS — ดึงจำนวนโครงการจาก GAS (public, no auth)
+══════════════════════════════════════════════════════════════ */
+(function() {
+  function setVal(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  function loadStats() {
+    if (!GAS_URL) {
+      setVal('rs-total', '—');
+      setVal('rs-updated', 'ไม่พบ URL');
+      return;
+    }
+
+    var body = JSON.stringify({
+      action: 'getPublicProjectStats',
+      origin: window.location.origin
+    });
+
+    fetch(GAS_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body: body })
+      .then(function(r) { return r.text(); })
+      .then(function(text) {
+        var jsonStart = text.indexOf('{');
+        var jsonEnd   = text.lastIndexOf('}');
+        if (jsonStart === -1 || jsonEnd <= jsonStart) throw new Error('no JSON');
+        var res = JSON.parse(text.substring(jsonStart, jsonEnd + 1));
+
+        if (res && res.success && res.data) {
+          var d = res.data;
+          var total = (d.exempt || 0) + (d.expedited || 0) + (d.fullboard || 0);
+          setVal('rs-total',     total);
+          setVal('rs-exempt',    d.exempt    || 0);
+          setVal('rs-expedited', d.expedited || 0);
+          setVal('rs-fullboard', d.fullboard || 0);
+
+          var now = new Date();
+          var hh = now.getHours().toString().padStart(2,'0');
+          var mm = now.getMinutes().toString().padStart(2,'0');
+          setVal('rs-updated', 'อัปเดต ' + hh + ':' + mm + ' น.');
+        } else {
+          setVal('rs-total', '—');
+          setVal('rs-updated', 'ไม่สามารถโหลดข้อมูล');
+        }
+      })
+      .catch(function() {
+        setVal('rs-total', '—');
+        setVal('rs-updated', 'ไม่สามารถเชื่อมต่อ');
+      });
+  }
+
+  loadStats();
+})();
 </script>
 </body>
 </html>
