@@ -376,40 +376,91 @@ button{font-family:inherit;cursor:pointer}
 /* ══════════════════════════════════════════════════════════════
    REVIEW STATS DASHBOARD
 ══════════════════════════════════════════════════════════════ */
-.review-stats{background:var(--n900);border-radius:8px;
-  padding:1.5rem 1.75rem;margin-bottom:2.5rem;
-  border:1px solid rgba(255,255,255,.08)}
-.rs-header{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--g400);display:flex;align-items:center;gap:.55rem;margin-bottom:1.25rem}
-.rs-updated{margin-left:auto;font-size:.65rem;font-weight:400;letter-spacing:0;
-  text-transform:none;color:rgba(255,255,255,.28)}
-.rs-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:1px;
-  background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
-.rs-card{background:var(--n800);padding:1.1rem 1.4rem;
-  transition:background .18s}
-.rs-card:hover{background:rgba(255,255,255,.06)}
-.rs-total{background:rgba(181,138,42,.12);border-right:1px solid rgba(181,138,42,.25)}
-.rs-total .rs-val{color:var(--g400)}
-.rs-total .rs-lbl{color:rgba(255,255,255,.42)}
-.rs-badge{font-size:.58rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
-  padding:2px 7px;border-radius:2px;display:inline-block;margin-bottom:.6rem}
-.rs-exempt   .rs-badge{background:var(--n100);color:var(--n600)}
-.rs-expedited .rs-badge{background:var(--g100);color:var(--g700)}
-.rs-fullboard .rs-badge{background:var(--r50);color:var(--r700)}
-.rs-val{font-family:var(--ffs);font-size:1.75rem;font-weight:700;
-  color:#fff;line-height:1;margin-bottom:.35rem}
-.rs-exempt   .rs-val{color:var(--n400)}
-.rs-expedited .rs-val{color:var(--g400)}
-.rs-fullboard .rs-val{color:#e57373}
-.rs-lbl{font-size:.68rem;color:rgba(255,255,255,.38);line-height:1.4}
+.review-stats{margin-bottom:2.5rem}
+
+/* Header row */
+.rs-section-head{display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:1.25rem;padding-bottom:1rem;
+  border-bottom:1px solid var(--u100)}
+.rs-eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--g600);margin-bottom:.3rem}
+.rs-title{font-family:var(--ffs);font-size:1.1rem;font-weight:700;
+  color:var(--n800);line-height:1.35}
+.rs-desc{font-size:.78rem;color:var(--u400);margin-top:.25rem;line-height:1.6}
+.rs-updated{display:inline-flex;align-items:center;gap:5px;
+  font-size:.68rem;color:var(--u400);background:var(--u50);
+  padding:4px 11px;border-radius:20px;border:1px solid var(--u200);
+  white-space:nowrap;flex-shrink:0;line-height:1}
+.rs-updated svg{flex-shrink:0;opacity:.6}
+
+/* Grid rows */
+.rs-row-active{display:grid;gap:10px;margin-bottom:10px;
+  grid-template-columns:repeat(4,minmax(0,1fr))}
+.rs-row-summary{display:grid;gap:10px;grid-template-columns:1fr 1fr;
+  margin-bottom:0}
+
+/* Divider between rows */
+.rs-divider{height:1px;background:var(--u100);margin-bottom:10px}
+
+/* Card base */
+.rs-card{background:var(--u50);border-radius:8px;padding:1rem 1.1rem;
+  border:1px solid var(--u200);transition:box-shadow .18s,border-color .18s}
+.rs-card:hover{box-shadow:0 3px 12px rgba(11,31,53,.07);border-color:var(--u300)}
+
+/* Total card */
+.rs-card.rs-total{background:var(--white);border:1px solid var(--u200)}
+
+/* Type cards — 2px top accent */
+.rs-card.rs-exempt   {border-top:2px solid var(--n400);padding-top:calc(1rem - 1px)}
+.rs-card.rs-expedited{border-top:2px solid var(--g500);padding-top:calc(1rem - 1px)}
+.rs-card.rs-fullboard{border-top:2px solid var(--r700);padding-top:calc(1rem - 1px)}
+
+/* Type label */
+.rs-type-lbl{font-size:.58rem;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;margin-bottom:.45rem}
+.rs-card.rs-exempt    .rs-type-lbl{color:var(--n400)}
+.rs-card.rs-expedited .rs-type-lbl{color:var(--g500)}
+.rs-card.rs-fullboard .rs-type-lbl{color:var(--r700)}
+
+/* Total label */
+.rs-total-lbl{font-size:.6rem;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--u400);margin-bottom:.45rem}
+
+/* Numbers */
+.rs-val{font-family:var(--ffs);font-size:2rem;font-weight:700;
+  color:var(--n800);line-height:1;margin-bottom:.3rem;
+  font-variant-numeric:tabular-nums}
+.rs-card.rs-total    .rs-val{font-size:2.5rem;color:var(--n900)}
+.rs-card.rs-exempt   .rs-val{color:var(--n600)}
+.rs-card.rs-expedited .rs-val{color:var(--g600)}
+.rs-card.rs-fullboard .rs-val{color:var(--r700)}
+.rs-lbl{font-size:.7rem;color:var(--u500);line-height:1.45}
+.rs-sublbl{font-size:.62rem;color:var(--u400);margin-top:.2rem}
+
+/* Summary cards */
+.rs-summary-card{background:var(--white);border:1px solid var(--u200);
+  border-radius:8px;padding:1rem 1.25rem;
+  display:flex;align-items:center;gap:14px;
+  transition:box-shadow .18s,border-color .18s}
+.rs-summary-card:hover{box-shadow:0 3px 12px rgba(11,31,53,.07);border-color:var(--u300)}
+.rs-sum-icon{width:40px;height:40px;border-radius:6px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center}
+.rs-summary-card.rs-approved .rs-sum-icon{background:var(--gr50);color:var(--gr700)}
+.rs-summary-card.rs-closed   .rs-sum-icon{background:var(--u100);color:var(--u500)}
+.rs-sum-lbl{font-size:.7rem;color:var(--u500);margin-bottom:.25rem;line-height:1.4}
+.rs-sum-val{font-family:var(--ffs);font-size:1.75rem;font-weight:700;
+  line-height:1;font-variant-numeric:tabular-nums}
+.rs-summary-card.rs-approved .rs-sum-val{color:var(--gr700)}
+.rs-summary-card.rs-closed   .rs-sum-val{color:var(--u500)}
+
 @media(max-width:960px){
-  .rs-grid{grid-template-columns:1fr 1fr}
-  .rs-total{grid-column:1/-1;border-right:none;
-    border-bottom:1px solid rgba(181,138,42,.25)}
+  .rs-row-active{grid-template-columns:1fr 1fr}
+  .rs-row-summary{grid-template-columns:1fr 1fr}
 }
 @media(max-width:600px){
-  .rs-grid{grid-template-columns:1fr}
-  .rs-total{grid-column:1}
+  .rs-row-active{grid-template-columns:1fr 1fr}
+  .rs-row-summary{grid-template-columns:1fr}
+  .rs-section-head{flex-direction:column;align-items:flex-start;gap:.75rem}
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -647,32 +698,68 @@ button{font-family:inherit;cursor:pointer}
 
     <!-- ── Review Stats Dashboard ──────────────────────────────── -->
     <div class="review-stats rev" id="review-stats" aria-label="สถิติโครงการในระบบ">
-      <div class="rs-header">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        โครงการที่อยู่ในการพิจารณา
-        <span class="rs-updated" id="rs-updated">กำลังโหลด...</span>
+
+      <!-- Header -->
+      <div class="rs-section-head">
+        <div>
+          <div class="rs-eyebrow">สถิติโครงการในระบบ</div>
+          <div class="rs-title">ภาพรวมการพิจารณาจริยธรรมการวิจัย</div>
+          <div class="rs-desc">ข้อมูลจำนวนโครงการที่อยู่ในกระบวนการพิจารณา แยกตามระดับความเสี่ยง</div>
+        </div>
+        <span class="rs-updated" id="rs-updated" aria-live="polite">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.31-4.23"/></svg>
+          กำลังโหลด...
+        </span>
       </div>
-      <div class="rs-grid">
+
+      <!-- แถว 1: กำลังพิจารณา -->
+      <div class="rs-row-active">
         <div class="rs-card rs-total">
+          <div class="rs-total-lbl">รวมกำลังพิจารณา</div>
           <div class="rs-val" id="rs-total">—</div>
-          <div class="rs-lbl">โครงการทั้งหมด</div>
+          <div class="rs-lbl">โครงการ · ทั้ง 3 ประเภท</div>
         </div>
         <div class="rs-card rs-exempt">
-          <div class="rs-badge">Exempt Review</div>
+          <div class="rs-type-lbl">Exempt Review</div>
           <div class="rs-val" id="rs-exempt">—</div>
           <div class="rs-lbl">การพิจารณาแบบยกเว้น</div>
         </div>
         <div class="rs-card rs-expedited">
-          <div class="rs-badge">Expedited Review</div>
+          <div class="rs-type-lbl">Expedited Review</div>
           <div class="rs-val" id="rs-expedited">—</div>
           <div class="rs-lbl">การพิจารณาแบบเร่งด่วน</div>
         </div>
         <div class="rs-card rs-fullboard">
-          <div class="rs-badge">Full Board Review</div>
+          <div class="rs-type-lbl">Full Board Review</div>
           <div class="rs-val" id="rs-fullboard">—</div>
           <div class="rs-lbl">การพิจารณาแบบเต็มรูปแบบ</div>
         </div>
       </div>
+
+      <div class="rs-divider"></div>
+
+      <!-- แถว 2: ได้รับรอง + ปิดโครงการ -->
+      <div class="rs-row-summary">
+        <div class="rs-summary-card rs-approved">
+          <div class="rs-sum-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <div class="rs-sum-lbl">ได้รับการรับรองแล้ว</div>
+            <div class="rs-sum-val" id="rs-approved">—</div>
+          </div>
+        </div>
+        <div class="rs-summary-card rs-closed">
+          <div class="rs-sum-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+          </div>
+          <div>
+            <div class="rs-sum-lbl">ปิดโครงการแล้ว</div>
+            <div class="rs-sum-val" id="rs-closed">—</div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="cards3">
@@ -1200,18 +1287,24 @@ CAL.init();
           setVal('rs-exempt',    d.exempt    || 0);
           setVal('rs-expedited', d.expedited || 0);
           setVal('rs-fullboard', d.fullboard || 0);
+          setVal('rs-approved',  d.approved  || 0);
+          setVal('rs-closed',    d.closed    || 0);
 
           var now = new Date();
           var hh = now.getHours().toString().padStart(2,'0');
           var mm = now.getMinutes().toString().padStart(2,'0');
           setVal('rs-updated', 'อัปเดต ' + hh + ':' + mm + ' น.');
         } else {
-          setVal('rs-total', '—');
+          setVal('rs-total',    '—');
+          setVal('rs-approved', '—');
+          setVal('rs-closed',   '—');
           setVal('rs-updated', 'ไม่สามารถโหลดข้อมูล');
         }
       })
       .catch(function() {
-        setVal('rs-total', '—');
+        setVal('rs-total',    '—');
+        setVal('rs-approved', '—');
+        setVal('rs-closed',   '—');
         setVal('rs-updated', 'ไม่สามารถเชื่อมต่อ');
       });
   }
