@@ -1699,6 +1699,59 @@ CAL.init();
 
   loadStats();
 })();
+
+/* ══════════════════════════════════════════════════════════════
+   DOCUMENT MODAL  —  ecDmOpen / ecDmClose / ecDmTab
+══════════════════════════════════════════════════════════════ */
+function ecDmOpen() {
+  var overlay = document.getElementById('ecDocModal');
+  if (!overlay) return;
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden', 'false');
+  /* focus กับ tab แรกเพื่อ accessibility */
+  var firstTab = overlay.querySelector('.dm-tab');
+  if (firstTab) firstTab.focus();
+  document.body.style.overflow = 'hidden';
+}
+
+function ecDmClose() {
+  var overlay = document.getElementById('ecDocModal');
+  if (!overlay) return;
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  /* คืน focus ไปที่ปุ่มที่เปิด modal */
+  var opener = document.querySelector('.btn-dl-open');
+  if (opener) opener.focus();
+}
+
+function ecDmTab(panel, btn) {
+  /* ปิด panel และ tab ทั้งหมด */
+  document.querySelectorAll('.dm-panel').forEach(function(p) {
+    p.classList.remove('active');
+  });
+  document.querySelectorAll('.dm-tab').forEach(function(t) {
+    t.classList.remove('active');
+    t.setAttribute('aria-selected', 'false');
+  });
+  /* เปิด panel และ tab ที่เลือก */
+  var targetPanel = document.getElementById('dm-panel-' + panel);
+  if (targetPanel) targetPanel.classList.add('active');
+  if (btn) {
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+  }
+}
+
+/* ปิด modal ด้วย Escape key */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    var overlay = document.getElementById('ecDocModal');
+    if (overlay && overlay.classList.contains('open')) {
+      ecDmClose();
+    }
+  }
+});
 </script>
 </body>
 </html>
