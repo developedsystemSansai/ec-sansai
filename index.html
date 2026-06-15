@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <style>
 /* ══════════════════════════════════════════════════════════════
    DESIGN TOKENS — Navy + Gold  (unified with index.html theme)
@@ -356,6 +357,139 @@ button{font-family:inherit;cursor:pointer}
   color:var(--g600);margin-bottom:.5rem}
 .dc h4{font-size:.84rem;font-weight:700;color:var(--n800);margin-bottom:.5rem;line-height:1.45}
 .dc p{font-size:.72rem;color:var(--u500);line-height:1.72}
+
+/* ══════════════════════════════════════════════════════════════
+   DOCS DOWNLOAD BANNER + MODAL
+══════════════════════════════════════════════════════════════ */
+.doc-dl-banner{display:flex;align-items:center;justify-content:space-between;
+  gap:1.25rem;flex-wrap:wrap;background:var(--white);
+  border:1px solid var(--g100);border-radius:6px;padding:1.25rem 1.5rem;
+  margin-top:2rem}
+.doc-dl-meta{display:flex;align-items:center;gap:1rem}
+.doc-dl-icon{width:46px;height:46px;background:var(--g500);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--n900);font-size:21px;flex-shrink:0}
+.doc-dl-text h3{font-size:.88rem;font-weight:700;color:var(--n800);margin-bottom:3px}
+.doc-dl-text p{font-size:.73rem;color:var(--u500);line-height:1.5}
+.doc-dl-stats{display:flex;gap:1.1rem;align-items:center}
+.doc-dl-stat{text-align:center}
+.doc-dl-stat strong{display:block;font-size:1.4rem;font-weight:700;color:var(--g600);line-height:1}
+.doc-dl-stat span{display:block;font-size:.65rem;color:var(--u500);margin-top:3px}
+.doc-dl-divider{width:1px;height:32px;background:var(--g100)}
+.btn-dl-open{display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--g500);color:var(--n900);border:none;border-radius:4px;
+  padding:.58rem 1.2rem;font-family:var(--ff);font-size:.84rem;font-weight:700;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:background .18s var(--ease),transform .15s,box-shadow .18s}
+.btn-dl-open:hover{background:var(--g400);transform:translateY(-1px);
+  box-shadow:0 4px 14px rgba(181,138,42,.32)}
+.btn-dl-open:active{transform:scale(.97)}
+.btn-dl-open i{font-size:16px}
+
+/* overlay */
+.dm-overlay{display:none;position:fixed;inset:0;
+  background:rgba(11,31,53,.65);z-index:900;
+  align-items:center;justify-content:center;padding:1rem}
+.dm-overlay.open{display:flex}
+
+/* modal */
+.dm{background:var(--white);border-radius:8px;width:100%;max-width:680px;
+  max-height:90vh;display:flex;flex-direction:column;
+  border:1px solid var(--g100);overflow:hidden;
+  animation:dmIn .22s cubic-bezier(.34,1.4,.64,1)}
+@keyframes dmIn{from{opacity:0;transform:scale(.93) translateY(10px)}
+                to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.dm{animation:none}}
+
+/* modal header */
+.dm-hdr{background:var(--n900);border-bottom:2px solid var(--g500);
+  padding:1.1rem 1.25rem;flex-shrink:0}
+.dm-hdr-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.dm-badge{display:inline-flex;align-items:center;gap:5px;
+  background:rgba(181,138,42,.18);color:var(--g400);
+  font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;margin-bottom:6px}
+.dm-hdr h2{color:#fff;font-family:var(--ffs);font-size:1rem;font-weight:600;
+  line-height:1.35;margin-bottom:3px}
+.dm-hdr p{color:rgba(255,255,255,.45);font-size:.72rem}
+.btn-dm-close{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);
+  border-radius:5px;color:rgba(255,255,255,.7);width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;font-size:16px;transition:background .15s}
+.btn-dm-close:hover{background:rgba(255,255,255,.18);color:#fff}
+
+/* tabs */
+.dm-tabs{display:flex;padding:0 1.1rem;background:var(--g50);
+  border-bottom:1px solid var(--g100);flex-shrink:0;gap:2px}
+.dm-tab{display:flex;align-items:center;gap:6px;padding:.75rem 1rem .65rem;
+  font-family:var(--ff);font-size:.78rem;font-weight:600;color:var(--u500);
+  background:none;border:none;border-bottom:2.5px solid transparent;
+  cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap}
+.dm-tab:hover{color:var(--g700)}
+.dm-tab.active{color:var(--g700);border-bottom-color:var(--g500)}
+.dm-tbadge{background:var(--g100);color:var(--g700);font-size:.62rem;font-weight:700;
+  padding:1px 7px;border-radius:20px;transition:background .15s,color .15s}
+.dm-tab.active .dm-tbadge{background:var(--g500);color:var(--n900)}
+
+/* body */
+.dm-body{overflow-y:auto;padding:1.1rem;flex:1}
+.dm-body::-webkit-scrollbar{width:4px}
+.dm-body::-webkit-scrollbar-track{background:transparent}
+.dm-body::-webkit-scrollbar-thumb{background:var(--g100);border-radius:10px}
+.dm-panel{display:none}
+.dm-panel.active{display:block}
+
+/* notice bar */
+.dm-notice{display:flex;align-items:flex-start;gap:8px;background:var(--g50);
+  border:1px solid var(--g100);border-radius:4px;padding:.7rem .9rem;
+  margin-bottom:.9rem}
+.dm-notice i{color:var(--g600);font-size:15px;flex-shrink:0;margin-top:1px}
+.dm-notice p{font-size:.72rem;color:var(--u700);line-height:1.6}
+.dm-notice strong{color:var(--g700)}
+
+/* doc list */
+.dm-list{display:flex;flex-direction:column;gap:6px}
+.dm-item{display:flex;align-items:center;gap:.75rem;background:var(--u50);
+  border:1px solid var(--u100);border-radius:5px;padding:.75rem .9rem;
+  text-decoration:none;transition:border-color .15s,box-shadow .15s,background .15s}
+.dm-item:hover{border-color:var(--g400);box-shadow:0 2px 8px rgba(181,138,42,.12);
+  background:var(--g50)}
+.dm-item.disabled{opacity:.5;cursor:default;pointer-events:none}
+.dm-ico{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:17px;flex-shrink:0}
+.dm-ico.req{background:var(--g50);color:var(--g700)}
+.dm-ico.opt{background:var(--n50);color:var(--n600)}
+.dm-ico.nil{background:var(--u100);color:var(--u500)}
+.dm-info{flex:1;min-width:0}
+.dm-code{font-size:.62rem;font-weight:700;color:var(--g600);letter-spacing:.05em;margin-bottom:2px}
+.dm-title{font-size:.8rem;color:var(--n800);font-weight:600;line-height:1.45}
+.dm-sub{font-size:.7rem;color:var(--u500);margin-top:2px}
+.btn-dm-open{display:inline-flex;align-items:center;gap:5px;
+  background:var(--n800);color:#fff;border:none;border-radius:4px;
+  padding:.42rem .85rem;font-family:var(--ff);font-size:.72rem;font-weight:600;
+  cursor:pointer;text-decoration:none;white-space:nowrap;flex-shrink:0;
+  transition:background .15s}
+.btn-dm-open:hover{background:var(--n700)}
+.dm-noform{font-size:.7rem;color:var(--u500);white-space:nowrap;flex-shrink:0;padding:0 4px}
+
+/* footer */
+.dm-ftr{border-top:1px solid var(--g100);padding:.8rem 1.1rem;background:var(--g50);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:.75rem;flex-wrap:wrap;flex-shrink:0}
+.dm-ftr-hint{display:flex;align-items:center;gap:6px;
+  font-size:.7rem;color:var(--u500);line-height:1.45}
+.dm-ftr-hint i{color:var(--g500);font-size:16px;flex-shrink:0}
+.btn-dm-ftr{display:inline-flex;align-items:center;gap:6px;background:none;
+  border:1.5px solid var(--g400);color:var(--g700);border-radius:4px;
+  padding:.42rem 1rem;font-family:var(--ff);font-size:.78rem;font-weight:600;
+  cursor:pointer;transition:background .15s}
+.btn-dm-ftr:hover{background:var(--g50)}
+
+@media(max-width:640px){
+  .doc-dl-stats{display:none}
+  .dm-hdr h2{font-size:.92rem}
+  .dm-tab{font-size:.73rem;padding:.65rem .75rem .55rem}
+}
 
 /* ══════════════════════════════════════════════════════════════
    FOOTER
@@ -804,8 +938,262 @@ button{font-family:inherit;cursor:pointer}
       <div class="dc rev" style="transition-delay:.19s"><div class="dc-seq">เอกสาร 03</div><h4>ประวัติและคุณสมบัติผู้วิจัย (CV)</h4><p>CV ผู้วิจัยหลักและผู้ร่วมวิจัยทุกคน พร้อมใบรับรองการอบรม</p></div>
       <div class="dc rev" style="transition-delay:.26s"><div class="dc-seq">เอกสาร 04</div><h4>แบบฟอร์ม EC สันทราย (EC-SS-001)</h4><p>แบบฟอร์มยื่นขอของโรงพยาบาลสันทราย กรอกข้อมูลครบทุกช่อง</p></div>
     </div>
+
+    <!-- ── Download banner ── -->
+    <div class="doc-dl-banner rev" style="transition-delay:.3s">
+      <div class="doc-dl-meta">
+        <div class="doc-dl-icon" aria-hidden="true"><i class="ti ti-files"></i></div>
+        <div class="doc-dl-text">
+          <h3>แบบฟอร์ม IS.01 – IS.09 และเอกสารประกอบ</h3>
+          <p>ดาวน์โหลดแบบฟอร์มได้โดยตรงจาก Google Docs — บันทึกสำเนาก่อนกรอกข้อมูล</p>
+        </div>
+      </div>
+      <div class="doc-dl-stats" aria-label="จำนวนแบบฟอร์ม">
+        <div class="doc-dl-stat">
+          <strong>9</strong>
+          <span>เอกสารบังคับ</span>
+        </div>
+        <div class="doc-dl-divider"></div>
+        <div class="doc-dl-stat">
+          <strong>9</strong>
+          <span>เอกสารเพิ่มเติม</span>
+        </div>
+      </div>
+      <button class="btn-dl-open" onclick="ecDmOpen()" aria-haspopup="dialog" aria-controls="ecDocModal">
+        <i class="ti ti-download" aria-hidden="true"></i>
+        ดูและดาวน์โหลดแบบฟอร์ม
+      </button>
+    </div>
   </div>
 </section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     DOCUMENT DOWNLOAD MODAL
+══════════════════════════════════════════════════════════════ -->
+<div class="dm-overlay" id="ecDocModal" role="dialog" aria-modal="true"
+     aria-labelledby="ecDmTitle" onclick="if(event.target===this)ecDmClose()">
+  <div class="dm">
+
+    <!-- header -->
+    <div class="dm-hdr">
+      <div class="dm-hdr-inner">
+        <div>
+          <div class="dm-badge">
+            <i class="ti ti-shield-check" aria-hidden="true"></i>
+            คณะกรรมการจริยธรรมการวิจัย
+          </div>
+          <h2 id="ecDmTitle">แบบฟอร์มการยื่นโครงการวิจัย</h2>
+          <p>โรงพยาบาลสันทราย — EC Sansai</p>
+        </div>
+        <button class="btn-dm-close" onclick="ecDmClose()" aria-label="ปิดหน้าต่าง">
+          <i class="ti ti-x" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- tabs -->
+    <div class="dm-tabs" role="tablist" aria-label="หมวดหมู่เอกสาร">
+      <button class="dm-tab active" role="tab" aria-selected="true"
+              aria-controls="dm-panel-req" id="dm-tab-req"
+              onclick="ecDmTab('req',this)">
+        <i class="ti ti-star" aria-hidden="true"></i>
+        เอกสารบังคับ <span class="dm-tbadge">9</span>
+      </button>
+      <button class="dm-tab" role="tab" aria-selected="false"
+              aria-controls="dm-panel-opt" id="dm-tab-opt"
+              onclick="ecDmTab('opt',this)">
+        <i class="ti ti-file-plus" aria-hidden="true"></i>
+        เอกสารเพิ่มเติม <span class="dm-tbadge">9</span>
+      </button>
+    </div>
+
+    <!-- body -->
+    <div class="dm-body">
+
+      <!-- panel: required -->
+      <div class="dm-panel active" id="dm-panel-req" role="tabpanel" aria-labelledby="dm-tab-req">
+        <div class="dm-notice">
+          <i class="ti ti-alert-circle" aria-hidden="true"></i>
+          <p>เอกสารทุกรายการด้านล่างเป็น<strong>เอกสารบังคับ</strong> ต้องแนบให้ครบทุกฉบับก่อนยื่น
+            รายการที่ไม่มีปุ่มเปิดต้องจัดทำโดยผู้วิจัย / หน่วยงานเอง</p>
+        </div>
+        <div class="dm-list">
+          <a class="dm-item" href="https://docs.google.com/document/d/1Meb-7MeuPW-GwcmUJYlw-VcEwbPTD0dM/edit" target="_blank" rel="noopener">
+            <div class="dm-ico req" aria-hidden="true"><i class="ti ti-file-description"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">IS.09</div>
+              <div class="dm-title">แบบเสนอโครงการวิจัย (Research Proposal)</div>
+            </div>
+            <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+          </a>
+          <a class="dm-item" href="https://docs.google.com/document/d/1dNOuCPj9AkPcKqtNJyJoDd2G9B9Udt_o/edit" target="_blank" rel="noopener">
+            <div class="dm-ico req" aria-hidden="true"><i class="ti ti-clipboard-check"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">IS.01</div>
+              <div class="dm-title">แบบยื่นขอรับการพิจารณาจริยธรรมการวิจัย</div>
+            </div>
+            <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+          </a>
+          <a class="dm-item" href="https://docs.google.com/document/d/1TrO-xB70lYFo7uAWwnKTzoe0e7cHYhw6/edit" target="_blank" rel="noopener">
+            <div class="dm-ico req" aria-hidden="true"><i class="ti ti-checklist"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">IS.02</div>
+              <div class="dm-title">แบบฟอร์มการประเมินตนเองโดยผู้วิจัย</div>
+            </div>
+            <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+          </a>
+          <a class="dm-item" href="https://docs.google.com/document/d/1A7HZKWhI0IkeLmmAXHcw6nYiDgEZxP2p/edit" target="_blank" rel="noopener">
+            <div class="dm-ico req" aria-hidden="true"><i class="ti ti-eye-off"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">IS.03</div>
+              <div class="dm-title">แบบฟอร์มเปิดเผยการมีผลประโยชน์ทับซ้อน</div>
+            </div>
+            <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+          </a>
+          <a class="dm-item" href="https://docs.google.com/document/d/1REmHOc7s_QE_D_t7I6Yal36uOv1hXOtE/edit" target="_blank" rel="noopener">
+            <div class="dm-ico req" aria-hidden="true"><i class="ti ti-users"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">IS.04</div>
+              <div class="dm-title">เอกสารข้อมูลคำอธิบายสำหรับผู้รับการวิจัย</div>
+            </div>
+            <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+          </a>
+          <a class="dm-item" href="https://docs.google.com/document/d/12nOtioaUO0ARW7HdX3KnoJQvmTkmPD2J/edit" target="_blank" rel="noopener">
+            <div class="dm-ico req" aria-hidden="true"><i class="ti ti-writing"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">IS.05</div>
+              <div class="dm-title">เอกสารแสดงความยินยอมเข้าร่วมในโครงการวิจัย (ICF)</div>
+            </div>
+            <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+          </a>
+          <div class="dm-item disabled">
+            <div class="dm-ico nil" aria-hidden="true"><i class="ti ti-tool"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">—</div>
+              <div class="dm-title">เครื่องมือที่ใช้ในการวิจัย</div>
+              <div class="dm-sub">จัดทำโดยผู้วิจัย — ไม่มีแบบฟอร์มกลาง</div>
+            </div>
+            <span class="dm-noform">ไม่มีแบบฟอร์ม</span>
+          </div>
+          <div class="dm-item disabled">
+            <div class="dm-ico nil" aria-hidden="true"><i class="ti ti-mail"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">—</div>
+              <div class="dm-title">หนังสือนำส่งจากหน่วยงาน</div>
+              <div class="dm-sub">จัดทำโดยหน่วยงานต้นสังกัด — ไม่มีแบบฟอร์มกลาง</div>
+            </div>
+            <span class="dm-noform">ไม่มีแบบฟอร์ม</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- panel: optional -->
+      <div class="dm-panel" id="dm-panel-opt" role="tabpanel" aria-labelledby="dm-tab-opt">
+        <div class="dm-notice">
+          <i class="ti ti-info-circle" aria-hidden="true"></i>
+          <p>เอกสารเหล่านี้<strong>แนบเฉพาะเมื่อเกี่ยวข้องกับโครงการวิจัยของท่าน</strong>
+            หากโครงการไม่มีกลุ่มเป้าหมายดังกล่าวไม่ต้องแนบ</p>
+        </div>
+        <div class="dm-list">
+          <a class="dm-item" href="https://docs.google.com/document/d/1UPT1L_lKdcPlRTZtGrIkQKBBat42XYg5/edit" target="_blank" rel="noopener">
+            <div class="dm-ico opt" aria-hidden="true"><i class="ti ti-child"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">IS.06</div>
+              <div class="dm-title">เอกสารสำหรับเด็กอายุ 7–12 ปี</div>
+              <div class="dm-sub">แนบเมื่อโครงการมีกลุ่มตัวอย่างเป็นเด็ก</div>
+            </div>
+            <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+          </a>
+          <a class="dm-item" href="https://docs.google.com/document/d/1VFxmrSRZjyvd9SsOk_bkv4AHF2UPc0v0/edit" target="_blank" rel="noopener">
+            <div class="dm-ico opt" aria-hidden="true"><i class="ti ti-writing"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">IS.07</div>
+              <div class="dm-title">เอกสารแสดงความยินยอมสำหรับเด็ก</div>
+              <div class="dm-sub">ใช้ร่วมกับ IS.06</div>
+            </div>
+            <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+          </a>
+          <a class="dm-item" href="https://docs.google.com/document/d/1u3dRk2NcLSic82VVmaNoFthYkSY3MpV7/edit" target="_blank" rel="noopener">
+            <div class="dm-ico opt" aria-hidden="true"><i class="ti ti-user-check"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">IS.08</div>
+              <div class="dm-title">เอกสารแสดงความยินยอมสำหรับผู้แทน</div>
+              <div class="dm-sub">แนบเมื่อผู้รับการวิจัยไม่สามารถให้ความยินยอมด้วยตนเอง</div>
+            </div>
+            <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+          </a>
+          <div class="dm-item disabled">
+            <div class="dm-ico nil" aria-hidden="true"><i class="ti ti-award"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">—</div>
+              <div class="dm-title">หลักฐานการอบรม GCP / ICH</div>
+              <div class="dm-sub">แนบใบรับรองจากหน่วยงานผู้จัดอบรม</div>
+            </div>
+            <span class="dm-noform">แนบต้นฉบับ</span>
+          </div>
+          <div class="dm-item disabled">
+            <div class="dm-ico nil" aria-hidden="true"><i class="ti ti-id-badge"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">CV</div>
+              <div class="dm-title">ประวัติผู้วิจัยหลัก (Curriculum Vitae)</div>
+              <div class="dm-sub">จัดทำโดยผู้วิจัย</div>
+            </div>
+            <span class="dm-noform">จัดทำเอง</span>
+          </div>
+          <div class="dm-item disabled">
+            <div class="dm-ico nil" aria-hidden="true"><i class="ti ti-table"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">—</div>
+              <div class="dm-title">แบบเก็บข้อมูล / แบบสอบถาม / แบบสัมภาษณ์</div>
+              <div class="dm-sub">จัดทำโดยผู้วิจัยตามรูปแบบโครงการ</div>
+            </div>
+            <span class="dm-noform">จัดทำเอง</span>
+          </div>
+          <div class="dm-item disabled">
+            <div class="dm-ico nil" aria-hidden="true"><i class="ti ti-file-check"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">—</div>
+              <div class="dm-title">Assent Form (สำหรับผู้เยาว์)</div>
+              <div class="dm-sub">จัดทำโดยผู้วิจัย — ใช้เมื่อมีผู้เยาว์เข้าร่วม</div>
+            </div>
+            <span class="dm-noform">จัดทำเอง</span>
+          </div>
+          <div class="dm-item disabled">
+            <div class="dm-ico nil" aria-hidden="true"><i class="ti ti-certificate"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">—</div>
+              <div class="dm-title">หนังสืออนุมัติจากคณะกรรมการอื่น</div>
+              <div class="dm-sub">แนบสำเนาเอกสารที่ได้รับอนุมัติแล้ว</div>
+            </div>
+            <span class="dm-noform">แนบต้นฉบับ</span>
+          </div>
+          <div class="dm-item disabled">
+            <div class="dm-ico nil" aria-hidden="true"><i class="ti ti-contract"></i></div>
+            <div class="dm-info">
+              <div class="dm-code">—</div>
+              <div class="dm-title">สัญญา / ข้อตกลงกับผู้สนับสนุน</div>
+              <div class="dm-sub">แนบเมื่อโครงการได้รับทุนหรือการสนับสนุนจากภายนอก</div>
+            </div>
+            <span class="dm-noform">แนบต้นฉบับ</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /dm-body -->
+
+    <!-- footer -->
+    <div class="dm-ftr">
+      <div class="dm-ftr-hint">
+        <i class="ti ti-brand-google-drive" aria-hidden="true"></i>
+        <span>เปิดใน Google Docs — เลือก <strong>File → Make a copy</strong> เพื่อบันทึกสำเนาก่อนกรอกข้อมูล</span>
+      </div>
+      <button class="btn-dm-ftr" onclick="ecDmClose()">
+        <i class="ti ti-x" aria-hidden="true"></i> ปิด
+      </button>
+    </div>
+
+  </div><!-- /dm -->
+</div><!-- /dm-overlay -->
 
 <!-- ══════════════════════════════════════════════════════════════
      NEWS + QUICK ACTIONS
