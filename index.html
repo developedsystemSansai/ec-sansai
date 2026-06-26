@@ -1769,16 +1769,7 @@ function annClose() {
   }
 }
 
-(function(){
-  var popup = document.getElementById('annPopup');
-  if (!popup) return;
-  popup.style.display = 'flex';
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-      popup.classList.add('ann-visible');
-    });
-  });
-})();
+/* auto-show อยู่ใน <script> ท้ายไฟล์ หลัง div#annPopup ถูกสร้างแล้ว */
 </script>
 
 <!-- ══════════════════════════════════════════
@@ -2064,5 +2055,18 @@ function annClose() {
   </div>
 </div>
 
+<!-- auto-show popup หลัง DOM พร้อม -->
+<script>
+(function(){
+  var popup = document.getElementById('annPopup');
+  if (!popup) return;
+  popup.style.display = 'flex';
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      popup.classList.add('ann-visible');
+    });
+  });
+})();
+</script>
 </body>
 </html>
