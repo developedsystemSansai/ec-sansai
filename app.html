@@ -4370,6 +4370,17 @@ function showForgotMessage(type, text) {
         .getDashboardStats(S.user.sessionId, S.user.username);
     }
 
+function _projectSortKey_(p){
+  var d = p.created_date ? new Date(p.created_date) : null;
+  if (d && !isNaN(d.getTime())) return d.getTime();
+  var m = String(p.project_code||'').match(/(\d+)(?!.*\d)/);
+  return m ? parseInt(m[1],10) : 0;
+}
+function _sortProjectsNewestFirst(arr){
+  if (!Array.isArray(arr)) return arr;
+  arr.sort(function(a,b){ return _projectSortKey_(b) - _projectSortKey_(a); });
+  return arr;
+}
 function loadStaffProjects() {
   var el = document.getElementById('staff-projects-table');
   var dashEl = document.getElementById('dashboard-table');
@@ -4388,6 +4399,7 @@ function loadStaffProjects() {
       }
       
       S.staffProjects = res.data || [];
+      _sortProjectsNewestFirst(S.staffProjects);
       renderStaffProjectsTable(S.staffProjects);
       if (S._isAdmin || S._isStaff) _renderAcceptPageAdmin();
       
