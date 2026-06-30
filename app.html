@@ -6543,7 +6543,7 @@ function _renderQAFileList() {
   var icons={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼',jpeg:'🖼',png:'🖼'};
   listEl.innerHTML=_qaFileOrder.map(function(f,i){
     var ext=(f.name.split('.').pop()||'').toLowerCase();
-    return '<div class="qa-file-row" draggable="true" ondragstart="_qaDragStart(event,'+i+')" ondragover="event.preventDefault();this.style.background='var(--navy-pale)'" ondragleave="this.style.background=''" ondrop="_qaDrop(event,'+i+');this.style.background=''" style="display:flex;align-items:center;gap:9px;padding:7px 12px;cursor:grab">'+
+    return '<div class="qa-file-row" draggable="true" ondragstart="_qaDragStart(event,'+i+')" ondragover="event.preventDefault();this.style.background=\'var(--navy-pale)\'" ondragleave="this.style.background=\'\'" ondrop="_qaDrop(event,'+i+');this.style.background=\'\'" style="display:flex;align-items:center;gap:9px;padding:7px 12px;cursor:grab">'+
       '<span style="color:var(--border);font-size:13px;flex-shrink:0">⠿</span>'+
       '<input type="checkbox"'+(f.checked?' checked':'')+' onchange="_qaFileToggle('+i+',this.checked)" style="width:14px;height:14px;accent-color:#2d8a52;flex-shrink:0">'+
       '<span style="font-size:15px;flex-shrink:0">'+(icons[ext]||'📎')+'</span>'+
