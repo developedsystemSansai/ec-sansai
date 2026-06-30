@@ -93,8 +93,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         getResearchReports:          function(sid,u)            { return callGAS('getResearchReports',        {sessionId:sid, username:u}); },
         recordPdpaConsent:           function(pl)               { return callGAS('recordPdpaConsent',         {payload:pl}); },
         saveLineUserId:              function(sid,cu,tu,lid)       { return callGAS('saveLineUserId',            {sessionId:sid, callerUsername:cu, targetUsername:tu, lineUserId:lid}); },
-        pushLineToUser:              function(sid,cu,tu,ti,bd,bt,att){ return callGAS('pushLineToUser',           {sessionId:sid, callerUsername:cu, targetUsername:tu, title:ti, body:bd, buttonType:bt, attachments:att||[]}); },
-        pushLineToAllCommittees:     function(sid,cu,ti,bd,bt)     { return callGAS('pushLineToAllCommittees',  {sessionId:sid, callerUsername:cu, title:ti, body:bd, buttonType:bt}); },
+        pushLineToUser:              function(sid,cu,tu,ti,bd,bt,att,dids){ return callGAS('pushLineToUser',           {sessionId:sid, callerUsername:cu, targetUsername:tu, title:ti, body:bd, buttonType:bt, attachments:att||[], driveFileIds:dids||[]}); },
+        pushLineToAllCommittees:     function(sid,cu,ti,bd,bt,att)        { return callGAS('pushLineToAllCommittees',  {sessionId:sid, callerUsername:cu, title:ti, body:bd, buttonType:bt, attachments:att||[]}); },
       };
 
       // ── GASRunner: รองรับ google.script.run.withXxx(fn).FUNC(args) ──
@@ -2755,6 +2755,18 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                     <div class="field-group" style="margin-bottom:0"><label>หัวเรื่อง</label><input type="text" id="line-broadcast-title" class="form-control" placeholder="เช่น: 📅 นัดประชุมคณะกรรมการ" maxlength="60"></div>
                     <div class="field-group" style="margin-bottom:0"><label>รายละเอียด</label><textarea id="line-broadcast-body" class="form-control" rows="3" placeholder="รายละเอียด..." style="resize:vertical"></textarea></div>
                     <div class="field-group" style="margin-bottom:0"><label>ปุ่มใน LINE</label><select id="line-broadcast-btntype" class="form-control" style="max-width:240px"><option value="home">🏠 หน้าหลักระบบ</option><option value="meeting">📅 หน้าการประชุม</option><option value="projects">📋 โครงการที่ได้รับ</option><option value="none">— ไม่มีปุ่ม —</option></select></div>
+                    <div class="field-group" style="margin-bottom:0">
+                      <label>📎 แนบไฟล์ <span style="font-size:11px;font-weight:400;color:var(--text-light)">(ไม่บังคับ | สูงสุด 5 ไฟล์ | ดาวน์โหลดตรง ไม่ต้องขอสิทธิ์)</span></label>
+                      <div id="line-bc-file-drop" style="border:2px dashed var(--border);border-radius:var(--radius);padding:10px;text-align:center;cursor:pointer;background:#fafbfc"
+                        onclick="document.getElementById('line-bc-file-input').click()"
+                        ondragover="event.preventDefault();this.style.borderColor='#06c755'"
+                        ondragleave="this.style.borderColor=''"
+                        ondrop="event.preventDefault();this.style.borderColor='';handleBcFileDrop(event.dataTransfer.files)">
+                        <div style="font-size:12px;color:var(--text-light)">📁 คลิกหรือลากไฟล์มาวาง</div>
+                        <input type="file" id="line-bc-file-input" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" style="display:none" onchange="handleBcFileSelect(this.files)">
+                      </div>
+                      <div id="line-bc-file-list" style="margin-top:6px;display:flex;flex-direction:column;gap:4px"></div>
+                    </div>
                     <div style="display:flex;gap:10px;align-items:center">
                       <button class="btn btn-primary" id="btn-line-broadcast" style="background:#06c755;border-color:#06c755" onclick="doLineBroadcast()">📲 ส่งถึงกรรมการทุกคน</button>
                       <span id="line-broadcast-note" style="font-size:12px;color:var(--text-light)"></span>
@@ -3822,51 +3834,64 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     </div>
 
     <!-- LINE Push Modal -->
-    <div class="modal-overlay" id="modal-line-push" onclick="if(event.target===this)closeModal('modal-line-push')">
-      <div class="modal" style="max-width:480px">
-        <div class="modal-header" style="background:linear-gradient(135deg,#06c755,#04a344)">
-          <h3 style="color:#fff">📲 ส่ง LINE ถึงกรรมการ</h3>
-          <button class="modal-close" style="color:#fff;opacity:.8" onclick="closeModal('modal-line-push')">✕</button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" id="line-push-username">
-          <div style="background:#e8faf0;border:1.5px solid #a8e6c0;border-radius:var(--radius);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
-            <div style="font-size:22px">💬</div>
-            <div>
-              <div style="font-weight:700;color:#04a344" id="line-push-name">—</div>
-              <div style="font-size:11px;color:var(--text-light)">ID: <span id="line-push-uid" style="font-family:monospace"></span></div>
-            </div>
-          </div>
-          <div class="field-group"><label>หัวเรื่อง</label><input type="text" id="line-push-title" class="form-control" placeholder="เช่น: 📋 มอบหมายโครงการใหม่" maxlength="60"></div>
-          <div class="field-group"><label>รายละเอียด</label><textarea id="line-push-body" class="form-control" rows="3" placeholder="รายละเอียด..." style="resize:vertical"></textarea></div>
-          <div class="field-group">
-            <label>ปุ่มใน LINE</label>
-            <select id="line-push-btntype" class="form-control" style="max-width:240px">
-              <option value="home">🏠 หน้าหลักระบบ</option>
-              <option value="meeting">📅 หน้าการประชุม</option>
-              <option value="projects">📋 โครงการที่ได้รับ</option>
-              <option value="none">— ไม่มีปุ่ม —</option>
-            </select>
-          </div>
-          <div class="field-group" style="margin-bottom:0">
-            <label>📎 ไฟล์แนบ <span style="font-size:11px;font-weight:400;color:var(--text-light)">(ไม่บังคับ | สูงสุด 5 ไฟล์ | 20MB/ไฟล์)</span></label>
-            <div id="line-push-file-drop" style="border:2px dashed var(--border);border-radius:var(--radius);padding:12px;text-align:center;cursor:pointer;background:#fafbfc"
-              onclick="document.getElementById('line-push-file-input').click()"
-              ondragover="event.preventDefault();this.style.borderColor='#06c755'"
-              ondragleave="this.style.borderColor=''"
-              ondrop="event.preventDefault();this.style.borderColor='';handleLinePushFileDrop(event.dataTransfer.files)">
-              <div style="font-size:12px;color:var(--text-light)">📁 คลิกหรือลากไฟล์มาวาง</div>
-              <input type="file" id="line-push-file-input" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" style="display:none" onchange="handleLinePushFileSelect(this.files)">
-            </div>
-            <div id="line-push-file-list" style="margin-top:6px;display:flex;flex-direction:column;gap:4px"></div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-outline" onclick="closeModal('modal-line-push')">ยกเลิก</button>
-          <button class="btn btn-primary" id="line-push-send-btn" style="background:#06c755;border-color:#06c755" onclick="doLinePushSingle()">📲 ส่ง LINE</button>
+<div class="modal-overlay" id="modal-line-push" onclick="if(event.target===this)closeModal('modal-line-push')">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header" style="background:linear-gradient(135deg,#06c755,#04a344)">
+      <h3 style="color:#fff">📲 ส่ง LINE ถึงกรรมการ</h3>
+      <button class="modal-close" style="color:#fff;opacity:.8" onclick="closeModal('modal-line-push')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="line-push-username">
+      <div style="background:#e8faf0;border:1.5px solid #a8e6c0;border-radius:var(--radius);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+        <div style="font-size:22px">💬</div>
+        <div>
+          <div style="font-weight:700;color:#04a344" id="line-push-name">—</div>
+          <div style="font-size:11px;color:var(--text-light)">ID: <span id="line-push-uid" style="font-family:monospace"></span></div>
         </div>
       </div>
+      <div class="field-group"><label>หัวเรื่อง</label><input type="text" id="line-push-title" class="form-control" placeholder="เช่น: 📋 มอบหมายโครงการใหม่" maxlength="60"></div>
+      <div class="field-group"><label>รายละเอียด</label><textarea id="line-push-body" class="form-control" rows="3" placeholder="รายละเอียด..." style="resize:vertical"></textarea></div>
+      <div class="field-group">
+        <label>ปุ่มใน LINE</label>
+        <select id="line-push-btntype" class="form-control" style="max-width:240px">
+          <option value="home">🏠 หน้าหลักระบบ</option>
+          <option value="meeting">📅 หน้าการประชุม</option>
+          <option value="projects">📋 โครงการที่ได้รับ</option>
+          <option value="none">— ไม่มีปุ่ม —</option>
+        </select>
+      </div>
+
+      <!-- ✅ ไฟล์จาก Drive (โหลดอัตโนมัติจากโครงการ ไม่ต้องขอ permission) -->
+      <div class="field-group" id="line-push-drive-section" style="display:none;margin-bottom:8px">
+        <label style="display:flex;align-items:center;gap:6px">
+          📂 ไฟล์ในระบบ
+          <span style="font-size:11px;font-weight:400;color:var(--text-light)">ดาวน์โหลดตรง ไม่ต้องขอสิทธิ์</span>
+          <span id="line-push-drive-count" style="font-size:11px;background:#e8faf0;color:#04a344;border-radius:10px;padding:1px 7px;font-weight:700"></span>
+        </label>
+        <div id="line-push-drive-list" style="display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius);padding:6px;background:#fafbfc"></div>
+      </div>
+
+      <!-- อัพโหลดไฟล์ใหม่ -->
+      <div class="field-group" style="margin-bottom:0">
+        <label>📎 แนบไฟล์เพิ่มเติม <span style="font-size:11px;font-weight:400;color:var(--text-light)">(ไม่บังคับ | รวมสูงสุด 5 ไฟล์ | 20MB/ไฟล์)</span></label>
+        <div id="line-push-file-drop"
+          style="border:2px dashed var(--border);border-radius:var(--radius);padding:12px;text-align:center;cursor:pointer;background:#fafbfc"
+          onclick="document.getElementById('line-push-file-input').click()"
+          ondragover="event.preventDefault();this.style.borderColor='#06c755'"
+          ondragleave="this.style.borderColor=''"
+          ondrop="event.preventDefault();this.style.borderColor='';handleLinePushFileDrop(event.dataTransfer.files)">
+          <div style="font-size:12px;color:var(--text-light)">📁 คลิกหรือลากไฟล์มาวาง</div>
+          <input type="file" id="line-push-file-input" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" style="display:none" onchange="handleLinePushFileSelect(this.files)">
+        </div>
+        <div id="line-push-file-list" style="margin-top:6px;display:flex;flex-direction:column;gap:4px"></div>
+      </div>
     </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-line-push')">ยกเลิก</button>
+      <button class="btn btn-primary" id="line-push-send-btn" style="background:#06c755;border-color:#06c755" onclick="doLinePushSingle()">📲 ส่ง LINE</button>
+    </div>
+  </div>
+</div>
 
     <div class="modal-overlay" id="modal-user-form">
       <div class="modal modal-lg">
@@ -6438,6 +6463,8 @@ function showPendingUsers() {
 // ══════════════════════════════════════════════════
 var _qaFileOrder = []; var _qaDragSrc = null; var _qaMode = 'normal';
 var _linePushFiles = [];
+var _linePushDriveFiles = [];   // ✅ ไฟล์จาก Drive ที่เลือกส่ง (ไม่ต้องขอ permission)
+var _lineBcFiles = [];          // ✅ ไฟล์แนบ broadcast
 
 function setQAMode(mode) {
   _qaMode = mode;
@@ -6566,7 +6593,7 @@ function saveLineUserIdFromModal() {
     }).catch(function(e){btn.disabled=false;btn.textContent='💾 บันทึก LINE User ID';showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error');});
 }
 
-function openLinePushModal(username) {
+function openLinePushModal(username, projectCode) {
   var u=(S.allUsers||[]).find(function(x){return x.username===username;});
   if(!u){showToast('ไม่พบข้อมูล','error');return;}
   var lid=String(u.line_user_id||'').trim();
@@ -6580,14 +6607,62 @@ function openLinePushModal(username) {
   document.getElementById('line-push-file-list').innerHTML='';
   document.getElementById('line-push-file-input').value='';
   _linePushFiles=[];
+  _linePushDriveFiles=[];
+  // ซ่อน Drive section ก่อน
+  var driveSection=document.getElementById('line-push-drive-section');
+  var driveList=document.getElementById('line-push-drive-list');
+  if(driveSection){ driveSection.style.display='none'; driveList.innerHTML=''; }
+  // โหลดไฟล์จาก Drive ถ้ามี projectCode — ดาวน์โหลดตรง ไม่ต้องขอ permission
+  if(projectCode){
+    google.script.run
+      .withSuccessHandler(function(res){
+        var files=(res&&res.success&&res.data)?res.data:[];
+        files=files.filter(function(f){return String(f.status||'active').toLowerCase()!=='deleted';});
+        _linePushDriveFiles=files.map(function(f){
+          var fid=String(f.drive_file_id||f.file_id||'').trim();
+          var dl=String(f.download_url||'');
+          if(!dl&&fid) dl='https://drive.google.com/uc?export=download&id='+fid;
+          return {id:fid,name:String(f.file_name||'ไฟล์แนบ'),downloadUrl:dl,checked:true};
+        });
+        if(_linePushDriveFiles.length>0&&driveSection){
+          driveSection.style.display='block';
+          _renderLinePushDriveList();
+        }
+      })
+      .withFailureHandler(function(){})
+      .getUploadedFiles(S.user.sessionId,projectCode,S.user.username);
+  }
   openModal('modal-line-push');
+}
+
+function _renderLinePushDriveList() {
+  var el=document.getElementById('line-push-drive-list');
+  var countEl=document.getElementById('line-push-drive-count');
+  if(!el) return;
+  var checked=_linePushDriveFiles.filter(function(f){return f.checked;}).length;
+  if(countEl) countEl.textContent=checked+'/'+_linePushDriveFiles.length+' ไฟล์';
+  var icons={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼',jpeg:'🖼',png:'🖼'};
+  el.innerHTML=_linePushDriveFiles.map(function(f,i){
+    var ext=(f.name.split('.').pop()||'').toLowerCase();
+    return '<div style="display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:5px;background:'+(f.checked?'#e8faf0':'#f5f5f5')+';border:1px solid '+(f.checked?'#a8e6c0':'var(--border)')+'">'+
+      '<input type="checkbox"'+(f.checked?' checked':'')+' onchange="_toggleLinePushDriveFile('+i+',this.checked)" style="width:14px;height:14px;accent-color:#04a344;flex-shrink:0">'+
+      '<span style="font-size:14px">'+(icons[ext]||'📎')+'</span>'+
+      '<span style="flex:1;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(f.name)+'</span>'+
+      '<span style="font-size:10px;background:#fff;color:#04a344;border:1px solid #a8e6c0;border-radius:8px;padding:1px 5px;flex-shrink:0">✅ ไม่ต้องขอสิทธิ์</span>'+
+      '</div>';
+  }).join('');
+}
+function _toggleLinePushDriveFile(idx,checked){
+  if(_linePushDriveFiles[idx]) _linePushDriveFiles[idx].checked=checked;
+  _renderLinePushDriveList();
 }
 
 function handleLinePushFileSelect(files){ _addLinePushFiles(files); }
 function handleLinePushFileDrop(files){ _addLinePushFiles(files); }
 function _addLinePushFiles(files) {
   Array.from(files).forEach(function(file){
-    if(_linePushFiles.length>=5){showToast('สูงสุด 5 ไฟล์','error');return;}
+    var totalChecked=(_linePushDriveFiles||[]).filter(function(f){return f.checked;}).length;
+    if(_linePushFiles.length+totalChecked>=5){showToast('ไฟล์รวมสูงสุด 5 ไฟล์','error');return;}
     if(file.size>20*1024*1024){showToast(file.name+' ใหญ่เกิน 20MB','error');return;}
     var r=new FileReader();
     r.onload=function(e){ _linePushFiles.push({name:file.name,b64:e.target.result.split(',')[1],mimeType:file.type||'application/octet-stream',size:file.size}); _renderLinePushFileList(); };
@@ -6614,16 +6689,49 @@ function doLinePushSingle() {
   var btnType=document.getElementById('line-push-btntype').value;
   if(!title){showToast('กรุณากรอกหัวเรื่อง','error');return;}
   if(!body_){showToast('กรุณากรอกรายละเอียด','error');return;}
+  // ✅ ไฟล์จาก Drive — ส่งแค่ fileId, GAS สร้าง downloadUrl เอง ไม่ต้องขอ permission
+  var driveFileIds=(_linePushDriveFiles||[]).filter(function(f){return f.checked&&f.id;}).map(function(f){return f.id;});
+  var atts=_linePushFiles.map(function(f){return{name:f.name,b64:f.b64,mimeType:f.mimeType};});
+  var totalFiles=driveFileIds.length+atts.length;
+  if(totalFiles>5){showToast('ไฟล์รวมเกิน 5 ไฟล์','error');return;}
   var btn=document.getElementById('line-push-send-btn');
   btn.disabled=true; btn.textContent='⏳ กำลังส่ง...';
-  var atts=_linePushFiles.map(function(f){return{name:f.name,b64:f.b64,mimeType:f.mimeType};});
-  getM().pushLineToUser(S.user.sessionId,S.user.username,username,title,body_,btnType,atts)
+  getM().pushLineToUser(S.user.sessionId,S.user.username,username,title,body_,btnType,atts,driveFileIds)
     .then(function(res){
       btn.disabled=false; btn.textContent='📲 ส่ง LINE';
-      if(res&&res.success){ showToast(res.filesTotal&&res.filesAttached<res.filesTotal?('⚠️ ส่งสำเร็จ แต่แนบไฟล์ได้ '+res.filesAttached+'/'+res.filesTotal+' ไฟล์'):'✅ ส่ง LINE สำเร็จ', res.filesTotal&&res.filesAttached<res.filesTotal?'error':'success'); _linePushFiles=[]; closeModal('modal-line-push'); }
-      else showToast('ส่งไม่สำเร็จ: '+esc((res||{}).message||''),'error');
+      if(res&&res.success){
+        var note=res.filesTotal>0&&res.filesAttached<res.filesTotal?('⚠️ ส่งสำเร็จ แต่แนบไฟล์ได้ '+res.filesAttached+'/'+res.filesTotal+' ไฟล์'):'✅ ส่ง LINE สำเร็จ';
+        showToast(note, res.filesTotal>0&&res.filesAttached<res.filesTotal?'error':'success');
+        _linePushFiles=[]; _linePushDriveFiles=[]; closeModal('modal-line-push');
+      } else showToast('ส่งไม่สำเร็จ: '+esc((res||{}).message||''),'error');
     }).catch(function(e){btn.disabled=false;btn.textContent='📲 ส่ง LINE';showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error');});
 }
+
+// ── Broadcast ─────────────────────────────────────────────────
+function handleBcFileSelect(files){ _addBcFiles(files); }
+function handleBcFileDrop(files){ _addBcFiles(files); }
+function _addBcFiles(files) {
+  Array.from(files).forEach(function(file){
+    if(_lineBcFiles.length>=5){showToast('สูงสุด 5 ไฟล์','error');return;}
+    if(file.size>20*1024*1024){showToast(file.name+' ใหญ่เกิน 20MB','error');return;}
+    var r=new FileReader();
+    r.onload=function(e){ _lineBcFiles.push({name:file.name,b64:e.target.result.split(',')[1],mimeType:file.type||'application/octet-stream',size:file.size}); _renderBcFileList(); };
+    r.readAsDataURL(file);
+  });
+}
+function _renderBcFileList() {
+  var el=document.getElementById('line-bc-file-list'); if(!el) return;
+  var icons={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼',jpeg:'🖼',png:'🖼'};
+  el.innerHTML=_lineBcFiles.map(function(f,i){
+    var ext=(f.name.split('.').pop()||'').toLowerCase();
+    return '<div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:#f9fbf9;border:1px solid #d0eeda;border-radius:6px">'+
+      '<span>'+(icons[ext]||'📎')+'</span>'+
+      '<div style="flex:1;min-width:0;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(f.name)+'</div>'+
+      '<span style="font-size:11px;color:var(--text-light)">'+Math.round(f.size/1024)+'KB</span>'+
+      '<button onclick="_removeBcFile('+i+')" style="background:none;border:none;cursor:pointer;color:var(--text-light);font-size:14px">✕</button></div>';
+  }).join('');
+}
+function _removeBcFile(idx){ _lineBcFiles.splice(idx,1); _renderBcFileList(); }
 
 function doLineBroadcast() {
   var title=(document.getElementById('line-broadcast-title').value||'').trim();
@@ -6633,14 +6741,19 @@ function doLineBroadcast() {
   if(!body_){showToast('กรุณากรอกรายละเอียด','error');return;}
   var linked=getCommitteeUsers_().filter(function(u){return String(u.line_user_id||'').trim()!=='';}).length;
   if(!linked){showToast('ไม่มีกรรมการที่เชื่อมต่อ LINE','error');return;}
-  if(!confirm('ส่ง LINE ถึงกรรมการที่เชื่อมต่อแล้ว '+linked+' คน\nหัวเรื่อง: '+title+'\n\nยืนยัน?')) return;
+  var fileNote=_lineBcFiles.length>0?'\n📎 แนบไฟล์ '+_lineBcFiles.length+' ไฟล์':'';
+  if(!confirm('ส่ง LINE ถึงกรรมการที่เชื่อมต่อแล้ว '+linked+' คน\nหัวเรื่อง: '+title+fileNote+'\n\nยืนยัน?')) return;
   var btn=document.getElementById('btn-line-broadcast'), note=document.getElementById('line-broadcast-note');
   btn.disabled=true; btn.textContent='⏳ กำลังส่ง...'; if(note) note.textContent='';
-  getM().pushLineToAllCommittees(S.user.sessionId,S.user.username,title,body_,btnType)
+  var atts=_lineBcFiles.map(function(f){return{name:f.name,b64:f.b64,mimeType:f.mimeType};});
+  getM().pushLineToAllCommittees(S.user.sessionId,S.user.username,title,body_,btnType,atts)
     .then(function(res){
       btn.disabled=false; btn.textContent='📲 ส่งถึงกรรมการทุกคน';
-      if(res&&res.success){ if(note) note.textContent='✅ ส่งสำเร็จ '+( res.sent||0)+' คน'; showToast('✅ ส่ง LINE สำเร็จ '+(res.sent||0)+' คน','success'); }
-      else { if(note) note.textContent='❌ ส่งไม่สำเร็จ'; showToast('ส่งไม่สำเร็จ: '+esc((res||{}).message||''),'error'); }
+      if(res&&res.success){
+        var msg='✅ ส่งสำเร็จ '+(res.sent||0)+' คน'+(res.filesAttached>0?' 📎 '+res.filesAttached+' ไฟล์':'');
+        if(note) note.textContent=msg; showToast(msg,'success');
+        _lineBcFiles=[]; _renderBcFileList();
+      } else { if(note) note.textContent='❌ ส่งไม่สำเร็จ'; showToast('ส่งไม่สำเร็จ: '+esc((res||{}).message||''),'error'); }
     }).catch(function(e){btn.disabled=false;btn.textContent='📲 ส่งถึงกรรมการทุกคน';showToast('เกิดข้อผิดพลาด','error');});
 }
 
