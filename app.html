@@ -88,6 +88,9 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         getApprovedProjectsForReporting: function(u)           { return callGAS('getApprovedProjectsForReporting',{username:u}); },
         getResearchReports:          function(sid,u)            { return callGAS('getResearchReports',        {sessionId:sid, username:u}); },
         recordPdpaConsent:           function(pl)               { return callGAS('recordPdpaConsent',         {payload:pl}); },
+        saveLineUserId:              function(sid,cu,tu,lid)       { return callGAS('saveLineUserId',            {sessionId:sid, callerUsername:cu, targetUsername:tu, lineUserId:lid}); },
+        pushLineToUser:              function(sid,cu,tu,ti,bd,bt,att){ return callGAS('pushLineToUser',           {sessionId:sid, callerUsername:cu, targetUsername:tu, title:ti, body:bd, buttonType:bt, attachments:att||[]}); },
+        pushLineToAllCommittees:     function(sid,cu,ti,bd,bt)     { return callGAS('pushLineToAllCommittees',  {sessionId:sid, callerUsername:cu, title:ti, body:bd, buttonType:bt}); },
       };
 
       // ── GASRunner: รองรับ google.script.run.withXxx(fn).FUNC(args) ──
@@ -1334,6 +1337,19 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       #modal-fr01 .modal-header .modal-close { display: none !important; }
       .fr01-table td.header-row { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     }
+
+
+    /* ── LINE Management & Assign Modal ─────────────────────── */
+    #users-tab-bar .tab-btn { display:inline-flex; align-items:center; gap:4px; }
+    .qa-file-row { transition:background .12s; border-bottom:1px solid var(--border-light); }
+    .qa-file-row:last-child { border-bottom:none !important; }
+    .qa-file-row:hover { background:var(--navy-pale) !important; }
+    #line-committee-table table td { vertical-align:middle; }
+    #modal-line-edit .modal-header,
+    #modal-line-push .modal-header { border-radius:var(--radius-lg) var(--radius-lg) 0 0; }
+    .line-linked-dot { width:8px;height:8px;border-radius:50%;background:#06c755;display:inline-block;margin-right:5px;box-shadow:0 0 0 2px rgba(6,199,85,.22); }
+    #line-push-file-drop:hover { border-color:#06c755!important; background:#e8faf0!important; }
+    #qa-mode-normal, #qa-mode-skip { transition:all .15s; }
 
     </style>
     </head>
@@ -2670,27 +2686,78 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <!-- USERS -->
           <div id="page-users" class="tab-panel">
             <div class="breadcrumb"><a onclick="showPage('dashboard')">หน้าหลัก</a> / จัดการผู้ใช้งาน</div>
-            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
               <div class="page-title" style="margin-bottom:0">👥 จัดการผู้ใช้งาน</div>
-              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center" id="users-page-actions">
                 <button class="btn btn-primary" onclick="openAddUserModal()">➕ เพิ่มผู้ใช้</button>
-                <button class="btn btn-sm" id="btn-send-welcome-all"
-                  style="background:#1565c0;color:#fff;border:none;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px"
-                  onclick="openSendWelcomeAllModal()">
-                  📧 ส่ง Welcome Email ทั้งหมด
-                </button>
+                <button class="btn btn-sm" id="btn-send-welcome-all" style="background:#1565c0;color:#fff;border:none;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px" onclick="openSendWelcomeAllModal()">📧 ส่ง Welcome Email ทั้งหมด</button>
               </div>
             </div>
             <div id="pending-users-banner" style="display:none" class="alert alert-warning"></div>
-            <div class="search-bar">
-              <input type="text" class="form-control" id="user-search-input" placeholder="🔍 ค้นหา username / ชื่อ / อีเมล..." oninput="filterUsersTable()">
-              <select class="form-control" id="user-filter-role" style="max-width:160px" onchange="filterUsersTable()"><option value="">สิทธิ์ทั้งหมด</option><option value="admin">Admin</option><option value="staff">Staff</option><option value="committee">Committee</option><option value="researcher">Researcher</option><option value="pending">รออนุมัติ</option></select>
-              <select class="form-control" id="user-filter-status" style="max-width:140px" onchange="filterUsersTable()"><option value="">สถานะทั้งหมด</option><option value="active">Active</option><option value="pending">Pending</option><option value="inactive">Inactive</option></select>
-              <button class="btn btn-outline btn-sm" onclick="loadUsersData()">🔄</button>
+
+            <!-- Sub-tabs -->
+            <div class="tab-bar" id="users-tab-bar">
+              <button class="tab-btn active" onclick="switchUsersTab(this,'users-tab-list')">👥 รายชื่อผู้ใช้</button>
+              <button class="tab-btn" onclick="switchUsersTab(this,'users-tab-line')">
+                💬 LINE กรรมการ
+                <span class="badge-count" id="badge-line-linked" style="display:none;background:#06c755;margin-left:4px">0</span>
+              </button>
             </div>
-            <div class="table-card">
-              <div class="table-card-header"><h3>รายการผู้ใช้งาน</h3><span id="users-count" style="font-size:12px; color:var(--text-light)"></span></div>
-              <div id="users-table-container"></div>
+
+            <!-- Tab: รายชื่อผู้ใช้ -->
+            <div id="users-tab-list" class="tab-panel active">
+              <div class="search-bar" style="margin-top:12px">
+                <input type="text" class="form-control" id="user-search-input" placeholder="🔍 ค้นหา username / ชื่อ / อีเมล..." oninput="filterUsersTable()">
+                <select class="form-control" id="user-filter-role" style="max-width:160px" onchange="filterUsersTable()"><option value="">สิทธิ์ทั้งหมด</option><option value="admin">Admin</option><option value="staff">Staff</option><option value="committee">Committee</option><option value="researcher">Researcher</option><option value="pending">รออนุมัติ</option></select>
+                <select class="form-control" id="user-filter-status" style="max-width:140px" onchange="filterUsersTable()"><option value="">สถานะทั้งหมด</option><option value="active">Active</option><option value="pending">Pending</option><option value="inactive">Inactive</option></select>
+                <button class="btn btn-outline btn-sm" onclick="loadUsersData()">🔄</button>
+              </div>
+              <div class="table-card" style="margin-top:12px">
+                <div class="table-card-header"><h3>รายการผู้ใช้งาน</h3><span id="users-count" style="font-size:12px;color:var(--text-light)"></span></div>
+                <div id="users-table-container"></div>
+              </div>
+            </div>
+
+            <!-- Tab: LINE กรรมการ -->
+            <div id="users-tab-line" class="tab-panel">
+              <div style="margin-top:14px">
+                <div style="background:linear-gradient(135deg,#06c755,#04a344);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px;box-shadow:0 2px 12px rgba(6,199,85,.18)">
+                  <div style="font-size:28px;flex-shrink:0">💬</div>
+                  <div>
+                    <div style="color:#fff;font-weight:700;font-size:14px;margin-bottom:3px">LINE Messaging API — จัดการบัญชีกรรมการ</div>
+                    <div style="color:rgba(255,255,255,.88);font-size:12px;line-height:1.6">บันทึก LINE User ID ของกรรมการเพื่อส่งการแจ้งเตือนอัตโนมัติ<br>กรรมการสแกน QR เพิ่มเพื่อน Bot แล้วพิมพ์ username ในระบบ หรือ Admin กรอกเอง</div>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+                  <div class="table-card" style="padding:14px 16px;text-align:center;margin-bottom:0"><div style="font-size:24px;font-weight:800;color:#06c755" id="line-stat-linked">—</div><div style="font-size:11px;color:var(--text-light);margin-top:2px">เชื่อมต่อแล้ว</div></div>
+                  <div class="table-card" style="padding:14px 16px;text-align:center;margin-bottom:0"><div style="font-size:24px;font-weight:800;color:var(--accent)" id="line-stat-notlinked">—</div><div style="font-size:11px;color:var(--text-light);margin-top:2px">ยังไม่เชื่อม</div></div>
+                  <div class="table-card" style="padding:14px 16px;text-align:center;margin-bottom:0"><div style="font-size:24px;font-weight:800;color:var(--navy-main)" id="line-stat-total">—</div><div style="font-size:11px;color:var(--text-light);margin-top:2px">กรรมการทั้งหมด</div></div>
+                </div>
+                <!-- Broadcast -->
+                <div class="table-card" style="margin-bottom:16px">
+                  <div class="table-card-header" style="border-bottom:2px solid #e8faf0"><h3 style="color:#06c755">📲 ส่ง LINE ถึงกรรมการทุกคน</h3></div>
+                  <div style="padding:16px;display:flex;flex-direction:column;gap:10px">
+                    <div class="field-group" style="margin-bottom:0"><label>หัวเรื่อง</label><input type="text" id="line-broadcast-title" class="form-control" placeholder="เช่น: 📅 นัดประชุมคณะกรรมการ" maxlength="60"></div>
+                    <div class="field-group" style="margin-bottom:0"><label>รายละเอียด</label><textarea id="line-broadcast-body" class="form-control" rows="3" placeholder="รายละเอียด..." style="resize:vertical"></textarea></div>
+                    <div class="field-group" style="margin-bottom:0"><label>ปุ่มใน LINE</label><select id="line-broadcast-btntype" class="form-control" style="max-width:240px"><option value="home">🏠 หน้าหลักระบบ</option><option value="meeting">📅 หน้าการประชุม</option><option value="projects">📋 โครงการที่ได้รับ</option><option value="none">— ไม่มีปุ่ม —</option></select></div>
+                    <div style="display:flex;gap:10px;align-items:center">
+                      <button class="btn btn-primary" id="btn-line-broadcast" style="background:#06c755;border-color:#06c755" onclick="doLineBroadcast()">📲 ส่งถึงกรรมการทุกคน</button>
+                      <span id="line-broadcast-note" style="font-size:12px;color:var(--text-light)"></span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Committee table -->
+                <div class="table-card">
+                  <div class="table-card-header">
+                    <h3>รายชื่อกรรมการ — LINE User ID</h3>
+                    <div style="display:flex;gap:8px">
+                      <input type="text" id="line-committee-search" class="form-control" placeholder="🔍 ค้นหา..." style="max-width:180px;height:32px;font-size:12px" oninput="renderLineCommitteeTable()">
+                      <button class="btn btn-outline btn-sm" onclick="renderLineCommitteeTable()">🔄</button>
+                    </div>
+                  </div>
+                  <div id="line-committee-table"></div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -3264,35 +3331,74 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     <div class="modal-overlay" id="modal-quick-assign">
       <div class="modal modal-xl">
         <div class="modal-header"><h3>📋 มอบหมายโครงการให้กรรมการ</h3><button class="modal-close" onclick="closeModal('modal-quick-assign')">✕</button></div>
-        <div class="modal-body">
-          <div class="alert alert-info" style="margin-bottom:16px">ℹ️ <div>สามารถมอบหมายได้เฉพาะโครงการที่ <strong>ผ่านการตรวจสอบเอกสาร</strong> แล้วเท่านั้น | เอกสารจะถูกแนบไปในอีเมลกรรมการโดยอัตโนมัติ</div></div>
-          <div style="margin-bottom:20px">
-            <label style="font-size:13px; font-weight:700; color:var(--text-mid); display:block; margin-bottom:8px">📁 เลือกโครงการ <span class="req">*</span></label>
-            <div class="project-select-wrap"><select id="qa-project-select" class="form-control" onchange="onQAProjectChange()"><option value="">-- กรุณาเลือกโครงการที่ผ่านตรวจเอกสาร --</option></select></div>
-            <div id="qa-project-card" style="display:none; margin-top:12px" class="assign-project-card"><div class="proj-code" id="qa-proj-code"></div><div class="proj-title" id="qa-proj-title"></div><div class="proj-meta" id="qa-proj-meta"></div><div style="margin-top:8px" id="qa-proj-status"></div></div>
+        <div class="modal-body" style="padding-bottom:8px">
+          <!-- Mode toggle -->
+          <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px">
+            <button id="qa-mode-normal" onclick="setQAMode('normal')" style="flex:1;padding:9px 8px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:#2d8a52;color:#fff;display:flex;align-items:center;justify-content:center;gap:6px">✅ รอกรรมการตอบรับก่อน</button>
+            <button id="qa-mode-skip" onclick="setQAMode('skip')" style="flex:1;padding:9px 8px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:#f0f0f0;color:#666;display:flex;align-items:center;justify-content:center;gap:6px">⚡ ข้ามไปประเมินเลย (Admin ยืนยันแล้ว)</button>
           </div>
+          <div id="qa-banner-normal" class="alert alert-info" style="margin-bottom:12px">ℹ️ <div>กรรมการจะได้รับ <strong>LINE + อีเมล + ไฟล์</strong> และต้องกดตอบรับในระบบก่อนจึงจะเห็นหน้าประเมิน</div></div>
+          <div id="qa-banner-skip" class="alert" style="display:none;margin-bottom:12px;background:#fff8e1;border:1.5px solid #f0d07a;color:#7a5c00"><span style="font-size:18px">⚡</span><div style="font-size:12.5px;line-height:1.65"><strong>โหมดข้ามขั้นตอนตอบรับ</strong> — ระบบตั้งสถานะ "รอประเมิน" ทันที ใช้เมื่อ Admin <u>ทักกรรมการและยืนยันแล้ว</u></div></div>
+          <!-- เลือกโครงการ -->
+          <div style="margin-bottom:16px">
+            <label style="font-size:13px;font-weight:700;color:var(--text-mid);display:block;margin-bottom:8px">📁 เลือกโครงการ <span class="req">*</span></label>
+            <div class="project-select-wrap"><select id="qa-project-select" class="form-control" onchange="onQAProjectChange()"><option value="">-- กรุณาเลือกโครงการที่ผ่านตรวจเอกสาร --</option></select></div>
+            <div id="qa-project-card" style="display:none;margin-top:12px" class="assign-project-card"><div class="proj-code" id="qa-proj-code"></div><div class="proj-title" id="qa-proj-title"></div><div class="proj-meta" id="qa-proj-meta"></div><div style="margin-top:8px" id="qa-proj-status"></div></div>
+          </div>
+          <!-- ไฟล์แนบ -->
+          <div id="qa-files-section" style="display:none;margin-bottom:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+              <label style="font-size:13px;font-weight:700;color:var(--text-mid)">📎 ไฟล์แนบ <span class="badge-count" id="qa-file-count" style="background:var(--navy-light);color:var(--navy-dark)">0 ไฟล์</span></label>
+              <div style="display:flex;gap:6px">
+                <span style="font-size:11px;color:var(--text-light);align-self:center">⠿ ลากเรียงลำดับ</span>
+                <button class="btn btn-sm btn-outline" onclick="qaToggleAllFiles(true)" style="font-size:11px;padding:3px 8px">✅ ทั้งหมด</button>
+                <button class="btn btn-sm btn-outline" onclick="qaToggleAllFiles(false)" style="font-size:11px;padding:3px 8px">⬜ ล้าง</button>
+              </div>
+            </div>
+            <div id="qa-file-list" style="border:1.5px solid var(--border);border-radius:var(--radius);background:#fff;min-height:50px;max-height:200px;overflow-y:auto"><div style="text-align:center;padding:16px;font-size:12px;color:var(--text-light)">⏳ กำลังโหลด...</div></div>
+            <div style="font-size:11px;color:var(--text-light);margin-top:5px">💡 ติ๊กไฟล์ที่จะส่ง | ลากเพื่อเรียงลำดับ | ปุ่ม 👁️ เปิดดูก่อนส่ง</div>
+          </div>
+          <!-- LINE preview -->
+          <div id="qa-line-preview-section" style="display:none;margin-bottom:14px">
+            <div style="border:1.5px solid #a8e6c0;border-radius:var(--radius);overflow:hidden">
+              <div style="background:linear-gradient(90deg,#06c755,#04a344);padding:7px 14px;display:flex;align-items:center;gap:8px">
+                <span style="color:#fff;font-size:12px;font-weight:700">💬 LINE Push</span>
+                <span id="qa-line-count-badge" style="background:rgba(255,255,255,.25);color:#fff;border-radius:20px;padding:1px 8px;font-size:11px">0 คน</span>
+              </div>
+              <div style="padding:10px 14px;font-size:12px;color:var(--text-mid);background:#e8faf0">
+                <div id="qa-line-preview-names" style="color:#04a344;font-weight:600;margin-bottom:3px">—</div>
+                <div id="qa-line-preview-desc">จะได้รับ LINE พร้อมไฟล์แนบ + ปุ่ม "ตอบรับ / ดูโครงการ"</div>
+                <div id="qa-line-no-link-warn" style="display:none;color:var(--accent);margin-top:3px;font-size:11px">⚠️ กรรมการบางคนยังไม่มี LINE User ID — จะได้รับแค่อีเมล</div>
+              </div>
+            </div>
+          </div>
+          <!-- เลือกกรรมการ -->
           <div>
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px">
-              <label style="font-size:13px; font-weight:700; color:var(--text-mid)">👥 เลือกกรรมการ <span class="req">*</span><span class="email-badge">📧 + แนบไฟล์อัตโนมัติ</span></label>
-              <div style="display:flex; gap:6px"><button class="btn btn-sm btn-outline" onclick="selectAllCommittees()">เลือกทั้งหมด</button><button class="btn btn-sm btn-outline" onclick="clearAllCommittees()">ล้าง</button></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <label style="font-size:13px;font-weight:700;color:var(--text-mid)">👥 เลือกกรรมการ <span class="req">*</span><span class="email-badge">📧 + LINE + ไฟล์</span></label>
+              <div style="display:flex;gap:6px"><button class="btn btn-sm btn-outline" onclick="selectAllCommittees()">เลือกทั้งหมด</button><button class="btn btn-sm btn-outline" onclick="clearAllCommittees()">ล้าง</button></div>
             </div>
             <div class="committee-checkbox-list" id="qa-committee-list"></div>
             <div class="selected-count" id="qa-selected-count">เลือก 0 คน</div>
           </div>
-          <div style="margin-top:16px">
+          <div style="margin-top:14px">
             <div class="form-row-2">
               <div class="field-group"><label>📅 กำหนดส่ง</label><input type="date" id="qa-deadline" class="form-control"></div>
               <div class="field-group"><label>📝 หมายเหตุ</label><input type="text" id="qa-note" class="form-control" placeholder="หมายเหตุเพิ่มเติม"></div>
             </div>
           </div>
-          <div id="qa-summary" style="display:none; background:var(--navy-pale); border:1.5px solid var(--navy-light); border-radius:var(--radius); padding:14px; margin-top:8px">
-            <div style="font-weight:700; font-size:13px; color:var(--navy-dark); margin-bottom:6px">📋 สรุปการมอบหมาย</div>
-            <div id="qa-summary-content" style="font-size:13px; color:var(--text-mid)"></div>
+          <div id="qa-summary" style="display:none;background:var(--navy-pale);border:1.5px solid var(--navy-light);border-radius:var(--radius);padding:12px;margin-top:8px">
+            <div style="font-weight:700;font-size:13px;color:var(--navy-dark);margin-bottom:5px">📋 สรุปการมอบหมาย</div>
+            <div id="qa-summary-content" style="font-size:13px;color:var(--text-mid)"></div>
           </div>
-          <!-- แสดงผลลัพธ์การมอบหมาย (กรณีบางคนซ้ำ) -->
-          <div id="qa-result-detail" style="display:none; margin-top:12px"></div>
+          <div id="qa-result-detail" style="display:none;margin-top:12px"></div>
         </div>
-        <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('modal-quick-assign')">ยกเลิก</button><button class="btn btn-primary" id="qa-submit-btn" onclick="doQuickAssign()">📧 มอบหมาย + ส่งอีเมล + แนบไฟล์</button></div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('modal-quick-assign')">ยกเลิก</button>
+          <button class="btn btn-primary" id="qa-submit-btn" onclick="doQuickAssign()" style="display:flex;align-items:center;gap:7px">
+            📲 <span id="qa-submit-label">มอบหมาย + อีเมล + LINE + ไฟล์</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -3648,6 +3754,85 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     </div>
 
     <!-- User Form Modal -->
+    <!-- LINE Edit Modal -->
+    <div class="modal-overlay" id="modal-line-edit" onclick="if(event.target===this)closeModal('modal-line-edit')">
+      <div class="modal" style="max-width:440px">
+        <div class="modal-header" style="background:linear-gradient(135deg,#06c755,#04a344)">
+          <h3 style="color:#fff">💬 แก้ไข LINE User ID</h3>
+          <button class="modal-close" style="color:#fff;opacity:.8" onclick="closeModal('modal-line-edit')">✕</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="line-edit-username">
+          <div style="background:var(--navy-pale);border-radius:var(--radius);padding:10px 14px;margin-bottom:14px">
+            <div style="font-weight:700;color:var(--navy-dark)" id="line-edit-name">—</div>
+            <div style="font-size:12px;color:var(--text-light)" id="line-edit-role">—</div>
+          </div>
+          <div class="field-group">
+            <label>LINE User ID <span style="color:var(--red)">*</span></label>
+            <input type="text" id="line-edit-userid" class="form-control" placeholder="เช่น: U1a2b3c4d5e6f7g8h9i0..." style="font-family:monospace;font-size:13px">
+            <div style="font-size:11px;color:var(--text-light);margin-top:4px">💡 ได้จากกรรมการสแกน QR เพิ่มเพื่อน Bot แล้วพิมพ์ username ในระบบ</div>
+          </div>
+          <div class="field-group" style="margin-bottom:0">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:400">
+              <input type="checkbox" id="line-edit-sendtest" style="width:15px;height:15px;accent-color:#06c755">
+              <span style="font-size:13px">ส่ง LINE ทดสอบไปหากรรมการทันทีหลังบันทึก</span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('modal-line-edit')">ยกเลิก</button>
+          <button class="btn btn-primary" id="line-edit-save-btn" style="background:#06c755;border-color:#06c755" onclick="saveLineUserIdFromModal()">💾 บันทึก LINE User ID</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LINE Push Modal -->
+    <div class="modal-overlay" id="modal-line-push" onclick="if(event.target===this)closeModal('modal-line-push')">
+      <div class="modal" style="max-width:480px">
+        <div class="modal-header" style="background:linear-gradient(135deg,#06c755,#04a344)">
+          <h3 style="color:#fff">📲 ส่ง LINE ถึงกรรมการ</h3>
+          <button class="modal-close" style="color:#fff;opacity:.8" onclick="closeModal('modal-line-push')">✕</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="line-push-username">
+          <div style="background:#e8faf0;border:1.5px solid #a8e6c0;border-radius:var(--radius);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+            <div style="font-size:22px">💬</div>
+            <div>
+              <div style="font-weight:700;color:#04a344" id="line-push-name">—</div>
+              <div style="font-size:11px;color:var(--text-light)">ID: <span id="line-push-uid" style="font-family:monospace"></span></div>
+            </div>
+          </div>
+          <div class="field-group"><label>หัวเรื่อง</label><input type="text" id="line-push-title" class="form-control" placeholder="เช่น: 📋 มอบหมายโครงการใหม่" maxlength="60"></div>
+          <div class="field-group"><label>รายละเอียด</label><textarea id="line-push-body" class="form-control" rows="3" placeholder="รายละเอียด..." style="resize:vertical"></textarea></div>
+          <div class="field-group">
+            <label>ปุ่มใน LINE</label>
+            <select id="line-push-btntype" class="form-control" style="max-width:240px">
+              <option value="home">🏠 หน้าหลักระบบ</option>
+              <option value="meeting">📅 หน้าการประชุม</option>
+              <option value="projects">📋 โครงการที่ได้รับ</option>
+              <option value="none">— ไม่มีปุ่ม —</option>
+            </select>
+          </div>
+          <div class="field-group" style="margin-bottom:0">
+            <label>📎 ไฟล์แนบ <span style="font-size:11px;font-weight:400;color:var(--text-light)">(ไม่บังคับ | สูงสุด 5 ไฟล์ | 20MB/ไฟล์)</span></label>
+            <div id="line-push-file-drop" style="border:2px dashed var(--border);border-radius:var(--radius);padding:12px;text-align:center;cursor:pointer;background:#fafbfc"
+              onclick="document.getElementById('line-push-file-input').click()"
+              ondragover="event.preventDefault();this.style.borderColor='#06c755'"
+              ondragleave="this.style.borderColor=''"
+              ondrop="event.preventDefault();this.style.borderColor='';handleLinePushFileDrop(event.dataTransfer.files)">
+              <div style="font-size:12px;color:var(--text-light)">📁 คลิกหรือลากไฟล์มาวาง</div>
+              <input type="file" id="line-push-file-input" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" style="display:none" onchange="handleLinePushFileSelect(this.files)">
+            </div>
+            <div id="line-push-file-list" style="margin-top:6px;display:flex;flex-direction:column;gap:4px"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('modal-line-push')">ยกเลิก</button>
+          <button class="btn btn-primary" id="line-push-send-btn" style="background:#06c755;border-color:#06c755" onclick="doLinePushSingle()">📲 ส่ง LINE</button>
+        </div>
+      </div>
+    </div>
+
     <div class="modal-overlay" id="modal-user-form">
       <div class="modal modal-lg">
         <div class="modal-header"><h3 id="user-form-title">➕ เพิ่มผู้ใช้งาน</h3><button class="modal-close" onclick="closeModal('modal-user-form')">✕</button></div>
@@ -4660,98 +4845,12 @@ function _renderCommitteeCheckboxes(committees) {
   }
 }
 
-    function onQAProjectChange(){
-      var sel=document.getElementById('qa-project-select');
-      var code=sel.value;
-      var card=document.getElementById('qa-project-card');
-      if(!code){ card.style.display='none'; document.getElementById('qa-summary').style.display='none'; return; }
-      var opt=sel.options[sel.selectedIndex];
-      document.getElementById('qa-proj-code').textContent=code;
-      document.getElementById('qa-proj-title').textContent=opt.getAttribute('data-title')||opt.textContent;
-      document.getElementById('qa-proj-meta').textContent='หัวหน้าโครงการ: '+(opt.getAttribute('data-pi')||'-')+' | วันที่ยื่น: '+formatDate(opt.getAttribute('data-date')||'');
-      document.getElementById('qa-proj-status').innerHTML=pillStatus(opt.getAttribute('data-status')||'รอพิจารณา');
-      card.style.display='block'; updateQASummary();
-    }
-    // ============================================================
-//  อัพเดทจำนวนกรรมการที่เลือก
-// ============================================================
-function updateQASelectedCount() {
-  var checked = document.querySelectorAll('#qa-committee-list input[type=checkbox]:checked');
-  var countEl = document.getElementById('qa-selected-count');
-  if (countEl) {
-    var total = document.querySelectorAll('#qa-committee-list input[type=checkbox]').length;
-    countEl.textContent = 'เลือก ' + checked.length + ' คน (จากทั้งหมด ' + total + ' คน)';
-  }
-  updateQASummary();
-}
-    function updateQASummary(){
-      var code=val('qa-project-select');
-      var checked=document.querySelectorAll('#qa-committee-list input[type=checkbox]:checked');
-      var sumEl=document.getElementById('qa-summary');
-      if(!code||!checked.length){ sumEl.style.display='none'; return; }
-      var names=Array.from(checked).map(function(cb){ return cb.getAttribute('data-name')||cb.value; });
-      var emails=Array.from(checked).map(function(cb){ return cb.getAttribute('data-email'); }).filter(Boolean);
-      document.getElementById('qa-summary-content').innerHTML='<div>📁 <strong>โครงการ:</strong> '+esc(code)+'</div><div>👥 <strong>กรรมการ:</strong> '+esc(names.join(', '))+'</div>'+(emails.length?'<div>📧 <strong>จะส่งอีเมลไปยัง:</strong> '+esc(emails.join(', '))+'</div>':'')+(val('qa-deadline')?'<div>📅 <strong>กำหนดส่ง:</strong> '+val('qa-deadline')+'</div>':'');
-      sumEl.style.display='block';
-    }
-    function selectAllCommittees(){ document.querySelectorAll('#qa-committee-list input[type=checkbox]').forEach(function(cb){ cb.checked=true; }); updateQASelectedCount(); }
-    function clearAllCommittees(){ document.querySelectorAll('#qa-committee-list input[type=checkbox]').forEach(function(cb){ cb.checked=false; }); updateQASelectedCount(); }
+    // onQAProjectChange — moved to LINE Management JS section
+    // updateQASelectedCount — moved to LINE Management JS section
+    // updateQASummary — moved to LINE Management JS section
+    // selectAll/clearAll — moved to LINE Management JS section
 
-    function doQuickAssign() {
-  var code = val('qa-project-select');
-  if (!code) { showToast('กรุณาเลือกโครงการ', 'error'); return; }
-  
-  var checked = document.querySelectorAll('#qa-committee-list input[type=checkbox]:checked');
-  if (!checked.length) { showToast('กรุณาเลือกกรรมการอย่างน้อย 1 คน', 'error'); return; }
-  
-  var sel = document.getElementById('qa-project-select');
-  var projectTitle = sel.options[sel.selectedIndex] ? 
-                     sel.options[sel.selectedIndex].getAttribute('data-title') || code : code;
-  
-  var committeeList = Array.from(checked).map(function(cb) { 
-    return {
-      username: cb.value,
-      name: cb.getAttribute('data-name') || cb.value,
-      email: cb.getAttribute('data-email') || ''
-    }; 
-  });
-  
-  console.log('Assigning project:', code);
-  console.log('Committee list:', committeeList);
-  
-  var btn = document.getElementById('qa-submit-btn');
-  btn.disabled = true; 
-  btn.innerHTML = '<span class="spin-sm"></span> กำลังมอบหมาย...';
-  
-  google.script.run
-    .withSuccessHandler(function(res) {
-      console.log('assignProjectMultiCommittee response:', res);
-      btn.disabled = false; 
-      btn.innerHTML = '📧 มอบหมาย + ส่งอีเมล + แนบไฟล์';
-      closeModal('modal-quick-assign');
-      if (res && res.success) {
-        var emailCount = res.results ? res.results.filter(function(r){ return r.emailSent; }).length : 0;
-        showToast('มอบหมายสำเร็จ! กรรมการ ' + committeeList.length + ' คน | ส่งอีเมล ' + emailCount + ' คน');
-        loadStaffProjects(); 
-        loadAssignments();
-      } else {
-        showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
-      }
-    })
-    .withFailureHandler(function(e) { 
-      console.error('assignProjectMultiCommittee error:', e);
-      btn.disabled = false; 
-      btn.innerHTML = '📧 มอบหมาย + ส่งอีเมล + แนบไฟล์'; 
-      showToast('เกิดข้อผิดพลาด: ' + e.message, 'error'); 
-    })
-    .assignProjectMultiCommittee({
-      projectCode: code,
-      projectTitle: projectTitle,
-      committeeList: committeeList,
-      deadline: val('qa-deadline'),
-      note: val('qa-note')
-    }, S.user.username);
-}
+// doQuickAssign — moved to LINE Management JS section
 
     // ════════════════════════════════════════
     // UPDATE STATUS
@@ -6151,13 +6250,19 @@ function loadUsersData() {
     return;
   }
   
-  var html = '<table><thead><tr><th>#</th><th>Username</th><th>ชื่อ</th><th>อีเมล</th><th>สิทธิ์</th><th>สถานะ</th><th>Actions</th></tr></thead><tbody>';
+  var html = '<table><thead><tr><th>#</th><th>Username</th><th>ชื่อ</th><th>อีเมล</th><th>สิทธิ์</th><th>สถานะ</th><th>LINE</th><th>Actions</th></tr></thead><tbody>';
   
   users.forEach(function(u, i) {
     var roles = String(u.roles || '');
     var isPend = roles.indexOf('pending_') !== -1 || String(u.status || '').toLowerCase() === 'pending';
     var rPill = isPend ? '<span class="pill pill-orange">⏳ รออนุมัติ</span>' : rolesPill(roles);
     
+    var isCommittee = roles.indexOf('committee') !== -1;
+    var lineLinked  = String(u.line_user_id || '').trim() !== '';
+    var linePill = !isCommittee ? '<span style="color:var(--border);font-size:11px">—</span>'
+      : lineLinked
+        ? '<span style="display:inline-flex;align-items:center;gap:3px;background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600"><span class=\"line-linked-dot\"></span>เชื่อมแล้ว</span>'
+        : '<span style="background:#fff8e1;color:#b58a2a;border:1px solid #f0d07a;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600">ยังไม่เชื่อม</span>';
     html += '<tr>' +
       '<td>' + (i + 1) + '</td>' +
       '<td><strong>' + esc(u.username || '-') + '</strong></td>' +
@@ -6165,6 +6270,7 @@ function loadUsersData() {
       '<td style="font-size:12px">' + esc(u.email || '-') + '</td>' +
       '<td>' + rPill + '</td>' +
       '<td>' + pillStatus(String(u.status || 'active')) + '</td>' +
+      '<td>' + linePill + '</td>' +
       '<td style="white-space:nowrap">' + userActionBtns(u, isPend) + '</td>' +
       '</tr>';
   });
@@ -6214,6 +6320,312 @@ function showPendingUsers() {
   document.getElementById('user-filter-role').value = 'pending';
   document.getElementById('user-filter-status').value = 'pending';
   filterUsersTable();
+}
+
+// ══════════════════════════════════════════════════
+//  📲 LINE MANAGEMENT JS
+// ══════════════════════════════════════════════════
+var _qaFileOrder = []; var _qaDragSrc = null; var _qaMode = 'normal';
+var _linePushFiles = [];
+
+function setQAMode(mode) {
+  _qaMode = mode;
+  var bN=document.getElementById('qa-mode-normal'), bS=document.getElementById('qa-mode-skip');
+  var bnN=document.getElementById('qa-banner-normal'), bnS=document.getElementById('qa-banner-skip');
+  var lbl=document.getElementById('qa-submit-label'), btn=document.getElementById('qa-submit-btn');
+  if (mode==='skip') {
+    if(bN){bN.style.background='#f0f0f0';bN.style.color='#666';}
+    if(bS){bS.style.background='#e65100';bS.style.color='#fff';}
+    if(bnN) bnN.style.display='none'; if(bnS) bnS.style.display='flex';
+    if(lbl) lbl.textContent='⚡ มอบหมาย + ข้ามตอบรับ + LINE + ไฟล์';
+    if(btn){btn.style.background='#e65100';btn.style.borderColor='#e65100';}
+  } else {
+    if(bN){bN.style.background='#2d8a52';bN.style.color='#fff';}
+    if(bS){bS.style.background='#f0f0f0';bS.style.color='#666';}
+    if(bnN) bnN.style.display='flex'; if(bnS) bnS.style.display='none';
+    if(lbl) lbl.textContent='มอบหมาย + อีเมล + LINE + ไฟล์';
+    if(btn){btn.style.background='';btn.style.borderColor='';}
+  }
+  _updateQALinePreview();
+}
+
+function switchUsersTab(btn, panelId) {
+  document.getElementById('users-tab-bar').querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  ['users-tab-list','users-tab-line'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.classList.toggle('active', id===panelId);
+  });
+  var actions=document.getElementById('users-page-actions');
+  if(actions) actions.style.display = panelId==='users-tab-list' ? 'flex' : 'none';
+  if(panelId==='users-tab-line') renderLineCommitteeTable();
+}
+
+function getCommitteeUsers_() {
+  return (S.allUsers||[]).filter(function(u){ return String(u.roles||'').indexOf('committee')!==-1; });
+}
+
+function renderLineCommitteeTable() {
+  var el=document.getElementById('line-committee-table'); if(!el) return;
+  var committees=getCommitteeUsers_();
+  var q=((document.getElementById('line-committee-search')||{}).value||'').toLowerCase();
+  if(q) committees=committees.filter(function(u){ return (String(u.name||'')+String(u.username||'')).toLowerCase().indexOf(q)!==-1; });
+  var linked=getCommitteeUsers_().filter(function(u){ return String(u.line_user_id||'').trim()!==''; }).length;
+  var total=getCommitteeUsers_().length;
+  var s=function(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; };
+  s('line-stat-linked',linked); s('line-stat-notlinked',total-linked); s('line-stat-total',total);
+  var badge=document.getElementById('badge-line-linked');
+  if(badge){badge.textContent=linked;badge.style.display=linked>0?'inline-flex':'none';}
+  if(!committees.length){el.innerHTML='<div class="empty-state"><p>ไม่พบกรรมการ</p></div>';return;}
+  el.innerHTML='<table><thead><tr><th>#</th><th>Username</th><th>ชื่อ</th><th>LINE</th><th>Actions</th></tr></thead><tbody>'+committees.map(function(u,i){
+    var lid=String(u.line_user_id||'').trim(), linked=lid!=='';
+    var status=linked?'<span style="display:inline-flex;align-items:center;gap:3px;background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600"><span class=\"line-linked-dot\"></span>เชื่อมแล้ว</span>':'<span style="background:#fff8e1;color:#b58a2a;border:1px solid #f0d07a;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600">ยังไม่เชื่อม</span>';
+    var un=escAttr(u.username||'');
+    return '<tr><td>'+(i+1)+'</td><td><strong>'+esc(u.username||'-')+'</strong></td><td>'+esc(u.name||'-')+'</td><td>'+status+'</td><td style="display:flex;gap:5px">'+
+      '<button class="btn btn-sm" style="background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;font-size:11px" onclick="openLineEditModal(''+un+'')">'+
+      (linked?'✏️ แก้ไข ID':'➕ เพิ่ม ID')+'</button>'+
+      (linked?'<button class="btn btn-sm" style="background:#06c755;color:#fff;border:none;font-size:11px" onclick="openLinePushModal(''+un+'')">📲 Push</button>':
+              '<button class="btn btn-sm" disabled style="background:var(--bg);color:var(--border);border:1px solid var(--border);font-size:11px;cursor:not-allowed">📲 Push</button>')+
+      '</td></tr>';
+  }).join('')+'</tbody></table>';
+}
+
+function openLineEditModal(username) {
+  var u=(S.allUsers||[]).find(function(x){return x.username===username;});
+  if(!u){showToast('ไม่พบข้อมูล','error');return;}
+  document.getElementById('line-edit-username').value=username;
+  document.getElementById('line-edit-name').textContent=(u.name||username);
+  document.getElementById('line-edit-role').textContent='สิทธิ์: '+String(u.roles||'');
+  document.getElementById('line-edit-userid').value=String(u.line_user_id||'');
+  document.getElementById('line-edit-sendtest').checked=false;
+  openModal('modal-line-edit');
+}
+
+function saveLineUserIdFromModal() {
+  var username=document.getElementById('line-edit-username').value;
+  var lineId=(document.getElementById('line-edit-userid').value||'').trim();
+  var sendTest=document.getElementById('line-edit-sendtest').checked;
+  if(!lineId){showToast('กรุณากรอก LINE User ID','error');return;}
+  if(!/^U[a-zA-Z0-9]{32,}$/.test(lineId)){showToast('LINE User ID ไม่ถูกต้อง (ต้องขึ้นต้น U ตามด้วยตัวอักษร 32+ ตัว)','error');return;}
+  var btn=document.getElementById('line-edit-save-btn');
+  btn.disabled=true; btn.textContent='⏳ บันทึก...';
+  getM().saveLineUserId(S.user.sessionId,S.user.username,username,lineId)
+    .then(function(res){
+      btn.disabled=false; btn.textContent='💾 บันทึก LINE User ID';
+      if(res&&res.success){
+        var u=(S.allUsers||[]).find(function(x){return x.username===username;});
+        if(u) u.line_user_id=lineId;
+        showToast('✅ บันทึกสำเร็จ','success');
+        closeModal('modal-line-edit');
+        renderLineCommitteeTable();
+        if(sendTest) { openLinePushModal(username); var t=document.getElementById('line-push-title'); var b=document.getElementById('line-push-body'); if(t) t.value='✅ ทดสอบการเชื่อมต่อ LINE'; if(b) b.value='ระบบ EC Sansai เชื่อมต่อบัญชี LINE ของท่านสำเร็จแล้ว'; }
+      } else { showToast('บันทึกไม่สำเร็จ: '+esc((res||{}).message||''),'error'); }
+    }).catch(function(e){btn.disabled=false;btn.textContent='💾 บันทึก LINE User ID';showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error');});
+}
+
+function openLinePushModal(username) {
+  var u=(S.allUsers||[]).find(function(x){return x.username===username;});
+  if(!u){showToast('ไม่พบข้อมูล','error');return;}
+  var lid=String(u.line_user_id||'').trim();
+  if(!lid){showToast('กรรมการคนนี้ยังไม่มี LINE User ID','error');return;}
+  document.getElementById('line-push-username').value=username;
+  document.getElementById('line-push-name').textContent=(u.name||username);
+  document.getElementById('line-push-uid').textContent=lid.substring(0,14)+'...';
+  document.getElementById('line-push-title').value='';
+  document.getElementById('line-push-body').value='';
+  document.getElementById('line-push-btntype').value='home';
+  document.getElementById('line-push-file-list').innerHTML='';
+  document.getElementById('line-push-file-input').value='';
+  _linePushFiles=[];
+  openModal('modal-line-push');
+}
+
+function handleLinePushFileSelect(files){ _addLinePushFiles(files); }
+function handleLinePushFileDrop(files){ _addLinePushFiles(files); }
+function _addLinePushFiles(files) {
+  Array.from(files).forEach(function(file){
+    if(_linePushFiles.length>=5){showToast('สูงสุด 5 ไฟล์','error');return;}
+    if(file.size>20*1024*1024){showToast(file.name+' ใหญ่เกิน 20MB','error');return;}
+    var r=new FileReader();
+    r.onload=function(e){ _linePushFiles.push({name:file.name,b64:e.target.result.split(',')[1],mimeType:file.type||'application/octet-stream',size:file.size}); _renderLinePushFileList(); };
+    r.readAsDataURL(file);
+  });
+}
+function _renderLinePushFileList() {
+  var el=document.getElementById('line-push-file-list'); if(!el) return;
+  var icons={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼',jpeg:'🖼',png:'🖼'};
+  el.innerHTML=_linePushFiles.map(function(f,i){
+    var ext=(f.name.split('.').pop()||'').toLowerCase();
+    return '<div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:#f9fbf9;border:1px solid #d0eeda;border-radius:6px">'+
+      '<span>'+(icons[ext]||'📎')+'</span><div style="flex:1;min-width:0;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(f.name)+'</div>'+
+      '<span style="font-size:11px;color:var(--text-light)">'+Math.round(f.size/1024)+'KB</span>'+
+      '<button onclick="_removeLinePushFile('+i+')" style="background:none;border:none;cursor:pointer;color:var(--text-light);font-size:14px">✕</button></div>';
+  }).join('');
+}
+function _removeLinePushFile(idx){ _linePushFiles.splice(idx,1); _renderLinePushFileList(); }
+
+function doLinePushSingle() {
+  var username=document.getElementById('line-push-username').value;
+  var title=(document.getElementById('line-push-title').value||'').trim();
+  var body_=(document.getElementById('line-push-body').value||'').trim();
+  var btnType=document.getElementById('line-push-btntype').value;
+  if(!title){showToast('กรุณากรอกหัวเรื่อง','error');return;}
+  if(!body_){showToast('กรุณากรอกรายละเอียด','error');return;}
+  var btn=document.getElementById('line-push-send-btn');
+  btn.disabled=true; btn.textContent='⏳ กำลังส่ง...';
+  var atts=_linePushFiles.map(function(f){return{name:f.name,b64:f.b64,mimeType:f.mimeType};});
+  getM().pushLineToUser(S.user.sessionId,S.user.username,username,title,body_,btnType,atts)
+    .then(function(res){
+      btn.disabled=false; btn.textContent='📲 ส่ง LINE';
+      if(res&&res.success){ showToast('✅ ส่ง LINE สำเร็จ','success'); _linePushFiles=[]; closeModal('modal-line-push'); }
+      else showToast('ส่งไม่สำเร็จ: '+esc((res||{}).message||''),'error');
+    }).catch(function(e){btn.disabled=false;btn.textContent='📲 ส่ง LINE';showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error');});
+}
+
+function doLineBroadcast() {
+  var title=(document.getElementById('line-broadcast-title').value||'').trim();
+  var body_=(document.getElementById('line-broadcast-body').value||'').trim();
+  var btnType=document.getElementById('line-broadcast-btntype').value;
+  if(!title){showToast('กรุณากรอกหัวเรื่อง','error');return;}
+  if(!body_){showToast('กรุณากรอกรายละเอียด','error');return;}
+  var linked=getCommitteeUsers_().filter(function(u){return String(u.line_user_id||'').trim()!=='';}).length;
+  if(!linked){showToast('ไม่มีกรรมการที่เชื่อมต่อ LINE','error');return;}
+  if(!confirm('ส่ง LINE ถึงกรรมการที่เชื่อมต่อแล้ว '+linked+' คน
+หัวเรื่อง: '+title+'
+
+ยืนยัน?')) return;
+  var btn=document.getElementById('btn-line-broadcast'), note=document.getElementById('line-broadcast-note');
+  btn.disabled=true; btn.textContent='⏳ กำลังส่ง...'; if(note) note.textContent='';
+  getM().pushLineToAllCommittees(S.user.sessionId,S.user.username,title,body_,btnType)
+    .then(function(res){
+      btn.disabled=false; btn.textContent='📲 ส่งถึงกรรมการทุกคน';
+      if(res&&res.success){ if(note) note.textContent='✅ ส่งสำเร็จ '+( res.sent||0)+' คน'; showToast('✅ ส่ง LINE สำเร็จ '+(res.sent||0)+' คน','success'); }
+      else { if(note) note.textContent='❌ ส่งไม่สำเร็จ'; showToast('ส่งไม่สำเร็จ: '+esc((res||{}).message||''),'error'); }
+    }).catch(function(e){btn.disabled=false;btn.textContent='📲 ส่งถึงกรรมการทุกคน';showToast('เกิดข้อผิดพลาด','error');});
+}
+
+// ── Assign Modal: file order, LINE preview, mode ─────────────
+function onQAProjectChange(){
+  var sel=document.getElementById('qa-project-select'), code=sel.value;
+  var card=document.getElementById('qa-project-card');
+  var filesSec=document.getElementById('qa-files-section');
+  var lineSec=document.getElementById('qa-line-preview-section');
+  if(!code){ card.style.display='none'; document.getElementById('qa-summary').style.display='none'; if(filesSec) filesSec.style.display='none'; if(lineSec) lineSec.style.display='none'; _qaFileOrder=[]; return; }
+  var opt=sel.options[sel.selectedIndex];
+  document.getElementById('qa-proj-code').textContent=code;
+  document.getElementById('qa-proj-title').textContent=opt.getAttribute('data-title')||opt.textContent;
+  document.getElementById('qa-proj-meta').textContent='หัวหน้าโครงการ: '+(opt.getAttribute('data-pi')||'-')+' | วันที่ยื่น: '+formatDate(opt.getAttribute('data-date')||'');
+  document.getElementById('qa-proj-status').innerHTML=pillStatus(opt.getAttribute('data-status')||'รอพิจารณา');
+  card.style.display='block';
+  if(filesSec){ filesSec.style.display='block'; _loadQAFiles(code); }
+  updateQASummary();
+}
+
+function _loadQAFiles(projectCode) {
+  var listEl=document.getElementById('qa-file-list'), countEl=document.getElementById('qa-file-count');
+  if(!listEl) return;
+  listEl.innerHTML='<div style="text-align:center;padding:14px;font-size:12px;color:var(--text-light)">⏳ กำลังโหลดไฟล์...</div>';
+  _qaFileOrder=[];
+  google.script.run
+    .withSuccessHandler(function(res){
+      var files=(res&&res.success&&res.data)?res.data:[];
+      _qaFileOrder=files.filter(function(f){return String(f.status||'active').toLowerCase()!=='deleted';})
+        .map(function(f){ var fid=String(f.drive_file_id||f.file_id||'').trim(); return {id:fid,name:String(f.file_name||'ไฟล์แนบ'),url:String(f.file_url||'')||(fid?'https://drive.google.com/file/d/'+fid+'/view?usp=sharing':''),size:String(f.file_size||''),checked:true}; });
+      if(countEl) countEl.textContent=_qaFileOrder.length+' ไฟล์';
+      _renderQAFileList();
+    })
+    .withFailureHandler(function(){if(listEl) listEl.innerHTML='<div style="padding:10px;font-size:12px;color:var(--red)">โหลดไฟล์ไม่สำเร็จ</div>';})
+    .getUploadedFiles(S.user.sessionId,projectCode,S.user.username);
+}
+
+function _renderQAFileList() {
+  var listEl=document.getElementById('qa-file-list'), countEl=document.getElementById('qa-file-count');
+  if(!listEl) return;
+  var c=_qaFileOrder.filter(function(f){return f.checked;}).length;
+  if(countEl) countEl.textContent=c+'/'+_qaFileOrder.length+' ไฟล์';
+  if(!_qaFileOrder.length){ listEl.innerHTML='<div style="padding:14px;text-align:center;font-size:12px;color:var(--text-light)">ไม่พบไฟล์แนบ</div>'; return; }
+  var icons={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼',jpeg:'🖼',png:'🖼'};
+  listEl.innerHTML=_qaFileOrder.map(function(f,i){
+    var ext=(f.name.split('.').pop()||'').toLowerCase();
+    return '<div class="qa-file-row" draggable="true" ondragstart="_qaDragStart(event,'+i+')" ondragover="event.preventDefault();this.style.background='var(--navy-pale)'" ondragleave="this.style.background=''" ondrop="_qaDrop(event,'+i+');this.style.background=''" style="display:flex;align-items:center;gap:9px;padding:7px 12px;cursor:grab">'+
+      '<span style="color:var(--border);font-size:13px;flex-shrink:0">⠿</span>'+
+      '<input type="checkbox"'+(f.checked?' checked':'')+' onchange="_qaFileToggle('+i+',this.checked)" style="width:14px;height:14px;accent-color:#2d8a52;flex-shrink:0">'+
+      '<span style="font-size:15px;flex-shrink:0">'+(icons[ext]||'📎')+'</span>'+
+      '<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(f.name)+'</div>'+(f.size?'<div style="font-size:11px;color:var(--text-light)">'+esc(f.size)+'</div>':'')+'</div>'+
+      (f.url?'<a href="'+f.url+'" target="_blank" class="btn btn-sm btn-outline" style="font-size:11px;padding:2px 6px">👁️</a>':'')+
+      '</div>';
+  }).join('');
+}
+
+function _qaDragStart(e,idx){_qaDragSrc=idx;e.dataTransfer.effectAllowed='move';}
+function _qaDrop(e,targetIdx){e.preventDefault();if(_qaDragSrc===null||_qaDragSrc===targetIdx)return;var m=_qaFileOrder.splice(_qaDragSrc,1)[0];_qaFileOrder.splice(targetIdx,0,m);_qaDragSrc=null;_renderQAFileList();updateQASummary();}
+function _qaFileToggle(idx,checked){if(_qaFileOrder[idx])_qaFileOrder[idx].checked=checked;var c=_qaFileOrder.filter(function(f){return f.checked;}).length;var el=document.getElementById('qa-file-count');if(el)el.textContent=c+'/'+_qaFileOrder.length+' ไฟล์';updateQASummary();}
+function qaToggleAllFiles(state){_qaFileOrder.forEach(function(f){f.checked=state;});_renderQAFileList();updateQASummary();}
+
+function updateQASelectedCount(){
+  var checked=document.querySelectorAll('#qa-committee-list input[type=checkbox]:checked');
+  var total=document.querySelectorAll('#qa-committee-list input[type=checkbox]').length;
+  var el=document.getElementById('qa-selected-count'); if(el) el.textContent='เลือก '+checked.length+' คน (จากทั้งหมด '+total+' คน)';
+  _updateQALinePreview(); updateQASummary();
+}
+
+function _updateQALinePreview(){
+  var checked=document.querySelectorAll('#qa-committee-list input[type=checkbox]:checked');
+  var lineSec=document.getElementById('qa-line-preview-section');
+  if(!lineSec||!checked.length){if(lineSec)lineSec.style.display='none';return;}
+  var linked=[],noLine=[];
+  Array.from(checked).forEach(function(cb){ var u=(S.allUsers||[]).find(function(x){return x.username===cb.value;}); if(u&&String(u.line_user_id||'').trim()) linked.push(u.name||cb.value); else noLine.push(cb.value); });
+  lineSec.style.display=linked.length?'block':'none';
+  var badge=document.getElementById('qa-line-count-badge'), names=document.getElementById('qa-line-preview-names'), desc=document.getElementById('qa-line-preview-desc'), warn=document.getElementById('qa-line-no-link-warn');
+  if(badge) badge.textContent=linked.length+' คนที่เชื่อมต่อ';
+  if(names) names.textContent=linked.length?linked.join(', '):'-';
+  if(desc) desc.textContent=_qaMode==='skip'?'จะได้รับ LINE พร้อมไฟล์ + ปุ่ม "ประเมินโครงการเลย" — ไม่ต้องกดตอบรับ':'จะได้รับ LINE พร้อมไฟล์ + ปุ่ม "ตอบรับ / ดูโครงการ"';
+  if(warn) warn.style.display=noLine.length?'block':'none';
+}
+
+function updateQASummary(){
+  var code=val('qa-project-select'), checked=document.querySelectorAll('#qa-committee-list input[type=checkbox]:checked');
+  var sumEl=document.getElementById('qa-summary'); if(!code||!checked.length){sumEl.style.display='none';return;}
+  var names=Array.from(checked).map(function(cb){return cb.getAttribute('data-name')||cb.value;});
+  var emails=Array.from(checked).map(function(cb){return cb.getAttribute('data-email');}).filter(Boolean);
+  var selFiles=_qaFileOrder.filter(function(f){return f.checked;});
+  document.getElementById('qa-summary-content').innerHTML='<div>📁 <strong>โครงการ:</strong> '+code+'</div><div>👥 <strong>กรรมการ:</strong> '+names.join(', ')+'</div>'+(emails.length?'<div>📧 <strong>อีเมล:</strong> '+emails.join(', ')+'</div>':'')+'<div>📎 <strong>ไฟล์แนบ:</strong> '+selFiles.length+' ไฟล์</div>'+(val('qa-deadline')?'<div>📅 <strong>กำหนดส่ง:</strong> '+val('qa-deadline')+'</div>':'');
+  sumEl.style.display='block';
+}
+
+function selectAllCommittees(){document.querySelectorAll('#qa-committee-list input[type=checkbox]').forEach(function(cb){cb.checked=true;});updateQASelectedCount();}
+function clearAllCommittees(){document.querySelectorAll('#qa-committee-list input[type=checkbox]').forEach(function(cb){cb.checked=false;});updateQASelectedCount();}
+
+function doQuickAssign(){
+  var code=val('qa-project-select'); if(!code){showToast('กรุณาเลือกโครงการ','error');return;}
+  var checked=document.querySelectorAll('#qa-committee-list input[type=checkbox]:checked');
+  if(!checked.length){showToast('กรุณาเลือกกรรมการอย่างน้อย 1 คน','error');return;}
+  var skipAcceptance=_qaMode==='skip';
+  if(skipAcceptance){var ns=Array.from(checked).map(function(cb){return cb.getAttribute('data-name')||cb.value;});if(!confirm('⚡ โหมดข้ามตอบรับ
+
+กรรมการ: '+ns.join(', ')+'
+
+ระบบจะตั้งสถานะ "รอประเมิน" ทันที
+ยืนยัน?'))return;}
+  var sel=document.getElementById('qa-project-select');
+  var projectTitle=sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].getAttribute('data-title')||code:code;
+  var committeeList=Array.from(checked).map(function(cb){return{username:cb.value,name:cb.getAttribute('data-name')||cb.value,email:cb.getAttribute('data-email')||''};});
+  var selectedFiles=_qaFileOrder.filter(function(f){return f.checked&&f.url;}).map(function(f,i){return{order:i+1,id:f.id,name:f.name,url:f.url};});
+  var btn=document.getElementById('qa-submit-btn'), lbl=document.getElementById('qa-submit-label');
+  btn.disabled=true; if(lbl) lbl.textContent='⏳ กำลังมอบหมาย...';
+  var origLabel=skipAcceptance?'⚡ มอบหมาย + ข้ามตอบรับ + LINE + ไฟล์':'มอบหมาย + อีเมล + LINE + ไฟล์';
+  google.script.run
+    .withSuccessHandler(function(res){
+      btn.disabled=false; if(lbl) lbl.textContent=origLabel;
+      closeModal('modal-quick-assign');
+      if(res&&res.success){
+        var ec=res.results?res.results.filter(function(r){return r.emailSent;}).length:0;
+        var lc=res.lineSent||0;
+        showToast('✅ มอบหมายสำเร็จ'+(skipAcceptance?' ⚡':'')+'! '+committeeList.length+' คน | อีเมล '+ec+' | LINE '+lc);
+        setQAMode('normal'); loadStaffProjects(); loadAssignments();
+      } else showToast('เกิดข้อผิดพลาด: '+((res&&res.message)||''),'error');
+    })
+    .withFailureHandler(function(e){btn.disabled=false;if(lbl)lbl.textContent=origLabel;showToast('เกิดข้อผิดพลาด: '+e.message,'error');})
+    .assignProjectMultiCommittee({projectCode:code,projectTitle:projectTitle,committeeList:committeeList,deadline:val('qa-deadline'),note:val('qa-note'),skipAcceptance:skipAcceptance,selectedFiles:selectedFiles},S.user.username);
 }
     function rolesPill(roles){ var map={admin:'pill-red',staff:'pill-blue',committee:'pill-green',researcher:'pill-gray'}; return roles.split(',').map(function(r){ r=r.trim().replace('pending_',''); return '<span class="pill '+(map[r]||'pill-gray')+'" style="margin-right:2px">'+esc(r)+'</span>'; }).join(''); }
 
