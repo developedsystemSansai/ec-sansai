@@ -603,7 +603,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     .pill-red    { background: var(--red-light); color: var(--red); }
     .pill-blue   { background: var(--blue-light); color: var(--blue); }
     .pill-purple { background: var(--purple-light); color: var(--purple); }
-    .pill-gray   { background: #f0f0f0; color: #555; }
+    .pill-gray   { background: var(--navy-pale); color: #555; }
     .pill-yellow { background: #fff9e6; color: #7a6200; }
 
     /* ── BUTTONS ── */
@@ -1212,8 +1212,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       white-space: nowrap;
     }
     .review-type-badge.exempt    { background: #e8f5ee; color: #1a5c35; border: 1px solid #a8d5b5; }
-    .review-type-badge.expedited { background: #fff8e1; color: #856404; border: 1px solid #fdd835; }
-    .review-type-badge.fullboard { background: #fce8e6; color: #b71c1c; border: 1px solid #f5bcb8; }
+    .review-type-badge.expedited { background: var(--accent-light); color: #7a5200; border: 1px solid var(--gold); }
+    .review-type-badge.fullboard { background: #fce8e6; color: var(--red); border: 1px solid var(--red-light); }
     .review-type-badge.unknown   { background: #f3f3f3; color: #777;    border: 1px solid #ddd; }
     /* ── email-type card ── */
     .email-type-card {
@@ -1648,7 +1648,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
   <!-- โทรศัพท์ -->
   <div class="contact-row">
     <div class="contact-row-icon">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1565c0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
       </svg>
     </div>
@@ -1696,7 +1696,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     <img
       src="https://lh3.googleusercontent.com/d/1hT28c0U5mqkEvjdgaxSc6L2QayW2JDEs"
       alt="LINE QR Code"
-      style="width:180px; height:180px; border-radius:12px; border:1px solid #e0e0e0;"
+      style="width:180px; height:180px; border-radius:var(--radius-lg); border:1px solid var(--border);"
       onerror="this.style.display='none'; document.getElementById('line-qr-fallback').style.display='block'"
     />
     <div id="line-qr-fallback" style="display:none; font-size:12px; color:#999;">ไม่สามารถโหลด QR ได้</div>
@@ -2101,7 +2101,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       <img 
         src="https://lh3.googleusercontent.com/d/1hT28c0U5mqkEvjdgaxSc6L2QayW2JDEs" 
         alt="LINE QR Code"
-        style="width:180px; height:180px; border-radius:12px; border:1px solid #e0e0e0;"
+        style="width:180px; height:180px; border-radius:var(--radius-lg); border:1px solid var(--border);"
         onerror="this.style.display='none'; document.getElementById('line-qr-fallback-faq').style.display='block'"
       />
       <div id="line-qr-fallback-faq" style="display:none; font-size:12px; color:#999;">
@@ -2124,7 +2124,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <div class="modal-body" style="padding:24px 20px;">
           
           <!-- 1. ผังขั้นตอน -->
-          <div style="display:flex;gap:14px;align-items:center;padding:16px 18px;background:#fff;border:1.5px solid var(--border);border-radius:12px;margin-bottom:12px">
+          <div style="display:flex;gap:14px;align-items:center;padding:16px 18px;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-lg);margin-bottom:12px">
             <span style="font-size:28px;color:#d32f2f">📘</span>
             <div style="flex:1">
               <div style="font-weight:600">ผังขั้นตอนการพิจารณาจริยธรรม</div>
@@ -2135,7 +2135,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           </div>
 
           <!-- 2. SOP -->
-          <div style="display:flex;gap:14px;align-items:center;padding:16px 18px;background:#fff;border:1.5px solid var(--border);border-radius:12px;margin-bottom:12px">
+          <div style="display:flex;gap:14px;align-items:center;padding:16px 18px;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-lg);margin-bottom:12px">
             <span style="font-size:28px;color:#d32f2f">📘</span>
             <div style="flex:1">
               <div style="font-weight:600">SOP คณะกรรมการวิจัยฯ ฉบับ 14.2.68</div>
@@ -2146,8 +2146,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           </div>
 
           <!-- 3. คำสั่งแต่งตั้งกรรมการ (ใหม่) -->
-          <div style="display:flex;gap:14px;align-items:center;padding:16px 18px;background:#fff;border:1.5px solid var(--border);border-radius:12px">
-            <span style="font-size:28px;color:#1565c0">📋</span>
+          <div style="display:flex;gap:14px;align-items:center;padding:16px 18px;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-lg)">
+            <span style="font-size:28px;color:var(--blue)">📋</span>
             <div style="flex:1">
               <div style="font-weight:600">คำสั่งแต่งตั้งคณะกรรมการจริยธรรมการวิจัยในมนุษย์</div>
               <small style="color:#666">รายชื่อกรรมการและขอบเขตหน้าที่</small>
@@ -2701,7 +2701,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
               <div class="page-title" style="margin-bottom:0">👥 จัดการผู้ใช้งาน</div>
               <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center" id="users-page-actions">
                 <button class="btn btn-primary" onclick="openAddUserModal()">➕ เพิ่มผู้ใช้</button>
-                <button class="btn btn-sm" id="btn-send-welcome-all" style="background:#1565c0;color:#fff;border:none;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px" onclick="openSendWelcomeAllModal()">📧 ส่ง Welcome Email ทั้งหมด</button>
+                <button class="btn btn-sm" id="btn-send-welcome-all" style="background:var(--blue);color:#fff;border:none;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px" onclick="openSendWelcomeAllModal()">📧 ส่ง Welcome Email ทั้งหมด</button>
               </div>
             </div>
             <div id="pending-users-banner" style="display:none" class="alert alert-warning"></div>
@@ -2715,7 +2715,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
               </button>
               <button class="tab-btn" onclick="switchUsersTab(this,'users-tab-locked')">
                 🔒 บัญชีถูกล็อค
-                <span class="badge-count" id="badge-locked-accounts" style="display:none;background:#d93025;margin-left:4px">0</span>
+                <span class="badge-count" id="badge-locked-accounts" style="display:none;background:var(--red);margin-left:4px">0</span>
               </button>
             </div>
 
@@ -2736,11 +2736,11 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <!-- Tab: LINE กรรมการ -->
             <div id="users-tab-line" class="tab-panel">
               <div style="margin-top:14px">
-                <div style="background:linear-gradient(135deg,#06c755,#04a344);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px;box-shadow:0 2px 12px rgba(6,199,85,.18)">
-                  <div style="font-size:28px;flex-shrink:0">💬</div>
+                <div style="background:var(--white);border:1px solid var(--border);border-left:3px solid var(--status-green);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px;box-shadow:var(--shadow-sm)">
+                  <div style="width:36px;height:36px;border-radius:50%;background:var(--status-green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px">💬</div>
                   <div>
-                    <div style="color:#fff;font-weight:700;font-size:14px;margin-bottom:3px">LINE Messaging API — จัดการบัญชีกรรมการ</div>
-                    <div style="color:rgba(255,255,255,.88);font-size:12px;line-height:1.6">บันทึก LINE User ID ของกรรมการเพื่อส่งการแจ้งเตือนอัตโนมัติ<br>กรรมการสแกน QR เพิ่มเพื่อน Bot แล้วพิมพ์ username ในระบบ หรือ Admin กรอกเอง</div>
+                    <div style="color:var(--status-green);font-weight:700;font-size:13.5px;margin-bottom:3px">LINE Messaging API — จัดการบัญชีกรรมการ</div>
+                    <div style="color:var(--text-light);font-size:12px;line-height:1.6">บันทึก LINE User ID ของกรรมการเพื่อส่งการแจ้งเตือนอัตโนมัติ<br>กรรมการสแกน QR เพิ่มเพื่อน Bot แล้วพิมพ์ username ในระบบ หรือ Admin กรอกเอง</div>
                   </div>
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
@@ -2790,11 +2790,11 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <!-- Tab: บัญชีถูกล็อค -->
             <div id="users-tab-locked" class="tab-panel">
               <div style="margin-top:14px">
-                <div style="background:linear-gradient(135deg,#d93025,#b1271d);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px;box-shadow:0 2px 12px rgba(217,48,37,.18)">
-                  <div style="font-size:28px;flex-shrink:0">🔒</div>
+                <div style="background:var(--white);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px;box-shadow:var(--shadow-sm)">
+                  <div style="width:36px;height:36px;border-radius:50%;background:var(--red-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px">🔒</div>
                   <div>
-                    <div style="color:#fff;font-weight:700;font-size:14px;margin-bottom:3px">บัญชีที่ถูกล็อคชั่วคราว</div>
-                    <div style="color:rgba(255,255,255,.88);font-size:12px;line-height:1.6">ระบบจะล็อคบัญชีอัตโนมัติ 15 นาที เมื่อใส่รหัสผ่านผิดติดต่อกัน 5 ครั้ง<br>แอดมินสามารถกดปลดล็อคให้ทันทีได้จากที่นี่ โดยไม่ต้องรอครบเวลา</div>
+                    <div style="color:var(--red);font-weight:700;font-size:13.5px;margin-bottom:3px">บัญชีที่ถูกล็อคชั่วคราว</div>
+                    <div style="color:var(--text-light);font-size:12px;line-height:1.6">ระบบจะล็อคบัญชีอัตโนมัติ 15 นาที เมื่อใส่รหัสผ่านผิดติดต่อกัน 5 ครั้ง<br>แอดมินสามารถกดปลดล็อคให้ทันทีได้จากที่นี่ โดยไม่ต้องรอครบเวลา</div>
                   </div>
                 </div>
                 <div class="table-card">
@@ -2858,7 +2858,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <button style="padding:14px; background:var(--navy-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="showPage('history'); closeMoreMenu()">🗂 ประวัติ</button>
           <button style="padding:14px; background:var(--navy-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="showPage('profile'); closeMoreMenu()">👤 โปรไฟล์</button>
           <button style="padding:14px; background:var(--navy-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="openNotifPanel(); closeMoreMenu()">🔔 แจ้งเตือน</button>
-          <button style="padding:14px; background:var(--red-light); border:1.5px solid #f5bcb8; border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px; color:var(--red);" onclick="doLogout(); closeMoreMenu()">🚪 ออกจากระบบ</button>
+          <button style="padding:14px; background:var(--red-light); border:1.5px solid var(--red-light); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px; color:var(--red);" onclick="doLogout(); closeMoreMenu()">🚪 ออกจากระบบ</button>
         </div>
       </div>
     </div>
@@ -3382,10 +3382,10 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <!-- Mode toggle -->
           <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px">
             <button id="qa-mode-normal" onclick="setQAMode('normal')" style="flex:1;padding:9px 8px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:#2d8a52;color:#fff;display:flex;align-items:center;justify-content:center;gap:6px">✅ รอกรรมการตอบรับก่อน</button>
-            <button id="qa-mode-skip" onclick="setQAMode('skip')" style="flex:1;padding:9px 8px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:#f0f0f0;color:#666;display:flex;align-items:center;justify-content:center;gap:6px">⚡ ข้ามไปประเมินเลย (Admin ยืนยันแล้ว)</button>
+            <button id="qa-mode-skip" onclick="setQAMode('skip')" style="flex:1;padding:9px 8px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:var(--navy-pale);color:#666;display:flex;align-items:center;justify-content:center;gap:6px">⚡ ข้ามไปประเมินเลย (Admin ยืนยันแล้ว)</button>
           </div>
           <div id="qa-banner-normal" class="alert alert-info" style="margin-bottom:12px">ℹ️ <div>กรรมการจะได้รับ <strong>LINE + อีเมล + ไฟล์</strong> และต้องกดตอบรับในระบบก่อนจึงจะเห็นหน้าประเมิน</div></div>
-          <div id="qa-banner-skip" class="alert" style="display:none;margin-bottom:12px;background:#fff8e1;border:1.5px solid #f0d07a;color:#7a5c00"><span style="font-size:18px">⚡</span><div style="font-size:12.5px;line-height:1.65"><strong>โหมดข้ามขั้นตอนตอบรับ</strong> — ระบบตั้งสถานะ "รอประเมิน" ทันที ใช้เมื่อ Admin <u>ทักกรรมการและยืนยันแล้ว</u></div></div>
+          <div id="qa-banner-skip" class="alert" style="display:none;margin-bottom:12px;background:var(--accent-light);border:1.5px solid #f0d07a;color:#7a5c00"><span style="font-size:18px">⚡</span><div style="font-size:12.5px;line-height:1.65"><strong>โหมดข้ามขั้นตอนตอบรับ</strong> — ระบบตั้งสถานะ "รอประเมิน" ทันที ใช้เมื่อ Admin <u>ทักกรรมการและยืนยันแล้ว</u></div></div>
           <!-- เลือกโครงการ -->
           <div style="margin-bottom:16px">
             <label style="font-size:13px;font-weight:700;color:var(--text-mid);display:block;margin-bottom:8px">📁 เลือกโครงการ <span class="req">*</span></label>
@@ -3463,7 +3463,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       <!-- ========================================== -->
       <!-- ส่วนที่ 1: คำอธิบายสถานะ (ย้ายมาด้านบน) -->
       <!-- ========================================== -->
-      <div style="margin-bottom: 24px; background: #f8f9fa; border-radius: 12px; padding: 16px; border: 1px solid #e0e0e0;">
+      <div style="margin-bottom: 24px; background: var(--navy-pale); border-radius: var(--radius-lg); padding: 16px; border: 1px solid var(--border);">
         
         <!-- หัวข้อ -->
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
@@ -3480,7 +3480,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #ffe0b2;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #ff9800; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">1</span>
-              <span style="font-weight: 700; color: #e65100;">รอพิจารณา</span>
+              <span style="font-weight: 700; color: var(--gold-dark);">รอพิจารณา</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               ผู้วิจัยยื่นใหม่ รอเจ้าหน้าที่ตรวจสอบเอกสาร
@@ -3491,7 +3491,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #c8e6c9;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #4caf50; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">2</span>
-              <span style="font-weight: 700; color: #2e7d32;">✅ ผ่านตรวจเอกสาร</span>
+              <span style="font-weight: 700; color: var(--status-green);">✅ ผ่านตรวจเอกสาร</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               เอกสารครบถ้วน ระบบจะเปิดฟังก์ชันมอบหมายให้กรรมการ
@@ -3502,7 +3502,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #ffcdd2;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #f44336; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">3</span>
-              <span style="font-weight: 700; color: #c62828;">❌ เอกสารไม่ครบ</span>
+              <span style="font-weight: 700; color: var(--red);">❌ เอกสารไม่ครบ</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               ส่งคืนผู้วิจัยให้แก้ไขและอัปโหลดเอกสารเพิ่มเติม แจ้งเตือนทางอีเมล
@@ -3513,7 +3513,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #ffe0b2;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #ff9800; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">4</span>
-              <span style="font-weight: 700; color: #e65100;">รอตอบรับ</span>
+              <span style="font-weight: 700; color: var(--gold-dark);">รอตอบรับ</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               มอบหมายกรรมการแล้ว รอกรรมการตอบรับ โครงการจะไปปรากฎหน้าตอบรับของกรรมการ
@@ -3524,7 +3524,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #bbdefb;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #2196f3; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">5</span>
-              <span style="font-weight: 700; color: #1565c0;">รอประเมิน</span>
+              <span style="font-weight: 700; color: var(--blue);">รอประเมิน</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               กรรมการตอบรับแล้ว โครงการจะปรากฎในหน้าประเมินของกรรมการ
@@ -3545,7 +3545,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <!-- 7. รอแจ้งผล -->
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #fff9c4;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-              <span style="background: #ffc107; color: #333; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">7</span>
+              <span style="background: var(--gold); color: #333; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">7</span>
               <span style="font-weight: 700; color: #b26a00;">⏳ รอแจ้งผล</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
@@ -3557,7 +3557,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #c8e6c9;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #4caf50; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">8</span>
-              <span style="font-weight: 700; color: #2e7d32;">🏆 รับรอง</span>
+              <span style="font-weight: 700; color: var(--status-green);">🏆 รับรอง</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               โครงการผ่านการรับรอง ระบบจะขึ้นให้อัพโหลดไฟล์ใบรับรอง (สถานะสุดท้าย)
@@ -3568,7 +3568,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #ffcdd2;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #f44336; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">9</span>
-              <span style="font-weight: 700; color: #c62828;">🚫 ไม่รับรอง</span>
+              <span style="font-weight: 700; color: var(--red);">🚫 ไม่รับรอง</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               โครงการไม่ผ่านการพิจารณา (สถานะสุดท้าย)
@@ -3578,10 +3578,10 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         </div>
         
         <!-- หมายเหตุสำคัญ -->
-        <div style="margin-top: 16px; padding: 12px 16px; background: #ffebee; border-left: 4px solid #c62828; border-radius: 8px; font-size: 13px;">
+        <div style="margin-top: 16px; padding: 12px 16px; background: var(--red-light); border-left: 4px solid var(--red); border-radius: 8px; font-size: 13px;">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
             <span style="font-size: 18px;">⚠️</span>
-            <span style="font-weight: 700; color: #b71c1c;">ข้อควรทราบ:</span>
+            <span style="font-weight: 700; color: var(--red);">ข้อควรทราบ:</span>
           </div>
           <ul style="margin: 4px 0 0 28px; padding-left: 0; color: #555; line-height: 1.6;">
             <li>การเปลี่ยนสถานะด้วยตนเองอาจทำให้ระบบข้ามขั้นตอนสำคัญ (ส่งอีเมล, แจ้งเตือน)</li>
@@ -3603,7 +3603,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <span style="font-size: 18px;">📁</span>
           <span style="font-family: 'Noto Serif Thai', 'Sarabun', serif; font-weight: 700; font-size: 16px; color: var(--status-green);">Sansai-2568-0023</span>
         </div>
-        <div style="font-size: 14px; color: #2e7d32; margin-left: 26px;">
+        <div style="font-size: 14px; color: var(--status-green); margin-left: 26px;">
           การศึกษาประสิทธิผลของสารสกัดหญ้าดอกขาวในการลดระดับน้ำตาลในเลือด
         </div>
         <div style="display: flex; gap: 16px; margin-top: 8px; margin-left: 26px; font-size: 13px; color: var(--text-mid);">
@@ -3615,7 +3615,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       <!-- Dropdown เลือกสถานะใหม่ -->
       <div class="field-group" style="margin-bottom: 20px;">
         <label style="display: block; font-size: 14px; font-weight: 700; color: var(--text-mid); margin-bottom: 8px;">
-          สถานะใหม่ <span style="color: #d93025;">*</span>
+          สถานะใหม่ <span style="color: var(--red);">*</span>
         </label>
         <select id="us-status" class="form-control" style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--navy-light); border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 15px; background: white;">
           <option value="รอพิจารณา">รอพิจารณา</option>
@@ -3992,7 +3992,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div id="welcome-all-preview" style="background:var(--navy-pale);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;font-size:13px;min-height:56px">
             <span style="color:var(--text-light)">กำลังโหลดข้อมูล...</span>
           </div>
-          <div style="background:#fff8e1;border-left:4px solid #ffc107;border-radius:0 6px 6px 0;padding:12px 14px;font-size:13px;color:#856404;line-height:1.8;margin-bottom:8px">
+          <div style="background:var(--accent-light);border-left:4px solid var(--gold);border-radius:0 6px 6px 0;padding:12px 14px;font-size:13px;color:#7a5200;line-height:1.8;margin-bottom:8px">
             <strong>⚠️ ข้อควรทราบก่อนส่ง</strong><br>
             • ระบบจะส่งเฉพาะผู้ที่มี <code>send_email = true</code> และยังไม่เคยส่ง (<code>email_sent ≠ true</code>)<br>
             • หลังส่งสำเร็จ ปุ่มจะถูกล็อค ไม่สามารถส่งซ้ำได้<br>
@@ -4018,11 +4018,11 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         </div>
         <div class="modal-body">
           <div id="welcome-one-info" style="background:var(--navy-pale);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;font-size:14px"></div>
-          <div id="welcome-one-already-sent" style="display:none;background:#e8f5e9;border:1.5px solid #66bb6a;border-radius:var(--radius);padding:14px 16px;font-size:13px;color:#2e7d32;margin-bottom:12px">
+          <div id="welcome-one-already-sent" style="display:none;background:var(--status-green-light);border:1.5px solid var(--status-green);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--status-green);margin-bottom:12px">
             ✅ ส่งอีเมลต้อนรับให้ผู้ใช้นี้แล้ว — ไม่สามารถส่งซ้ำได้
           </div>
           <div id="welcome-one-form">
-            <div style="font-size:13px;color:#856404;background:#fff8e1;border-left:4px solid #ffc107;border-radius:0 6px 6px 0;padding:10px 12px;margin-bottom:4px;line-height:1.7">
+            <div style="font-size:13px;color:#7a5200;background:var(--accent-light);border-left:4px solid var(--gold);border-radius:0 6px 6px 0;padding:10px 12px;margin-bottom:4px;line-height:1.7">
               ⚠️ อีเมลจะมีรหัสผ่านชั่วคราว (จากคอลัมน์ <code>plain_password</code>) และลิงก์ตั้งรหัสผ่านอายุ 3 วัน
             </div>
           </div>
@@ -4055,14 +4055,14 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             </div>
           </label>
           <label class="srt-opt-card" id="srt-opt-expedited" onclick="selectReviewType('expedited')">
-            <input type="radio" name="srt-type" value="expedited" style="accent-color:#856404">
+            <input type="radio" name="srt-type" value="expedited" style="accent-color:#7a5200">
             <div>
               <div style="font-weight:700;font-size:14px">🟡 แบบเร่งด่วน <span style="font-weight:400;font-size:12px">(Expedited review)</span></div>
               <div style="font-size:12px;color:var(--text-light);margin-top:2px">สำหรับวิจัยความเสี่ยงต่ำ-ปานกลาง — ผ่านคณะกรรมการบางส่วน</div>
             </div>
           </label>
           <label class="srt-opt-card" id="srt-opt-fullboard" onclick="selectReviewType('fullboard')">
-            <input type="radio" name="srt-type" value="fullboard" style="accent-color:#b71c1c">
+            <input type="radio" name="srt-type" value="fullboard" style="accent-color:var(--red)">
             <div>
               <div style="font-weight:700;font-size:14px">🔴 แบบเต็มคณะ <span style="font-weight:400;font-size:12px">(Full board review)</span></div>
               <div style="font-size:12px;color:var(--text-light);margin-top:2px">สำหรับวิจัยความเสี่ยงสูง — ต้องผ่านคณะกรรมการครบชุด</div>
@@ -4629,7 +4629,7 @@ function renderStaffProjectsTable(projects) {
     html += '<tr><td>' + (i + 1) + '</td>'
       + '<td><strong>' + esc(p.project_code || '-') + '</strong>'
       + (isRevision ? '<br><small style="color:var(--gold)">✏️ แก้ไข</small>' : '')
-      + (skipReeval ? '<br><small style="color:#1565c0">👤 แอดมินตรวจ</small>' : '')
+      + (skipReeval ? '<br><small style="color:var(--blue)">👤 แอดมินตรวจ</small>' : '')
       + '</td>'
       + '<td style="max-width:200px">' + esc(p.title_th || '-') + '</td>'
       + '<td>' + esc(p.pi_name || '-') + '</td>'
@@ -6398,7 +6398,7 @@ function loadUsersData() {
     var linePill = !isCommittee ? '<span style="color:var(--border);font-size:11px">—</span>'
       : lineLinked
         ? '<span style="display:inline-flex;align-items:center;gap:3px;background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600"><span class=\"line-linked-dot\"></span>เชื่อมแล้ว</span>'
-        : '<span style="background:#fff8e1;color:#b58a2a;border:1px solid #f0d07a;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600">ยังไม่เชื่อม</span>';
+        : '<span style="background:var(--accent-light);color:#b58a2a;border:1px solid #f0d07a;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600">ยังไม่เชื่อม</span>';
     html += '<tr>' +
       '<td>' + (i + 1) + '</td>' +
       '<td><strong>' + esc(u.username || '-') + '</strong></td>' +
@@ -6429,11 +6429,11 @@ function userActionBtns(u, isPending) {
     var alreadySent = String(u.email_sent||'').toLowerCase() === 'true';
     if (alreadySent) {
       btns += '<button class="btn btn-sm" disabled '
-        + 'style="background:#e8f5e9;color:#2e7d32;border:1px solid #66bb6a;border-radius:5px;padding:3px 8px;font-size:12px;cursor:not-allowed" '
+        + 'style="background:var(--status-green-light);color:var(--status-green);border:1px solid var(--status-green);border-radius:5px;padding:3px 8px;font-size:12px;cursor:not-allowed" '
         + 'title="ส่ง Welcome Email แล้ว">✅ ส่งแล้ว</button> ';
     } else {
       btns += '<button class="btn btn-sm" '
-        + 'style="background:#1565c0;color:#fff;border:none;border-radius:5px;padding:3px 8px;cursor:pointer;font-size:12px" '
+        + 'style="background:var(--blue);color:#fff;border:none;border-radius:5px;padding:3px 8px;cursor:pointer;font-size:12px" '
         + 'onclick="openWelcomeOneModal(\'' + un + '\')" title="ส่ง Welcome Email">📧 Welcome</button> ';
     }
   }
@@ -6441,7 +6441,7 @@ function userActionBtns(u, isPending) {
   // ปุ่มส่งอีเมลแจ้ง (เฉพาะ admin)
   if (S._isAdmin) {
     btns += '<button class="btn btn-sm" '
-      + 'style="background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;border-radius:5px;padding:3px 8px;cursor:pointer;font-size:12px" '
+      + 'style="background:var(--blue-light);color:var(--blue);border:1px solid var(--blue);border-radius:5px;padding:3px 8px;cursor:pointer;font-size:12px" '
       + 'onclick="openSendEmailModal(\'' + un + '\')" title="ส่งอีเมลแจ้งผู้ใช้">📨 ส่งอีเมล</button> ';
   }
 
@@ -6472,14 +6472,14 @@ function setQAMode(mode) {
   var bnN=document.getElementById('qa-banner-normal'), bnS=document.getElementById('qa-banner-skip');
   var lbl=document.getElementById('qa-submit-label'), btn=document.getElementById('qa-submit-btn');
   if (mode==='skip') {
-    if(bN){bN.style.background='#f0f0f0';bN.style.color='#666';}
-    if(bS){bS.style.background='#e65100';bS.style.color='#fff';}
+    if(bN){bN.style.background='var(--navy-pale)';bN.style.color='#666';}
+    if(bS){bS.style.background='var(--gold-dark)';bS.style.color='#fff';}
     if(bnN) bnN.style.display='none'; if(bnS) bnS.style.display='flex';
     if(lbl) lbl.textContent='⚡ มอบหมาย + ข้ามตอบรับ + LINE + ไฟล์';
-    if(btn){btn.style.background='#e65100';btn.style.borderColor='#e65100';}
+    if(btn){btn.style.background='var(--gold-dark)';btn.style.borderColor='var(--gold-dark)';}
   } else {
     if(bN){bN.style.background='#2d8a52';bN.style.color='#fff';}
-    if(bS){bS.style.background='#f0f0f0';bS.style.color='#666';}
+    if(bS){bS.style.background='var(--navy-pale)';bS.style.color='#666';}
     if(bnN) bnN.style.display='flex'; if(bnS) bnS.style.display='none';
     if(lbl) lbl.textContent='มอบหมาย + อีเมล + LINE + ไฟล์';
     if(btn){btn.style.background='';btn.style.borderColor='';}
@@ -6514,7 +6514,7 @@ function loadLockedAccounts(){
         var u=(S.allUsers||[]).find(function(x){return x.username===r.username;});
         html+='<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.username||'-')+'</strong></td><td>'+esc(u?u.name:'-')+'</td>'+
           '<td><span class="pill pill-red">'+r.count+' ครั้ง</span></td>'+
-          '<td><span style="color:#d93025;font-weight:600">⏳ '+r.remaining_minutes+' นาที</span></td>'+
+          '<td><span style="color:var(--red);font-weight:600">⏳ '+r.remaining_minutes+' นาที</span></td>'+
           '<td><button class="btn btn-sm btn-accent" onclick="unlockAccount(\''+un+'\')">🔓 ปลดล็อคทันที</button></td></tr>';
       });
       el.innerHTML=html+'</tbody></table>';
@@ -6549,7 +6549,7 @@ function renderLineCommitteeTable() {
   if(!committees.length){el.innerHTML='<div class="empty-state"><p>ไม่พบกรรมการ</p></div>';return;}
   el.innerHTML='<table><thead><tr><th>#</th><th>Username</th><th>ชื่อ</th><th>LINE</th><th>Actions</th></tr></thead><tbody>'+committees.map(function(u,i){
     var lid=String(u.line_user_id||'').trim(), linked=lid!=='';
-    var status=linked?'<span style="display:inline-flex;align-items:center;gap:3px;background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600"><span class=\"line-linked-dot\"></span>เชื่อมแล้ว</span>':'<span style="background:#fff8e1;color:#b58a2a;border:1px solid #f0d07a;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600">ยังไม่เชื่อม</span>';
+    var status=linked?'<span style="display:inline-flex;align-items:center;gap:3px;background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600"><span class=\"line-linked-dot\"></span>เชื่อมแล้ว</span>':'<span style="background:var(--accent-light);color:#b58a2a;border:1px solid #f0d07a;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600">ยังไม่เชื่อม</span>';
     var un=escAttr(u.username||'');
     return '<tr><td>'+(i+1)+'</td><td><strong>'+esc(u.username||'-')+'</strong></td><td>'+esc(u.name||'-')+'</td><td>'+status+'</td><td style="display:flex;gap:5px">'+
       '<button class="btn btn-sm" style="background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;font-size:11px" onclick="openLineEditModal(\x27'+un+'\x27)">'+
