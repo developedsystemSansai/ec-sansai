@@ -9209,7 +9209,441 @@ function showPage(page) {
     // ═══════════════════════════════════════
     // UTILITIES
     // ═══════════════════════════════════════
-    function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'\x22').replace(/'/g,'&#39;'); }\n    function escAttr(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }\n    function val(id){ var el=document.getElementById(id); return el?el.value:''; }\n    function setText(id,v){ var el=document.getElementById(id); if(el) el.textContent=v; }\n    function show(id,d){ var el=document.getElementById(id); if(el) el.style.display=d||'block'; }\n    function hide(id){ var el=document.getElementById(id); if(el) el.style.display='none'; }\n    function setBadge(id,count){ var el=document.getElementById(id); if(!el) return; if(count>0){ el.textContent=count; el.style.display='inline-flex'; } else el.style.display='none'; var bnMap={'badge-accept':'bn-badge-accept','badge-evaluate':'bn-badge-evaluate'}; if(bnMap[id]){ var bn=document.getElementById(bnMap[id]); if(bn){ bn.textContent=count; bn.style.display=count>0?'inline-block':'none'; } } }\n    function formatDate(v){ if(!v) return '-'; try { return new Date(v).toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'}); } catch(e){ return String(v); } }\n    function pillStatus(s){\n      var map = {\n  'ผ่านตรวจเอกสาร':    'pill-green',\n  'เอกสารไม่ครบ':       'pill-red',\n  'รับรองมีข้อแก้ไข':   'pill-orange',\n  'รอแจ้งผล':           'pill-blue',\n  'รอตรวจโดยแอดมิน':    'pill-purple',\n  'ปิดโครงการแล้ว':     'pill-gray',\n  'ต่ออายุแล้ว':         'pill-green',\n  'ผ่านการพิจารณา':     'pill-green',\n  'ต้องแก้ไข':           'pill-red',\n  'ส่งแก้ไขแล้ว':        'pill-orange',\n  'auto':                'pill-green',\n  'รอตอบรับ':            'pill-orange',\n  'ตอบรับ':              'pill-green',\n  'ปฏิเสธ':              'pill-red',\n  'รอประเมิน':           'pill-blue',\n  'ส่งประเมินแล้ว':      'pill-green',\n  'รอตรวจสอบ':           'pill-orange',\n  'ตรวจสอบแล้ว':         'pill-green',\n  'รอผลพิจารณา':         'pill-blue',\n  'รับรอง':              'pill-green',\n  'ไม่รับรอง':           'pill-red',\n  'รอพิจารณา':           'pill-orange',\n  'active':              'pill-green',\n  'inactive':            'pill-red',\n  'pending':             'pill-orange'\n};\n      return '<span class="pill '+(map[String(s||'')]||'pill-gray')+'">'+esc(s)+'</span>';\n    }\n    function showEl(id, visible) { \n  var el = document.getElementById(id); \n  if (el) el.style.display = visible ? 'flex' : 'none'; \n}\n    function checkStrength(pw,fillId){ var fid=fillId||'strength-fill'; var score=0; if(pw.length>=8)score++; if(pw.length>=12)score++; if(/[A-Z]/.test(pw))score++; if(/[0-9]/.test(pw))score++; if(/[^A-Za-z0-9]/.test(pw))score++; var fills=['','#e53935','#fb8c00','#f0a500','#43a047','#2d8a52']; var labels=['','อ่อนมาก','อ่อน','ปานกลาง','แข็งแรง','แข็งแรงมาก']; var el=document.getElementById(fid); if(el){ el.style.width=(score*20)+'%'; el.style.background=fills[score]||fills[1]; } var sl=document.getElementById('strength-label'); if(sl){ sl.textContent=labels[score]||''; sl.style.color=fills[score]||fills[1]; } }\n    function checkUsernameFormat(inp){ var hint=document.getElementById('username-hint'); if(!hint) return; var v=inp.value; if(!v){ hint.textContent='ใช้ตัวอักษร a-z, 0-9 ความยาว 4-20 ตัว'; hint.style.color=''; return; } if(/^[a-zA-Z0-9_]{4,20}$/.test(v)){ hint.textContent='✅ รูปแบบถูกต้อง'; hint.style.color='var(--navy-main)'; } else { hint.textContent='❌ ใช้ได้เฉพาะ a-z, A-Z, 0-9, _'; hint.style.color='var(--red)'; } }\n    function togglePw(inputId,btn){ var inp=document.getElementById(inputId); if(!inp) return; inp.type=inp.type==='password'?'text':'password'; btn.textContent=inp.type==='password'?'👁':'🙈'; }\n    function showToast(msg,type){ var c=document.getElementById('toast-container'); var t=document.createElement('div'); t.className='toast'+(type==='error'?' error':type==='warning'?' warning':''); t.textContent=(type==='error'?'❌ ':type==='warning'?'⚠ ':'✅ ')+msg; c.appendChild(t); setTimeout(function(){ t.remove(); },3500); }\n    document.addEventListener('keydown',function(e){ if(e.key==='Enter'&&document.getElementById('login-page').style.display==='flex') doLogin(); });\n\n    // ═══════════════════════════════════════════════════════════════\n    // ฟีเจอร์ใหม่ 1: ส่งอีเมลแจ้งผู้ใช้ (admin)\n    // ═══════════════════════════════════════════════════════════════\n\n    /** เปิด modal ส่งอีเมลแจ้งผู้ใช้ */\n    function openSendEmailModal(username) {\n      var u = (S.allUsers || []).find(function(x) { return x.username === username; });\n      if (!u) { showToast('ไม่พบข้อมูลผู้ใช้', 'error'); return; }\n\n      document.getElementById('send-email-title').textContent = '📧 ส่งอีเมลแจ้ง: ' + esc(username);\n      document.getElementById('send-email-target').textContent = u.name || username;\n      document.getElementById('send-email-addr').textContent   = u.email ? '(' + u.email + ')' : '(ไม่มีอีเมล)';\n      document.getElementById('email-message').value           = '';\n      document.getElementById('email-subject-pw').value        = '[EC Sansai] กรุณาตั้งรหัสผ่านของท่าน';\n      document.getElementById('email-subject-gen').value       = '';\n      document.getElementById('include-reset-link').checked    = true;\n\n      // reset ประเภท → password_change\n      var rdoPw = document.querySelector('input[name="email-type"][value="password_change"]');\n      if (rdoPw) { rdoPw.checked = true; }\n      toggleEmailType();\n\n      document.getElementById('modal-send-email').dataset.targetUsername = username;\n      openModal('modal-send-email');\n    }\n\n    /** สลับ UI ตามประเภทอีเมล */\n    function toggleEmailType() {\n      var checked = document.querySelector('input[name="email-type"]:checked');\n      var type = checked ? checked.value : 'password_change';\n      var isPw = (type === 'password_change');\n\n      var pwOpts    = document.getElementById('pw-email-options');\n      var genSubj   = document.getElementById('email-subject-gen');\n      var msgLabelPw  = document.getElementById('msg-label-pw');\n      var msgLabelGen = document.getElementById('msg-label-gen');\n      var msgArea   = document.getElementById('email-message');\n      var etypePw   = document.getElementById('etype-pw-card');\n      var etypeGen  = document.getElementById('etype-gen-card');\n\n      if (pwOpts)    pwOpts.style.display    = isPw ? '' : 'none';\n      if (genSubj)   genSubj.style.display   = isPw ? 'none' : '';\n      if (msgLabelPw)  msgLabelPw.style.display  = isPw ? '' : 'none';\n      if (msgLabelGen) msgLabelGen.style.display  = isPw ? 'none' : '';\n      if (msgArea)   msgArea.placeholder = isPw\n        ? 'ข้อความเพิ่มเติมจากแอดมิน (ไม่บังคับ)...'\n        : 'พิมพ์ข้อความที่ต้องการส่งถึงผู้ใช้ (บังคับ)...';\n      if (etypePw)  etypePw.classList.toggle('selected', isPw);\n      if (etypeGen) etypeGen.classList.toggle('selected', !isPw);\n    }\n\n    /** ส่งอีเมลจริง */\n    function doSendUserEmail() {\n      var modalEl = document.getElementById('modal-send-email');\n      var targetUsername = modalEl && modalEl.dataset.targetUsername;\n      if (!targetUsername) { showToast('ไม่พบ username', 'error'); return; }\n\n      var checked = document.querySelector('input[name="email-type"]:checked');\n      var type    = checked ? checked.value : 'password_change';\n      var message = document.getElementById('email-message').value.trim();\n\n      if (type === 'general' && !message) {\n        showToast('กรุณากรอกข้อความก่อนส่ง', 'error'); return;\n      }\n\n      var payload = {\n        targetUsername:   targetUsername,\n        type:             type,\n        message:          message,\n        includeResetLink: type === 'password_change'\n          ? document.getElementById('include-reset-link').checked\n          : false\n      };\n\n      if (type === 'password_change') {\n        var pwSubj = document.getElementById('email-subject-pw').value.trim();\n        if (pwSubj) payload.subject = pwSubj;\n      } else {\n        var genSubj = document.getElementById('email-subject-gen').value.trim();\n        payload.subject = genSubj || '[EC Sansai] แจ้งจากระบบ EC Online Submission';\n      }\n\n      var btn = document.getElementById('send-email-btn');\n      btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังส่ง...';\n\n      getM().sendUserNotificationEmail(payload, S.user.username)\n        .then(function(res) {\n          btn.disabled = false; btn.innerHTML = '📧 ส่งอีเมล';\n          if (res && res.success) {\n            closeModal('modal-send-email');\n            showToast('ส่งอีเมลถึง ' + targetUsername + ' สำเร็จ');\n          } else {\n            showToast((res && res.message) || 'เกิดข้อผิดพลาด', 'error');\n          }\n        })\n        .catch(function(e) {\n          btn.disabled = false; btn.innerHTML = '📧 ส่งอีเมล';\n          showToast((e && e.message) || 'เกิดข้อผิดพลาด', 'error');\n        });\n    }\n\n    // ═══════════════════════════════════════════════════════════════\n    // ฟีเจอร์ใหม่ 2: badge + ตั้งค่าประเภทการพิจารณา\n    // ═══════════════════════════════════════════════════════════════\n\n    var REVIEW_TYPE_MAP = {\n      'exempt':    { badge: '🟢 Exempt',     cls: 'exempt',    label: 'การยกเว้น (Exempt review)' },\n      'expedited': { badge: '🟡 Expedited',  cls: 'expedited', label: 'แบบเร่งด่วน (Expedited review)' },\n      'fullboard': { badge: '🔴 Full Board', cls: 'fullboard', label: 'แบบเต็มคณะ (Full board review)' }\n    };\n\n    /**\n     * คืน HTML badge ประเภทการพิจารณา\n     * @param {string} project_type\n     * @param {string} [projectCode] - ถ้าระบุ (และเป็น admin) จะแสดงปุ่มตั้งค่า\n     */\n    function reviewTypeBadge(project_type, projectCode) {\n      var pType = String(project_type || '').trim().toLowerCase();\n      var info  = REVIEW_TYPE_MAP[pType];\n      var badge = info\n        ? '<span class="review-type-badge ' + info.cls + '" title="' + esc(info.label) + '">' + info.badge + '</span>'\n        : '<span class="review-type-badge unknown">❓ ไม่ระบุ</span>';\n\n      if (projectCode && S._isAdmin) {\n        badge += ' <button class="btn btn-sm btn-outline" style="font-size:10px;padding:1px 6px;vertical-align:middle"'\n          + ' onclick="openSetReviewTypeModal(\'' + escAttr(projectCode) + '\',\'' + pType + '\')"'\n          + ' title="ตั้งค่าประเภทการพิจารณา">✏️</button>';\n      }\n      return badge;\n    }\n\n    var _srtCurrentCode  = '';\n    var _srtSelectedType = '';\n\n    /** เปิด modal ตั้งค่าประเภทการพิจารณา */\n    function openSetReviewTypeModal(projectCode, currentType) {\n      _srtCurrentCode  = projectCode;\n      _srtSelectedType = currentType || '';\n\n      var el = document.getElementById('srt-project-code');\n      if (el) el.textContent = projectCode;\n\n      // reset all options\n      ['exempt', 'expedited', 'fullboard'].forEach(function(t) {\n        var card = document.getElementById('srt-opt-' + t);\n        if (card) {\n          card.classList.remove('selected');\n          card.style.borderColor = '';\n          card.style.background  = '';\n          var inp = card.querySelector('input[type="radio"]');\n          if (inp) inp.checked = false;\n        }\n      });\n\n      if (currentType && document.getElementById('srt-opt-' + currentType)) {\n        selectReviewType(currentType);\n      }\n\n      openModal('modal-set-review-type');\n    }\n\n    /** เลือกและ highlight ตัวเลือก */\n    function selectReviewType(type) {\n      _srtSelectedType = type;\n      ['exempt', 'expedited', 'fullboard'].forEach(function(t) {\n        var card = document.getElementById('srt-opt-' + t);\n        if (!card) return;\n        var sel = (t === type);\n        card.classList.toggle('selected', sel);\n        var inp = card.querySelector('input[type="radio"]');\n        if (inp) inp.checked = sel;\n      });\n    }\n\n    /** บันทึกประเภทการพิจารณา */\n    function doSetReviewType() {\n      if (!_srtCurrentCode)   { showToast('ไม่พบรหัสโครงการ', 'error'); return; }\n      if (!_srtSelectedType)  { showToast('กรุณาเลือกประเภทการพิจารณา', 'error'); return; }\n\n      var btn = document.getElementById('srt-save-btn');\n      btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังบันทึก...';\n\n      google.script.run\n        .withSuccessHandler(function(res) {\n          btn.disabled = false; btn.innerHTML = '💾 บันทึก';\n          if (res && res.success) {\n            closeModal('modal-set-review-type');\n            showToast('บันทึกประเภทการพิจารณา: ' + (res.typeLabel || _srtSelectedType));\n            if (typeof loadStaffProjectsData === 'function') loadStaffProjectsData();\n          } else {\n            showToast((res && res.message) || 'เกิดข้อผิดพลาด', 'error');\n          }\n        })\n        .withFailureHandler(function(e) {\n          btn.disabled = false; btn.innerHTML = '💾 บันทึก';\n          showToast(e.message || 'เกิดข้อผิดพลาด', 'error');\n        })\n        .setProjectType(S.user.sessionId, _srtCurrentCode, _srtSelectedType, S.user.username);\n    }\n\n\n    // ============================================================\n    //  FR.01 Functions\n    // ============================================================\n    var _fr01FileIds = [];\n    var _fr01ProjectCode = '';\n\n    function openFr01Modal(projectCode) {\n      _fr01FileIds = [];\n      _fr01ProjectCode = projectCode;\n      ['fr01-project-code','fr01-approved-date','fr01-title-th','fr01-title-en',\n       'fr01-researcher','fr01-phone','fr01-email','fr01-address','fr01-sponsor',\n       'fr01-required','fr01-consented','fr01-screenfail','fr01-withdrew',\n       'fr01-dead','fr01-active','fr01-followup','fr01-completed',\n       'fr01-summary','fr01-ec-note',\n       'fr01-sign-day','fr01-sign-month','fr01-sign-year','fr01-round-no','fr01-sign-date2'\n      ].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });\n      document.querySelectorAll('[name^="fr01-"]').forEach(function(r) { r.checked = false; });\n      document.getElementById('fr01-file-list').innerHTML = '';\n      document.getElementById('fr01-conducted-section').style.display = 'block';\n      document.getElementById('fr01-project-code').value = projectCode;\n      var sel = document.getElementById('rpt-project-select');\n      var opt = sel ? sel.options[sel.selectedIndex] : null;\n      if (opt) { document.getElementById('fr01-title-th').value = opt.getAttribute('data-title') || ''; }\n      if (S && S.user) {\n        document.getElementById('fr01-researcher').value = S.user.name    || '';\n        document.getElementById('fr01-email').value      = S.user.email   || '';\n        document.getElementById('fr01-phone').value      = S.user.phone   || '';\n        document.getElementById('fr01-address').value    = S.user.faculty || '';\n      }\n      var round = 1;\n      if (typeof _allReports !== 'undefined' && Array.isArray(_allReports)) {\n        round = _allReports.filter(function(r) {\n          return r.project_code === projectCode && r.report_type === 'closure';\n        }).length + 1;\n      }\n      document.getElementById('fr01-round-no').value = String(round);\n      var today = new Date();\n      var dd = String(today.getDate()).padStart(2,'0');\n      var mth = ['\u0e21\u0e01\u0e23\u0e32\u0e04\u0e21','\u0e01\u0e38\u0e21\u0e20\u0e32\u0e1e\u0e31\u0e19\u0e18\u0e4c','\u0e21\u0e35\u0e19\u0e32\u0e04\u0e21','\u0e40\u0e21\u0e29\u0e32\u0e22\u0e19',\n                  '\u0e1e\u0e24\u0e29\u0e20\u0e32\u0e04\u0e21','\u0e21\u0e34\u0e16\u0e38\u0e19\u0e32\u0e22\u0e19','\u0e01\u0e23\u0e01\u0e0e\u0e32\u0e04\u0e21','\u0e2a\u0e34\u0e07\u0e2b\u0e32\u0e04\u0e21',\n                  '\u0e01\u0e31\u0e19\u0e22\u0e32\u0e22\u0e19','\u0e15\u0e38\u0e25\u0e32\u0e04\u0e21','\u0e1e\u0e24\u0e28\u0e08\u0e34\u0e01\u0e32\u0e22\u0e19','\u0e18\u0e31\u0e19\u0e27\u0e32\u0e04\u0e21'];\n      document.getElementById('fr01-sign-day').value   = dd;\n      document.getElementById('fr01-sign-month').value = mth[today.getMonth()];\n      document.getElementById('fr01-sign-year').value  = String(today.getFullYear() + 543);\n      document.getElementById('fr01-sign-date2').value = today.toISOString().slice(0,10);\n      openModal('modal-fr01');\n    }\n\n    function fr01ToggleConducted() {\n      var yes = document.getElementById('fr01-cond-yes');\n      document.getElementById('fr01-conducted-section').style.display = (yes && yes.checked) ? 'block' : 'none';\n    }\n\n    function handleFr01FileUpload(input) {\n      var listEl = document.getElementById('fr01-file-list');\n      Array.from(input.files).forEach(function(file) {\n        if (file.size > 10 * 1024 * 1024) { showToast('\u0e44\u0e1f\u0e25\u0e4c ' + file.name + ' \u0e43\u0e2b\u0e0d\u0e48\u0e40\u0e01\u0e34\u0e19 10MB', 'error'); return; }\n        var row = document.createElement('div'); row.className = 'file-item';\n        row.innerHTML = '<div style="font-size:13px">&#128206; ' + esc(file.name) + ' <span class="spin-sm dark" style="width:14px;height:14px;display:inline-block"></span></div>';\n        listEl.appendChild(row);\n        var reader = new FileReader();\n        reader.onload = function(ev) {\n          google.script.run\n            .withSuccessHandler(function(r) {\n              if (r && r.success) {\n                _fr01FileIds.push(r.fileId);\n                row.innerHTML = '<div style="font-size:13px">&#9989; ' + esc(file.name) + ' <small>(' + formatFileSize(file.size) + ')</small></div>'\n                  + '<div style="display:flex;gap:6px">'\n                  + (r.fileUrl ? '<a href="' + esc(r.fileUrl) + '" target="_blank" class="btn btn-sm btn-outline">&#128065;</a>' : '')\n                  + '<button class="btn btn-sm btn-danger" onclick="removeFr01File(\'' + escAttr(r.fileId) + '\',this)">&#128465;</button></div>';\n              } else {\n                row.innerHTML = '<div style="font-size:13px;color:var(--red)">&#10060; ' + esc(file.name) + '</div>';\n              }\n            })\n            .withFailureHandler(function(e) {\n              row.innerHTML = '<div style="color:var(--red);font-size:13px">&#10060; ' + esc(e.message||'\u0e2d\u0e31\u0e1b\u0e42\u0e2b\u0e25\u0e14\u0e25\u0e49\u0e21\u0e40\u0e2b\u0e25\u0e27') + '</div>';\n            })\n            .uploadFileSecure(ev.target.result.split(',')[1], file.name, file.type, _fr01ProjectCode, S.user.username, 'research_report_closure');\n        };\n        reader.readAsDataURL(file);\n      });\n      input.value = '';\n    }\n\n    function removeFr01File(fileId, btn) {\n      var idx = _fr01FileIds.indexOf(fileId);\n      if (idx > -1) _fr01FileIds.splice(idx, 1);\n      btn.closest('.file-item').remove();\n    }\n\n    function printFr01() {\n      document.querySelectorAll('.fr01-no-print').forEach(function(el) {\n        el.setAttribute('data-pd', el.style.display || '');\n        el.style.display = 'none';\n      });\n      window.print();\n      setTimeout(function() {\n        document.querySelectorAll('.fr01-no-print').forEach(function(el) {\n          el.style.display = el.getAttribute('data-pd') || '';\n        });\n      }, 800);\n    }\n\n    function closeFr01Modal() {\n      closeModal('modal-fr01');\n      document.querySelectorAll('.report-type-card').forEach(function(c) { c.classList.remove('selected'); });\n      document.getElementById('rpt-type-selected').value = '';\n      _selectedReportType = '';\n    }\n\n    function doSubmitFr01() {\n      var projectCode = _fr01ProjectCode;\n      if (!projectCode) { showToast('\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e23\u0e2b\u0e31\u0e2a\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23', 'error'); return; }\n      var conducted = document.querySelector('input[name="fr01-conducted"]:checked');\n      if (!conducted) { showToast('\u0e01\u0e23\u0e38\u0e13\u0e32\u0e23\u0e30\u0e1a\u0e38\u0e27\u0e48\u0e32\u0e44\u0e14\u0e49\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23\u0e27\u0e34\u0e08\u0e31\u0e22\u0e41\u0e25\u0e49\u0e27\u0e2b\u0e23\u0e37\u0e2d\u0e44\u0e21\u0e48', 'error'); return; }\n      var summary = document.getElementById('fr01-summary').value.trim();\n      if (!summary) { showToast('\u0e01\u0e23\u0e38\u0e13\u0e32\u0e01\u0e23\u0e2d\u0e01\u0e2a\u0e23\u0e38\u0e1b\u0e1c\u0e25\u0e01\u0e32\u0e23\u0e27\u0e34\u0e08\u0e31\u0e22 (\u0e02\u0e49\u0e2d 5)', 'error'); return; }\n      function rVal(name) { var el = document.querySelector('input[name="'+name+'"]:checked'); return el ? el.value : ''; }\n      var formData = {\n        conductedResearch: conducted.value,\n        participants: {\n          required:   document.getElementById('fr01-required').value   || '0',\n          consented:  document.getElementById('fr01-consented').value  || '0',\n          screenFail: document.getElementById('fr01-screenfail').value || '0',\n          withdrew:   document.getElementById('fr01-withdrew').value   || '0',\n          dead:       document.getElementById('fr01-dead').value       || '0',\n          active:     document.getElementById('fr01-active').value     || '0',\n          followUp:   document.getElementById('fr01-followup').value   || '0',\n          completed:  document.getElementById('fr01-completed').value  || '0'\n        },\n        sae:           rVal('fr01-sae'),\n        unanticipated: rVal('fr01-unanticipated'),\n        violation:     rVal('fr01-violation'),\n        deviation:     rVal('fr01-deviation'),\n        piChange:      rVal('fr01-pi-change'),\n        docChange:     rVal('fr01-doc-change'),\n        complaint:     rVal('fr01-complaint-r'),\n        newKnowledge:  rVal('fr01-new-knowledge'),\n        riskBenefit:   rVal('fr01-risk-benefit'),\n        media:         rVal('fr01-media'),\n        summary:       summary,\n        approvedDate:  document.getElementById('fr01-approved-date').value,\n        titleTh:       document.getElementById('fr01-title-th').value,\n        titleEn:       document.getElementById('fr01-title-en').value,\n        researcher:    document.getElementById('fr01-researcher').value,\n        phone:         document.getElementById('fr01-phone').value,\n        email:         document.getElementById('fr01-email').value,\n        address:       document.getElementById('fr01-address').value,\n        sponsor:       document.getElementById('fr01-sponsor').value,\n        roundNo:       document.getElementById('fr01-round-no').value,\n        signDate:      document.getElementById('fr01-sign-date2').value\n      };\n      var ecNote = document.getElementById('fr01-ec-note').value;\n      var noteText = '[FR.01]\n' + (ecNote ? ecNote + '\n' : '') + '---\n' + JSON.stringify(formData, null, 2);\n      var btn = document.getElementById('fr01-submit-btn');\n      btn.disabled = true;\n      btn.innerHTML = '<span class="spin-sm"></span> \u0e01\u0e33\u0e25\u0e31\u0e07\u0e22\u0e37\u0e48\u0e19...';\n      google.script.run\n        .withSuccessHandler(function(res) {\n          btn.disabled = false;\n          btn.textContent = '\u0e22\u0e37\u0e48\u0e19\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19\u0e1b\u0e34\u0e14\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23';\n          if (res && res.success) {\n            closeModal('modal-fr01');\n            closeModal('modal-submit-report');\n            showToast('\u0e22\u0e37\u0e48\u0e19\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19\u0e1b\u0e34\u0e14\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23 (FR.01) \u0e04\u0e23\u0e31\u0e49\u0e07\u0e17\u0e35\u0e48 ' + res.round + ' \u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08');\n            if (typeof loadMyReports === 'function') loadMyReports();\n            if (typeof loadApprovedProjectsForReporting === 'function') loadApprovedProjectsForReporting();\n          } else {\n            showToast('\u0e40\u0e01\u0e34\u0e14\u0e02\u0e49\u0e2d\u0e1c\u0e34\u0e14\u0e1e\u0e25\u0e32\u0e14: ' + ((res && res.message) || ''), 'error');\n          }\n        })\n        .withFailureHandler(function(e) {\n          btn.disabled = false;\n          btn.textContent = '\u0e22\u0e37\u0e48\u0e19\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19\u0e1b\u0e34\u0e14\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23';\n          showToast('\u0e40\u0e01\u0e34\u0e14\u0e02\u0e49\u0e2d\u0e1c\u0e34\u0e14\u0e1e\u0e25\u0e32\u0e14: ' + (e.message || ''), 'error');\n        })\n        .submitResearchReport({\n          projectCode:    projectCode,\n          reportType:     'closure',\n          callerUsername: S.user.username,\n          fileIds:        _fr01FileIds.slice(),\n          note:           noteText,\n          expiryDate:     ''\n        });\n    }\n\n    '</script>
+    function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'\x22').replace(/'/g,'&#39;'); }
+    function escAttr(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+    function val(id){ var el=document.getElementById(id); return el?el.value:''; }
+    function setText(id,v){ var el=document.getElementById(id); if(el) el.textContent=v; }
+    function show(id,d){ var el=document.getElementById(id); if(el) el.style.display=d||'block'; }
+    function hide(id){ var el=document.getElementById(id); if(el) el.style.display='none'; }
+    function setBadge(id,count){ var el=document.getElementById(id); if(!el) return; if(count>0){ el.textContent=count; el.style.display='inline-flex'; } else el.style.display='none'; var bnMap={'badge-accept':'bn-badge-accept','badge-evaluate':'bn-badge-evaluate'}; if(bnMap[id]){ var bn=document.getElementById(bnMap[id]); if(bn){ bn.textContent=count; bn.style.display=count>0?'inline-block':'none'; } } }
+    function formatDate(v){ if(!v) return '-'; try { return new Date(v).toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'}); } catch(e){ return String(v); } }
+    function pillStatus(s){
+      var map = {
+  'ผ่านตรวจเอกสาร':    'pill-green',
+  'เอกสารไม่ครบ':       'pill-red',
+  'รับรองมีข้อแก้ไข':   'pill-orange',
+  'รอแจ้งผล':           'pill-blue',
+  'รอตรวจโดยแอดมิน':    'pill-purple',
+  'ปิดโครงการแล้ว':     'pill-gray',
+  'ต่ออายุแล้ว':         'pill-green',
+  'ผ่านการพิจารณา':     'pill-green',
+  'ต้องแก้ไข':           'pill-red',
+  'ส่งแก้ไขแล้ว':        'pill-orange',
+  'auto':                'pill-green',
+  'รอตอบรับ':            'pill-orange',
+  'ตอบรับ':              'pill-green',
+  'ปฏิเสธ':              'pill-red',
+  'รอประเมิน':           'pill-blue',
+  'ส่งประเมินแล้ว':      'pill-green',
+  'รอตรวจสอบ':           'pill-orange',
+  'ตรวจสอบแล้ว':         'pill-green',
+  'รอผลพิจารณา':         'pill-blue',
+  'รับรอง':              'pill-green',
+  'ไม่รับรอง':           'pill-red',
+  'รอพิจารณา':           'pill-orange',
+  'active':              'pill-green',
+  'inactive':            'pill-red',
+  'pending':             'pill-orange'
+};
+      return '<span class="pill '+(map[String(s||'')]||'pill-gray')+'">'+esc(s)+'</span>';
+    }
+    function showEl(id, visible) { 
+  var el = document.getElementById(id); 
+  if (el) el.style.display = visible ? 'flex' : 'none'; 
+}
+    function checkStrength(pw,fillId){ var fid=fillId||'strength-fill'; var score=0; if(pw.length>=8)score++; if(pw.length>=12)score++; if(/[A-Z]/.test(pw))score++; if(/[0-9]/.test(pw))score++; if(/[^A-Za-z0-9]/.test(pw))score++; var fills=['','#e53935','#fb8c00','#f0a500','#43a047','#2d8a52']; var labels=['','อ่อนมาก','อ่อน','ปานกลาง','แข็งแรง','แข็งแรงมาก']; var el=document.getElementById(fid); if(el){ el.style.width=(score*20)+'%'; el.style.background=fills[score]||fills[1]; } var sl=document.getElementById('strength-label'); if(sl){ sl.textContent=labels[score]||''; sl.style.color=fills[score]||fills[1]; } }
+    function checkUsernameFormat(inp){ var hint=document.getElementById('username-hint'); if(!hint) return; var v=inp.value; if(!v){ hint.textContent='ใช้ตัวอักษร a-z, 0-9 ความยาว 4-20 ตัว'; hint.style.color=''; return; } if(/^[a-zA-Z0-9_]{4,20}$/.test(v)){ hint.textContent='✅ รูปแบบถูกต้อง'; hint.style.color='var(--navy-main)'; } else { hint.textContent='❌ ใช้ได้เฉพาะ a-z, A-Z, 0-9, _'; hint.style.color='var(--red)'; } }
+    function togglePw(inputId,btn){ var inp=document.getElementById(inputId); if(!inp) return; inp.type=inp.type==='password'?'text':'password'; btn.textContent=inp.type==='password'?'👁':'🙈'; }
+    function showToast(msg,type){ var c=document.getElementById('toast-container'); var t=document.createElement('div'); t.className='toast'+(type==='error'?' error':type==='warning'?' warning':''); t.textContent=(type==='error'?'❌ ':type==='warning'?'⚠ ':'✅ ')+msg; c.appendChild(t); setTimeout(function(){ t.remove(); },3500); }
+    document.addEventListener('keydown',function(e){ if(e.key==='Enter'&&document.getElementById('login-page').style.display==='flex') doLogin(); });
+
+    // ═══════════════════════════════════════════════════════════════
+    // ฟีเจอร์ใหม่ 1: ส่งอีเมลแจ้งผู้ใช้ (admin)
+    // ═══════════════════════════════════════════════════════════════
+
+    /** เปิด modal ส่งอีเมลแจ้งผู้ใช้ */
+    function openSendEmailModal(username) {
+      var u = (S.allUsers || []).find(function(x) { return x.username === username; });
+      if (!u) { showToast('ไม่พบข้อมูลผู้ใช้', 'error'); return; }
+
+      document.getElementById('send-email-title').textContent = '📧 ส่งอีเมลแจ้ง: ' + esc(username);
+      document.getElementById('send-email-target').textContent = u.name || username;
+      document.getElementById('send-email-addr').textContent   = u.email ? '(' + u.email + ')' : '(ไม่มีอีเมล)';
+      document.getElementById('email-message').value           = '';
+      document.getElementById('email-subject-pw').value        = '[EC Sansai] กรุณาตั้งรหัสผ่านของท่าน';
+      document.getElementById('email-subject-gen').value       = '';
+      document.getElementById('include-reset-link').checked    = true;
+
+      // reset ประเภท → password_change
+      var rdoPw = document.querySelector('input[name="email-type"][value="password_change"]');
+      if (rdoPw) { rdoPw.checked = true; }
+      toggleEmailType();
+
+      document.getElementById('modal-send-email').dataset.targetUsername = username;
+      openModal('modal-send-email');
+    }
+
+    /** สลับ UI ตามประเภทอีเมล */
+    function toggleEmailType() {
+      var checked = document.querySelector('input[name="email-type"]:checked');
+      var type = checked ? checked.value : 'password_change';
+      var isPw = (type === 'password_change');
+
+      var pwOpts    = document.getElementById('pw-email-options');
+      var genSubj   = document.getElementById('email-subject-gen');
+      var msgLabelPw  = document.getElementById('msg-label-pw');
+      var msgLabelGen = document.getElementById('msg-label-gen');
+      var msgArea   = document.getElementById('email-message');
+      var etypePw   = document.getElementById('etype-pw-card');
+      var etypeGen  = document.getElementById('etype-gen-card');
+
+      if (pwOpts)    pwOpts.style.display    = isPw ? '' : 'none';
+      if (genSubj)   genSubj.style.display   = isPw ? 'none' : '';
+      if (msgLabelPw)  msgLabelPw.style.display  = isPw ? '' : 'none';
+      if (msgLabelGen) msgLabelGen.style.display  = isPw ? 'none' : '';
+      if (msgArea)   msgArea.placeholder = isPw
+        ? 'ข้อความเพิ่มเติมจากแอดมิน (ไม่บังคับ)...'
+        : 'พิมพ์ข้อความที่ต้องการส่งถึงผู้ใช้ (บังคับ)...';
+      if (etypePw)  etypePw.classList.toggle('selected', isPw);
+      if (etypeGen) etypeGen.classList.toggle('selected', !isPw);
+    }
+
+    /** ส่งอีเมลจริง */
+    function doSendUserEmail() {
+      var modalEl = document.getElementById('modal-send-email');
+      var targetUsername = modalEl && modalEl.dataset.targetUsername;
+      if (!targetUsername) { showToast('ไม่พบ username', 'error'); return; }
+
+      var checked = document.querySelector('input[name="email-type"]:checked');
+      var type    = checked ? checked.value : 'password_change';
+      var message = document.getElementById('email-message').value.trim();
+
+      if (type === 'general' && !message) {
+        showToast('กรุณากรอกข้อความก่อนส่ง', 'error'); return;
+      }
+
+      var payload = {
+        targetUsername:   targetUsername,
+        type:             type,
+        message:          message,
+        includeResetLink: type === 'password_change'
+          ? document.getElementById('include-reset-link').checked
+          : false
+      };
+
+      if (type === 'password_change') {
+        var pwSubj = document.getElementById('email-subject-pw').value.trim();
+        if (pwSubj) payload.subject = pwSubj;
+      } else {
+        var genSubj = document.getElementById('email-subject-gen').value.trim();
+        payload.subject = genSubj || '[EC Sansai] แจ้งจากระบบ EC Online Submission';
+      }
+
+      var btn = document.getElementById('send-email-btn');
+      btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังส่ง...';
+
+      getM().sendUserNotificationEmail(payload, S.user.username)
+        .then(function(res) {
+          btn.disabled = false; btn.innerHTML = '📧 ส่งอีเมล';
+          if (res && res.success) {
+            closeModal('modal-send-email');
+            showToast('ส่งอีเมลถึง ' + targetUsername + ' สำเร็จ');
+          } else {
+            showToast((res && res.message) || 'เกิดข้อผิดพลาด', 'error');
+          }
+        })
+        .catch(function(e) {
+          btn.disabled = false; btn.innerHTML = '📧 ส่งอีเมล';
+          showToast((e && e.message) || 'เกิดข้อผิดพลาด', 'error');
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ฟีเจอร์ใหม่ 2: badge + ตั้งค่าประเภทการพิจารณา
+    // ═══════════════════════════════════════════════════════════════
+
+    var REVIEW_TYPE_MAP = {
+      'exempt':    { badge: '🟢 Exempt',     cls: 'exempt',    label: 'การยกเว้น (Exempt review)' },
+      'expedited': { badge: '🟡 Expedited',  cls: 'expedited', label: 'แบบเร่งด่วน (Expedited review)' },
+      'fullboard': { badge: '🔴 Full Board', cls: 'fullboard', label: 'แบบเต็มคณะ (Full board review)' }
+    };
+
+    /**
+     * คืน HTML badge ประเภทการพิจารณา
+     * @param {string} project_type
+     * @param {string} [projectCode] - ถ้าระบุ (และเป็น admin) จะแสดงปุ่มตั้งค่า
+     */
+    function reviewTypeBadge(project_type, projectCode) {
+      var pType = String(project_type || '').trim().toLowerCase();
+      var info  = REVIEW_TYPE_MAP[pType];
+      var badge = info
+        ? '<span class="review-type-badge ' + info.cls + '" title="' + esc(info.label) + '">' + info.badge + '</span>'
+        : '<span class="review-type-badge unknown">❓ ไม่ระบุ</span>';
+
+      if (projectCode && S._isAdmin) {
+        badge += ' <button class="btn btn-sm btn-outline" style="font-size:10px;padding:1px 6px;vertical-align:middle"'
+          + ' onclick="openSetReviewTypeModal(\'' + escAttr(projectCode) + '\',\'' + pType + '\')"'
+          + ' title="ตั้งค่าประเภทการพิจารณา">✏️</button>';
+      }
+      return badge;
+    }
+
+    var _srtCurrentCode  = '';
+    var _srtSelectedType = '';
+
+    /** เปิด modal ตั้งค่าประเภทการพิจารณา */
+    function openSetReviewTypeModal(projectCode, currentType) {
+      _srtCurrentCode  = projectCode;
+      _srtSelectedType = currentType || '';
+
+      var el = document.getElementById('srt-project-code');
+      if (el) el.textContent = projectCode;
+
+      // reset all options
+      ['exempt', 'expedited', 'fullboard'].forEach(function(t) {
+        var card = document.getElementById('srt-opt-' + t);
+        if (card) {
+          card.classList.remove('selected');
+          card.style.borderColor = '';
+          card.style.background  = '';
+          var inp = card.querySelector('input[type="radio"]');
+          if (inp) inp.checked = false;
+        }
+      });
+
+      if (currentType && document.getElementById('srt-opt-' + currentType)) {
+        selectReviewType(currentType);
+      }
+
+      openModal('modal-set-review-type');
+    }
+
+    /** เลือกและ highlight ตัวเลือก */
+    function selectReviewType(type) {
+      _srtSelectedType = type;
+      ['exempt', 'expedited', 'fullboard'].forEach(function(t) {
+        var card = document.getElementById('srt-opt-' + t);
+        if (!card) return;
+        var sel = (t === type);
+        card.classList.toggle('selected', sel);
+        var inp = card.querySelector('input[type="radio"]');
+        if (inp) inp.checked = sel;
+      });
+    }
+
+    /** บันทึกประเภทการพิจารณา */
+    function doSetReviewType() {
+      if (!_srtCurrentCode)   { showToast('ไม่พบรหัสโครงการ', 'error'); return; }
+      if (!_srtSelectedType)  { showToast('กรุณาเลือกประเภทการพิจารณา', 'error'); return; }
+
+      var btn = document.getElementById('srt-save-btn');
+      btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังบันทึก...';
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          btn.disabled = false; btn.innerHTML = '💾 บันทึก';
+          if (res && res.success) {
+            closeModal('modal-set-review-type');
+            showToast('บันทึกประเภทการพิจารณา: ' + (res.typeLabel || _srtSelectedType));
+            if (typeof loadStaffProjectsData === 'function') loadStaffProjectsData();
+          } else {
+            showToast((res && res.message) || 'เกิดข้อผิดพลาด', 'error');
+          }
+        })
+        .withFailureHandler(function(e) {
+          btn.disabled = false; btn.innerHTML = '💾 บันทึก';
+          showToast(e.message || 'เกิดข้อผิดพลาด', 'error');
+        })
+        .setProjectType(S.user.sessionId, _srtCurrentCode, _srtSelectedType, S.user.username);
+    }
+
+
+    // ============================================================
+    //  FR.01 Functions
+    // ============================================================
+    var _fr01FileIds = [];
+    var _fr01ProjectCode = '';
+
+    function openFr01Modal(projectCode) {
+      _fr01FileIds = [];
+      _fr01ProjectCode = projectCode;
+      ['fr01-project-code','fr01-approved-date','fr01-title-th','fr01-title-en',
+       'fr01-researcher','fr01-phone','fr01-email','fr01-address','fr01-sponsor',
+       'fr01-required','fr01-consented','fr01-screenfail','fr01-withdrew',
+       'fr01-dead','fr01-active','fr01-followup','fr01-completed',
+       'fr01-summary','fr01-ec-note',
+       'fr01-sign-day','fr01-sign-month','fr01-sign-year','fr01-round-no','fr01-sign-date2'
+      ].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+      document.querySelectorAll('[name^="fr01-"]').forEach(function(r) { r.checked = false; });
+      document.getElementById('fr01-file-list').innerHTML = '';
+      document.getElementById('fr01-conducted-section').style.display = 'block';
+      document.getElementById('fr01-project-code').value = projectCode;
+      var sel = document.getElementById('rpt-project-select');
+      var opt = sel ? sel.options[sel.selectedIndex] : null;
+      if (opt) { document.getElementById('fr01-title-th').value = opt.getAttribute('data-title') || ''; }
+      if (S && S.user) {
+        document.getElementById('fr01-researcher').value = S.user.name    || '';
+        document.getElementById('fr01-email').value      = S.user.email   || '';
+        document.getElementById('fr01-phone').value      = S.user.phone   || '';
+        document.getElementById('fr01-address').value    = S.user.faculty || '';
+      }
+      var round = 1;
+      if (typeof _allReports !== 'undefined' && Array.isArray(_allReports)) {
+        round = _allReports.filter(function(r) {
+          return r.project_code === projectCode && r.report_type === 'closure';
+        }).length + 1;
+      }
+      document.getElementById('fr01-round-no').value = String(round);
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2,'0');
+      var mth = ['\u0e21\u0e01\u0e23\u0e32\u0e04\u0e21','\u0e01\u0e38\u0e21\u0e20\u0e32\u0e1e\u0e31\u0e19\u0e18\u0e4c','\u0e21\u0e35\u0e19\u0e32\u0e04\u0e21','\u0e40\u0e21\u0e29\u0e32\u0e22\u0e19',
+                  '\u0e1e\u0e24\u0e29\u0e20\u0e32\u0e04\u0e21','\u0e21\u0e34\u0e16\u0e38\u0e19\u0e32\u0e22\u0e19','\u0e01\u0e23\u0e01\u0e0e\u0e32\u0e04\u0e21','\u0e2a\u0e34\u0e07\u0e2b\u0e32\u0e04\u0e21',
+                  '\u0e01\u0e31\u0e19\u0e22\u0e32\u0e22\u0e19','\u0e15\u0e38\u0e25\u0e32\u0e04\u0e21','\u0e1e\u0e24\u0e28\u0e08\u0e34\u0e01\u0e32\u0e22\u0e19','\u0e18\u0e31\u0e19\u0e27\u0e32\u0e04\u0e21'];
+      document.getElementById('fr01-sign-day').value   = dd;
+      document.getElementById('fr01-sign-month').value = mth[today.getMonth()];
+      document.getElementById('fr01-sign-year').value  = String(today.getFullYear() + 543);
+      document.getElementById('fr01-sign-date2').value = today.toISOString().slice(0,10);
+      openModal('modal-fr01');
+    }
+
+    function fr01ToggleConducted() {
+      var yes = document.getElementById('fr01-cond-yes');
+      document.getElementById('fr01-conducted-section').style.display = (yes && yes.checked) ? 'block' : 'none';
+    }
+
+    function handleFr01FileUpload(input) {
+      var listEl = document.getElementById('fr01-file-list');
+      Array.from(input.files).forEach(function(file) {
+        if (file.size > 10 * 1024 * 1024) { showToast('\u0e44\u0e1f\u0e25\u0e4c ' + file.name + ' \u0e43\u0e2b\u0e0d\u0e48\u0e40\u0e01\u0e34\u0e19 10MB', 'error'); return; }
+        var row = document.createElement('div'); row.className = 'file-item';
+        row.innerHTML = '<div style="font-size:13px">&#128206; ' + esc(file.name) + ' <span class="spin-sm dark" style="width:14px;height:14px;display:inline-block"></span></div>';
+        listEl.appendChild(row);
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          google.script.run
+            .withSuccessHandler(function(r) {
+              if (r && r.success) {
+                _fr01FileIds.push(r.fileId);
+                row.innerHTML = '<div style="font-size:13px">&#9989; ' + esc(file.name) + ' <small>(' + formatFileSize(file.size) + ')</small></div>'
+                  + '<div style="display:flex;gap:6px">'
+                  + (r.fileUrl ? '<a href="' + esc(r.fileUrl) + '" target="_blank" class="btn btn-sm btn-outline">&#128065;</a>' : '')
+                  + '<button class="btn btn-sm btn-danger" onclick="removeFr01File(\'' + escAttr(r.fileId) + '\',this)">&#128465;</button></div>';
+              } else {
+                row.innerHTML = '<div style="font-size:13px;color:var(--red)">&#10060; ' + esc(file.name) + '</div>';
+              }
+            })
+            .withFailureHandler(function(e) {
+              row.innerHTML = '<div style="color:var(--red);font-size:13px">&#10060; ' + esc(e.message||'\u0e2d\u0e31\u0e1b\u0e42\u0e2b\u0e25\u0e14\u0e25\u0e49\u0e21\u0e40\u0e2b\u0e25\u0e27') + '</div>';
+            })
+            .uploadFileSecure(ev.target.result.split(',')[1], file.name, file.type, _fr01ProjectCode, S.user.username, 'research_report_closure');
+        };
+        reader.readAsDataURL(file);
+      });
+      input.value = '';
+    }
+
+    function removeFr01File(fileId, btn) {
+      var idx = _fr01FileIds.indexOf(fileId);
+      if (idx > -1) _fr01FileIds.splice(idx, 1);
+      btn.closest('.file-item').remove();
+    }
+
+    function printFr01() {
+      document.querySelectorAll('.fr01-no-print').forEach(function(el) {
+        el.setAttribute('data-pd', el.style.display || '');
+        el.style.display = 'none';
+      });
+      window.print();
+      setTimeout(function() {
+        document.querySelectorAll('.fr01-no-print').forEach(function(el) {
+          el.style.display = el.getAttribute('data-pd') || '';
+        });
+      }, 800);
+    }
+
+    function closeFr01Modal() {
+      closeModal('modal-fr01');
+      document.querySelectorAll('.report-type-card').forEach(function(c) { c.classList.remove('selected'); });
+      document.getElementById('rpt-type-selected').value = '';
+      _selectedReportType = '';
+    }
+
+    function doSubmitFr01() {
+      var projectCode = _fr01ProjectCode;
+      if (!projectCode) { showToast('\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e23\u0e2b\u0e31\u0e2a\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23', 'error'); return; }
+      var conducted = document.querySelector('input[name="fr01-conducted"]:checked');
+      if (!conducted) { showToast('\u0e01\u0e23\u0e38\u0e13\u0e32\u0e23\u0e30\u0e1a\u0e38\u0e27\u0e48\u0e32\u0e44\u0e14\u0e49\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23\u0e27\u0e34\u0e08\u0e31\u0e22\u0e41\u0e25\u0e49\u0e27\u0e2b\u0e23\u0e37\u0e2d\u0e44\u0e21\u0e48', 'error'); return; }
+      var summary = document.getElementById('fr01-summary').value.trim();
+      if (!summary) { showToast('\u0e01\u0e23\u0e38\u0e13\u0e32\u0e01\u0e23\u0e2d\u0e01\u0e2a\u0e23\u0e38\u0e1b\u0e1c\u0e25\u0e01\u0e32\u0e23\u0e27\u0e34\u0e08\u0e31\u0e22 (\u0e02\u0e49\u0e2d 5)', 'error'); return; }
+      function rVal(name) { var el = document.querySelector('input[name="'+name+'"]:checked'); return el ? el.value : ''; }
+      var formData = {
+        conductedResearch: conducted.value,
+        participants: {
+          required:   document.getElementById('fr01-required').value   || '0',
+          consented:  document.getElementById('fr01-consented').value  || '0',
+          screenFail: document.getElementById('fr01-screenfail').value || '0',
+          withdrew:   document.getElementById('fr01-withdrew').value   || '0',
+          dead:       document.getElementById('fr01-dead').value       || '0',
+          active:     document.getElementById('fr01-active').value     || '0',
+          followUp:   document.getElementById('fr01-followup').value   || '0',
+          completed:  document.getElementById('fr01-completed').value  || '0'
+        },
+        sae:           rVal('fr01-sae'),
+        unanticipated: rVal('fr01-unanticipated'),
+        violation:     rVal('fr01-violation'),
+        deviation:     rVal('fr01-deviation'),
+        piChange:      rVal('fr01-pi-change'),
+        docChange:     rVal('fr01-doc-change'),
+        complaint:     rVal('fr01-complaint-r'),
+        newKnowledge:  rVal('fr01-new-knowledge'),
+        riskBenefit:   rVal('fr01-risk-benefit'),
+        media:         rVal('fr01-media'),
+        summary:       summary,
+        approvedDate:  document.getElementById('fr01-approved-date').value,
+        titleTh:       document.getElementById('fr01-title-th').value,
+        titleEn:       document.getElementById('fr01-title-en').value,
+        researcher:    document.getElementById('fr01-researcher').value,
+        phone:         document.getElementById('fr01-phone').value,
+        email:         document.getElementById('fr01-email').value,
+        address:       document.getElementById('fr01-address').value,
+        sponsor:       document.getElementById('fr01-sponsor').value,
+        roundNo:       document.getElementById('fr01-round-no').value,
+        signDate:      document.getElementById('fr01-sign-date2').value
+      };
+      var ecNote = document.getElementById('fr01-ec-note').value;
+      var noteText = '[FR.01]\n' + (ecNote ? ecNote + '\n' : '') + '---\n' + JSON.stringify(formData, null, 2);
+      var btn = document.getElementById('fr01-submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spin-sm"></span> \u0e01\u0e33\u0e25\u0e31\u0e07\u0e22\u0e37\u0e48\u0e19...';
+      google.script.run
+        .withSuccessHandler(function(res) {
+          btn.disabled = false;
+          btn.textContent = '\u0e22\u0e37\u0e48\u0e19\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19\u0e1b\u0e34\u0e14\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23';
+          if (res && res.success) {
+            closeModal('modal-fr01');
+            closeModal('modal-submit-report');
+            showToast('\u0e22\u0e37\u0e48\u0e19\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19\u0e1b\u0e34\u0e14\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23 (FR.01) \u0e04\u0e23\u0e31\u0e49\u0e07\u0e17\u0e35\u0e48 ' + res.round + ' \u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08');
+            if (typeof loadMyReports === 'function') loadMyReports();
+            if (typeof loadApprovedProjectsForReporting === 'function') loadApprovedProjectsForReporting();
+          } else {
+            showToast('\u0e40\u0e01\u0e34\u0e14\u0e02\u0e49\u0e2d\u0e1c\u0e34\u0e14\u0e1e\u0e25\u0e32\u0e14: ' + ((res && res.message) || ''), 'error');
+          }
+        })
+        .withFailureHandler(function(e) {
+          btn.disabled = false;
+          btn.textContent = '\u0e22\u0e37\u0e48\u0e19\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19\u0e1b\u0e34\u0e14\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23';
+          showToast('\u0e40\u0e01\u0e34\u0e14\u0e02\u0e49\u0e2d\u0e1c\u0e34\u0e14\u0e1e\u0e25\u0e32\u0e14: ' + (e.message || ''), 'error');
+        })
+        .submitResearchReport({
+          projectCode:    projectCode,
+          reportType:     'closure',
+          callerUsername: S.user.username,
+          fileIds:        _fr01FileIds.slice(),
+          note:           noteText,
+          expiryDate:     ''
+        });
+    }
+  </script>
 
     <!-- ============================================================ -->
     <!--  PRIVACY CONSENT BANNER (PDPA)                               -->
