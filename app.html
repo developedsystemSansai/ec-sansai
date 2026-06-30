@@ -6381,9 +6381,9 @@ function renderLineCommitteeTable() {
     var status=linked?'<span style="display:inline-flex;align-items:center;gap:3px;background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600"><span class=\"line-linked-dot\"></span>เชื่อมแล้ว</span>':'<span style="background:#fff8e1;color:#b58a2a;border:1px solid #f0d07a;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600">ยังไม่เชื่อม</span>';
     var un=escAttr(u.username||'');
     return '<tr><td>'+(i+1)+'</td><td><strong>'+esc(u.username||'-')+'</strong></td><td>'+esc(u.name||'-')+'</td><td>'+status+'</td><td style="display:flex;gap:5px">'+
-      '<button class="btn btn-sm" style="background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;font-size:11px" onclick="openLineEditModal(\x27'+un+'\x27)">'+
+      '<button class="btn btn-sm" style="background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;font-size:11px" onclick="openLineEditModal(&apos;'+un+'&apos;)">'+
       (linked?'✏️ แก้ไข ID':'➕ เพิ่ม ID')+'</button>'+
-      (linked?'<button class="btn btn-sm" style="background:#06c755;color:#fff;border:none;font-size:11px" onclick="openLinePushModal(\x27'+un+'\x27)">📲 Push</button>':
+      (linked?'<button class="btn btn-sm" style="background:#06c755;color:#fff;border:none;font-size:11px" onclick="openLinePushModal(&apos;'+un+'&apos;)">📲 Push</button>':
               '<button class="btn btn-sm" disabled style="background:var(--bg);color:var(--border);border:1px solid var(--border);font-size:11px;cursor:not-allowed">📲 Push</button>')+
       '</td></tr>';
   }).join('')+'</tbody></table>';
