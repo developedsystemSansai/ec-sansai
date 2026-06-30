@@ -44,6 +44,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         updateProfile:               function(sid,u,pl)         { return callGAS('updateProfile',              {sessionId:sid, username:u, payload:pl}); },
         changePassword:              function(sid,u,op,np)      { return callGAS('changePassword',             {sessionId:sid, username:u, oldPassword:op, newPassword:np}); },
         getAllUsers:                  function(sid,cu)           { return callGAS('getAllUsers',                 {sessionId:sid, callerUsername:cu}); },
+        getLockedAccounts:            function(sid,cu)           { return callGAS('getLockedAccounts',           {sessionId:sid, callerUsername:cu}); },
+        adminUnlockAccount:           function(sid,cu,tu)        { return callGAS('adminUnlockAccount',          {sessionId:sid, callerUsername:cu, targetUsername:tu}); },
         createUser:                  function(pl,au)            { return callGAS('createUser',                 {payload:pl, adminUsername:au}); },
         updateUser:                  function(pl,au)            { return callGAS('updateUser',                 {payload:pl, adminUsername:au}); },
         deleteUser:                  function(sid,tu,au)        { return callGAS('deleteUser',                 {sessionId:sid, targetUsername:tu, adminUsername:au}); },
@@ -68,6 +70,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         assignProjectMultiCommittee: function(pl,su)            { return callGAS('assignProjectMultiCommittee',{payload:pl, staffUsername:su}); },
         getAssignedProjects:         function(sid,cu)           { return callGAS('getAssignedProjects',       {sessionId:sid, committeeUsername:cu}); },
         getAllAssignmentsOverview:   function(sid,cu)           { return callGAS('getAllAssignmentsOverview', {sessionId:sid, callerUsername:cu}); },
+        adminSkipAcceptanceForAssignment: function(sid,cu,pc,commUser) { return callGAS('adminSkipAcceptanceForAssignment', {sessionId:sid, callerUsername:cu, projectCode:pc, committeeUsername:commUser}); },
         submitEvaluation:            function(pl)               { return callGAS('submitEvaluation',          {payload:pl}); },
         getEvaluationHistory:        function(sid,cu)           { return callGAS('getEvaluationHistory',      {sessionId:sid, committeeUsername:cu}); },
         getCommitteeEvalSummary:     function(pc)               { return callGAS('getCommitteeEvalSummary',   {projectCode:pc}); },
@@ -2243,6 +2246,13 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             </div>
             <div id="accept-new" class="tab-panel active"><div class="table-card"><div class="table-card-header"><h3>โครงการใหม่ที่รอตอบรับ</h3></div><div id="accept-new-table"></div></div></div>
             <div id="accept-cont" class="tab-panel"><div class="table-card"><div class="table-card-header"><h3>โครงการต่อเนื่องที่รอตอบรับ</h3></div><div id="accept-cont-table"></div></div></div>
+            <div id="accept-committee-pending-section" style="display:none;margin-top:16px">
+              <div class="table-card">
+                <div class="table-card-header"><h3>📌 ติดตามการตอบรับของกรรมการ (มอบหมายแล้ว รอกรรมการตอบรับ)</h3></div>
+                <div style="padding:10px 16px 0;font-size:12px;color:var(--text-light)">รายการนี้คือโครงการที่มอบหมายให้กรรมการพิจารณาแล้ว แต่กรรมการยังไม่ได้กดตอบรับในระบบ — แอดมินสามารถกด "ข้ามตอบรับแทน" ได้ในกรณีที่ติดต่อกรรมการแล้วและกรรมการยืนยันด้วยวิธีอื่น (โทร/LINE)</div>
+                <div id="accept-committee-pending-table"></div>
+              </div>
+            </div>
           </div>
 
           <!-- EVALUATE -->
@@ -2703,6 +2713,10 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                 💬 LINE กรรมการ
                 <span class="badge-count" id="badge-line-linked" style="display:none;background:#06c755;margin-left:4px">0</span>
               </button>
+              <button class="tab-btn" onclick="switchUsersTab(this,'users-tab-locked')">
+                🔒 บัญชีถูกล็อค
+                <span class="badge-count" id="badge-locked-accounts" style="display:none;background:#d93025;margin-left:4px">0</span>
+              </button>
             </div>
 
             <!-- Tab: รายชื่อผู้ใช้ -->
@@ -2757,6 +2771,26 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                     </div>
                   </div>
                   <div id="line-committee-table"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab: บัญชีถูกล็อค -->
+            <div id="users-tab-locked" class="tab-panel">
+              <div style="margin-top:14px">
+                <div style="background:linear-gradient(135deg,#d93025,#b1271d);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px;box-shadow:0 2px 12px rgba(217,48,37,.18)">
+                  <div style="font-size:28px;flex-shrink:0">🔒</div>
+                  <div>
+                    <div style="color:#fff;font-weight:700;font-size:14px;margin-bottom:3px">บัญชีที่ถูกล็อคชั่วคราว</div>
+                    <div style="color:rgba(255,255,255,.88);font-size:12px;line-height:1.6">ระบบจะล็อคบัญชีอัตโนมัติ 15 นาที เมื่อใส่รหัสผ่านผิดติดต่อกัน 5 ครั้ง<br>แอดมินสามารถกดปลดล็อคให้ทันทีได้จากที่นี่ โดยไม่ต้องรอครบเวลา</div>
+                  </div>
+                </div>
+                <div class="table-card">
+                  <div class="table-card-header">
+                    <h3>รายชื่อบัญชีที่ถูกล็อคอยู่ขณะนี้</h3>
+                    <button class="btn btn-outline btn-sm" onclick="loadLockedAccounts()">🔄 รีเฟรช</button>
+                  </div>
+                  <div id="locked-accounts-table"></div>
                 </div>
               </div>
             </div>
@@ -4319,6 +4353,31 @@ function showForgotMessage(type, text) {
       if(badge){ badge.textContent=rows.length; badge.style.display=rows.length>0?'inline-flex':'none'; }
       setText('s-accept-new', rows.filter(function(p){return p.project_type!=='cont';}).length);
       setText('s-accept-cont', rows.filter(function(p){return p.project_type==='cont';}).length);
+      _renderCommitteePendingAcceptance();
+    }
+    function _renderCommitteePendingAcceptance(){
+      var sec=document.getElementById('accept-committee-pending-section');
+      if(!sec) return;
+      sec.style.display='block';
+      var pending=(S.assignments||[]).filter(function(r){ return (r.acceptance_status||'รอตอบรับ')==='รอตอบรับ'; });
+      var el=document.getElementById('accept-committee-pending-table'); if(!el) return;
+      if(!pending.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><p>ไม่มีรายการที่ค้างตอบรับ</p></div>'; return; }
+      var html='<table><thead><tr><th>#</th><th>รหัส</th><th>ชื่อโครงการ</th><th>กรรมการ</th><th>มอบหมายเมื่อ</th><th>กำหนดส่ง</th><th>Actions</th></tr></thead><tbody>';
+      pending.forEach(function(r,i){
+        var rc=escAttr(r.project_code||''), cu=escAttr(r.committee_username||'');
+        html+='<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code||'-')+'</strong></td><td>'+esc(r.title_th||'-')+'</td><td>'+esc(r.committee_username||'-')+'</td>'+
+          '<td>'+(r.assigned_date?formatDate(r.assigned_date):'-')+'</td><td>'+(r.deadline?formatDate(r.deadline):'-')+'</td>'+
+          '<td><button class="btn btn-sm btn-accent" onclick="doAdminSkipAcceptance(\''+rc+'\',\''+cu+'\')">⚡ ข้ามตอบรับแทน</button></td></tr>';
+      });
+      el.innerHTML=html+'</tbody></table>';
+    }
+    function doAdminSkipAcceptance(projectCode, committeeUsername){
+      if(!confirm('ยืนยันข้ามขั้นตอนตอบรับแทนกรรมการ "'+committeeUsername+'" สำหรับโครงการ '+projectCode+' ?\n(ใช้เมื่อติดต่อกรรมการแล้วและกรรมการยืนยันด้วยวิธีอื่น)')) return;
+      getM().adminSkipAcceptanceForAssignment(S.user.sessionId, S.user.username, projectCode, committeeUsername)
+        .then(function(res){
+          if(res&&res.success){ showToast('✅ ข้ามตอบรับแทนสำเร็จ'+(res.lineSent?' (แจ้งเตือน LINE แล้ว)':''),'success'); loadAssignments(); }
+          else showToast('ไม่สำเร็จ: '+esc((res||{}).message||''),'error');
+        }).catch(function(e){ showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error'); });
     }
     function _buildVerifyTable(elId, rows){
       var el=document.getElementById(elId); if(!el) return;
@@ -6404,12 +6463,45 @@ function setQAMode(mode) {
 function switchUsersTab(btn, panelId) {
   document.getElementById('users-tab-bar').querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
-  ['users-tab-list','users-tab-line'].forEach(function(id){
+  ['users-tab-list','users-tab-line','users-tab-locked'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.toggle('active', id===panelId);
   });
   var actions=document.getElementById('users-page-actions');
   if(actions) actions.style.display = panelId==='users-tab-list' ? 'flex' : 'none';
   if(panelId==='users-tab-line') renderLineCommitteeTable();
+  if(panelId==='users-tab-locked') loadLockedAccounts();
+}
+
+function loadLockedAccounts(){
+  var el=document.getElementById('locked-accounts-table'); if(!el) return;
+  el.innerHTML='<div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div>';
+  getM().getLockedAccounts(S.user.sessionId, S.user.username)
+    .then(function(res){
+      var rows=(res&&res.success)?(res.data||[]):[];
+      var badge=document.getElementById('badge-locked-accounts');
+      if(badge){ badge.textContent=rows.length; badge.style.display=rows.length>0?'inline-flex':'none'; }
+      if(!rows.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">🔓</div><p>ไม่มีบัญชีที่ถูกล็อคในขณะนี้</p></div>'; return; }
+      var html='<table><thead><tr><th>#</th><th>Username</th><th>ชื่อ</th><th>พยายามผิด</th><th>เหลือเวลา</th><th>Actions</th></tr></thead><tbody>';
+      rows.forEach(function(r,i){
+        var un=escAttr(r.username||'');
+        var u=(S.allUsers||[]).find(function(x){return x.username===r.username;});
+        html+='<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.username||'-')+'</strong></td><td>'+esc(u?u.name:'-')+'</td>'+
+          '<td><span class="pill pill-red">'+r.count+' ครั้ง</span></td>'+
+          '<td><span style="color:#d93025;font-weight:600">⏳ '+r.remaining_minutes+' นาที</span></td>'+
+          '<td><button class="btn btn-sm btn-accent" onclick="unlockAccount(\''+un+'\')">🔓 ปลดล็อคทันที</button></td></tr>';
+      });
+      el.innerHTML=html+'</tbody></table>';
+    })
+    .catch(function(e){ el.innerHTML='<div class="empty-state"><p style="color:var(--red)">โหลดไม่สำเร็จ: '+esc(e.message||'')+'</p></div>'; });
+}
+
+function unlockAccount(username){
+  if(!confirm('ยืนยันปลดล็อคบัญชี "'+username+'" ทันที?')) return;
+  getM().adminUnlockAccount(S.user.sessionId, S.user.username, username)
+    .then(function(res){
+      if(res&&res.success){ showToast('✅ ปลดล็อคบัญชีสำเร็จ','success'); loadLockedAccounts(); }
+      else showToast('ไม่สำเร็จ: '+esc((res||{}).message||''),'error');
+    }).catch(function(e){ showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error'); });
 }
 
 function getCommitteeUsers_() {
@@ -6528,7 +6620,7 @@ function doLinePushSingle() {
   getM().pushLineToUser(S.user.sessionId,S.user.username,username,title,body_,btnType,atts)
     .then(function(res){
       btn.disabled=false; btn.textContent='📲 ส่ง LINE';
-      if(res&&res.success){ showToast('✅ ส่ง LINE สำเร็จ','success'); _linePushFiles=[]; closeModal('modal-line-push'); }
+      if(res&&res.success){ showToast(res.filesTotal&&res.filesAttached<res.filesTotal?('⚠️ ส่งสำเร็จ แต่แนบไฟล์ได้ '+res.filesAttached+'/'+res.filesTotal+' ไฟล์'):'✅ ส่ง LINE สำเร็จ', res.filesTotal&&res.filesAttached<res.filesTotal?'error':'success'); _linePushFiles=[]; closeModal('modal-line-push'); }
       else showToast('ส่งไม่สำเร็จ: '+esc((res||{}).message||''),'error');
     }).catch(function(e){btn.disabled=false;btn.textContent='📲 ส่ง LINE';showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error');});
 }
