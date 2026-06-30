@@ -67,6 +67,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         getCommitteeUsers:           function(cu)               { return callGAS('getCommitteeUsers',         {callerUsername:cu}); },
         assignProjectMultiCommittee: function(pl,su)            { return callGAS('assignProjectMultiCommittee',{payload:pl, staffUsername:su}); },
         getAssignedProjects:         function(sid,cu)           { return callGAS('getAssignedProjects',       {sessionId:sid, committeeUsername:cu}); },
+        getAllAssignmentsOverview:   function(sid,cu)           { return callGAS('getAllAssignmentsOverview', {sessionId:sid, callerUsername:cu}); },
         submitEvaluation:            function(pl)               { return callGAS('submitEvaluation',          {payload:pl}); },
         getEvaluationHistory:        function(sid,cu)           { return callGAS('getEvaluationHistory',      {sessionId:sid, committeeUsername:cu}); },
         getCommitteeEvalSummary:     function(pc)               { return callGAS('getCommitteeEvalSummary',   {projectCode:pc}); },
@@ -4253,6 +4254,17 @@ function showForgotMessage(type, text) {
     // ASSIGNMENTS (Committee)
     // ════════════════════════
     function loadAssignments(){
+      if (S._isAdmin || S._isStaff) {
+        google.script.run
+          .withSuccessHandler(function(res){
+            S.assignments=(res&&res.success)?(res.data||[]):[];
+            _renderCommitteeView();
+            _updateCommitteeBadges();
+          })
+          .withFailureHandler(function(){ S.assignments=[]; _renderCommitteeView(); })
+          .getAllAssignmentsOverview(S.user.sessionId, S.user.username);
+        return;
+      }
       google.script.run
         .withSuccessHandler(function(res){
           S.assignments=(res&&res.success)?(res.data||[]):[];
@@ -4305,11 +4317,12 @@ function showForgotMessage(type, text) {
     function _buildSimpleTable(elId,rows,mode){
       var el=document.getElementById(elId); if(!el) return;
       if(!rows.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><p>ไม่มีรายการ</p></div>'; return; }
-      var html='<table><thead><tr><th>#</th><th>รหัส</th><th>ชื่อโครงการ</th><th>หัวหน้า</th><th>กำหนดส่ง</th><th>Actions</th></tr></thead><tbody>';
+      var showCommittee = (S._isAdmin||S._isStaff);
+      var html='<table><thead><tr><th>#</th><th>รหัส</th><th>ชื่อโครงการ</th><th>หัวหน้า</th>'+(showCommittee?'<th>กรรมการ</th>':'')+'<th>กำหนดส่ง</th><th>Actions</th></tr></thead><tbody>';
       rows.forEach(function(r,i){
         var rc=escAttr(r.project_code||''); var rt=escAttr(r.title_th||'');
         var btn=mode==='accept'?'<button class="btn btn-sm btn-accent" onclick="openAcceptModal(\''+rc+'\',\''+rt+'\')">📥 ตอบรับ</button>':'<button class="btn btn-sm btn-primary" onclick="openEvalModal(\''+rc+'\',\''+rt+'\')">📝 ประเมิน</button>';
-        html+='<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code||'-')+'</strong></td><td>'+esc(r.title_th||'-')+'</td><td>'+esc(r.pi_name||'-')+'</td><td>'+(r.deadline?formatDate(r.deadline):'-')+'</td><td>'+btn+'</td></tr>';
+        html+='<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code||'-')+'</strong></td><td>'+esc(r.title_th||'-')+'</td><td>'+esc(r.pi_name||'-')+'</td>'+(showCommittee?'<td>'+esc(r.committee_username||'-')+'</td>':'')+'<td>'+(r.deadline?formatDate(r.deadline):'-')+'</td><td>'+btn+'</td></tr>';
       });
       el.innerHTML=html+'</tbody></table>';
     }
