@@ -4301,9 +4301,35 @@ function showForgotMessage(type, text) {
       _renderAcceptPage(); _renderEvalPage();
     }
     function _renderAcceptPage(){
+      if (S._isAdmin || S._isStaff) { _renderAcceptPageAdmin(); return; }
       var toAccept=S.assignments.filter(function(r){ return (r.acceptance_status||'รอตอบรับ')==='รอตอบรับ'; });
       _buildSimpleTable('accept-new-table',toAccept.filter(function(r){ return r.project_type!=='cont'; }),'accept');
       _buildSimpleTable('accept-cont-table',toAccept.filter(function(r){ return r.project_type==='cont'; }),'accept');
+    }
+    // สำหรับ admin/staff: "ต้องตอบรับ" = โครงการที่ยื่นมาใหม่ ยังไม่ผ่านการตรวจเอกสารจากแอดมิน
+    // (ไม่ใช่การตอบรับมอบหมายของกรรมการ ซึ่งเป็นคนละขั้นตอน)
+    function _renderAcceptPageAdmin(){
+      var rows=(S.staffProjects||[]).filter(function(p){
+        var st=String(p.status||'');
+        return st==='รอพิจารณา'||st==='เอกสารไม่ครบ';
+      });
+      _buildVerifyTable('accept-new-table', rows.filter(function(p){ return p.project_type!=='cont'; }));
+      _buildVerifyTable('accept-cont-table', rows.filter(function(p){ return p.project_type==='cont'; }));
+      var badge=document.getElementById('badge-accept');
+      if(badge){ badge.textContent=rows.length; badge.style.display=rows.length>0?'inline-flex':'none'; }
+      setText('s-accept-new', rows.filter(function(p){return p.project_type!=='cont';}).length);
+      setText('s-accept-cont', rows.filter(function(p){return p.project_type==='cont';}).length);
+    }
+    function _buildVerifyTable(elId, rows){
+      var el=document.getElementById(elId); if(!el) return;
+      if(!rows.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><p>ไม่มีรายการ</p></div>'; return; }
+      var html='<table><thead><tr><th>#</th><th>รหัส</th><th>ชื่อโครงการ</th><th>หัวหน้า</th><th>ยื่นเมื่อ</th><th>สถานะ</th><th>Actions</th></tr></thead><tbody>';
+      rows.forEach(function(r,i){
+        var rc=escAttr(r.project_code||''); var rt=escAttr(r.title_th||'');
+        html+='<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code||'-')+'</strong></td><td>'+esc(r.title_th||'-')+'</td><td>'+esc(r.pi_name||'-')+'</td><td>'+(r.created_date?formatDate(r.created_date):'-')+'</td><td>'+pillStatus(r.status||'')+'</td>'+
+          '<td><button class="btn btn-sm btn-accent" onclick="openVerifyDocsModal(\''+rc+'\',\''+rt+'\')">🔍 ตรวจเอกสาร</button></td></tr>';
+      });
+      el.innerHTML=html+'</tbody></table>';
     }
     function _renderEvalPage(){
       var toEval=S.assignments.filter(function(r){
@@ -4363,6 +4389,7 @@ function loadStaffProjects() {
       
       S.staffProjects = res.data || [];
       renderStaffProjectsTable(S.staffProjects);
+      if (S._isAdmin || S._isStaff) _renderAcceptPageAdmin();
       
       if (dashEl && S._isStaff) {
         dashEl.innerHTML = S.staffProjects.length ? 
