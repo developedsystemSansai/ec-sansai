@@ -756,9 +756,9 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
 
     /* ── CTA TAB (ใช้กับแท็บ "แบบประเมิน" เพื่อให้กรรมการสังเกตเห็นง่ายว่าต้องกดตรงนี้) ── */
     .tab-btn-cta {
-      position: relative;
-      margin-left: 6px; margin-bottom: -1.5px;
-      padding: 9px 20px 9px 16px !important;
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-left: 6px; margin-top: 3px; margin-bottom: -1.5px;
+      padding: 8px 14px !important;
       border-radius: 20px !important;
       border-bottom: none !important;
       background: linear-gradient(135deg, var(--gold) 0%, #e0a92e 100%);
@@ -775,19 +775,15 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       animation: none;
     }
     .tab-btn-cta .cta-badge {
-      position: absolute; top: -10px; right: -6px;
+      display: inline-block;
       background: #e23b3b; color: #fff; font-size: 10px; font-weight: 700;
-      padding: 1px 6px; border-radius: 10px; line-height: 1.5;
-      box-shadow: 0 1px 4px rgba(0,0,0,.3);
-      animation: ctaBounce 1.8s ease-in-out infinite;
+      padding: 1px 7px; border-radius: 10px; line-height: 1.6;
+      white-space: nowrap;
     }
+    .tab-btn-cta.active .cta-badge { display: none; }
     @keyframes ctaPulse {
       0%, 100% { box-shadow: 0 2px 8px rgba(212,160,23,.45); }
       50%      { box-shadow: 0 2px 16px rgba(212,160,23,.85); }
-    }
-    @keyframes ctaBounce {
-      0%, 100% { transform: translateY(0); }
-      50%      { transform: translateY(-2px); }
     }
 
     /* ── PAGE HELPERS ── */
