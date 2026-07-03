@@ -603,7 +603,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     .pill-red    { background: var(--red-light); color: var(--red); }
     .pill-blue   { background: var(--blue-light); color: var(--blue); }
     .pill-purple { background: var(--purple-light); color: var(--purple); }
-    .pill-gray   { background: var(--navy-pale); color: #555; }
+    .pill-gray   { background: #f0f0f0; color: #555; }
     .pill-yellow { background: #fff9e6; color: #7a6200; }
 
     /* ── BUTTONS ── */
@@ -753,38 +753,6 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     .tab-btn:hover  { color: var(--navy-main); }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-
-    /* ── CTA TAB (ใช้กับแท็บ "แบบประเมิน" เพื่อให้กรรมการสังเกตเห็นง่ายว่าต้องกดตรงนี้) ── */
-    .tab-btn-cta {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin-left: 6px; margin-top: 3px; margin-bottom: -1.5px;
-      padding: 8px 14px !important;
-      border-radius: 20px !important;
-      border-bottom: none !important;
-      background: linear-gradient(135deg, var(--gold) 0%, #e0a92e 100%);
-      color: #fff !important;
-      font-weight: 700 !important;
-      box-shadow: 0 2px 8px rgba(212,160,23,.45);
-      animation: ctaPulse 1.8s ease-in-out infinite;
-    }
-    .tab-btn-cta:hover { color: #fff !important; filter: brightness(1.05); }
-    .tab-btn-cta.active {
-      background: linear-gradient(135deg, var(--navy-main) 0%, var(--navy-dark) 100%);
-      color: #fff !important; border-bottom-color: transparent;
-      box-shadow: 0 2px 10px rgba(15,40,80,.45);
-      animation: none;
-    }
-    .tab-btn-cta .cta-badge {
-      display: inline-block;
-      background: #e23b3b; color: #fff; font-size: 10px; font-weight: 700;
-      padding: 1px 7px; border-radius: 10px; line-height: 1.6;
-      white-space: nowrap;
-    }
-    .tab-btn-cta.active .cta-badge { display: none; }
-    @keyframes ctaPulse {
-      0%, 100% { box-shadow: 0 2px 8px rgba(212,160,23,.45); }
-      50%      { box-shadow: 0 2px 16px rgba(212,160,23,.85); }
-    }
 
     /* ── PAGE HELPERS ── */
     .section-title {
@@ -1244,8 +1212,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       white-space: nowrap;
     }
     .review-type-badge.exempt    { background: #e8f5ee; color: #1a5c35; border: 1px solid #a8d5b5; }
-    .review-type-badge.expedited { background: var(--accent-light); color: #7a5200; border: 1px solid var(--gold); }
-    .review-type-badge.fullboard { background: #fce8e6; color: var(--red); border: 1px solid var(--red-light); }
+    .review-type-badge.expedited { background: #fff8e1; color: #856404; border: 1px solid #fdd835; }
+    .review-type-badge.fullboard { background: #fce8e6; color: #b71c1c; border: 1px solid #f5bcb8; }
     .review-type-badge.unknown   { background: #f3f3f3; color: #777;    border: 1px solid #ddd; }
     /* ── email-type card ── */
     .email-type-card {
@@ -1680,7 +1648,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
   <!-- โทรศัพท์ -->
   <div class="contact-row">
     <div class="contact-row-icon">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1565c0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
       </svg>
     </div>
@@ -1728,7 +1696,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     <img
       src="https://lh3.googleusercontent.com/d/1hT28c0U5mqkEvjdgaxSc6L2QayW2JDEs"
       alt="LINE QR Code"
-      style="width:180px; height:180px; border-radius:var(--radius-lg); border:1px solid var(--border);"
+      style="width:180px; height:180px; border-radius:12px; border:1px solid #e0e0e0;"
       onerror="this.style.display='none'; document.getElementById('line-qr-fallback').style.display='block'"
     />
     <div id="line-qr-fallback" style="display:none; font-size:12px; color:#999;">ไม่สามารถโหลด QR ได้</div>
@@ -2133,7 +2101,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       <img 
         src="https://lh3.googleusercontent.com/d/1hT28c0U5mqkEvjdgaxSc6L2QayW2JDEs" 
         alt="LINE QR Code"
-        style="width:180px; height:180px; border-radius:var(--radius-lg); border:1px solid var(--border);"
+        style="width:180px; height:180px; border-radius:12px; border:1px solid #e0e0e0;"
         onerror="this.style.display='none'; document.getElementById('line-qr-fallback-faq').style.display='block'"
       />
       <div id="line-qr-fallback-faq" style="display:none; font-size:12px; color:#999;">
@@ -2156,7 +2124,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <div class="modal-body" style="padding:24px 20px;">
           
           <!-- 1. ผังขั้นตอน -->
-          <div style="display:flex;gap:14px;align-items:center;padding:16px 18px;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-lg);margin-bottom:12px">
+          <div style="display:flex;gap:14px;align-items:center;padding:16px 18px;background:#fff;border:1.5px solid var(--border);border-radius:12px;margin-bottom:12px">
             <span style="font-size:28px;color:#d32f2f">📘</span>
             <div style="flex:1">
               <div style="font-weight:600">ผังขั้นตอนการพิจารณาจริยธรรม</div>
@@ -2167,7 +2135,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           </div>
 
           <!-- 2. SOP -->
-          <div style="display:flex;gap:14px;align-items:center;padding:16px 18px;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-lg);margin-bottom:12px">
+          <div style="display:flex;gap:14px;align-items:center;padding:16px 18px;background:#fff;border:1.5px solid var(--border);border-radius:12px;margin-bottom:12px">
             <span style="font-size:28px;color:#d32f2f">📘</span>
             <div style="flex:1">
               <div style="font-weight:600">SOP คณะกรรมการวิจัยฯ ฉบับ 14.2.68</div>
@@ -2178,8 +2146,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           </div>
 
           <!-- 3. คำสั่งแต่งตั้งกรรมการ (ใหม่) -->
-          <div style="display:flex;gap:14px;align-items:center;padding:16px 18px;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-lg)">
-            <span style="font-size:28px;color:var(--blue)">📋</span>
+          <div style="display:flex;gap:14px;align-items:center;padding:16px 18px;background:#fff;border:1.5px solid var(--border);border-radius:12px">
+            <span style="font-size:28px;color:#1565c0">📋</span>
             <div style="flex:1">
               <div style="font-weight:600">คำสั่งแต่งตั้งคณะกรรมการจริยธรรมการวิจัยในมนุษย์</div>
               <small style="color:#666">รายชื่อกรรมการและขอบเขตหน้าที่</small>
@@ -2733,7 +2701,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
               <div class="page-title" style="margin-bottom:0">👥 จัดการผู้ใช้งาน</div>
               <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center" id="users-page-actions">
                 <button class="btn btn-primary" onclick="openAddUserModal()">➕ เพิ่มผู้ใช้</button>
-                <button class="btn btn-sm" id="btn-send-welcome-all" style="background:var(--blue);color:#fff;border:none;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px" onclick="openSendWelcomeAllModal()">📧 ส่ง Welcome Email ทั้งหมด</button>
+                <button class="btn btn-sm" id="btn-send-welcome-all" style="background:#1565c0;color:#fff;border:none;border-radius:6px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px" onclick="openSendWelcomeAllModal()">📧 ส่ง Welcome Email ทั้งหมด</button>
               </div>
             </div>
             <div id="pending-users-banner" style="display:none" class="alert alert-warning"></div>
@@ -2747,7 +2715,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
               </button>
               <button class="tab-btn" onclick="switchUsersTab(this,'users-tab-locked')">
                 🔒 บัญชีถูกล็อค
-                <span class="badge-count" id="badge-locked-accounts" style="display:none;background:var(--red);margin-left:4px">0</span>
+                <span class="badge-count" id="badge-locked-accounts" style="display:none;background:#d93025;margin-left:4px">0</span>
               </button>
             </div>
 
@@ -2768,11 +2736,11 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <!-- Tab: LINE กรรมการ -->
             <div id="users-tab-line" class="tab-panel">
               <div style="margin-top:14px">
-                <div style="background:var(--white);border:1px solid var(--border);border-left:3px solid var(--status-green);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px;box-shadow:var(--shadow-sm)">
-                  <div style="width:36px;height:36px;border-radius:50%;background:var(--status-green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px">💬</div>
+                <div style="background:linear-gradient(135deg,#06c755,#04a344);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px;box-shadow:0 2px 12px rgba(6,199,85,.18)">
+                  <div style="font-size:28px;flex-shrink:0">💬</div>
                   <div>
-                    <div style="color:var(--status-green);font-weight:700;font-size:13.5px;margin-bottom:3px">LINE Messaging API — จัดการบัญชีกรรมการ</div>
-                    <div style="color:var(--text-light);font-size:12px;line-height:1.6">บันทึก LINE User ID ของกรรมการเพื่อส่งการแจ้งเตือนอัตโนมัติ<br>กรรมการสแกน QR เพิ่มเพื่อน Bot แล้วพิมพ์ username ในระบบ หรือ Admin กรอกเอง</div>
+                    <div style="color:#fff;font-weight:700;font-size:14px;margin-bottom:3px">LINE Messaging API — จัดการบัญชีกรรมการ</div>
+                    <div style="color:rgba(255,255,255,.88);font-size:12px;line-height:1.6">บันทึก LINE User ID ของกรรมการเพื่อส่งการแจ้งเตือนอัตโนมัติ<br>กรรมการสแกน QR เพิ่มเพื่อน Bot แล้วพิมพ์ username ในระบบ หรือ Admin กรอกเอง</div>
                   </div>
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
@@ -2787,6 +2755,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                     <div class="field-group" style="margin-bottom:0"><label>หัวเรื่อง</label><input type="text" id="line-broadcast-title" class="form-control" placeholder="เช่น: 📅 นัดประชุมคณะกรรมการ" maxlength="60"></div>
                     <div class="field-group" style="margin-bottom:0"><label>รายละเอียด</label><textarea id="line-broadcast-body" class="form-control" rows="3" placeholder="รายละเอียด..." style="resize:vertical"></textarea></div>
                     <div class="field-group" style="margin-bottom:0"><label>ปุ่มใน LINE</label><select id="line-broadcast-btntype" class="form-control" style="max-width:240px"><option value="home">🏠 หน้าหลักระบบ</option><option value="meeting">📅 หน้าการประชุม</option><option value="projects">📋 โครงการที่ได้รับ</option><option value="none">— ไม่มีปุ่ม —</option></select></div>
+                    <!-- ✅ ไฟล์แนบ Broadcast — ดาวน์โหลดตรง ไม่ต้องขอสิทธิ์ -->
                     <div class="field-group" style="margin-bottom:0">
                       <label>📎 แนบไฟล์ <span style="font-size:11px;font-weight:400;color:var(--text-light)">(ไม่บังคับ | สูงสุด 5 ไฟล์ | ดาวน์โหลดตรง ไม่ต้องขอสิทธิ์)</span></label>
                       <div id="line-bc-file-drop" style="border:2px dashed var(--border);border-radius:var(--radius);padding:10px;text-align:center;cursor:pointer;background:#fafbfc"
@@ -2822,11 +2791,11 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <!-- Tab: บัญชีถูกล็อค -->
             <div id="users-tab-locked" class="tab-panel">
               <div style="margin-top:14px">
-                <div style="background:var(--white);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px;box-shadow:var(--shadow-sm)">
-                  <div style="width:36px;height:36px;border-radius:50%;background:var(--red-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px">🔒</div>
+                <div style="background:linear-gradient(135deg,#d93025,#b1271d);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px;box-shadow:0 2px 12px rgba(217,48,37,.18)">
+                  <div style="font-size:28px;flex-shrink:0">🔒</div>
                   <div>
-                    <div style="color:var(--red);font-weight:700;font-size:13.5px;margin-bottom:3px">บัญชีที่ถูกล็อคชั่วคราว</div>
-                    <div style="color:var(--text-light);font-size:12px;line-height:1.6">ระบบจะล็อคบัญชีอัตโนมัติ 15 นาที เมื่อใส่รหัสผ่านผิดติดต่อกัน 5 ครั้ง<br>แอดมินสามารถกดปลดล็อคให้ทันทีได้จากที่นี่ โดยไม่ต้องรอครบเวลา</div>
+                    <div style="color:#fff;font-weight:700;font-size:14px;margin-bottom:3px">บัญชีที่ถูกล็อคชั่วคราว</div>
+                    <div style="color:rgba(255,255,255,.88);font-size:12px;line-height:1.6">ระบบจะล็อคบัญชีอัตโนมัติ 15 นาที เมื่อใส่รหัสผ่านผิดติดต่อกัน 5 ครั้ง<br>แอดมินสามารถกดปลดล็อคให้ทันทีได้จากที่นี่ โดยไม่ต้องรอครบเวลา</div>
                   </div>
                 </div>
                 <div class="table-card">
@@ -2890,7 +2859,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <button style="padding:14px; background:var(--navy-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="showPage('history'); closeMoreMenu()">🗂 ประวัติ</button>
           <button style="padding:14px; background:var(--navy-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="showPage('profile'); closeMoreMenu()">👤 โปรไฟล์</button>
           <button style="padding:14px; background:var(--navy-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="openNotifPanel(); closeMoreMenu()">🔔 แจ้งเตือน</button>
-          <button style="padding:14px; background:var(--red-light); border:1.5px solid var(--red-light); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px; color:var(--red);" onclick="doLogout(); closeMoreMenu()">🚪 ออกจากระบบ</button>
+          <button style="padding:14px; background:var(--red-light); border:1.5px solid #f5bcb8; border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px; color:var(--red);" onclick="doLogout(); closeMoreMenu()">🚪 ออกจากระบบ</button>
         </div>
       </div>
     </div>
@@ -2937,27 +2906,17 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     <!-- Evaluate Modal -->
     <div class="modal-overlay" id="modal-eval">
       <div class="modal modal-lg">
-        <div class="modal-header" style="background:linear-gradient(135deg, var(--navy-main) 0%, var(--navy-dark) 100%)">
-          <h3 style="color:#fff">📝 ประเมินงานวิจัย</h3>
-          <button class="modal-close" onclick="closeModal('modal-eval')" style="color:#fff">✕</button>
-        </div>
+        <div class="modal-header"><h3>📝 ประเมินงานวิจัย</h3><button class="modal-close" onclick="closeModal('modal-eval')">✕</button></div>
         <div class="modal-body">
           <div id="eval-modal-info" style="padding:12px; background:var(--navy-pale); border-radius:8px; margin-bottom:16px; font-weight:700; color:var(--navy-dark)"></div>
           <div class="tab-bar">
-            <button class="tab-btn active" onclick="switchSubTab(this,'eval-tab-r')">👤 นักวิจัย</button>
-            <button class="tab-btn" onclick="switchSubTab(this,'eval-tab-d')">📄 เอกสาร</button>
-            <button class="tab-btn tab-btn-cta" onclick="switchSubTab(this,'eval-tab-f')">✍️ แบบประเมิน<span class="cta-badge">กดตรงนี้</span></button>
+            <button class="tab-btn active" onclick="switchSubTab(this,'eval-tab-r')">นักวิจัย</button>
+            <button class="tab-btn" onclick="switchSubTab(this,'eval-tab-d')">เอกสาร</button>
+            <button class="tab-btn" onclick="switchSubTab(this,'eval-tab-f')">แบบประเมิน</button>
           </div>
           <div id="eval-tab-r" class="tab-panel active"><div id="eval-researchers-content"></div></div>
           <div id="eval-tab-d" class="tab-panel"><div id="doc-list-items"></div></div>
           <div id="eval-tab-f" class="tab-panel">
-            <div style="display:flex; align-items:center; gap:10px; padding:12px 14px; margin-bottom:18px; background:linear-gradient(135deg,#fff8e6,#fdf0cf); border:1.5px solid var(--gold); border-radius:10px">
-              <span style="font-size:22px">📝</span>
-              <div>
-                <div style="font-weight:700; color:var(--navy-dark); font-size:14px">กรุณาตอบแบบประเมินด้านล่างให้ครบทุกข้อ</div>
-                <div style="font-size:12px; color:var(--text-mid)">ตอบครบแล้วเลื่อนลงไปเลือก "มติที่เสนอ" และกด "ส่งแบบประเมิน" ด้านล่าง</div>
-              </div>
-            </div>
             <div class="eval-question"><p><strong>1.</strong> คุณสมบัติของผู้ร่วมวิจัย</p><div class="eval-options"><label><input type="radio" name="eq1" value="1"> เหมาะสม</label><label><input type="radio" name="eq1" value="2"> ไม่เหมาะสม</label><label><input type="radio" name="eq1" value="3"> ไม่เกี่ยวข้อง</label></div></div>
             <div class="eval-question"><p><strong>2.</strong> ความถูกต้องของงานวิจัย</p><div class="eval-options"><label><input type="radio" name="eq2" value="1"> เหมาะสม</label><label><input type="radio" name="eq2" value="2"> ไม่เหมาะสม</label><label><input type="radio" name="eq2" value="3"> ไม่เกี่ยวข้อง</label></div></div>
             <div class="eval-question"><p><strong>3.</strong> ขนาดกลุ่มตัวอย่างและสถิติ</p><div class="eval-options"><label><input type="radio" name="eq3" value="1"> เหมาะสม</label><label><input type="radio" name="eq3" value="2"> ไม่เหมาะสม</label><label><input type="radio" name="eq3" value="3"> ไม่เกี่ยวข้อง</label></div></div>
@@ -3424,10 +3383,10 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <!-- Mode toggle -->
           <div style="display:flex;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px">
             <button id="qa-mode-normal" onclick="setQAMode('normal')" style="flex:1;padding:9px 8px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:#2d8a52;color:#fff;display:flex;align-items:center;justify-content:center;gap:6px">✅ รอกรรมการตอบรับก่อน</button>
-            <button id="qa-mode-skip" onclick="setQAMode('skip')" style="flex:1;padding:9px 8px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:var(--navy-pale);color:#666;display:flex;align-items:center;justify-content:center;gap:6px">⚡ ข้ามไปประเมินเลย (Admin ยืนยันแล้ว)</button>
+            <button id="qa-mode-skip" onclick="setQAMode('skip')" style="flex:1;padding:9px 8px;font-size:12px;font-weight:700;border:none;cursor:pointer;background:#f0f0f0;color:#666;display:flex;align-items:center;justify-content:center;gap:6px">⚡ ข้ามไปประเมินเลย (Admin ยืนยันแล้ว)</button>
           </div>
           <div id="qa-banner-normal" class="alert alert-info" style="margin-bottom:12px">ℹ️ <div>กรรมการจะได้รับ <strong>LINE + อีเมล + ไฟล์</strong> และต้องกดตอบรับในระบบก่อนจึงจะเห็นหน้าประเมิน</div></div>
-          <div id="qa-banner-skip" class="alert" style="display:none;margin-bottom:12px;background:var(--accent-light);border:1.5px solid #f0d07a;color:#7a5c00"><span style="font-size:18px">⚡</span><div style="font-size:12.5px;line-height:1.65"><strong>โหมดข้ามขั้นตอนตอบรับ</strong> — ระบบตั้งสถานะ "รอประเมิน" ทันที ใช้เมื่อ Admin <u>ทักกรรมการและยืนยันแล้ว</u></div></div>
+          <div id="qa-banner-skip" class="alert" style="display:none;margin-bottom:12px;background:#fff8e1;border:1.5px solid #f0d07a;color:#7a5c00"><span style="font-size:18px">⚡</span><div style="font-size:12.5px;line-height:1.65"><strong>โหมดข้ามขั้นตอนตอบรับ</strong> — ระบบตั้งสถานะ "รอประเมิน" ทันที ใช้เมื่อ Admin <u>ทักกรรมการและยืนยันแล้ว</u></div></div>
           <!-- เลือกโครงการ -->
           <div style="margin-bottom:16px">
             <label style="font-size:13px;font-weight:700;color:var(--text-mid);display:block;margin-bottom:8px">📁 เลือกโครงการ <span class="req">*</span></label>
@@ -3505,7 +3464,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       <!-- ========================================== -->
       <!-- ส่วนที่ 1: คำอธิบายสถานะ (ย้ายมาด้านบน) -->
       <!-- ========================================== -->
-      <div style="margin-bottom: 24px; background: var(--navy-pale); border-radius: var(--radius-lg); padding: 16px; border: 1px solid var(--border);">
+      <div style="margin-bottom: 24px; background: #f8f9fa; border-radius: 12px; padding: 16px; border: 1px solid #e0e0e0;">
         
         <!-- หัวข้อ -->
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
@@ -3522,7 +3481,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #ffe0b2;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #ff9800; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">1</span>
-              <span style="font-weight: 700; color: var(--gold-dark);">รอพิจารณา</span>
+              <span style="font-weight: 700; color: #e65100;">รอพิจารณา</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               ผู้วิจัยยื่นใหม่ รอเจ้าหน้าที่ตรวจสอบเอกสาร
@@ -3533,7 +3492,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #c8e6c9;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #4caf50; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">2</span>
-              <span style="font-weight: 700; color: var(--status-green);">✅ ผ่านตรวจเอกสาร</span>
+              <span style="font-weight: 700; color: #2e7d32;">✅ ผ่านตรวจเอกสาร</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               เอกสารครบถ้วน ระบบจะเปิดฟังก์ชันมอบหมายให้กรรมการ
@@ -3544,7 +3503,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #ffcdd2;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #f44336; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">3</span>
-              <span style="font-weight: 700; color: var(--red);">❌ เอกสารไม่ครบ</span>
+              <span style="font-weight: 700; color: #c62828;">❌ เอกสารไม่ครบ</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               ส่งคืนผู้วิจัยให้แก้ไขและอัปโหลดเอกสารเพิ่มเติม แจ้งเตือนทางอีเมล
@@ -3555,7 +3514,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #ffe0b2;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #ff9800; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">4</span>
-              <span style="font-weight: 700; color: var(--gold-dark);">รอตอบรับ</span>
+              <span style="font-weight: 700; color: #e65100;">รอตอบรับ</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               มอบหมายกรรมการแล้ว รอกรรมการตอบรับ โครงการจะไปปรากฎหน้าตอบรับของกรรมการ
@@ -3566,7 +3525,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #bbdefb;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #2196f3; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">5</span>
-              <span style="font-weight: 700; color: var(--blue);">รอประเมิน</span>
+              <span style="font-weight: 700; color: #1565c0;">รอประเมิน</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               กรรมการตอบรับแล้ว โครงการจะปรากฎในหน้าประเมินของกรรมการ
@@ -3587,7 +3546,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <!-- 7. รอแจ้งผล -->
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #fff9c4;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-              <span style="background: var(--gold); color: #333; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">7</span>
+              <span style="background: #ffc107; color: #333; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">7</span>
               <span style="font-weight: 700; color: #b26a00;">⏳ รอแจ้งผล</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
@@ -3599,7 +3558,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #c8e6c9;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #4caf50; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">8</span>
-              <span style="font-weight: 700; color: var(--status-green);">🏆 รับรอง</span>
+              <span style="font-weight: 700; color: #2e7d32;">🏆 รับรอง</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               โครงการผ่านการรับรอง ระบบจะขึ้นให้อัพโหลดไฟล์ใบรับรอง (สถานะสุดท้าย)
@@ -3610,7 +3569,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #ffcdd2;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span style="background: #f44336; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">9</span>
-              <span style="font-weight: 700; color: var(--red);">🚫 ไม่รับรอง</span>
+              <span style="font-weight: 700; color: #c62828;">🚫 ไม่รับรอง</span>
             </div>
             <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
               โครงการไม่ผ่านการพิจารณา (สถานะสุดท้าย)
@@ -3620,10 +3579,10 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         </div>
         
         <!-- หมายเหตุสำคัญ -->
-        <div style="margin-top: 16px; padding: 12px 16px; background: var(--red-light); border-left: 4px solid var(--red); border-radius: 8px; font-size: 13px;">
+        <div style="margin-top: 16px; padding: 12px 16px; background: #ffebee; border-left: 4px solid #c62828; border-radius: 8px; font-size: 13px;">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
             <span style="font-size: 18px;">⚠️</span>
-            <span style="font-weight: 700; color: var(--red);">ข้อควรทราบ:</span>
+            <span style="font-weight: 700; color: #b71c1c;">ข้อควรทราบ:</span>
           </div>
           <ul style="margin: 4px 0 0 28px; padding-left: 0; color: #555; line-height: 1.6;">
             <li>การเปลี่ยนสถานะด้วยตนเองอาจทำให้ระบบข้ามขั้นตอนสำคัญ (ส่งอีเมล, แจ้งเตือน)</li>
@@ -3645,7 +3604,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <span style="font-size: 18px;">📁</span>
           <span style="font-family: 'Noto Serif Thai', 'Sarabun', serif; font-weight: 700; font-size: 16px; color: var(--status-green);">Sansai-2568-0023</span>
         </div>
-        <div style="font-size: 14px; color: var(--status-green); margin-left: 26px;">
+        <div style="font-size: 14px; color: #2e7d32; margin-left: 26px;">
           การศึกษาประสิทธิผลของสารสกัดหญ้าดอกขาวในการลดระดับน้ำตาลในเลือด
         </div>
         <div style="display: flex; gap: 16px; margin-top: 8px; margin-left: 26px; font-size: 13px; color: var(--text-mid);">
@@ -3657,7 +3616,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       <!-- Dropdown เลือกสถานะใหม่ -->
       <div class="field-group" style="margin-bottom: 20px;">
         <label style="display: block; font-size: 14px; font-weight: 700; color: var(--text-mid); margin-bottom: 8px;">
-          สถานะใหม่ <span style="color: var(--red);">*</span>
+          สถานะใหม่ <span style="color: #d93025;">*</span>
         </label>
         <select id="us-status" class="form-control" style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--navy-light); border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 15px; background: white;">
           <option value="รอพิจารณา">รอพิจารณา</option>
@@ -3876,64 +3835,60 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     </div>
 
     <!-- LINE Push Modal -->
-<div class="modal-overlay" id="modal-line-push" onclick="if(event.target===this)closeModal('modal-line-push')">
-  <div class="modal" style="max-width:500px">
-    <div class="modal-header" style="background:linear-gradient(135deg,#06c755,#04a344)">
-      <h3 style="color:#fff">📲 ส่ง LINE ถึงกรรมการ</h3>
-      <button class="modal-close" style="color:#fff;opacity:.8" onclick="closeModal('modal-line-push')">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="line-push-username">
-      <div style="background:#e8faf0;border:1.5px solid #a8e6c0;border-radius:var(--radius);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
-        <div style="font-size:22px">💬</div>
-        <div>
-          <div style="font-weight:700;color:#04a344" id="line-push-name">—</div>
-          <div style="font-size:11px;color:var(--text-light)">ID: <span id="line-push-uid" style="font-family:monospace"></span></div>
+    <div class="modal-overlay" id="modal-line-push" onclick="if(event.target===this)closeModal('modal-line-push')">
+      <div class="modal" style="max-width:480px">
+        <div class="modal-header" style="background:linear-gradient(135deg,#06c755,#04a344)">
+          <h3 style="color:#fff">📲 ส่ง LINE ถึงกรรมการ</h3>
+          <button class="modal-close" style="color:#fff;opacity:.8" onclick="closeModal('modal-line-push')">✕</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="line-push-username">
+          <div style="background:#e8faf0;border:1.5px solid #a8e6c0;border-radius:var(--radius);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+            <div style="font-size:22px">💬</div>
+            <div>
+              <div style="font-weight:700;color:#04a344" id="line-push-name">—</div>
+              <div style="font-size:11px;color:var(--text-light)">ID: <span id="line-push-uid" style="font-family:monospace"></span></div>
+            </div>
+          </div>
+          <div class="field-group"><label>หัวเรื่อง</label><input type="text" id="line-push-title" class="form-control" placeholder="เช่น: 📋 มอบหมายโครงการใหม่" maxlength="60"></div>
+          <div class="field-group"><label>รายละเอียด</label><textarea id="line-push-body" class="form-control" rows="3" placeholder="รายละเอียด..." style="resize:vertical"></textarea></div>
+          <div class="field-group">
+            <label>ปุ่มใน LINE</label>
+            <select id="line-push-btntype" class="form-control" style="max-width:240px">
+              <option value="home">🏠 หน้าหลักระบบ</option>
+              <option value="meeting">📅 หน้าการประชุม</option>
+              <option value="projects">📋 โครงการที่ได้รับ</option>
+              <option value="none">— ไม่มีปุ่ม —</option>
+            </select>
+          </div>
+          <!-- ✅ ไฟล์จาก Drive (โหลดอัตโนมัติจากโครงการ ไม่ต้องขอ permission) -->
+          <div class="field-group" id="line-push-drive-section" style="display:none;margin-bottom:8px">
+            <label style="display:flex;align-items:center;gap:6px">
+              📂 ไฟล์ในระบบ
+              <span style="font-size:11px;font-weight:400;color:var(--text-light)">ดาวน์โหลดตรง ไม่ต้องขอสิทธิ์</span>
+              <span id="line-push-drive-count" style="font-size:11px;background:#e8faf0;color:#04a344;border-radius:10px;padding:1px 7px;font-weight:700"></span>
+            </label>
+            <div id="line-push-drive-list" style="display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius);padding:6px;background:#fafbfc"></div>
+          </div>
+          <div class="field-group" style="margin-bottom:0">
+            <label>📎 แนบไฟล์เพิ่มเติม <span style="font-size:11px;font-weight:400;color:var(--text-light)">(ไม่บังคับ | รวมสูงสุด 5 ไฟล์ | 20MB/ไฟล์)</span></label>
+            <div id="line-push-file-drop" style="border:2px dashed var(--border);border-radius:var(--radius);padding:12px;text-align:center;cursor:pointer;background:#fafbfc"
+              onclick="document.getElementById('line-push-file-input').click()"
+              ondragover="event.preventDefault();this.style.borderColor='#06c755'"
+              ondragleave="this.style.borderColor=''"
+              ondrop="event.preventDefault();this.style.borderColor='';handleLinePushFileDrop(event.dataTransfer.files)">
+              <div style="font-size:12px;color:var(--text-light)">📁 คลิกหรือลากไฟล์มาวาง</div>
+              <input type="file" id="line-push-file-input" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" style="display:none" onchange="handleLinePushFileSelect(this.files)">
+            </div>
+            <div id="line-push-file-list" style="margin-top:6px;display:flex;flex-direction:column;gap:4px"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('modal-line-push')">ยกเลิก</button>
+          <button class="btn btn-primary" id="line-push-send-btn" style="background:#06c755;border-color:#06c755" onclick="doLinePushSingle()">📲 ส่ง LINE</button>
         </div>
       </div>
-      <div class="field-group"><label>หัวเรื่อง</label><input type="text" id="line-push-title" class="form-control" placeholder="เช่น: 📋 มอบหมายโครงการใหม่" maxlength="60"></div>
-      <div class="field-group"><label>รายละเอียด</label><textarea id="line-push-body" class="form-control" rows="3" placeholder="รายละเอียด..." style="resize:vertical"></textarea></div>
-      <div class="field-group">
-        <label>ปุ่มใน LINE</label>
-        <select id="line-push-btntype" class="form-control" style="max-width:240px">
-          <option value="home">🏠 หน้าหลักระบบ</option>
-          <option value="meeting">📅 หน้าการประชุม</option>
-          <option value="projects">📋 โครงการที่ได้รับ</option>
-          <option value="none">— ไม่มีปุ่ม —</option>
-        </select>
-      </div>
-
-      <!-- ✅ ไฟล์จาก Drive (โหลดอัตโนมัติจากโครงการ ไม่ต้องขอ permission) -->
-      <div class="field-group" id="line-push-drive-section" style="display:none;margin-bottom:8px">
-        <label style="display:flex;align-items:center;gap:6px">
-          📂 ไฟล์ในระบบ
-          <span style="font-size:11px;font-weight:400;color:var(--text-light)">ดาวน์โหลดตรง ไม่ต้องขอสิทธิ์</span>
-          <span id="line-push-drive-count" style="font-size:11px;background:#e8faf0;color:#04a344;border-radius:10px;padding:1px 7px;font-weight:700"></span>
-        </label>
-        <div id="line-push-drive-list" style="display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius);padding:6px;background:#fafbfc"></div>
-      </div>
-
-      <!-- อัพโหลดไฟล์ใหม่ -->
-      <div class="field-group" style="margin-bottom:0">
-        <label>📎 แนบไฟล์เพิ่มเติม <span style="font-size:11px;font-weight:400;color:var(--text-light)">(ไม่บังคับ | รวมสูงสุด 5 ไฟล์ | 20MB/ไฟล์)</span></label>
-        <div id="line-push-file-drop"
-          style="border:2px dashed var(--border);border-radius:var(--radius);padding:12px;text-align:center;cursor:pointer;background:#fafbfc"
-          onclick="document.getElementById('line-push-file-input').click()"
-          ondragover="event.preventDefault();this.style.borderColor='#06c755'"
-          ondragleave="this.style.borderColor=''"
-          ondrop="event.preventDefault();this.style.borderColor='';handleLinePushFileDrop(event.dataTransfer.files)">
-          <div style="font-size:12px;color:var(--text-light)">📁 คลิกหรือลากไฟล์มาวาง</div>
-          <input type="file" id="line-push-file-input" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" style="display:none" onchange="handleLinePushFileSelect(this.files)">
-        </div>
-        <div id="line-push-file-list" style="margin-top:6px;display:flex;flex-direction:column;gap:4px"></div>
-      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('modal-line-push')">ยกเลิก</button>
-      <button class="btn btn-primary" id="line-push-send-btn" style="background:#06c755;border-color:#06c755" onclick="doLinePushSingle()">📲 ส่ง LINE</button>
-    </div>
-  </div>
-</div>
 
     <div class="modal-overlay" id="modal-user-form">
       <div class="modal modal-lg">
@@ -4034,7 +3989,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div id="welcome-all-preview" style="background:var(--navy-pale);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;font-size:13px;min-height:56px">
             <span style="color:var(--text-light)">กำลังโหลดข้อมูล...</span>
           </div>
-          <div style="background:var(--accent-light);border-left:4px solid var(--gold);border-radius:0 6px 6px 0;padding:12px 14px;font-size:13px;color:#7a5200;line-height:1.8;margin-bottom:8px">
+          <div style="background:#fff8e1;border-left:4px solid #ffc107;border-radius:0 6px 6px 0;padding:12px 14px;font-size:13px;color:#856404;line-height:1.8;margin-bottom:8px">
             <strong>⚠️ ข้อควรทราบก่อนส่ง</strong><br>
             • ระบบจะส่งเฉพาะผู้ที่มี <code>send_email = true</code> และยังไม่เคยส่ง (<code>email_sent ≠ true</code>)<br>
             • หลังส่งสำเร็จ ปุ่มจะถูกล็อค ไม่สามารถส่งซ้ำได้<br>
@@ -4060,11 +4015,11 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         </div>
         <div class="modal-body">
           <div id="welcome-one-info" style="background:var(--navy-pale);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;font-size:14px"></div>
-          <div id="welcome-one-already-sent" style="display:none;background:var(--status-green-light);border:1.5px solid var(--status-green);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--status-green);margin-bottom:12px">
+          <div id="welcome-one-already-sent" style="display:none;background:#e8f5e9;border:1.5px solid #66bb6a;border-radius:var(--radius);padding:14px 16px;font-size:13px;color:#2e7d32;margin-bottom:12px">
             ✅ ส่งอีเมลต้อนรับให้ผู้ใช้นี้แล้ว — ไม่สามารถส่งซ้ำได้
           </div>
           <div id="welcome-one-form">
-            <div style="font-size:13px;color:#7a5200;background:var(--accent-light);border-left:4px solid var(--gold);border-radius:0 6px 6px 0;padding:10px 12px;margin-bottom:4px;line-height:1.7">
+            <div style="font-size:13px;color:#856404;background:#fff8e1;border-left:4px solid #ffc107;border-radius:0 6px 6px 0;padding:10px 12px;margin-bottom:4px;line-height:1.7">
               ⚠️ อีเมลจะมีรหัสผ่านชั่วคราว (จากคอลัมน์ <code>plain_password</code>) และลิงก์ตั้งรหัสผ่านอายุ 3 วัน
             </div>
           </div>
@@ -4097,14 +4052,14 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             </div>
           </label>
           <label class="srt-opt-card" id="srt-opt-expedited" onclick="selectReviewType('expedited')">
-            <input type="radio" name="srt-type" value="expedited" style="accent-color:#7a5200">
+            <input type="radio" name="srt-type" value="expedited" style="accent-color:#856404">
             <div>
               <div style="font-weight:700;font-size:14px">🟡 แบบเร่งด่วน <span style="font-weight:400;font-size:12px">(Expedited review)</span></div>
               <div style="font-size:12px;color:var(--text-light);margin-top:2px">สำหรับวิจัยความเสี่ยงต่ำ-ปานกลาง — ผ่านคณะกรรมการบางส่วน</div>
             </div>
           </label>
           <label class="srt-opt-card" id="srt-opt-fullboard" onclick="selectReviewType('fullboard')">
-            <input type="radio" name="srt-type" value="fullboard" style="accent-color:var(--red)">
+            <input type="radio" name="srt-type" value="fullboard" style="accent-color:#b71c1c">
             <div>
               <div style="font-weight:700;font-size:14px">🔴 แบบเต็มคณะ <span style="font-weight:400;font-size:12px">(Full board review)</span></div>
               <div style="font-size:12px;color:var(--text-light);margin-top:2px">สำหรับวิจัยความเสี่ยงสูง — ต้องผ่านคณะกรรมการครบชุด</div>
@@ -4285,6 +4240,7 @@ function showForgotMessage(type, text) {
       else if(S._isResearcher) html=renderResearcherDashboard();
       else html='<div class="alert alert-info">ℹ️ ยินดีต้อนรับ</div>';
       document.getElementById('dash-content').innerHTML=html;
+      setTimeout(loadPublicRecentProjects, 300);
     }
     function renderComboDashboard(){
       return '<div class="alert alert-info" style="margin-bottom:16px;display:flex;gap:8px;align-items:flex-start">'
@@ -4308,7 +4264,7 @@ function showForgotMessage(type, text) {
           '<div class="dash-recent-title">โครงการล่าสุด</div>'+
           '<button class="btn btn-sm btn-outline" onclick="showPage(\'staff-projects\')">ดูทั้งหมด →</button>'+
         '</div>'+
-        '<div class="table-card"><div id="dashboard-table"><div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div></div></div>';
+        '<div class="table-card"><div id="dashboard-table"><div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div></div></div>'+'<div style="margin-top:20px">'+'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+'<div class="dash-recent-title" style="font-size:14px">🏷️ โครงการที่กำลังพิจารณา (สาธารณะ)</div>'+'<span style="font-size:11px;color:var(--text-light)">แสดงล่าสุด 10 โครงการ</span>'+'</div>'+'<div id="dash-public-projects"><div class="empty-state"><div class="spin-sm dark" style="width:24px;height:24px;margin:auto"></div></div></div>'+'</div>';
     }
     function renderCommitteeDashboard(){
       return '<div class="section-title" style="font-size:18px;margin-bottom:16px">Dashboard — กรรมการ</div>'+
@@ -4321,7 +4277,7 @@ function showForgotMessage(type, text) {
           '<div class="dash-recent-title">โครงการที่ได้รับมอบหมาย</div>'+
           '<button class="btn btn-sm btn-outline" onclick="loadAssignments()">🔄 รีเฟรช</button>'+
         '</div>'+
-        '<div class="table-card"><div id="dashboard-table"><div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div></div></div>';
+        '<div class="table-card"><div id="dashboard-table"><div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div></div></div>'+'<div style="margin-top:20px">'+'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+'<div class="dash-recent-title" style="font-size:14px">🏷️ โครงการที่กำลังพิจารณา (สาธารณะ)</div>'+'<span style="font-size:11px;color:var(--text-light)">แสดงล่าสุด 10 โครงการ</span>'+'</div>'+'<div id="dash-public-projects"><div class="empty-state"><div class="spin-sm dark" style="width:24px;height:24px;margin:auto"></div></div></div>'+'</div>';
     }
     function renderStaffDashboard(){
       return '<div class="section-title" style="font-size:18px;margin-bottom:16px">Dashboard — เจ้าหน้าที่</div>'+
@@ -4337,13 +4293,13 @@ function showForgotMessage(type, text) {
           '<div class="dash-recent-title">โครงการล่าสุด</div>'+
           '<button class="btn btn-sm btn-outline" onclick="showPage(\'staff-projects\')">ดูทั้งหมด →</button>'+
         '</div>'+
-        '<div class="table-card"><div id="dashboard-table"><div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div></div></div>';
+        '<div class="table-card"><div id="dashboard-table"><div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div></div></div>'+'<div style="margin-top:20px">'+'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+'<div class="dash-recent-title" style="font-size:14px">🏷️ โครงการที่กำลังพิจารณา (สาธารณะ)</div>'+'<span style="font-size:11px;color:var(--text-light)">แสดงล่าสุด 10 โครงการ</span>'+'</div>'+'<div id="dash-public-projects"><div class="empty-state"><div class="spin-sm dark" style="width:24px;height:24px;margin:auto"></div></div></div>'+'</div>';
     }
     function renderResearcherDashboard(){
       return '<div class="section-title" style="font-size:18px;margin-bottom:16px">Dashboard — นักวิจัย</div>'+
         '<div class="alert alert-info">ℹ️ <div>ยินดีต้อนรับ <a onclick="showPage(\'submit\')" style="color:var(--blue);cursor:pointer;font-weight:600">ยื่นโครงการ →</a></div></div>'+
         '<div class="section-title">โครงการของฉัน</div>'+
-        '<div class="table-card"><div class="table-card-header"><h3>โครงการที่ยื่นแล้ว</h3><button class="btn btn-sm btn-primary" onclick="showPage(\'submit\')">➕ ยื่นใหม่</button></div><div id="dashboard-table"><div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div></div></div>';
+        '<div class="table-card"><div class="table-card-header"><h3>โครงการที่ยื่นแล้ว</h3><button class="btn btn-sm btn-primary" onclick="showPage(\'submit\')">➕ ยื่นใหม่</button></div><div id="dashboard-table"><div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div></div></div>'+'<div style="margin-top:20px">'+'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+'<div class="dash-recent-title" style="font-size:14px">🏷️ โครงการที่กำลังพิจารณา (สาธารณะ)</div>'+'<span style="font-size:11px;color:var(--text-light)">แสดงล่าสุด 10 โครงการ</span>'+'</div>'+'<div id="dash-public-projects"><div class="empty-state"><div class="spin-sm dark" style="width:24px;height:24px;margin:auto"></div></div></div>'+'</div>';
     }
     function statCard(label,id,val,numClass,icon,iconClass,page){
       return '<div class="stat-card" onclick="showPage(\''+page+'\')">' +
@@ -4432,11 +4388,31 @@ function showForgotMessage(type, text) {
       var html='<table><thead><tr><th>#</th><th>รหัส</th><th>ชื่อโครงการ</th><th>กรรมการ</th><th>มอบหมายเมื่อ</th><th>กำหนดส่ง</th><th>Actions</th></tr></thead><tbody>';
       pending.forEach(function(r,i){
         var rc=escAttr(r.project_code||''), cu=escAttr(r.committee_username||'');
+        var uObj=(S.allUsers||[]).find(function(u){ return String(u.username||'').trim()===String(r.committee_username||'').trim(); });
+        var hasLine=uObj&&String(uObj.line_user_id||'').trim()!=='';
+        var lineBtn=hasLine
+          ? '<button class="btn btn-sm" style="background:#06c755;color:#fff;border:none;font-size:11px" onclick="doResendLineAssignment(\''+rc+'\',\''+cu+'\')" title="ส่ง LINE แจ้งเตือนอีกครั้ง">📲 ส่ง LINE อีกครั้ง</button>'
+          : '<button class="btn btn-sm" disabled style="background:var(--bg);color:var(--border);border:1px solid var(--border);font-size:11px;cursor:not-allowed" title="กรรมการไม่มี LINE">📵 ไม่มี LINE</button>';
         html+='<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code||'-')+'</strong></td><td>'+esc(r.title_th||'-')+'</td><td>'+esc(r.committee_username||'-')+'</td>'+
           '<td>'+(r.assigned_date?formatDate(r.assigned_date):'-')+'</td><td>'+(r.deadline?formatDate(r.deadline):'-')+'</td>'+
-          '<td><button class="btn btn-sm btn-accent" onclick="doAdminSkipAcceptance(\''+rc+'\',\''+cu+'\')">⚡ ข้ามตอบรับแทน</button></td></tr>';
+          '<td style="display:flex;gap:5px;flex-wrap:wrap">'+
+            lineBtn+
+            '<button class="btn btn-sm btn-accent" onclick="doAdminSkipAcceptance(\''+rc+'\',\''+cu+'\')" title="ข้ามขั้นตอนตอบรับแทน">⚡ ข้ามตอบรับแทน</button>'+
+          '</td></tr>';
       });
       el.innerHTML=html+'</tbody></table>';
+    }
+    function doResendLineAssignment(projectCode, committeeUsername){
+      var proj=(S.staffProjects||[]).find(function(p){ return String(p.project_code||'').trim()===String(projectCode).trim(); });
+      openLinePushModal(committeeUsername, projectCode);
+      setTimeout(function(){
+        var t=document.getElementById('line-push-title');
+        var b=document.getElementById('line-push-body');
+        var bt=document.getElementById('line-push-btntype');
+        if(t) t.value='📋 แจ้งเตือน: รอการตอบรับมอบหมายโครงการ';
+        if(b) b.value='รหัสโครงการ: '+projectCode+(proj?'\nชื่อโครงการ: '+String(proj.title_th||'').substring(0,60):'')+'\n\nกรุณาเข้าสู่ระบบและกดตอบรับโครงการที่ได้รับมอบหมาย';
+        if(bt) bt.value='projects';
+      }, 120);
     }
     function doAdminSkipAcceptance(projectCode, committeeUsername){
       if(!confirm('ยืนยันข้ามขั้นตอนตอบรับแทนกรรมการ "'+committeeUsername+'" สำหรับโครงการ '+projectCode+' ?\n(ใช้เมื่อติดต่อกรรมการแล้วและกรรมการยืนยันด้วยวิธีอื่น)')) return;
@@ -4446,7 +4422,7 @@ function showForgotMessage(type, text) {
           else showToast('ไม่สำเร็จ: '+esc((res||{}).message||''),'error');
         }).catch(function(e){ showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error'); });
     }
-    function _buildVerifyTable(elId, rows){
+        function _buildVerifyTable(elId, rows){
       var el=document.getElementById(elId); if(!el) return;
       if(!rows.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><p>ไม่มีรายการ</p></div>'; return; }
       var html='<table><thead><tr><th>#</th><th>รหัส</th><th>ชื่อโครงการ</th><th>หัวหน้า</th><th>ยื่นเมื่อ</th><th>สถานะ</th><th>Actions</th></tr></thead><tbody>';
@@ -4528,6 +4504,7 @@ function loadStaffProjects() {
       _sortProjectsNewestFirst(S.staffProjects);
       renderStaffProjectsTable(S.staffProjects);
       if (S._isAdmin || S._isStaff) _renderAcceptPageAdmin();
+      renderPublicRecentProjects(S.staffProjects); // ✅ อัปเดต public list
       
       if (dashEl && S._isStaff) {
         dashEl.innerHTML = S.staffProjects.length ? 
@@ -4579,6 +4556,73 @@ function buildStaffDashboardList(projects) {
   
   return '<div style="padding:0">' + rows + '</div>';
 }
+
+    // ── โครงการสาธารณะ (แสดงแก่ทุก role) ────────────────────────────────────
+    function loadPublicRecentProjects(){
+      var el=document.getElementById('dash-public-projects');
+      if(!el) return;
+      // ถ้า staffProjects โหลดแล้ว ใช้เลย (admin/staff)
+      if(S.staffProjects && S.staffProjects.length){
+        renderPublicRecentProjects(S.staffProjects); return;
+      }
+      el.innerHTML='<div class="empty-state"><div class="spin-sm dark" style="width:24px;height:24px;margin:auto"></div></div>';
+      fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({action:'getPublicRecentProjects',origin:window.location.origin})})
+        .then(function(r){return r.text();})
+        .then(function(txt){
+          var s=txt.indexOf('{'), e=txt.lastIndexOf('}');
+          if(s===-1||e<=s) throw new Error('no JSON');
+          var res=JSON.parse(txt.substring(s,e+1));
+          if(res&&res.success) renderPublicRecentProjects(res.data||[]);
+          else if(el) el.innerHTML='<div class="empty-state"><p style="font-size:12px">ไม่สามารถโหลดข้อมูล</p></div>';
+        }).catch(function(){
+          if(el) el.innerHTML='<div class="empty-state"><p style="font-size:12px">ไม่สามารถเชื่อมต่อ</p></div>';
+        });
+    }
+    function renderPublicRecentProjects(projects){
+      var el=document.getElementById('dash-public-projects'); if(!el) return;
+      // กรองเฉพาะโครงการที่ยังพิจารณาอยู่
+      var activeStatuses=['รอพิจารณา','รอประเมิน','มอบหมายแล้ว','ผ่านตรวจเอกสาร','รอแจ้งผล','เอกสารไม่ครบ'];
+      var rows=projects.filter(function(p){
+        return activeStatuses.indexOf(String(p.status||p['status']||''))!==-1;
+      }).slice(0,10);
+      if(!rows.length){
+        el.innerHTML='<div class="empty-state"><p style="font-size:12px;color:var(--text-light)">ไม่มีโครงการที่กำลังพิจารณา</p></div>';
+        return;
+      }
+      var typeColor={
+        'Exempt':'#1565c0','Expedited':'#e65100','Full Board':'#b71c1c',
+        'exempt':'#1565c0','expedited':'#e65100','full board':'#b71c1c'
+      };
+      var typeBg={
+        'Exempt':'#e3f2fd','Expedited':'#fff8e1','Full Board':'#ffebee',
+        'exempt':'#e3f2fd','expedited':'#fff8e1','full board':'#ffebee'
+      };
+      var html=rows.map(function(p,i){
+        var code=esc(p.project_code||p['project_code']||'-');
+        // decode ชื่อโครงการ (รองรับ URI encoded และ HTML entities)
+        var rawTitle=String(p.title_th||p['title_th']||'(ไม่มีชื่อ)');
+        var title=rawTitle;
+        try{ title=decodeURIComponent(rawTitle.replace(/\+/g,' ')); }catch(e2){}
+        title=title.replace(/&#39;/g,"'").replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+        var rtype=String(p.review_type||p['review_type']||'');
+        var status=String(p.status||p['status']||'');
+        var tc=typeColor[rtype]||'#546e7a';
+        var tg=typeBg[rtype]||'#eceff1';
+        return '<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 12px;'+(i%2===0?'background:#fafbfc;':'background:#fff;')+'border-bottom:1px solid var(--border)">'+
+          '<div style="font-size:11px;font-weight:700;color:var(--text-light);width:42px;padding-top:2px;flex-shrink:0">'+code+'</div>'+
+          '<div style="flex:1;min-width:0">'+
+            '<div style="font-size:12.5px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(title)+'</div>'+
+            '<div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap">'+
+              (rtype?'<span style="font-size:10px;font-weight:700;background:'+tg+';color:'+tc+';border-radius:4px;padding:1px 5px">'+esc(rtype)+'</span>':'')+
+              '<span style="font-size:10px;background:#f5f5f5;color:var(--text-light);border-radius:4px;padding:1px 5px">'+esc(status)+'</span>'+
+            '</div>'+
+          '</div>'+
+        '</div>';
+      }).join('');
+      el.innerHTML='<div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">'+html+'</div>';
+    }
+
 
     function loadStats(){
       if(S._isStaff){
@@ -4671,7 +4715,7 @@ function renderStaffProjectsTable(projects) {
     html += '<tr><td>' + (i + 1) + '</td>'
       + '<td><strong>' + esc(p.project_code || '-') + '</strong>'
       + (isRevision ? '<br><small style="color:var(--gold)">✏️ แก้ไข</small>' : '')
-      + (skipReeval ? '<br><small style="color:var(--blue)">👤 แอดมินตรวจ</small>' : '')
+      + (skipReeval ? '<br><small style="color:#1565c0">👤 แอดมินตรวจ</small>' : '')
       + '</td>'
       + '<td style="max-width:200px">' + esc(p.title_th || '-') + '</td>'
       + '<td>' + esc(p.pi_name || '-') + '</td>'
@@ -6440,7 +6484,7 @@ function loadUsersData() {
     var linePill = !isCommittee ? '<span style="color:var(--border);font-size:11px">—</span>'
       : lineLinked
         ? '<span style="display:inline-flex;align-items:center;gap:3px;background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600"><span class=\"line-linked-dot\"></span>เชื่อมแล้ว</span>'
-        : '<span style="background:var(--accent-light);color:#b58a2a;border:1px solid #f0d07a;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600">ยังไม่เชื่อม</span>';
+        : '<span style="background:#fff8e1;color:#b58a2a;border:1px solid #f0d07a;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600">ยังไม่เชื่อม</span>';
     html += '<tr>' +
       '<td>' + (i + 1) + '</td>' +
       '<td><strong>' + esc(u.username || '-') + '</strong></td>' +
@@ -6471,11 +6515,11 @@ function userActionBtns(u, isPending) {
     var alreadySent = String(u.email_sent||'').toLowerCase() === 'true';
     if (alreadySent) {
       btns += '<button class="btn btn-sm" disabled '
-        + 'style="background:var(--status-green-light);color:var(--status-green);border:1px solid var(--status-green);border-radius:5px;padding:3px 8px;font-size:12px;cursor:not-allowed" '
+        + 'style="background:#e8f5e9;color:#2e7d32;border:1px solid #66bb6a;border-radius:5px;padding:3px 8px;font-size:12px;cursor:not-allowed" '
         + 'title="ส่ง Welcome Email แล้ว">✅ ส่งแล้ว</button> ';
     } else {
       btns += '<button class="btn btn-sm" '
-        + 'style="background:var(--blue);color:#fff;border:none;border-radius:5px;padding:3px 8px;cursor:pointer;font-size:12px" '
+        + 'style="background:#1565c0;color:#fff;border:none;border-radius:5px;padding:3px 8px;cursor:pointer;font-size:12px" '
         + 'onclick="openWelcomeOneModal(\'' + un + '\')" title="ส่ง Welcome Email">📧 Welcome</button> ';
     }
   }
@@ -6483,7 +6527,7 @@ function userActionBtns(u, isPending) {
   // ปุ่มส่งอีเมลแจ้ง (เฉพาะ admin)
   if (S._isAdmin) {
     btns += '<button class="btn btn-sm" '
-      + 'style="background:var(--blue-light);color:var(--blue);border:1px solid var(--blue);border-radius:5px;padding:3px 8px;cursor:pointer;font-size:12px" '
+      + 'style="background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;border-radius:5px;padding:3px 8px;cursor:pointer;font-size:12px" '
       + 'onclick="openSendEmailModal(\'' + un + '\')" title="ส่งอีเมลแจ้งผู้ใช้">📨 ส่งอีเมล</button> ';
   }
 
@@ -6505,8 +6549,8 @@ function showPendingUsers() {
 // ══════════════════════════════════════════════════
 var _qaFileOrder = []; var _qaDragSrc = null; var _qaMode = 'normal';
 var _linePushFiles = [];
-var _linePushDriveFiles = [];   // ✅ ไฟล์จาก Drive ที่เลือกส่ง (ไม่ต้องขอ permission)
-var _lineBcFiles = [];          // ✅ ไฟล์แนบ broadcast
+var _linePushDriveFiles = []; // ✅ ไฟล์จาก Drive (ไม่ต้องขอ permission)
+var _lineBcFiles = [];         // ✅ ไฟล์แนบ broadcast
 
 function setQAMode(mode) {
   _qaMode = mode;
@@ -6514,14 +6558,14 @@ function setQAMode(mode) {
   var bnN=document.getElementById('qa-banner-normal'), bnS=document.getElementById('qa-banner-skip');
   var lbl=document.getElementById('qa-submit-label'), btn=document.getElementById('qa-submit-btn');
   if (mode==='skip') {
-    if(bN){bN.style.background='var(--navy-pale)';bN.style.color='#666';}
-    if(bS){bS.style.background='var(--gold-dark)';bS.style.color='#fff';}
+    if(bN){bN.style.background='#f0f0f0';bN.style.color='#666';}
+    if(bS){bS.style.background='#e65100';bS.style.color='#fff';}
     if(bnN) bnN.style.display='none'; if(bnS) bnS.style.display='flex';
     if(lbl) lbl.textContent='⚡ มอบหมาย + ข้ามตอบรับ + LINE + ไฟล์';
-    if(btn){btn.style.background='var(--gold-dark)';btn.style.borderColor='var(--gold-dark)';}
+    if(btn){btn.style.background='#e65100';btn.style.borderColor='#e65100';}
   } else {
     if(bN){bN.style.background='#2d8a52';bN.style.color='#fff';}
-    if(bS){bS.style.background='var(--navy-pale)';bS.style.color='#666';}
+    if(bS){bS.style.background='#f0f0f0';bS.style.color='#666';}
     if(bnN) bnN.style.display='flex'; if(bnS) bnS.style.display='none';
     if(lbl) lbl.textContent='มอบหมาย + อีเมล + LINE + ไฟล์';
     if(btn){btn.style.background='';btn.style.borderColor='';}
@@ -6556,7 +6600,7 @@ function loadLockedAccounts(){
         var u=(S.allUsers||[]).find(function(x){return x.username===r.username;});
         html+='<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.username||'-')+'</strong></td><td>'+esc(u?u.name:'-')+'</td>'+
           '<td><span class="pill pill-red">'+r.count+' ครั้ง</span></td>'+
-          '<td><span style="color:var(--red);font-weight:600">⏳ '+r.remaining_minutes+' นาที</span></td>'+
+          '<td><span style="color:#d93025;font-weight:600">⏳ '+r.remaining_minutes+' นาที</span></td>'+
           '<td><button class="btn btn-sm btn-accent" onclick="unlockAccount(\''+un+'\')">🔓 ปลดล็อคทันที</button></td></tr>';
       });
       el.innerHTML=html+'</tbody></table>';
@@ -6591,12 +6635,12 @@ function renderLineCommitteeTable() {
   if(!committees.length){el.innerHTML='<div class="empty-state"><p>ไม่พบกรรมการ</p></div>';return;}
   el.innerHTML='<table><thead><tr><th>#</th><th>Username</th><th>ชื่อ</th><th>LINE</th><th>Actions</th></tr></thead><tbody>'+committees.map(function(u,i){
     var lid=String(u.line_user_id||'').trim(), linked=lid!=='';
-    var status=linked?'<span style="display:inline-flex;align-items:center;gap:3px;background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600"><span class=\"line-linked-dot\"></span>เชื่อมแล้ว</span>':'<span style="background:var(--accent-light);color:#b58a2a;border:1px solid #f0d07a;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600">ยังไม่เชื่อม</span>';
+    var status=linked?'<span style="display:inline-flex;align-items:center;gap:3px;background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600"><span class=\"line-linked-dot\"></span>เชื่อมแล้ว</span>':'<span style="background:#fff8e1;color:#b58a2a;border:1px solid #f0d07a;border-radius:20px;padding:2px 7px;font-size:11px;font-weight:600">ยังไม่เชื่อม</span>';
     var un=escAttr(u.username||'');
     return '<tr><td>'+(i+1)+'</td><td><strong>'+esc(u.username||'-')+'</strong></td><td>'+esc(u.name||'-')+'</td><td>'+status+'</td><td style="display:flex;gap:5px">'+
       '<button class="btn btn-sm" style="background:#e8faf0;color:#04a344;border:1px solid #a8e6c0;font-size:11px" onclick="openLineEditModal(\x27'+un+'\x27)">'+
       (linked?'✏️ แก้ไข ID':'➕ เพิ่ม ID')+'</button>'+
-      (linked?'<button class="btn btn-sm" style="background:#06c755;color:#fff;border:none;font-size:11px" onclick="openLinePushModal(\x27'+un+'\x27)">📲 Push</button>':
+      (linked?'<button class="btn btn-sm" style="background:#06c755;color:#fff;border:none;font-size:11px" onclick="openLinePushWithProject(\x27'+un+'\x27)">📲 Push</button>':
               '<button class="btn btn-sm" disabled style="background:var(--bg);color:var(--border);border:1px solid var(--border);font-size:11px;cursor:not-allowed">📲 Push</button>')+
       '</td></tr>';
   }).join('')+'</tbody></table>';
@@ -6635,6 +6679,68 @@ function saveLineUserIdFromModal() {
     }).catch(function(e){btn.disabled=false;btn.textContent='💾 บันทึก LINE User ID';showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error');});
 }
 
+function openLinePushWithProject(username) {
+  var myAssigns=(S.assignments||[]).filter(function(a){
+    return String(a.committee_username||'').trim()===String(username).trim();
+  });
+  var assignCodes=myAssigns.map(function(a){return String(a.project_code||'').trim();});
+  var reviewProjects=(S.staffProjects||[]).filter(function(p){
+    var st=String(p.status||'');
+    return (st==='รอพิจารณา'||st==='รอประเมิน'||st==='มอบหมายแล้ว')&&
+           assignCodes.indexOf(String(p.project_code||'').trim())!==-1;
+  });
+  if(!reviewProjects.length){ openLinePushModal(username,''); return; }
+  var overlay=document.getElementById('modal-line-project-pick');
+  if(!overlay){
+    overlay=document.createElement('div');
+    overlay.id='modal-line-project-pick';
+    overlay.className='modal-overlay';
+    overlay.onclick=function(e){ if(e.target===this) this.remove(); };
+    document.body.appendChild(overlay);
+  }
+  var u=(S.allUsers||[]).find(function(x){return x.username===username;})||{};
+  var opts=reviewProjects.map(function(p){
+    return '<option value="'+escAttr(p.project_code)+'">'+
+      esc(p.project_code)+' \u2014 '+esc(String(p.title_th||p.project_code).substring(0,45))+
+      '  ('+esc(p.status)+')</option>';
+  }).join('');
+  overlay.setAttribute('data-pick-user', username);
+  overlay.innerHTML=
+    '<div class="modal" style="max-width:430px">'+
+      '<div class="modal-header" style="background:linear-gradient(135deg,#06c755,#04a344)">'+
+        '<h3 style="color:#fff">\ud83d\udcf2 \u0e2a\u0e48\u0e07 LINE \u2014 \u0e40\u0e25\u0e37\u0e2d\u0e01\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23</h3>'+
+        '<button class="modal-close" style="color:#fff;opacity:.8" onclick="document.getElementById(\'modal-line-project-pick\').remove()">\u2715</button>'+
+      '</div>'+
+      '<div class="modal-body">'+
+        '<div style="background:#e8faf0;border:1.5px solid #a8e6c0;border-radius:var(--radius);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">'+
+          '<div style="font-size:22px">\ud83d\udcac</div>'+
+          '<div><div style="font-weight:700;color:#04a344">'+esc(u.name||username)+'</div>'+
+          '<div style="font-size:11px;color:var(--text-light)">'+esc(username)+'</div></div>'+
+        '</div>'+
+        '<div class="field-group" style="margin-bottom:0">'+
+          '<label>\ud83d\udccb \u0e41\u0e19\u0e1a\u0e44\u0e1f\u0e25\u0e4c\u0e08\u0e32\u0e01\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23 <span style="font-size:11px;font-weight:400;color:var(--text-light)">(\u0e44\u0e1f\u0e25\u0e4c\u0e08\u0e32\u0e01\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23\u0e17\u0e35\u0e48\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e08\u0e30\u0e42\u0e2b\u0e25\u0e14\u0e43\u0e2b\u0e49\u0e2d\u0e31\u0e15\u0e42\u0e19\u0e21\u0e31\u0e15\u0e34)</span></label>'+
+          '<select id="line-project-pick-select" class="form-control">'+
+            '<option value="">\u2014 \u0e44\u0e21\u0e48\u0e1c\u0e39\u0e01\u0e01\u0e31\u0e1a\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23 (\u0e2a\u0e48\u0e07\u0e17\u0e31\u0e48\u0e27\u0e44\u0e1b) \u2014</option>'+
+            opts+
+          '</select>'+
+        '</div>'+
+      '</div>'+
+      '<div class="modal-footer">'+
+        '<button class="btn btn-outline" onclick="document.getElementById(\'modal-line-project-pick\').remove()">\u0e22\u0e01\u0e40\u0e25\u0e34\u0e01</button>'+
+        '<button class="btn btn-primary" style="background:#06c755;border-color:#06c755" onclick="_confirmLinePushWithProject()">\ud83d\udcf2 \u0e40\u0e1b\u0e34\u0e14\u0e2b\u0e19\u0e49\u0e32\u0e2a\u0e48\u0e07 LINE</button>'+
+      '</div>'+
+    '</div>';
+  overlay.style.display='flex';
+}
+function _confirmLinePushWithProject(){
+  var overlay=document.getElementById('modal-line-project-pick');
+  var username=overlay?overlay.getAttribute('data-pick-user'):'';
+  var sel=document.getElementById('line-project-pick-select');
+  var projectCode=sel?sel.value:'';
+  if(overlay) overlay.remove();
+  openLinePushModal(username, projectCode);
+}
+
 function openLinePushModal(username, projectCode) {
   var u=(S.allUsers||[]).find(function(x){return x.username===username;});
   if(!u){showToast('ไม่พบข้อมูล','error');return;}
@@ -6650,11 +6756,10 @@ function openLinePushModal(username, projectCode) {
   document.getElementById('line-push-file-input').value='';
   _linePushFiles=[];
   _linePushDriveFiles=[];
-  // ซ่อน Drive section ก่อน
   var driveSection=document.getElementById('line-push-drive-section');
   var driveList=document.getElementById('line-push-drive-list');
-  if(driveSection){ driveSection.style.display='none'; driveList.innerHTML=''; }
-  // โหลดไฟล์จาก Drive ถ้ามี projectCode — ดาวน์โหลดตรง ไม่ต้องขอ permission
+  if(driveSection){ driveSection.style.display='none'; if(driveList) driveList.innerHTML=''; }
+  // ✅ โหลดไฟล์จาก Drive ถ้ามี projectCode (แสดงให้เลือกโดยไม่ต้องอัพโหลดซ้ำ)
   if(projectCode){
     google.script.run
       .withSuccessHandler(function(res){
@@ -6731,7 +6836,7 @@ function doLinePushSingle() {
   var btnType=document.getElementById('line-push-btntype').value;
   if(!title){showToast('กรุณากรอกหัวเรื่อง','error');return;}
   if(!body_){showToast('กรุณากรอกรายละเอียด','error');return;}
-  // ✅ ไฟล์จาก Drive — ส่งแค่ fileId, GAS สร้าง downloadUrl เอง ไม่ต้องขอ permission
+  // ✅ ไฟล์จาก Drive — ส่งแค่ fileId, GAS สร้าง downloadUrl (uc?export=download) เอง
   var driveFileIds=(_linePushDriveFiles||[]).filter(function(f){return f.checked&&f.id;}).map(function(f){return f.id;});
   var atts=_linePushFiles.map(function(f){return{name:f.name,b64:f.b64,mimeType:f.mimeType};});
   var totalFiles=driveFileIds.length+atts.length;
@@ -6743,13 +6848,13 @@ function doLinePushSingle() {
       btn.disabled=false; btn.textContent='📲 ส่ง LINE';
       if(res&&res.success){
         var note=res.filesTotal>0&&res.filesAttached<res.filesTotal?('⚠️ ส่งสำเร็จ แต่แนบไฟล์ได้ '+res.filesAttached+'/'+res.filesTotal+' ไฟล์'):'✅ ส่ง LINE สำเร็จ';
-        showToast(note, res.filesTotal>0&&res.filesAttached<res.filesTotal?'error':'success');
+        showToast(note,res.filesTotal>0&&res.filesAttached<res.filesTotal?'error':'success');
         _linePushFiles=[]; _linePushDriveFiles=[]; closeModal('modal-line-push');
       } else showToast('ส่งไม่สำเร็จ: '+esc((res||{}).message||''),'error');
     }).catch(function(e){btn.disabled=false;btn.textContent='📲 ส่ง LINE';showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error');});
 }
 
-// ── Broadcast ─────────────────────────────────────────────────
+// ── Broadcast file helpers ────────────────────────────────────
 function handleBcFileSelect(files){ _addBcFiles(files); }
 function handleBcFileDrop(files){ _addBcFiles(files); }
 function _addBcFiles(files) {
@@ -6767,8 +6872,7 @@ function _renderBcFileList() {
   el.innerHTML=_lineBcFiles.map(function(f,i){
     var ext=(f.name.split('.').pop()||'').toLowerCase();
     return '<div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:#f9fbf9;border:1px solid #d0eeda;border-radius:6px">'+
-      '<span>'+(icons[ext]||'📎')+'</span>'+
-      '<div style="flex:1;min-width:0;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(f.name)+'</div>'+
+      '<span>'+(icons[ext]||'📎')+'</span><div style="flex:1;min-width:0;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(f.name)+'</div>'+
       '<span style="font-size:11px;color:var(--text-light)">'+Math.round(f.size/1024)+'KB</span>'+
       '<button onclick="_removeBcFile('+i+')" style="background:none;border:none;cursor:pointer;color:var(--text-light);font-size:14px">✕</button></div>';
   }).join('');
