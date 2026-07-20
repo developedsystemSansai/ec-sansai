@@ -554,7 +554,7 @@ button{font-family:inherit;cursor:pointer}
 /* Type cards — 2px top accent */
 .rs-card.rs-exempt   {border-top:2px solid var(--n400);padding-top:calc(1rem - 1px)}
 /* ── Recent Projects List ────────────────── */
-.rp-section{margin-top:1.5rem}
+.rp-section{margin-top:1.5rem;margin-bottom:2.5rem}
 .rp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
 .rp-title{font-size:.85rem;font-weight:700;color:var(--n600);letter-spacing:.04em;text-transform:uppercase}
 .rp-list{display:flex;flex-direction:column;gap:0;border:1px solid var(--n100);border-radius:.75rem;overflow:hidden;background:#fff}
@@ -652,7 +652,7 @@ button{font-family:inherit;cursor:pointer}
 }
 
 /* ── Recent Projects List ────────────────── */
-.rp-section{margin-top:1.5rem}
+.rp-section{margin-top:1.5rem;margin-bottom:2.5rem}
 .rp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
 .rp-title{font-size:.85rem;font-weight:700;color:var(--n600,#546e7a);letter-spacing:.04em;text-transform:uppercase}
 .rp-list{display:flex;flex-direction:column;border:1px solid var(--n100,#e0e0e0);border-radius:.75rem;overflow:hidden;background:#fff}
@@ -1805,7 +1805,6 @@ CAL.init();
       // escape สำหรับ HTML
       function hesc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
       return '<div class="rp-row">'+
-        '<div class="rp-code">'+hesc(code)+'</div>'+
         '<div class="rp-body">'+
           '<div class="rp-name">'+hesc(title)+'</div>'+
           '<div class="rp-tags">'+
