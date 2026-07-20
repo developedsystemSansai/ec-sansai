@@ -494,7 +494,17 @@ function barRows(obj, labelMap) {
   }).join('');
 }
 
-/* ตำแหน่งผู้ยื่นโครงการเป็น free text ไม่ fix จำนวนรายการ จึงรับเป็น array [{position,total}] ที่เรียงมากไปน้อยแล้วจาก backend */
+/* ตำแหน่งผู้ยื่นโครงการเป็น free text ไม่ fix จำนวนรายการ backend เรียงมากไปน้อยมาให้แล้ว
+   ฝั่งนี้โชว์แค่ 4 อันดับแรก ที่เหลือรวมเป็น "อื่นๆ" กันแถบยาวเกะกะเมื่อมีตำแหน่งหลากหลาย */
+function topNPlusOthers(arr, n) {
+  if (!arr || !arr.length) return [];
+  if (arr.length <= n) return arr;
+  var top = arr.slice(0, n);
+  var restTotal = arr.slice(n).reduce(function (sum, x) { return sum + x.total; }, 0);
+  if (restTotal > 0) top.push({ position: 'อื่นๆ', total: restTotal });
+  return top;
+}
+
 function barRowsFromArray(arr) {
   if (!arr || !arr.length) return '<div class="trk-state">ไม่มีข้อมูล</div>';
   var max = Math.max.apply(null, arr.map(function (x) { return x.total; }).concat([1]));
