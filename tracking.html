@@ -166,7 +166,8 @@ button{font-family:inherit;cursor:pointer;background:none;border:none}
   box-shadow:0 1px 6px rgba(11,31,53,.05)}
 .an-box h4{font-family:var(--ffs);font-size:.92rem;font-weight:700;color:var(--n800);margin-bottom:1rem}
 .an-bar-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem}
-.an-bar-lbl{width:96px;flex-shrink:0;font-size:.76rem;color:var(--u600,var(--u500))}
+.an-bar-lbl{width:150px;flex-shrink:0;font-size:.76rem;color:var(--u600,var(--u500));line-height:1.3}
+.an-box.wide{grid-column:1 / -1}
 .an-bar-track{flex:1;height:9px;background:var(--u100);border-radius:5px;overflow:hidden}
 .an-bar-fill{height:100%;background:linear-gradient(90deg,var(--g500),var(--g400));border-radius:5px;
   transition:width .5s var(--ease)}
@@ -460,7 +461,6 @@ document.addEventListener('DOMContentLoaded', function () {
 var reviewTypeLbl = { exempt: 'Exempt', expedited: 'Expedited', fullboard: 'Full Board', unspecified: 'ไม่ระบุ' };
 var statusLbl = { active: 'อยู่ระหว่างพิจารณา', approved: 'ผ่านการพิจารณา', closed: 'ปิด/ยกเลิก' };
 var sourceLbl = { internal: 'ผู้วิจัยภายใน รพ.สันทราย', external: 'ผู้วิจัยภายนอก/สถาบันอื่น' };
-var professionLbl = { physician: 'แพทย์', nurse: 'พยาบาล', dentist: 'ทันตแพทย์', pharmacist: 'เภสัชกร', other: 'อื่น ๆ' };
 
 function loadAnalytics() {
   var content = document.getElementById('an-content');
@@ -490,6 +490,20 @@ function barRows(obj, labelMap) {
       '<div class="an-bar-lbl">' + hesc(labelMap[x.key] || x.key) + '</div>' +
       '<div class="an-bar-track"><div class="an-bar-fill" style="width:' + pct + '%"></div></div>' +
       '<div class="an-bar-val">' + x.val + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ตำแหน่งผู้ยื่นโครงการเป็น free text ไม่ fix จำนวนรายการ จึงรับเป็น array [{position,total}] ที่เรียงมากไปน้อยแล้วจาก backend */
+function barRowsFromArray(arr) {
+  if (!arr || !arr.length) return '<div class="trk-state">ไม่มีข้อมูล</div>';
+  var max = Math.max.apply(null, arr.map(function (x) { return x.total; }).concat([1]));
+  return arr.map(function (x) {
+    var pct = Math.round((x.total / max) * 100);
+    return '<div class="an-bar-row">' +
+      '<div class="an-bar-lbl">' + hesc(x.position) + '</div>' +
+      '<div class="an-bar-track"><div class="an-bar-fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="an-bar-val">' + x.total + '</div>' +
     '</div>';
   }).join('');
 }
@@ -528,7 +542,7 @@ function renderAnalytics(d) {
       '<div class="an-box"><h4>ประเภทการพิจารณา</h4>' + barRows(d.byReviewType || {}, reviewTypeLbl) + '</div>' +
       '<div class="an-box"><h4>สถานะโครงการ</h4>' + barRows(d.byStatusBucket || {}, statusLbl) + '</div>' +
       '<div class="an-box"><h4>แหล่งที่มาของผู้วิจัย</h4>' + barRows(d.bySource || {}, sourceLbl) + '</div>' +
-      '<div class="an-box"><h4>วิชาชีพผู้วิจัยหลัก (โดยประมาณ)</h4>' + barRows(d.byProfession || {}, professionLbl) + '</div>' +
+      '<div class="an-box wide"><h4>ตำแหน่งของผู้ยื่นโครงการ</h4>' + barRowsFromArray(d.byPosition || []) + '</div>' +
     '</div>';
 }
 
