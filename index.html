@@ -670,44 +670,26 @@ button{font-family:inherit;cursor:pointer}
 .rp-tag-status{background:#f5f5f5;color:#78909c}
 .rp-empty{text-align:center;padding:1.5rem;font-size:.8rem;color:var(--n400,#9e9e9e)}
 
-/* ── Tracking / Status Dashboard ─────────────────────── */
-.trk-card{background:#fff;border:1px solid var(--n100);border-radius:1rem;padding:1.5rem;box-shadow:0 1px 3px rgba(11,31,53,.05)}
-.trk-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;border-bottom:1px solid var(--n100)}
-.trk-tab{appearance:none;background:none;border:none;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:700;color:var(--n400);padding:.7rem 1rem;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s}
-.trk-tab:hover{color:var(--n700)}
-.trk-tab.active{color:var(--n800);border-bottom-color:var(--g500)}
-.trk-panel{display:none}
-.trk-panel.active{display:block}
+/* ── Tracking CTA (ลิงก์ไปหน้าติดตามสถานะแยกต่างหาก) ── */
+.trk-cta{display:flex;align-items:center;gap:1.5rem;background:#fff;
+  border:1px solid var(--n100);border-radius:1rem;padding:1.75rem 2rem;
+  box-shadow:0 1px 3px rgba(11,31,53,.05);transition:box-shadow .2s var(--ease),
+  border-color .2s var(--ease),transform .2s var(--ease)}
+.trk-cta:hover{box-shadow:0 8px 24px rgba(11,31,53,.1);border-color:var(--g400);
+  transform:translateY(-2px)}
+.trk-cta-ico{flex-shrink:0;width:56px;height:56px;border-radius:.85rem;
+  background:var(--n900);color:var(--g400);display:flex;align-items:center;
+  justify-content:center;font-size:1.4rem}
+.trk-cta-body{flex:1;min-width:0}
+.trk-cta-body h3{font-family:var(--ffs);font-size:1.05rem;font-weight:700;
+  color:var(--n800);margin-bottom:.4rem}
+.trk-cta-body p{font-size:.82rem;color:var(--u500);line-height:1.75;max-width:64ch}
+.trk-cta-arrow{flex-shrink:0;width:38px;height:38px;border-radius:50%;
+  border:1.5px solid var(--n100);color:var(--n700);display:flex;align-items:center;
+  justify-content:center;font-size:1.05rem;transition:background .2s,border-color .2s,color .2s}
+.trk-cta:hover .trk-cta-arrow{background:var(--g500);border-color:var(--g500);color:var(--n900)}
+@media(max-width:640px){.trk-cta{flex-wrap:wrap;padding:1.4rem}}
 
-.trk-search-row{display:flex;gap:.6rem;flex-wrap:wrap}
-.trk-input{flex:1;min-width:220px;border:1px solid var(--n100);border-radius:.6rem;padding:.7rem .9rem;font-family:inherit;font-size:.85rem;color:var(--n800)}
-.trk-input:focus{outline:none;border-color:var(--g500)}
-.trk-search-hint{font-size:.72rem;color:var(--n400);margin-top:.5rem}
-.trk-results{margin-top:1.25rem}
-.trk-msg{text-align:center;padding:1.5rem;font-size:.82rem;color:var(--n400)}
-.trk-msg.err{color:#b71c1c}
-
-.trk-filters{display:flex;flex-direction:column;gap:1rem;margin-bottom:1.5rem}
-.trk-filter-row{display:flex;flex-wrap:wrap;gap:1.25rem;align-items:flex-start}
-.trk-filter-group{min-width:180px}
-.trk-filter-lbl{font-size:.72rem;font-weight:700;color:var(--n600);text-transform:uppercase;letter-spacing:.03em;margin-bottom:.4rem;display:block}
-.trk-select{border:1px solid var(--n100);border-radius:.5rem;padding:.5rem .7rem;font-family:inherit;font-size:.82rem;color:var(--n800);background:#fff;min-width:160px}
-.trk-chip-group{display:flex;flex-wrap:wrap;gap:.4rem}
-.trk-chip{appearance:none;cursor:pointer;font-family:inherit;font-size:.75rem;font-weight:600;border:1px solid var(--n100);background:#fff;color:var(--n600);border-radius:999px;padding:.35rem .8rem;transition:all .15s}
-.trk-chip:hover{border-color:var(--n400)}
-.trk-chip.active{background:var(--n800);border-color:var(--n800);color:#fff}
-
-.trk-total-card{display:flex;align-items:baseline;gap:.6rem;background:var(--n50);border-radius:.75rem;padding:1rem 1.25rem;margin-bottom:1.5rem}
-.trk-total-val{font-size:1.8rem;font-weight:800;color:var(--n800)}
-.trk-total-lbl{font-size:.78rem;color:var(--n600)}
-.trk-total-note{font-size:.68rem;color:var(--n400);margin-left:auto}
-
-.trk-breakdown-ttl{font-size:.78rem;font-weight:700;color:var(--n700);margin:1.25rem 0 .6rem}
-.trk-bar-row{display:flex;align-items:center;gap:.7rem;padding:.35rem 0;font-size:.78rem}
-.trk-bar-lbl{width:150px;flex-shrink:0;color:var(--n700);font-weight:600}
-.trk-bar-track{flex:1;height:8px;background:var(--n100);border-radius:99px;overflow:hidden}
-.trk-bar-fill{height:100%;background:var(--g500);border-radius:99px;transition:width .4s}
-.trk-bar-val{width:70px;flex-shrink:0;text-align:right;color:var(--n600);font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -735,7 +717,7 @@ button{font-family:inherit;cursor:pointer}
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         คู่มือ
       </button>
-      <a class="btn btn-ghost" href="#tracking">
+      <a class="btn btn-ghost" href="tracking.html">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         ติดตามสถานะโครงการ
       </a>
@@ -1042,74 +1024,14 @@ button{font-family:inherit;cursor:pointer}
       <p class="sec-dsc">ค้นหาโครงการของท่านด้วยอีเมลที่ใช้ยื่น หรือดูภาพรวมสถานะโครงการวิจัยทั้งหมดในระบบ</p>
     </div>
 
-    <div class="trk-card rev">
-      <div class="trk-tabs" role="tablist">
-        <button class="trk-tab active" id="trk-tab-search" role="tab" aria-selected="true" onclick="trkSwitchTab('search')"><i class="ti ti-search" aria-hidden="true"></i> ค้นหาโครงการของฉัน</button>
-        <button class="trk-tab" id="trk-tab-status" role="tab" aria-selected="false" onclick="trkSwitchTab('status')"><i class="ti ti-chart-bar" aria-hidden="true"></i> สถานะโครงการวิจัย</button>
+    <a href="tracking.html" class="trk-cta rev" aria-label="ไปที่หน้าติดตามสถานะโครงการวิจัย">
+      <div class="trk-cta-ico" aria-hidden="true"><i class="ti ti-chart-bar"></i></div>
+      <div class="trk-cta-body">
+        <h3>ค้นหาและติดตามสถานะโครงการของท่าน</h3>
+        <p>กรอกอีเมลที่ใช้ยื่นเพื่อดูสถานะโครงการของท่าน หรือดูภาพรวมสถิติโครงการทั้งหมดในระบบ แยกตามปี ประเภทการพิจารณา และแหล่งที่มาของผู้วิจัย</p>
       </div>
-
-      <!-- ── Tab 1: ค้นหาด้วยอีเมล ───────────────────────────── -->
-      <div class="trk-panel active" id="trk-panel-search" role="tabpanel">
-        <div class="trk-search-row">
-          <input type="email" class="trk-input" id="trk-email-input" placeholder="กรอกอีเมลที่ใช้ยื่นโครงการ เช่น sansai@gmail.com" autocomplete="email">
-          <button class="btn btn-gold" id="trk-search-btn" onclick="trkSearchByEmail()">ค้นหา</button>
-        </div>
-        <div class="trk-search-hint">ระบบจะแสดงเฉพาะโครงการที่ยื่นด้วยอีเมลที่ตรงกับที่กรอกเท่านั้น</div>
-        <div class="trk-results" id="trk-results"></div>
-      </div>
-
-      <!-- ── Tab 2: สถานะโครงการวิจัย (ภาพรวม/ตัวกรอง) ───────── -->
-      <div class="trk-panel" id="trk-panel-status" role="tabpanel">
-        <div class="trk-filters">
-          <div class="trk-filter-row">
-            <div class="trk-filter-group">
-              <span class="trk-filter-lbl">ปีโครงการ (พ.ศ.) / ปีงบประมาณ</span>
-              <select class="trk-select" id="trk-year-select" onchange="trkApplyFilters()">
-                <option value="">เลือกปี — ทั้งหมด</option>
-              </select>
-            </div>
-            <div class="trk-filter-group">
-              <span class="trk-filter-lbl">สถานะโครงการ (การพิจารณา)</span>
-              <select class="trk-select" id="trk-status-select" onchange="trkApplyFilters()">
-                <option value="">ทั้งหมด</option>
-                <option value="active">กำลังพิจารณา</option>
-                <option value="approved">ได้รับการรับรอง</option>
-                <option value="closed">ปิดโครงการ</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="trk-filter-group">
-            <span class="trk-filter-lbl">ประเภทการพิจารณา</span>
-            <div class="trk-chip-group" id="trk-reviewtype-chips">
-              <button class="trk-chip active" data-val="">ทั้งหมด</button>
-              <button class="trk-chip" data-val="Exemption">Exemption</button>
-              <button class="trk-chip" data-val="Expedited">Expedited</button>
-              <button class="trk-chip" data-val="Full Board">Full Board</button>
-              <button class="trk-chip" data-val="รอพิจารณา / ไม่ระบุ">รอพิจารณา / ไม่ระบุ</button>
-            </div>
-          </div>
-
-          <div class="trk-filter-group">
-            <span class="trk-filter-lbl">แหล่งที่มา (ประเภทผู้วิจัย)</span>
-            <div class="trk-chip-group" id="trk-source-chips">
-              <button class="trk-chip active" data-val="">ทั้งหมด</button>
-              <button class="trk-chip" data-val="บุคลากรภายใน">บุคลากรภายใน</button>
-              <button class="trk-chip" data-val="บุคคลภายนอก">บุคคลภายนอก</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="trk-total-card">
-          <span class="trk-total-val" id="trk-total-val">—</span>
-          <span class="trk-total-lbl">โครงการทั้งหมด</span>
-          <span class="trk-total-note">อ้างอิงตามเงื่อนไขการค้นหาปัจจุบัน</span>
-        </div>
-
-        <div class="trk-breakdown-ttl">สัดส่วนวิชาชีพผู้วิจัย</div>
-        <div id="trk-profession-bars"><div class="trk-msg">กำลังโหลด...</div></div>
-      </div>
-    </div>
+      <div class="trk-cta-arrow" aria-hidden="true"><i class="ti ti-arrow-right"></i></div>
+    </a>
   </div>
 </section>
 
@@ -1949,178 +1871,6 @@ CAL.init();
 
   loadStats();
 })();
-
-/* ══════════════════════════════════════════════════════════════
-   TRACKING / STATUS DASHBOARD — ค้นหาด้วยอีเมล + แดชบอร์ดสถานะ
-══════════════════════════════════════════════════════════════ */
-function trkSwitchTab(name) {
-  var isSearch = name === 'search';
-  document.getElementById('trk-tab-search').classList.toggle('active', isSearch);
-  document.getElementById('trk-tab-search').setAttribute('aria-selected', isSearch);
-  document.getElementById('trk-tab-status').classList.toggle('active', !isSearch);
-  document.getElementById('trk-tab-status').setAttribute('aria-selected', !isSearch);
-  document.getElementById('trk-panel-search').classList.toggle('active', isSearch);
-  document.getElementById('trk-panel-status').classList.toggle('active', !isSearch);
-  if (!isSearch) trkLoadAnalytics();
-}
-
-function trkSearchByEmail() {
-  var input = document.getElementById('trk-email-input');
-  var btn = document.getElementById('trk-search-btn');
-  var resultsEl = document.getElementById('trk-results');
-  var email = (input.value || '').trim();
-
-  if (!email || email.indexOf('@') === -1) {
-    resultsEl.innerHTML = '<div class="trk-msg err">กรุณากรอกอีเมลให้ถูกต้อง</div>';
-    return;
-  }
-  if (!GAS_URL) { resultsEl.innerHTML = '<div class="trk-msg err">ไม่พบการตั้งค่าระบบ</div>'; return; }
-
-  btn.disabled = true;
-  var origLabel = btn.textContent;
-  btn.textContent = 'กำลังค้นหา...';
-  resultsEl.innerHTML = '<div class="trk-msg">กำลังค้นหา...</div>';
-
-  fetch(GAS_URL, {
-    method: 'POST', headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: 'getProjectTrackingByEmail', email: email, origin: window.location.origin })
-  })
-    .then(function(r) { return r.text(); })
-    .then(function(txt) {
-      var s = txt.indexOf('{'), e = txt.lastIndexOf('}');
-      if (s === -1 || e <= s) throw new Error('no JSON');
-      var res = JSON.parse(txt.substring(s, e + 1));
-      if (!res || !res.success) {
-        resultsEl.innerHTML = '<div class="trk-msg err">' + escH(res && res.message ? res.message : 'ไม่สามารถค้นหาได้') + '</div>';
-        return;
-      }
-      var data = res.data || [];
-      if (!data.length) {
-        resultsEl.innerHTML = '<div class="trk-msg">ไม่พบโครงการที่ยื่นด้วยอีเมลนี้ กรุณาตรวจสอบอีเมลอีกครั้ง หรือติดต่อเจ้าหน้าที่</div>';
-        return;
-      }
-      var tagClass = { 'Exempt':'rp-tag-exempt','Expedited':'rp-tag-expedited','Full Board':'rp-tag-fullboard' };
-      var rows = data.map(function(p) {
-        var tc = tagClass[p.review_type] || 'rp-tag-status';
-        return '<div class="rp-row">'
-          + '<div class="rp-body">'
-          +   '<div class="rp-name" style="white-space:normal">' + escH(p.title_th) + '</div>'
-          +   '<div class="rp-tags">'
-          +     (p.review_type ? '<span class="rp-tag ' + tc + '">' + escH(p.review_type) + '</span>' : '')
-          +     '<span class="rp-tag rp-tag-status">' + escH(p.status) + '</span>'
-          +     (p.created_date ? '<span class="rp-tag rp-tag-status">ยื่นเมื่อ ' + escH(p.created_date) + '</span>' : '')
-          +   '</div>'
-          + '</div>'
-          + '</div>';
-      }).join('');
-      resultsEl.innerHTML = '<div class="rp-list">' + rows + '</div>';
-    })
-    .catch(function() {
-      resultsEl.innerHTML = '<div class="trk-msg err">ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่อีกครั้ง</div>';
-    })
-    .finally(function() {
-      btn.disabled = false;
-      btn.textContent = origLabel;
-    });
-}
-
-// รองรับการกด Enter ในช่องอีเมล
-document.addEventListener('DOMContentLoaded', function() {
-  var input = document.getElementById('trk-email-input');
-  if (input) input.addEventListener('keydown', function(ev) { if (ev.key === 'Enter') trkSearchByEmail(); });
-
-  // toggle chip filters (single-select ในแต่ละกลุ่ม)
-  ['trk-reviewtype-chips', 'trk-source-chips'].forEach(function(groupId) {
-    var group = document.getElementById(groupId);
-    if (!group) return;
-    group.addEventListener('click', function(ev) {
-      var chip = ev.target.closest('.trk-chip');
-      if (!chip) return;
-      group.querySelectorAll('.trk-chip').forEach(function(c) { c.classList.remove('active'); });
-      chip.classList.add('active');
-      trkApplyFilters();
-    });
-  });
-});
-
-var _trkAnalyticsData = null;
-
-function trkLoadAnalytics() {
-  var barsEl = document.getElementById('trk-profession-bars');
-  if (_trkAnalyticsData) { trkApplyFilters(); return; }
-  if (!GAS_URL) { barsEl.innerHTML = '<div class="trk-msg err">ไม่พบการตั้งค่าระบบ</div>'; return; }
-
-  fetch(GAS_URL, {
-    method: 'POST', headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: 'getPublicProjectAnalytics', origin: window.location.origin })
-  })
-    .then(function(r) { return r.text(); })
-    .then(function(txt) {
-      var s = txt.indexOf('{'), e = txt.lastIndexOf('}');
-      if (s === -1 || e <= s) throw new Error('no JSON');
-      var res = JSON.parse(txt.substring(s, e + 1));
-      if (!res || !res.success) { barsEl.innerHTML = '<div class="trk-msg err">ไม่สามารถโหลดข้อมูลได้</div>'; return; }
-      _trkAnalyticsData = res.data || [];
-
-      // เติมตัวเลือกปีจากข้อมูลจริง (เรียงใหม่สุดก่อน)
-      var years = Array.from(new Set(_trkAnalyticsData.map(function(d) { return d.year; }).filter(Boolean))).sort(function(a, b) { return b - a; });
-      var yearSelect = document.getElementById('trk-year-select');
-      years.forEach(function(y) {
-        var opt = document.createElement('option');
-        opt.value = y; opt.textContent = 'พ.ศ. ' + y;
-        yearSelect.appendChild(opt);
-      });
-
-      trkApplyFilters();
-    })
-    .catch(function() {
-      barsEl.innerHTML = '<div class="trk-msg err">ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่อีกครั้ง</div>';
-    });
-}
-
-function trkApplyFilters() {
-  if (!_trkAnalyticsData) return;
-  var year = document.getElementById('trk-year-select').value;
-  var statusBucket = document.getElementById('trk-status-select').value;
-  var reviewTypeChip = document.querySelector('#trk-reviewtype-chips .trk-chip.active');
-  var sourceChip = document.querySelector('#trk-source-chips .trk-chip.active');
-  var reviewType = reviewTypeChip ? reviewTypeChip.getAttribute('data-val') : '';
-  var source = sourceChip ? sourceChip.getAttribute('data-val') : '';
-
-  var filtered = _trkAnalyticsData.filter(function(d) {
-    if (year && String(d.year) !== String(year)) return false;
-    if (statusBucket && d.status_bucket !== statusBucket) return false;
-    if (reviewType && d.review_type !== reviewType) return false;
-    if (source && d.source !== source) return false;
-    return true;
-  });
-
-  document.getElementById('trk-total-val').textContent = filtered.length.toLocaleString('th-TH');
-
-  // สัดส่วนวิชาชีพผู้วิจัย
-  var counts = {};
-  filtered.forEach(function(d) {
-    var k = d.profession || 'ไม่ระบุ';
-    counts[k] = (counts[k] || 0) + 1;
-  });
-  var entries = Object.keys(counts).map(function(k) { return [k, counts[k]]; }).sort(function(a, b) { return b[1] - a[1]; });
-  var barsEl = document.getElementById('trk-profession-bars');
-
-  if (!entries.length) {
-    barsEl.innerHTML = '<div class="trk-msg">ไม่พบโครงการตามเงื่อนไขที่เลือก</div>';
-    return;
-  }
-  var max = entries[0][1];
-  barsEl.innerHTML = entries.map(function(e) {
-    var pct = max ? Math.round((e[1] / max) * 100) : 0;
-    return '<div class="trk-bar-row">'
-      + '<div class="trk-bar-lbl">' + escH(e[0]) + '</div>'
-      + '<div class="trk-bar-track"><div class="trk-bar-fill" style="width:' + pct + '%"></div></div>'
-      + '<div class="trk-bar-val">' + e[1].toLocaleString('th-TH') + ' โครงการ</div>'
-      + '</div>';
-  }).join('');
-}
-
 
 function ecDmOpen() {
   var overlay = document.getElementById('ecDocModal');
