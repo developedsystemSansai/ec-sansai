@@ -4570,7 +4570,7 @@ function buildStaffDashboardList(projects) {
         renderPublicRecentProjects(S.staffProjects); return;
       }
       el.innerHTML='<div class="empty-state"><div class="spin-sm dark" style="width:24px;height:24px;margin:auto"></div></div>';
-      fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
+      fetch(window.EC_CONFIG.GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
         body:JSON.stringify({action:'getPublicRecentProjects',origin:window.location.origin})})
         .then(function(r){return r.text();})
         .then(function(txt){
