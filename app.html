@@ -1825,16 +1825,20 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                 <span class="faq-arrow">▼</span>
               </button>
               <div class="faq-a"><div class="faq-a-inner">
-                เอกสารบังคับ (10 รายการ):
+                เอกสารบังคับ (4 รายการ):
                 <ul>
                   <li>IS.09 — แบบเสนอโครงการวิจัย</li>
                   <li>IS.01 — แบบยื่นขอรับการพิจารณาจริยธรรม</li>
                   <li>IS.02 — แบบประเมินตนเองโดยผู้วิจัย</li>
-       ข้อมูลคำอธิบายผู้รับการวิจัย</li>
+                  <li>IS.03 — แบบเปิดเผยผลประโยชน์ทับซ้อน</li>
+                </ul>
+                เอกสารอื่นๆ (ไม่บังคับ แนบเพิ่มได้ตามความเหมาะสมของโครงการ):
+                <ul>
+                  <li>IS.04 — เอกสารข้อมูลคำอธิบายผู้รับการวิจัย</li>
                   <li>IS.05 — เอกสารแสดงความยินยอม</li>
-                  <li>หลักฐานผ่านการอบรม GCP/ICH</li>
                   <li>เครื่องมือที่ใช้ในการวิจัย</li>
                   <li>หนังสือนำส่งจากหน่วยงาน</li>
+                  <li>หลักฐานผ่านการอบรม GCP/ICH และเอกสารอื่นๆ</li>
                 </ul>
                 <div class="info-box">ℹ️ ดาวน์โหลดแบบฟอร์มได้จากเมนู "📑 ดาวน์โหลดแบบฟอร์ม"</div>
               </div></div>
@@ -7273,15 +7277,15 @@ function doQuickAssign(){
       {type:'proposal',      label:'IS.09 — แบบเสนอโครงการวิจัย',               accept:'.docx,.pdf'},
       {type:'ethics_form',   label:'IS.01 — แบบยื่นขอรับการพิจารณาจริยธรรม',    accept:'.docx,.pdf'},
       {type:'self_assessment',label:'IS.02 — แบบประเมินตนเองโดยผู้วิจัย',       accept:'.docx,.pdf'},
-      {type:'conflict_interest',label:'IS.03 — แบบเปิดเผยผลประโยชน์ทับซ้อน',   accept:'.docx,.pdf'},
-      {type:'participant_info',label:'IS.04 — เอกสารข้อมูลคำอธิบายผู้รับการวิจัย',accept:'.docx,.pdf'},
-      {type:'consent_form',  label:'IS.05 — เอกสารแสดงความยินยอม',              accept:'.docx,.pdf'},
-      {type:'research_tools',label:'เครื่องมือที่ใช้ในการวิจัย',                 accept:'.pdf,.docx'},
-      {type:'cover_letter',  label:'หนังสือนำส่งจากหน่วยงาน',                   accept:'.pdf'}
+      {type:'conflict_interest',label:'IS.03 — แบบเปิดเผยผลประโยชน์ทับซ้อน',   accept:'.docx,.pdf'}
     ];
 
     // [NEW] เอกสารอื่นๆ ไม่บังคับ
     var UPLOAD_SLOTS_OPTIONAL = [
+      {type:'participant_info',label:'IS.04 — เอกสารข้อมูลคำอธิบายผู้รับการวิจัย',accept:'.docx,.pdf'},
+      {type:'consent_form',  label:'IS.05 — เอกสารแสดงความยินยอม',              accept:'.docx,.pdf'},
+      {type:'research_tools',label:'เครื่องมือที่ใช้ในการวิจัย',                 accept:'.pdf,.docx'},
+      {type:'cover_letter',  label:'หนังสือนำส่งจากหน่วยงาน',                   accept:'.pdf'},
       {type:'gcp_certificate',label:'หลักฐานผ่านการอบรม GCP/ICHหรือการอบรมเกี่ยวกับมาตรฐานการวิจัย',               accept:'.pdf'},
       {type:'researcher_cv', label:'ประวัติผู้วิจัยหลัก (CV)',                   accept:'.pdf,.docx'},
       {type:'child_info_7_12',  label:'IS.06 — เอกสารสำหรับเด็กอายุ 7-12 ปี',   accept:'.docx,.pdf'},
@@ -7300,8 +7304,8 @@ function doQuickAssign(){
       {no:1,code:'IS.01',title:'แบบยื่นขอรับการพิจารณาจริยธรรมการวิจัย',type:'ethics_form',required:true,url:'https://docs.google.com/document/d/1dNOuCPj9AkPcKqtNJyJoDd2G9B9Udt_o/edit'},
       {no:2,code:'IS.02',title:'แบบฟอร์มการประเมินตนเองโดยผู้วิจัย',type:'self_assessment',required:true,url:'https://docs.google.com/document/d/1TrO-xB70lYFo7uAWwnKTzoe0e7cHYhw6/edit'},
       {no:3,code:'IS.03',title:'แบบฟอร์มเปิดเผยการมีผลประโยชน์ทับซ้อน',type:'conflict_interest',required:true,url:'https://docs.google.com/document/d/1A7HZKWhI0IkeLmmAXHcw6nYiDgEZxP2p/edit'},
-      {no:4,code:'IS.04',title:'เอกสารข้อมูลคำอธิบายสำหรับผู้รับการวิจัย',type:'participant_info',required:true,url:'https://docs.google.com/document/d/1REmHOc7s_QE_D_t7I6Yal36uOv1hXOtE/edit'},
-      {no:5,code:'IS.05',title:'เอกสารแสดงความยินยอมเข้าร่วมในโครงการวิจัย',type:'consent_form',required:true,url:'https://docs.google.com/document/d/12nOtioaUO0ARW7HdX3KnoJQvmTkmPD2J/edit'},
+      {no:4,code:'IS.04',title:'เอกสารข้อมูลคำอธิบายสำหรับผู้รับการวิจัย',type:'participant_info',required:false,url:'https://docs.google.com/document/d/1REmHOc7s_QE_D_t7I6Yal36uOv1hXOtE/edit'},
+      {no:5,code:'IS.05',title:'เอกสารแสดงความยินยอมเข้าร่วมในโครงการวิจัย',type:'consent_form',required:false,url:'https://docs.google.com/document/d/12nOtioaUO0ARW7HdX3KnoJQvmTkmPD2J/edit'},
       {no:9,code:'IS.09',title:'ฟอร์มแบบเสนอโครงการวิจัย',type:'proposal',required:true,url:'https://docs.google.com/document/d/1Meb-7MeuPW-GwcmUJYlw-VcEwbPTD0dM/edit'},
       {no:6,code:'IS.06',title:'เอกสารสำหรับเด็กอายุ 7-12 ปี',type:'child_info_7_12',required:false,url:'https://docs.google.com/document/d/1UPT1L_lKdcPlRTZtGrIkQKBBat42XYg5/edit'},
       {no:7,code:'IS.07',title:'เอกสารแสดงความยินยอมสำหรับเด็ก',type:'child_consent_7_12',required:false,url:'https://docs.google.com/document/d/1VFxmrSRZjyvd9SsOk_bkv4AHF2UPc0v0/edit'},
