@@ -729,7 +729,7 @@ button{font-family:inherit;cursor:pointer}
       <p>Human Research Ethics Committee · Sansai Hospital · เขตสุขภาพที่ 1 จ.เชียงใหม่</p>
     </div>
     <nav class="hdr-nav" aria-label="การดำเนินการหลัก">
-      <!-- ✅ ปุ่มคู่มือ — เปิด popup announcement อีกครั้ง -->
+      <!-- ปุ่มคู่มือ — เปิด popup announcement อีกครั้ง -->
       <button class="btn btn-guide" onclick="annOpen()" aria-label="เปิดคู่มือการใช้งาน" title="คู่มือการใช้งานระบบ">
         <span class="guide-dot" aria-hidden="true"></span>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
@@ -780,7 +780,7 @@ button{font-family:inherit;cursor:pointer}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             ปฏิทินการประชุม
           </a>
-          <!-- ✅ ลิงก์คู่มือใน hero -->
+          <!-- ลิงก์คู่มือใน hero -->
           <button class="btn btn-wht" onclick="annOpen()" style="opacity:.88">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
             คู่มือการใช้งาน
@@ -997,7 +997,7 @@ button{font-family:inherit;cursor:pointer}
       <!-- ── Recent Projects (public) ──────────────────────── -->
       <div class="rp-section rev" id="rp-section" style="display:none">
         <div class="rp-header">
-          <span class="rp-title">📋 โครงการที่อยู่ระหว่างการพิจารณา</span>
+          <span class="rp-title"><i class="ti ti-clipboard-list" aria-hidden="true"></i> โครงการที่อยู่ระหว่างการพิจารณา</span>
           <span style="font-size:.7rem;color:var(--n400)" id="rp-count"></span>
         </div>
         <div class="rp-list" id="rp-list">
@@ -1044,14 +1044,14 @@ button{font-family:inherit;cursor:pointer}
 
     <div class="trk-card rev">
       <div class="trk-tabs" role="tablist">
-        <button class="trk-tab active" id="trk-tab-search" role="tab" aria-selected="true" onclick="trkSwitchTab('search')">🔍 ค้นหาโครงการของฉัน</button>
-        <button class="trk-tab" id="trk-tab-status" role="tab" aria-selected="false" onclick="trkSwitchTab('status')">📊 สถานะโครงการวิจัย</button>
+        <button class="trk-tab active" id="trk-tab-search" role="tab" aria-selected="true" onclick="trkSwitchTab('search')"><i class="ti ti-search" aria-hidden="true"></i> ค้นหาโครงการของฉัน</button>
+        <button class="trk-tab" id="trk-tab-status" role="tab" aria-selected="false" onclick="trkSwitchTab('status')"><i class="ti ti-chart-bar" aria-hidden="true"></i> สถานะโครงการวิจัย</button>
       </div>
 
       <!-- ── Tab 1: ค้นหาด้วยอีเมล ───────────────────────────── -->
       <div class="trk-panel active" id="trk-panel-search" role="tabpanel">
         <div class="trk-search-row">
-          <input type="email" class="trk-input" id="trk-email-input" placeholder="กรอกอีเมลที่ใช้ยื่นโครงการ เช่น piyanong@gmail.com" autocomplete="email">
+          <input type="email" class="trk-input" id="trk-email-input" placeholder="กรอกอีเมลที่ใช้ยื่นโครงการ เช่น sansai@gmail.com" autocomplete="email">
           <button class="btn btn-gold" id="trk-search-btn" onclick="trkSearchByEmail()">ค้นหา</button>
         </div>
         <div class="trk-search-hint">ระบบจะแสดงเฉพาะโครงการที่ยื่นด้วยอีเมลที่ตรงกับที่กรอกเท่านั้น</div>
@@ -1484,7 +1484,7 @@ button{font-family:inherit;cursor:pointer}
 /* ─── CONFIG ──────────────────────────────────────────────────
    แก้ค่าที่นี่เท่านั้น
 ─────────────────────────────────────────────────────────────── */
-// ✅ แก้ใหม่
+// <i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> แก้ใหม่
 var GAS_URL = window.EC_CONFIG ? window.EC_CONFIG.GAS_URL : '';
 var APP_URL  = 'app.html';   /* path ของระบบ login/app */
 var NEWS_SHOW = 3;             /* จำนวนข่าวที่แสดง default */
@@ -1552,7 +1552,7 @@ var CAL = {
   /* ── fetch from GAS ── */
   fetchMeetings: function() {
     var self = this;
-    // ✅ แก้ใหม่
+    // <i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> แก้ใหม่
 var body = JSON.stringify({ action: 'getPublicMeetings', origin: window.location.origin });
 fetch(GAS_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body: body })
       .then(function(r) { return r.text(); })
@@ -1874,7 +1874,7 @@ CAL.init();
           var hh = now.getHours().toString().padStart(2,'0');
           var mm = now.getMinutes().toString().padStart(2,'0');
           setVal('rs-updated', 'อัปเดต ' + hh + ':' + mm + ' น.');
-          loadRecentProjects(); // ✅ โหลดรายชื่อโครงการหลังสถิติ
+          loadRecentProjects(); // <i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> โหลดรายชื่อโครงการหลังสถิติ
         } else {
           setVal('rs-total',    '—');
           setVal('rs-approved', '—');
