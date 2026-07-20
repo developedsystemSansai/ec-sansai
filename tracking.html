@@ -166,9 +166,8 @@ button{font-family:inherit;cursor:pointer;background:none;border:none}
   box-shadow:0 1px 6px rgba(11,31,53,.05)}
 .an-box h4{font-family:var(--ffs);font-size:.92rem;font-weight:700;color:var(--n800);margin-bottom:1rem}
 .an-bar-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem}
-.an-bar-lbl{width:150px;flex-shrink:0;font-size:.76rem;color:var(--u600,var(--u500));line-height:1.3}
-.an-box.wide{grid-column:1 / -1}
-.an-box.wide .an-bar-lbl{width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.an-bar-lbl{width:150px;flex-shrink:0;font-size:.76rem;color:var(--u600,var(--u500));line-height:1.3;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .an-bar-track{flex:1;height:9px;background:var(--u100);border-radius:5px;overflow:hidden}
 .an-bar-fill{height:100%;background:linear-gradient(90deg,var(--g500),var(--g400));border-radius:5px;
   transition:width .5s var(--ease)}
@@ -182,11 +181,11 @@ button{font-family:inherit;cursor:pointer;background:none;border:none}
 
 /* ── All-projects overview table ── */
 .at-table-wrap{background:var(--white);border:1px solid var(--u200);border-radius:8px;
-  box-shadow:0 1px 6px rgba(11,31,53,.05);overflow-x:auto}
+  box-shadow:0 1px 6px rgba(11,31,53,.05);overflow:auto;max-height:520px}
 .at-table{width:100%;border-collapse:collapse;font-size:.82rem}
 .at-table th{text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;
   letter-spacing:.04em;color:var(--u500);background:var(--u50);padding:.85rem 1rem;
-  white-space:nowrap;border-bottom:1.5px solid var(--u200)}
+  white-space:nowrap;border-bottom:1.5px solid var(--u200);position:sticky;top:0;z-index:1}
 .at-table td{padding:.8rem 1rem;border-bottom:1px solid var(--u100);color:var(--u900);vertical-align:top}
 .at-table tbody tr:last-child td{border-bottom:none}
 .at-table tbody tr:hover{background:var(--u50)}
@@ -199,7 +198,6 @@ button{font-family:inherit;cursor:pointer;background:none;border:none}
   .an-grid{grid-template-columns:1fr}
   .trk-search-row{flex-direction:column}
   .hdr-id p{display:none}
-  .an-box.wide .an-bar-lbl{width:120px}
 }
 
 /* ── Footer (same as index.html) ── */
@@ -385,6 +383,12 @@ function hesc(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+/* ตัดข้อความในวงเล็บออกจากสถานะที่แสดงในบัตรผลลัพธ์ เช่น 'รับรอง (แอดมินตรวจ)' -> 'รับรอง'
+   (ใช้เฉพาะตอนแสดงผล ไม่กระทบ p.status ดิบที่ใช้จัดกลุ่มสถานะ) */
+function shortStatus(s) {
+  return String(s || '').replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+}
+
 /* ── Tabs ── */
 var statsLoaded = false;
 var allProjectsLoaded = false;
@@ -458,7 +462,7 @@ function renderMyProjects(list) {
     var bucket = statusBucketOf(p.status);
     var rtBadge = p.review_type && reviewTypeClass[p.review_type]
       ? '<span class="trk-badge ' + reviewTypeClass[p.review_type] + '">' + hesc(p.review_type) + '</span>' : '';
-    var stBadge = '<span class="trk-badge badge-status-' + bucket + '">' + hesc(p.status || statusBucketLbl[bucket]) + '</span>';
+    var stBadge = '<span class="trk-badge badge-status-' + bucket + '">' + hesc(shortStatus(p.status) || statusBucketLbl[bucket]) + '</span>';
 
     var meta = [];
     if (p.created_date) meta.push({ l: 'วันที่ยื่น', v: p.created_date });
@@ -527,7 +531,7 @@ function barRows(obj, labelMap) {
   return entries.map(function (x) {
     var pct = Math.round((x.val / max) * 100);
     return '<div class="an-bar-row">' +
-      '<div class="an-bar-lbl">' + hesc(labelMap[x.key] || x.key) + '</div>' +
+      '<div class="an-bar-lbl" title="' + hesc(labelMap[x.key] || x.key) + '">' + hesc(labelMap[x.key] || x.key) + '</div>' +
       '<div class="an-bar-track"><div class="an-bar-fill" style="width:' + pct + '%"></div></div>' +
       '<div class="an-bar-val">' + x.val + '</div>' +
     '</div>';
@@ -551,7 +555,7 @@ function barRowsFromArray(arr) {
   return arr.map(function (x) {
     var pct = Math.round((x.total / max) * 100);
     return '<div class="an-bar-row">' +
-      '<div class="an-bar-lbl">' + hesc(x.position) + '</div>' +
+      '<div class="an-bar-lbl" title="' + hesc(x.position) + '">' + hesc(x.position) + '</div>' +
       '<div class="an-bar-track"><div class="an-bar-fill" style="width:' + pct + '%"></div></div>' +
       '<div class="an-bar-val">' + x.total + '</div>' +
     '</div>';
@@ -592,7 +596,7 @@ function renderAnalytics(d) {
       '<div class="an-box"><h4>ประเภทการพิจารณา</h4>' + barRows(d.byReviewType || {}, reviewTypeLbl) + '</div>' +
       '<div class="an-box"><h4>สถานะโครงการ</h4>' + barRows(d.byStatusBucket || {}, statusLbl) + '</div>' +
       '<div class="an-box"><h4>แหล่งที่มาของผู้วิจัย</h4>' + barRows(d.bySource || {}, sourceLbl) + '</div>' +
-      '<div class="an-box wide"><h4>ตำแหน่งของผู้ยื่นโครงการ</h4>' + barRowsFromArray(topNPlusOthers(d.byPosition || [], 5)) + '</div>' +
+      '<div class="an-box"><h4>ตำแหน่งของผู้ยื่นโครงการ</h4>' + barRowsFromArray(topNPlusOthers(d.byPosition || [], 5)) + '</div>' +
     '</div>';
 }
 
