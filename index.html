@@ -131,7 +131,7 @@ button{font-family:inherit;cursor:pointer}
   opacity:.65}
 .hero-in{position:relative;z-index:1;display:grid;
   grid-template-columns:1fr 300px;gap:4rem;align-items:center;
-  padding-block:72px 80px}
+  padding-block:56px 64px}
 .eyebrow{display:inline-flex;align-items:center;gap:.75rem;
   font-size:.65rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
   color:var(--g400);margin-bottom:1.2rem}
@@ -155,10 +155,10 @@ button{font-family:inherit;cursor:pointer}
 /* ══════════════════════════════════════════════════════════════
    SECTIONS
 ══════════════════════════════════════════════════════════════ */
-.sec{padding-block:5rem}
+.sec{padding-block:3.6rem}
 .sec-alt{background:var(--u50)}
 .sec-gold{background:var(--g50);border-top:1.5px solid var(--g100);border-bottom:1.5px solid var(--g100)}
-.sec-head{margin-bottom:3rem}
+.sec-head{margin-bottom:2.2rem}
 .sec-eye{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   color:var(--g600);display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
 .sec-eye::after{content:'';height:1px;width:36px;background:var(--u200)}
@@ -651,7 +651,7 @@ button{font-family:inherit;cursor:pointer}
    width — เบรกพอยต์ด้านล่างครอบคลุมตั้งแต่จอกว้างมากจนถึงจอแคบมาก
    เพื่อให้สัดส่วนไม่พังในทุกระดับการซูม
 ══════════════════════════════════════════════════════════════ */
-html,body{max-width:100%;overflow-x:hidden}
+html,body{max-width:100%;overflow-x:clip}
 * {min-width:0}
 
 /* ── ≤1080px : เริ่มบีบ header/hero เล็กน้อยก่อนเบรกพอยต์หลัก ── */
@@ -690,7 +690,7 @@ html,body{max-width:100%;overflow-x:hidden}
   .container{padding-inline:1rem}
   .docs4{grid-template-columns:1fr}
   .hero-title{font-size:1.35rem}
-  .sec{padding-block:3rem}
+  .sec{padding-block:2.6rem}
   .hero-in{padding-block:40px 48px}
 }
 @media(max-width:480px){
