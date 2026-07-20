@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+   <script src="config.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ขั้นตอนการยื่นขอรับการพิจารณาจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย">
+<title>ขั้นตอนการยื่นขอ — คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+/* ══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — Navy + Gold  (unified with index.html theme)
+══════════════════════════════════════════════════════════════ */
+:root {
+  --n900:#0b1f35; --n800:#112844; --n700:#173454; --n600:#1e4068;
+  --n400:#3d6491; --n100:#dce7f3; --n50:#eef3f9;
+  --g700:#7c5c18; --g600:#9a7220; --g500:#b58a2a; --g400:#c9a037;
+  --g100:#f0e3c0; --g50:#f8f2e1;
+  --gr800:#164d34; --gr700:#1b5e3e; --gr100:#d6ede3; --gr50:#eaf4ee;
+  --r700:#b91c1c; --r50:#fef2f2;
+  --u900:#151e28; --u700:#344255; --u500:#5a6e85;
+  --u300:#a8b8cb; --u200:#d0dae6; --u100:#e8edf5; --u50:#f4f6fa;
+  --white:#ffffff;
+  --ff:'Sarabun','Helvetica Neue',Arial,sans-serif;
+  --ffs:'Noto Serif Thai',Georgia,serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html,body{max-width:100%;overflow-x:hidden}
+*{min-width:0}
+body{font-family:var(--ff);color:var(--u700);background:var(--white);
+     line-height:1.65;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font-family:inherit;cursor:pointer}
+.container{max-width:1128px;margin-inline:auto;padding-inline:2rem}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.rev{opacity:0;transform:translateY(14px);
+  transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.rev.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .rev{opacity:1!important;transform:none!important;transition:none!important}
+}
+
+.ribbon{height:4px;background:linear-gradient(90deg,
+  var(--n800) 0% 33.33%,var(--g500) 33.33% 66.66%,var(--gr700) 66.66% 100%)}
+
+/* ══════════════════════════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════════════════════ */
+.hdr{position:sticky;top:0;z-index:300;background:var(--n900);
+  border-bottom:2px solid var(--g500);box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.hdr-in{display:flex;align-items:center;gap:1.2rem;padding-block:11px;
+  max-width:1128px;margin-inline:auto;padding-inline:2rem}
+.hdr-logo{height:48px;width:auto;object-fit:contain;flex-shrink:0}
+.hdr-sep{width:1px;height:38px;background:rgba(255,255,255,.16);flex-shrink:0}
+.hdr-id{flex:1;min-width:0}
+.hdr-id h1{font-family:var(--ffs);font-size:.875rem;font-weight:600;color:#fff;
+  line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-id p{font-size:.72rem;color:rgba(255,255,255,.42);letter-spacing:.02em;margin-top:2px}
+.hdr-nav{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--ff);
+  font-size:.84rem;font-weight:600;padding:.5rem 1.1rem;border-radius:4px;
+  border:1.5px solid transparent;
+  transition:background .18s var(--ease),border-color .18s,color .18s,
+             transform .18s,box-shadow .18s;white-space:nowrap;line-height:1}
+.btn svg{flex-shrink:0}
+.btn-ghost{background:transparent;color:rgba(255,255,255,.72);
+  border-color:rgba(255,255,255,.22)}
+.btn-ghost:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.4);color:#fff}
+.btn-gold{background:var(--g500);color:var(--n900);border-color:var(--g500)}
+.btn-guide{position:relative;background:rgba(255,255,255,.1);color:rgba(255,255,255,.9);
+  border-color:rgba(255,255,255,.25);gap:.4rem}
+.btn-guide:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.5);color:#fff}
+.btn-gold:hover{background:var(--g400);border-color:var(--g400);
+  transform:translateY(-1px);box-shadow:0 4px 14px rgba(181,138,42,.35)}
+
+/* ── Header dropdown menu ("เมนู") ── */
+.hdr-menu{position:relative}
+.hdr-menu-caret{transition:transform .18s var(--ease)}
+.hdr-menu.open .hdr-menu-caret{transform:rotate(180deg)}
+.hdr-menu-panel{position:absolute;top:calc(100% + 10px);left:0;min-width:280px;
+  background:var(--white);border:1px solid var(--u200);border-radius:8px;
+  box-shadow:0 12px 32px rgba(11,31,53,.22);padding:.5rem;z-index:400;
+  opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity .16s var(--ease),transform .16s var(--ease),visibility .16s}
+.hdr-menu.open .hdr-menu-panel{opacity:1;visibility:visible;transform:none}
+.hdr-menu-panel a{display:flex;align-items:flex-start;gap:.7rem;padding:.6rem .7rem;
+  border-radius:6px;transition:background .14s}
+.hdr-menu-panel a:hover{background:var(--u50)}
+.hdr-menu-panel a i{font-size:1rem;color:var(--g600);flex-shrink:0;margin-top:2px}
+.hdr-menu-panel a strong{display:block;font-size:.82rem;font-weight:700;color:var(--n800);line-height:1.4}
+.hdr-menu-panel a small{display:block;font-size:.7rem;color:var(--u500);margin-top:2px;line-height:1.5}
+.hdr-menu-sep{height:1px;background:var(--u100);margin:.4rem .3rem}
+.hdr-menu-panel a.active{background:var(--g50)}
+.hdr-menu-panel a.active strong{color:var(--g700)}
+
+/* ══════════════════════════════════════════════════════════════
+   PAGE BANNER (mini-hero)
+══════════════════════════════════════════════════════════════ */
+.pg-hero{background:var(--n900);position:relative;overflow:hidden}
+.pg-hero::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,transparent 0,transparent 95px,
+    rgba(255,255,255,.018) 95px,rgba(255,255,255,.018) 96px);pointer-events:none}
+.pg-hero-in{position:relative;z-index:1;padding-block:44px 46px}
+.crumb{display:flex;align-items:center;gap:.5rem;font-size:.76rem;
+  color:rgba(255,255,255,.45);margin-bottom:1rem}
+.crumb a{color:rgba(255,255,255,.7);transition:color .15s}
+.crumb a:hover{color:var(--g400)}
+.eyebrow{display:inline-flex;align-items:center;gap:.75rem;
+  font-size:.65rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--g400);margin-bottom:1rem}
+.eyebrow::before,.eyebrow::after{content:'';display:block;height:1px;
+  width:18px;background:var(--g500);opacity:.7}
+.pg-title{font-family:var(--ffs);font-size:clamp(1.35rem,3vw,2rem);
+  font-weight:700;color:#fff;line-height:1.4;margin-bottom:.85rem}
+.pg-desc{font-size:.92rem;color:rgba(255,255,255,.55);line-height:1.85;max-width:64ch}
+
+/* ══════════════════════════════════════════════════════════════
+   SECTIONS
+══════════════════════════════════════════════════════════════ */
+.sec{padding-block:4rem}
+.sec-head{margin-bottom:3rem}
+.sec-eye{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--g600);display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
+.sec-eye::after{content:'';height:1px;width:36px;background:var(--u200)}
+.sec-ttl{font-family:var(--ffs);font-size:1.4rem;font-weight:700;
+  color:var(--n800);line-height:1.4}
+.sec-dsc{font-size:.875rem;color:var(--u500);margin-top:.75rem;
+  line-height:1.8;max-width:60ch}
+
+/* ══════════════════════════════════════════════════════════════
+   PROCESS STEPS (detailed, vertical timeline for its own page)
+══════════════════════════════════════════════════════════════ */
+.proc-timeline{position:relative;max-width:820px}
+.proc-timeline::before{content:'';position:absolute;left:25px;top:8px;bottom:8px;
+  width:2px;background:repeating-linear-gradient(180deg,var(--u200) 0,var(--u200) 6px,
+    transparent 6px,transparent 12px)}
+.pt-item{display:flex;gap:1.5rem;position:relative;padding-bottom:2.5rem}
+.pt-item:last-child{padding-bottom:0}
+.pt-circ{width:52px;height:52px;border-radius:50%;background:var(--white);
+  border:1.5px solid var(--u200);display:flex;align-items:center;justify-content:center;
+  color:var(--u400);flex-shrink:0;position:relative;z-index:1;
+  box-shadow:0 1px 4px rgba(11,31,53,.07)}
+.pt-circ.act{border-color:var(--g500);color:var(--g600);box-shadow:0 0 0 5px var(--g100)}
+.pt-body{flex:1;min-width:0;padding-top:6px}
+.pt-num{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g600);margin-bottom:.35rem}
+.pt-ttl{font-family:var(--ffs);font-size:1.05rem;font-weight:700;color:var(--n800);
+  margin-bottom:.5rem;line-height:1.4}
+.pt-dsc{font-size:.85rem;color:var(--u500);line-height:1.85;max-width:56ch}
+.pt-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.pt-tag{font-size:.68rem;font-weight:600;color:var(--u700);background:var(--u50);
+  border:1px solid var(--u100);border-radius:20px;padding:3px 10px}
+
+/* CTA banner */
+.pt-cta{margin-top:3rem;display:flex;align-items:center;justify-content:space-between;
+  gap:1.5rem;flex-wrap:wrap;background:var(--g50);border:1px solid var(--g100);
+  border-radius:8px;padding:1.5rem 1.75rem}
+.pt-cta h3{font-family:var(--ffs);font-size:1rem;font-weight:700;color:var(--n800);margin-bottom:.4rem}
+.pt-cta p{font-size:.8rem;color:var(--u500);line-height:1.7}
+
+/* ══════════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════════ */
+.ftr{background:var(--n900);border-top:2px solid var(--g500);padding-block:3rem 2rem}
+.ftr-g{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:3rem;
+  padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:1.5rem}
+.fcol h4{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g400);margin-bottom:1rem}
+.fcol p,.fcol a{font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.9;display:block;transition:color .15s}
+.fcol a:hover{color:var(--g400)}
+.fbot{display:flex;justify-content:space-between;align-items:center;
+  font-size:.72rem;color:rgba(255,255,255,.25);flex-wrap:wrap;gap:.75rem}
+.pdpa{display:inline-flex;align-items:center;gap:.5rem;
+  border:1px solid rgba(255,255,255,.1);border-radius:20px;
+  padding:4px 12px;font-size:.68rem;color:rgba(255,255,255,.35)}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════════ */
+@media(max-width:1080px){
+  .hdr-in{gap:.8rem}
+  .hdr-id p{display:none}
+}
+@media(max-width:960px){
+  .hdr-in{padding-inline:1.2rem}
+  .btn-ghost:not(.hdr-menu-btn){display:none}
+  .container{padding-inline:1.2rem}
+  .ftr-g{grid-template-columns:1fr;gap:1.5rem}
+  .pt-item{gap:1rem}
+}
+@media(max-width:520px){
+  .hdr-menu-panel{position:fixed;left:.75rem;right:.75rem;top:64px;min-width:0;width:auto}
+}
+@media(max-width:600px){
+  .container{padding-inline:1rem}
+  .sec{padding-block:2.75rem}
+  .pg-hero-in{padding-block:34px 36px}
+  .proc-timeline::before{left:21px}
+  .pt-circ{width:44px;height:44px}
+  .pt-cta{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:480px){
+  .hdr-logo{height:38px}
+  .hdr-sep{height:30px}
+  .hdr-id h1{font-size:.72rem;line-height:1.35}
+  .btn{padding:.42rem .8rem;font-size:.78rem}
+  .pg-title{font-size:1.1rem}
+  .pg-desc{font-size:.85rem}
+  .sec-ttl{font-size:1.15rem}
+  .pt-ttl{font-size:.95rem}
+}
+</style>
+</head>
+<body>
+
+<div class="ribbon" aria-hidden="true"></div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-in">
+    <img class="hdr-logo"
+         src="https://lh3.googleusercontent.com/d/1qIREbhnqt9n4xWbdqe5V8lnypb4DKtVS"
+         alt="ตราสัญลักษณ์โรงพยาบาลสันทราย"
+         onerror="this.style.display='none'">
+    <div class="hdr-sep" aria-hidden="true"></div>
+    <div class="hdr-id">
+      <h1>คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</h1>
+      <p>Human Research Ethics Committee · Sansai Hospital · เขตสุขภาพที่ 1 จ.เชียงใหม่</p>
+    </div>
+    <nav class="hdr-nav" aria-label="การดำเนินการหลัก">
+      <div class="hdr-menu" id="hdrMenu">
+        <button class="btn btn-ghost hdr-menu-btn" onclick="hdrMenuToggle(event)"
+                aria-haspopup="true" aria-expanded="false" aria-controls="hdrMenuPanel">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="13" x2="20" y2="13"/><line x1="4" y1="19" x2="14" y2="19"/></svg>
+          เมนู
+          <svg class="hdr-menu-caret" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="hdr-menu-panel" id="hdrMenuPanel" role="menu" aria-label="เมนูลัด">
+          <a role="menuitem" href="process.html" class="active">
+            <i class="ti ti-list-check" aria-hidden="true"></i>
+            <span><strong>ขั้นตอนการยื่นขอ</strong><small>กระบวนการพิจารณาจริยธรรมการวิจัย</small></span>
+          </a>
+          <a role="menuitem" href="documents.html">
+            <i class="ti ti-files" aria-hidden="true"></i>
+            <span><strong>เตรียมเอกสาร</strong><small>เอกสารที่ต้องเตรียมก่อนยื่น + แบบฟอร์มดาวน์โหลด</small></span>
+          </a>
+          <a role="menuitem" href="index.html#calendar">
+            <i class="ti ti-calendar-event" aria-hidden="true"></i>
+            <span><strong>ปฏิทินการประชุม</strong><small>ตรวจสอบวันประชุมคณะกรรมการ</small></span>
+          </a>
+          <a role="menuitem" href="index.html#news">
+            <i class="ti ti-news" aria-hidden="true"></i>
+            <span><strong>ประกาศและข่าวสาร</strong><small>ข่าวสารล่าสุดจากคณะกรรมการ</small></span>
+          </a>
+          <div class="hdr-menu-sep" role="separator"></div>
+          <a role="menuitem" href="tracking.html">
+            <i class="ti ti-search" aria-hidden="true"></i>
+            <span><strong>ติดตามสถานะโครงการ</strong><small>ค้นหาสถานะโครงการด้วยอีเมลที่ใช้ยื่น</small></span>
+          </a>
+        </div>
+      </div>
+      <button class="btn btn-ghost" onclick="location.href='index.html'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        หน้าแรก
+      </button>
+      <button class="btn btn-gold" onclick="SITE.goLogin()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        เข้าสู่ระบบ
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- PAGE BANNER -->
+<section class="pg-hero" aria-labelledby="pg-h">
+  <div class="container">
+    <div class="pg-hero-in">
+      <div class="crumb"><a href="index.html">หน้าแรก</a><span>／</span><span>ขั้นตอนการยื่นขอ</span></div>
+      <div class="eyebrow">EC Online Submission System</div>
+      <h1 class="pg-title" id="pg-h">ขั้นตอนการยื่นขอรับการพิจารณาจริยธรรมการวิจัยในมนุษย์</h1>
+      <p class="pg-desc">กระบวนการพิจารณาดำเนินการตามมาตรฐานสากล ICH-GCP และแนวทางของสำนักงานคณะกรรมการวิจัยแห่งชาติ (วช.)
+        ตั้งแต่การลงทะเบียนจนถึงการได้รับผลการรับรอง</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS TIMELINE -->
+<section class="sec" aria-labelledby="proc-h">
+  <div class="container">
+    <div class="sec-head rev">
+      <div class="sec-eye">ขั้นตอนโดยละเอียด</div>
+      <h2 class="sec-ttl" id="proc-h">5 ขั้นตอนสู่การรับรองจริยธรรมการวิจัย</h2>
+      <p class="sec-dsc">ควรยื่นเอกสารล่วงหน้าอย่างน้อย 15 วันทำการก่อนวันประชุม เพื่อให้เจ้าหน้าที่มีเวลาตรวจสอบความครบถ้วน</p>
+    </div>
+
+    <div class="proc-timeline">
+      <div class="pt-item rev" style="transition-delay:.05s">
+        <div class="pt-circ act">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="pt-body">
+          <div class="pt-num">ขั้นตอนที่ 1</div>
+          <div class="pt-ttl">ลงทะเบียน / เข้าสู่ระบบ</div>
+          <p class="pt-dsc">ผู้วิจัยสมัครบัญชีผู้ใช้ในระบบ EC Online Submission และรอการอนุมัติจากเจ้าหน้าที่ก่อนเริ่มใช้งาน โดยปกติใช้เวลาอนุมัติ 1–2 วันทำการ</p>
+          <div class="pt-tags"><span class="pt-tag">ใช้เวลา 1–2 วันทำการ</span></div>
+        </div>
+      </div>
+      <div class="pt-item rev" style="transition-delay:.13s">
+        <div class="pt-circ">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <div class="pt-body">
+          <div class="pt-num">ขั้นตอนที่ 2</div>
+          <div class="pt-ttl">กรอกข้อมูลและแนบเอกสาร</div>
+          <p class="pt-dsc">กรอกรายละเอียดโครงการวิจัยในระบบให้ครบถ้วน และอัพโหลดเอกสารประกอบตามรายการที่กำหนด
+            (ดูรายละเอียดได้ที่หน้า <a href="documents.html" style="color:var(--g600);font-weight:600;text-decoration:underline">เตรียมเอกสาร</a>)</p>
+          <div class="pt-tags"><span class="pt-tag">เอกสารบังคับ 9 รายการ</span><span class="pt-tag">เอกสารเพิ่มเติม 9 รายการ</span></div>
+        </div>
+      </div>
+      <div class="pt-item rev" style="transition-delay:.21s">
+        <div class="pt-circ">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div class="pt-body">
+          <div class="pt-num">ขั้นตอนที่ 3</div>
+          <div class="pt-ttl">เจ้าหน้าที่ตรวจสอบความครบถ้วน</div>
+          <p class="pt-dsc">เจ้าหน้าที่กลุ่มงานพัฒนาคุณภาพและมาตรฐานตรวจสอบความครบถ้วนของเอกสาร ก่อนนำส่งให้คณะกรรมการพิจารณาต่อไป หากเอกสารไม่ครบจะแจ้งกลับผ่านระบบและอีเมล</p>
+        </div>
+      </div>
+      <div class="pt-item rev" style="transition-delay:.29s">
+        <div class="pt-circ">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="pt-body">
+          <div class="pt-num">ขั้นตอนที่ 4</div>
+          <div class="pt-ttl">คณะกรรมการพิจารณา</div>
+          <p class="pt-dsc">คณะกรรมการจริยธรรมการวิจัยประเมินและลงมติตามประเภทการพิจารณาที่กำหนด — ยกเว้น เร่งด่วน หรือเต็มรูปแบบ ตามระดับความเสี่ยงของโครงการ</p>
+          <div class="pt-tags"><span class="pt-tag">Exempt</span><span class="pt-tag">Expedited</span><span class="pt-tag">Full Board</span></div>
+        </div>
+      </div>
+      <div class="pt-item rev" style="transition-delay:.37s">
+        <div class="pt-circ">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="pt-body">
+          <div class="pt-num">ขั้นตอนที่ 5</div>
+          <div class="pt-ttl">รับผลการพิจารณา</div>
+          <p class="pt-dsc">ผู้วิจัยรับผลการพิจารณาผ่านระบบออนไลน์และทางอีเมล พร้อมเอกสารรับรองอย่างเป็นทางการจากคณะกรรมการจริยธรรมการวิจัย</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-cta rev">
+      <div>
+        <h3>พร้อมเตรียมเอกสารแล้วหรือยัง?</h3>
+        <p>ดูรายการเอกสารที่ต้องเตรียมทั้งหมด พร้อมลิงก์ดาวน์โหลดแบบฟอร์มโดยตรง</p>
+      </div>
+      <button class="btn btn-gold" onclick="location.href='documents.html'">
+        <i class="ti ti-files" aria-hidden="true"></i> ไปหน้าเตรียมเอกสาร
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="ftr">
+  <div class="container">
+    <div class="ftr-g">
+      <div class="fcol"><h4>โรงพยาบาลสันทราย</h4>
+        <p>เลขที่ 201 หมู่ 11 ตำบลหนองหาร</p>
+        <p>อำเภอสันทราย จังหวัดเชียงใหม่ 50290</p>
+        <p style="margin-top:.5rem">โทรศัพท์: 053-921-199 ต่อ 168</p>
+        <p>เขตสุขภาพที่ 1 · กระทรวงสาธารณสุข</p>
+      </div>
+      <div class="fcol"><h4>ระบบ EC Online</h4>
+        <a href="#" onclick="SITE.goLogin()">เข้าสู่ระบบ</a>
+        <a href="#" onclick="SITE.goRegister()">ลงทะเบียนผู้ใช้ใหม่</a>
+        <a href="process.html">ขั้นตอนการยื่นขอ</a>
+        <a href="documents.html">เตรียมเอกสาร</a>
+        <a href="index.html#calendar">ปฏิทินการประชุม</a>
+      </div>
+      <div class="fcol"><h4>นโยบายและกฎระเบียบ</h4>
+        <a href="#">นโยบายความเป็นส่วนตัว (PDPA)</a>
+        <a href="#">เงื่อนไขการใช้งาน</a>
+        <a href="#">มาตรฐาน ICH-GCP</a>
+        <a href="#">แนวทาง NECAST</a>
+      </div>
+    </div>
+    <div class="fbot">
+      <span>© พ.ศ. 2568 โรงพยาบาลสันทราย · ระบบ EC Online Submission v1.0 · พัฒนาโดยกลุ่มงานพัฒนาคุณภาพและมาตรฐาน</span>
+      <span class="pdpa">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        PDPA Compliant · พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+var APP_URL = 'app.html';
+var SITE = {
+  goLogin:    function() { window.location.href = APP_URL; },
+  goRegister: function() { window.location.href = APP_URL + '?action=register'; }
+};
+
+/* reveal on scroll */
+(function() {
+  var els = document.querySelectorAll('.rev');
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold:.08, rootMargin:'0px 0px -24px 0px' });
+  els.forEach(function(el) { io.observe(el); });
+})();
+
+/* header dropdown menu */
+function hdrMenuToggle(e) {
+  if (e) e.stopPropagation();
+  var menu = document.getElementById('hdrMenu');
+  if (!menu) return;
+  var willOpen = !menu.classList.contains('open');
+  menu.classList.toggle('open', willOpen);
+  var btn = menu.querySelector('.hdr-menu-btn');
+  if (btn) btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+}
+function hdrMenuClose() {
+  var menu = document.getElementById('hdrMenu');
+  if (!menu) return;
+  menu.classList.remove('open');
+  var btn = menu.querySelector('.hdr-menu-btn');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click', function(e) {
+  var menu = document.getElementById('hdrMenu');
+  if (menu && menu.classList.contains('open') && !menu.contains(e.target)) {
+    hdrMenuClose();
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') hdrMenuClose();
+});
+</script>
+</body>
+</html>
