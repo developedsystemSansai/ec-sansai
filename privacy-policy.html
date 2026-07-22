@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+   <script src="config.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="นโยบายความเป็นส่วนตัวและการคุ้มครองข้อมูลส่วนบุคคล (PDPA) ของระบบ EC Online Submission โรงพยาบาลสันทราย">
+<title>นโยบายความเป็นส่วนตัว (PDPA) — คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+:root {
+  --n900:#0b1f35; --n800:#112844; --n700:#173454; --n600:#1e4068;
+  --n400:#3d6491; --n100:#dce7f3; --n50:#eef3f9;
+  --g700:#7c5c18; --g600:#9a7220; --g500:#b58a2a; --g400:#c9a037;
+  --g100:#f0e3c0; --g50:#f8f2e1;
+  --gr800:#164d34; --gr700:#1b5e3e; --gr100:#d6ede3; --gr50:#eaf4ee;
+  --r700:#b91c1c; --r50:#fef2f2;
+  --u900:#151e28; --u700:#344255; --u500:#5a6e85;
+  --u300:#a8b8cb; --u200:#d0dae6; --u100:#e8edf5; --u50:#f4f6fa;
+  --white:#ffffff;
+  --ff:'Sarabun','Helvetica Neue',Arial,sans-serif;
+  --ffs:'Noto Serif Thai',Georgia,serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html,body{max-width:100%;overflow-x:hidden}
+*{min-width:0}
+body{font-family:var(--ff);color:var(--u700);background:var(--white);
+     line-height:1.65;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font-family:inherit;cursor:pointer}
+.container{max-width:1128px;margin-inline:auto;padding-inline:2rem}
+
+.rev{opacity:0;transform:translateY(14px);
+  transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.rev.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .rev{opacity:1!important;transform:none!important;transition:none!important}
+}
+
+.ribbon{height:4px;background:linear-gradient(90deg,
+  var(--n800) 0% 33.33%,var(--g500) 33.33% 66.66%,var(--gr700) 66.66% 100%)}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:300;background:var(--n900);box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.hdr-in{display:flex;align-items:center;gap:1.2rem;padding-block:11px;
+  max-width:1128px;margin-inline:auto;padding-inline:2rem}
+.hdr-logo{height:48px;width:auto;object-fit:contain;flex-shrink:0}
+.hdr-sep{width:1px;height:38px;background:rgba(255,255,255,.16);flex-shrink:0}
+.hdr-id{flex:1;min-width:0}
+.hdr-id h1{font-family:var(--ffs);font-size:.875rem;font-weight:600;color:#fff;
+  line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-id p{font-size:.72rem;color:rgba(255,255,255,.42);letter-spacing:.02em;margin-top:2px}
+.hdr-util{display:flex;align-items:center;gap:.6rem;flex-shrink:0;margin-left:auto}
+.hdr-util>*{flex-shrink:0}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--ff);
+  font-size:.84rem;font-weight:600;padding:.5rem 1.1rem;border-radius:4px;
+  border:1.5px solid transparent;
+  transition:background .18s var(--ease),border-color .18s,color .18s,
+             transform .18s,box-shadow .18s;white-space:nowrap;line-height:1}
+.btn svg{flex-shrink:0}
+.btn-ghost{background:transparent;color:rgba(255,255,255,.72);
+  border-color:rgba(255,255,255,.22)}
+.btn-ghost:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.4);color:#fff}
+.btn-gold{background:var(--g500);color:var(--n900);border-color:var(--g500)}
+.btn-guide{position:relative;background:rgba(255,255,255,.1);color:rgba(255,255,255,.9);
+  border-color:rgba(255,255,255,.25);gap:.4rem}
+.btn-guide:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.5);color:#fff}
+.btn-gold:hover{background:var(--g400);border-color:var(--g400);
+  transform:translateY(-1px);box-shadow:0 4px 14px rgba(181,138,42,.35)}
+
+/* ══════════════════════════════════════════════════════════════
+   MAIN MENU BAR — เมนูแนวนอนใต้แถบชื่อหน่วยงาน
+══════════════════════════════════════════════════════════════ */
+.nb{position:sticky;top:70px;z-index:290;background:var(--n800);
+  border-top:1px solid rgba(255,255,255,.07);border-bottom:2px solid var(--g500)}
+.nb-in{max-width:1128px;margin-inline:auto;padding-inline:1.4rem}
+.nb-list{display:flex;align-items:stretch;flex-wrap:wrap}
+.nb-item{position:relative;display:flex}
+.nb-link{display:flex;align-items:center;gap:.32rem;padding:.78rem .85rem;
+  font-size:.83rem;font-weight:500;color:rgba(255,255,255,.66);
+  background:none;border:none;font-family:var(--ff);white-space:nowrap;
+  position:relative;transition:color .16s}
+.nb-link::after{content:'';position:absolute;left:.85rem;right:.85rem;bottom:0;height:2px;
+  background:var(--g500);transform:scaleX(0);transform-origin:center;
+  transition:transform .18s var(--ease)}
+.nb-link:hover,.nb-link.is-active{color:#fff}
+.nb-link:hover::after,.nb-link.is-active::after{transform:scaleX(1)}
+.nb-caret{width:9px;height:9px;flex-shrink:0;transition:transform .18s var(--ease)}
+.nb-item.open .nb-caret{transform:rotate(180deg)}
+.nb-panel{position:absolute;top:100%;left:0;min-width:236px;background:var(--white);
+  border:1px solid var(--u200);border-radius:0 0 8px 8px;box-shadow:0 14px 30px rgba(11,31,53,.24);
+  padding:.4rem;z-index:295;opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity .16s var(--ease),transform .16s var(--ease),visibility .16s}
+.nb-item.open .nb-panel{opacity:1;visibility:visible;transform:none}
+.nb-panel a{display:block;padding:.62rem .75rem;border-radius:6px;font-size:.82rem;
+  color:var(--n800);font-weight:500;transition:background .14s}
+.nb-panel a:hover{background:var(--u50)}
+@media(hover:hover) and (pointer:fine){
+  .nb-item.has-drop:hover .nb-panel{opacity:1;visibility:visible;transform:none}
+  .nb-item.has-drop:hover .nb-caret{transform:rotate(180deg)}
+}
+.nb-toggle{display:none;background:none;border:1.5px solid rgba(255,255,255,.22);
+  border-radius:5px;color:#fff;width:34px;height:34px;align-items:center;
+  justify-content:center;flex-shrink:0}
+@media(max-width:900px){
+  .nb{position:static}
+  .nb-toggle{display:inline-flex}
+  .nb-in{padding-block:.2rem}
+  .nb-list{display:none;flex-direction:column;width:100%;padding-block:.3rem .5rem}
+  .nb.mobile-open .nb-list{display:flex}
+  .nb-item{width:100%}
+  .nb-link{width:100%;padding:.78rem .1rem;justify-content:space-between}
+  .nb-link::after{display:none}
+  .nb-panel{position:static;box-shadow:none;border:none;border-radius:6px;
+    background:rgba(255,255,255,.05);opacity:1;visibility:visible;transform:none;
+    display:none;margin:0 0 .3rem;padding:.15rem}
+  .nb-item.open .nb-panel{display:block}
+  .nb-panel a{color:rgba(255,255,255,.7)}
+  .nb-panel a:hover{background:rgba(255,255,255,.08)}
+}
+/* PAGE BANNER */
+.pg-hero{background:var(--n900);position:relative;overflow:hidden}
+.pg-hero::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,transparent 0,transparent 95px,
+    rgba(255,255,255,.018) 95px,rgba(255,255,255,.018) 96px);pointer-events:none}
+.pg-hero-in{position:relative;z-index:1;padding-block:44px 46px}
+.crumb{display:flex;align-items:center;gap:.5rem;font-size:.76rem;
+  color:rgba(255,255,255,.45);margin-bottom:1rem}
+.crumb a{color:rgba(255,255,255,.7);transition:color .15s}
+.crumb a:hover{color:var(--g400)}
+.eyebrow{display:inline-flex;align-items:center;gap:.75rem;
+  font-size:.65rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--g400);margin-bottom:1rem}
+.eyebrow::before,.eyebrow::after{content:'';display:block;height:1px;
+  width:18px;background:var(--g500);opacity:.7}
+.pg-title{font-family:var(--ffs);font-size:clamp(1.35rem,3vw,2rem);
+  font-weight:700;color:#fff;line-height:1.4;margin-bottom:.85rem}
+.pg-desc{font-size:.92rem;color:rgba(255,255,255,.55);line-height:1.85;max-width:64ch}
+
+/* SECTIONS */
+.sec{padding-block:4rem}
+.sec-alt{background:var(--u50)}
+.sec-gold{background:var(--g50);border-top:1.5px solid var(--g100);border-bottom:1.5px solid var(--g100)}
+.sec-head{margin-bottom:2.5rem}
+.sec-eye{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--g600);display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
+.sec-eye::after{content:'';height:1px;width:36px;background:var(--u200)}
+.sec-ttl{font-family:var(--ffs);font-size:1.4rem;font-weight:700;
+  color:var(--n800);line-height:1.4}
+.sec-dsc{font-size:.875rem;color:var(--u500);margin-top:.75rem;
+  line-height:1.8;max-width:60ch}
+
+/* DOC CARDS */
+.docs4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.dc{background:var(--white);border:1px solid rgba(181,138,42,.2);border-radius:4px;padding:1.4rem 1.2rem}
+.dc-seq{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g600);margin-bottom:.5rem}
+.dc h4{font-size:.84rem;font-weight:700;color:var(--n800);margin-bottom:.5rem;line-height:1.45}
+.dc p{font-size:.72rem;color:var(--u500);line-height:1.72}
+
+/* IMPORTANT-ANNOUNCEMENT DOCUMENTS (ผังขั้นตอน / SOP / คำสั่งแต่งตั้งกรรมการ) — พรีวิวฝังในหน้า */
+.doc-list{display:flex;flex-direction:column;gap:1.25rem;margin-top:1.75rem}
+.doc-item{background:var(--white);border:1.5px solid var(--g100);border-radius:12px;overflow:hidden;
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+.doc-item:hover{border-color:var(--g400);box-shadow:0 10px 28px rgba(181,138,42,.12)}
+.doc-item-hd{display:flex;align-items:center;gap:1rem;padding:1.2rem 1.3rem;flex-wrap:wrap}
+.doc-ico{width:44px;height:44px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.doc-ico-red{background:#fdeceb;color:#c0392b}
+.doc-ico-blue{background:var(--n50);color:var(--n700)}
+.doc-txt{flex:1;min-width:200px}
+.doc-txt strong{display:block;font-size:.92rem;font-weight:700;color:var(--n800);line-height:1.45;margin-bottom:.3rem}
+.doc-txt span{display:block;font-size:.78rem;color:var(--u500);line-height:1.5}
+.doc-actions{display:flex;gap:.55rem;flex-shrink:0}
+.doc-btn{display:inline-flex;align-items:center;gap:.4rem;
+  background:var(--g500);color:var(--n900);font-size:.78rem;font-weight:700;
+  padding:.5rem 1rem;border-radius:6px;transition:background .16s;white-space:nowrap}
+.doc-btn:hover{background:var(--g400)}
+.doc-btn-ghost{background:var(--u50);color:var(--n700);border:1px solid var(--u200)}
+.doc-btn-ghost:hover{background:var(--u100)}
+.doc-frame-wrap{border-top:1px solid var(--u100);background:var(--u50)}
+.doc-view-frame{width:100%;height:min(72vh,640px);border:0;display:block}
+@media(max-width:640px){.doc-view-frame{height:78vh}}
+.doc-hint{display:flex;align-items:center;gap:6px;padding:.55rem 1.3rem;
+  font-size:.7rem;color:var(--u500);background:var(--u50);border-top:1px solid var(--u100)}
+.doc-hint i{color:var(--g600);font-size:13px}
+
+/* พรีวิวหน้าแรกของเอกสาร (ดึงจาก Google Drive thumbnail) */
+.doc-thumb{position:relative;width:100%;aspect-ratio:4/3;border-radius:8px;overflow:hidden;
+  background:var(--u50);border:1px solid var(--u100);flex-shrink:0}
+.doc-thumb img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;
+  transition:transform .35s var(--ease)}
+.doc-card:hover .doc-thumb img{transform:scale(1.04)}
+.doc-thumb-badge{position:absolute;top:9px;left:9px;width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;
+  box-shadow:0 2px 10px rgba(11,31,53,.22)}
+.doc-thumb.doc-thumb-fallback{display:flex;align-items:center;justify-content:center}
+.doc-thumb.doc-thumb-fallback img{display:none}
+.doc-thumb.doc-thumb-fallback .doc-thumb-badge{position:static;width:52px;height:52px;font-size:1.5rem;box-shadow:none}
+
+/* DOWNLOAD PANEL (formerly modal, now inline page content) */
+.dl-panel{background:var(--white);border-radius:8px;border:1px solid var(--g100);overflow:hidden;
+  box-shadow:0 2px 16px rgba(11,31,53,.07)}
+.dl-hdr{background:var(--n900);border-bottom:2px solid var(--g500);padding:1.25rem 1.5rem}
+.dl-hdr-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
+.dl-badge{display:inline-flex;align-items:center;gap:5px;
+  background:rgba(181,138,42,.18);color:var(--g400);
+  font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;margin-bottom:6px}
+.dl-hdr h2{color:#fff;font-family:var(--ffs);font-size:1.1rem;font-weight:600;
+  line-height:1.35;margin-bottom:3px}
+.dl-hdr p{color:rgba(255,255,255,.45);font-size:.76rem}
+.dl-stats{display:flex;gap:1.1rem;align-items:center;flex-shrink:0}
+.dl-stat{text-align:center}
+.dl-stat strong{display:block;font-size:1.5rem;font-weight:700;color:var(--g400);line-height:1}
+.dl-stat span{display:block;font-size:.66rem;color:rgba(255,255,255,.5);margin-top:3px}
+
+/* tabs */
+.dm-tabs{display:flex;padding:0 1.25rem;background:var(--g50);
+  border-bottom:1px solid var(--g100);gap:2px;overflow-x:auto}
+.dm-tab{display:flex;align-items:center;gap:6px;padding:.85rem 1.1rem .75rem;
+  font-family:var(--ff);font-size:.82rem;font-weight:600;color:var(--u500);
+  background:none;border:none;border-bottom:2.5px solid transparent;
+  cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap}
+.dm-tab:hover{color:var(--g700)}
+.dm-tab.active{color:var(--g700);border-bottom-color:var(--g500)}
+.dm-tbadge{background:var(--g100);color:var(--g700);font-size:.62rem;font-weight:700;
+  padding:1px 7px;border-radius:20px;transition:background .15s,color .15s}
+.dm-tab.active .dm-tbadge{background:var(--g500);color:var(--n900)}
+
+/* body */
+.dm-body{padding:1.4rem 1.5rem}
+.dm-panel{display:none}
+.dm-panel.active{display:block}
+
+/* notice bar */
+.dm-notice{display:flex;align-items:flex-start;gap:8px;background:var(--g50);
+  border:1px solid var(--g100);border-radius:4px;padding:.7rem .9rem;
+  margin-bottom:1rem}
+.dm-notice i{color:var(--g600);font-size:15px;flex-shrink:0;margin-top:1px}
+.dm-notice p{font-size:.75rem;color:var(--u700);line-height:1.6}
+.dm-notice strong{color:var(--g700)}
+
+/* doc list */
+.dm-list{display:flex;flex-direction:column;gap:6px}
+.dm-item{display:flex;align-items:center;gap:.75rem;background:var(--u50);
+  border:1px solid var(--u100);border-radius:5px;padding:.85rem 1rem;
+  text-decoration:none;transition:border-color .15s,box-shadow .15s,background .15s}
+.dm-item:hover{border-color:var(--g400);box-shadow:0 2px 8px rgba(181,138,42,.12);
+  background:var(--g50)}
+.dm-item.disabled{opacity:.55;cursor:default;pointer-events:none}
+.dm-ico{width:38px;height:38px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:18px;flex-shrink:0}
+.dm-ico.req{background:var(--g50);color:var(--g700)}
+.dm-ico.opt{background:var(--n50);color:var(--n600)}
+.dm-ico.nil{background:var(--u100);color:var(--u500)}
+.dm-info{flex:1;min-width:0}
+.dm-code{font-size:.64rem;font-weight:700;color:var(--g600);letter-spacing:.05em;margin-bottom:2px}
+.dm-title{font-size:.84rem;color:var(--n800);font-weight:600;line-height:1.45}
+.dm-sub{font-size:.72rem;color:var(--u500);margin-top:2px}
+.btn-dm-open{display:inline-flex;align-items:center;gap:5px;
+  background:var(--n800);color:#fff;border:none;border-radius:4px;
+  padding:.45rem .9rem;font-family:var(--ff);font-size:.74rem;font-weight:600;
+  cursor:pointer;text-decoration:none;white-space:nowrap;flex-shrink:0;
+  transition:background .15s}
+.btn-dm-open:hover{background:var(--n700)}
+.dm-noform{font-size:.72rem;color:var(--u500);white-space:nowrap;flex-shrink:0;padding:0 4px}
+
+/* footer hint */
+.dl-ftr{border-top:1px solid var(--g100);padding:.9rem 1.5rem;background:var(--g50);
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dl-ftr i{color:var(--g500);font-size:16px;flex-shrink:0}
+.dl-ftr span{font-size:.75rem;color:var(--u500);line-height:1.5}
+.dl-ftr strong{color:var(--n800)}
+
+/* FOOTER */
+.ftr{background:var(--n900);border-top:2px solid var(--g500);padding-block:3rem 2rem;margin-top:0}
+.ftr-g{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:3rem;
+  padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:1.5rem}
+.fcol h4{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g400);margin-bottom:1rem}
+.fcol p,.fcol a{font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.9;display:block;transition:color .15s}
+.fcol a:hover{color:var(--g400)}
+.fbot{display:flex;justify-content:space-between;align-items:center;
+  font-size:.72rem;color:rgba(255,255,255,.25);flex-wrap:wrap;gap:.75rem}
+.pdpa{display:inline-flex;align-items:center;gap:.5rem;
+  border:1px solid rgba(255,255,255,.1);border-radius:20px;
+  padding:4px 12px;font-size:.68rem;color:rgba(255,255,255,.35)}
+
+/* RESPONSIVE */
+@media(max-width:1080px){
+  .hdr-in{gap:.8rem}
+  .hdr-id p{display:none}
+}
+@media(max-width:960px){
+  .hdr-in{padding-inline:1.2rem}
+  .container{padding-inline:1.2rem}
+  .ftr-g{grid-template-columns:1fr;gap:1.5rem}
+  .docs4{grid-template-columns:1fr 1fr}
+  .dl-stats{display:none}
+}
+@media(max-width:600px){
+  .container{padding-inline:1rem}
+  .sec{padding-block:2.75rem}
+  .pg-hero-in{padding-block:34px 36px}
+  .docs4{grid-template-columns:1fr}
+  .dm-body{padding:1.1rem}
+  .dl-hdr{padding:1.1rem 1.25rem}
+  .dm-tabs{padding:0 .75rem}
+}
+@media(max-width:480px){
+  .hdr-logo{height:38px}
+  .hdr-sep{height:30px}
+  .hdr-id h1{font-size:.72rem;line-height:1.35}
+  .btn{padding:.42rem .8rem;font-size:.78rem}
+  .pg-title{font-size:1.1rem}
+  .pg-desc{font-size:.85rem}
+  .sec-ttl{font-size:1.15rem}
+  .dl-hdr h2{font-size:.92rem}
+  .dm-item{flex-wrap:wrap}
+  .dm-item .btn-dm-open{margin-left:auto}
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PRIVACY POLICY ARTICLE (PDPA)
+══════════════════════════════════════════════════════════════ */
+.pp-updated{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;color:var(--u500);
+  background:var(--u50);border:1px solid var(--u100);border-radius:20px;padding:5px 12px;margin-bottom:2rem}
+.pp-toc{background:var(--u50);border:1px solid var(--u100);border-radius:10px;padding:1.1rem 1.3rem;margin-bottom:2.5rem}
+.pp-toc-ttl{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g600);margin-bottom:.7rem}
+.pp-toc ol{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:.45rem .5rem;counter-reset:pptoc}
+@media(max-width:640px){.pp-toc ol{grid-template-columns:1fr}}
+.pp-toc li{counter-increment:pptoc;font-size:.8rem}
+.pp-toc a{color:var(--n700);display:flex;gap:.5rem}
+.pp-toc a:hover{color:var(--g600)}
+.pp-toc a::before{content:counter(pptoc);flex-shrink:0;width:20px;height:20px;border-radius:5px;
+  background:var(--g100);color:var(--g700);font-size:.68rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center}
+.pp-sec{margin-bottom:2.75rem;scroll-margin-top:90px}
+.pp-sec:last-child{margin-bottom:0}
+.pp-sec-hd{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+.pp-num{flex-shrink:0;width:34px;height:34px;border-radius:9px;background:var(--n900);color:var(--g400);
+  font-family:var(--ffs);font-weight:700;font-size:.9rem;display:flex;align-items:center;justify-content:center}
+.pp-sec-hd h2{font-family:var(--ffs);font-size:1.08rem;font-weight:700;color:var(--n800)}
+.pp-body{padding-left:calc(34px + .75rem)}
+.pp-body p{font-size:.87rem;color:var(--u700);line-height:1.9;margin-bottom:.9rem}
+.pp-body p:last-child{margin-bottom:0}
+.pp-body ul{margin:.3rem 0 .9rem;display:flex;flex-direction:column;gap:.5rem}
+.pp-body ul li{font-size:.85rem;color:var(--u700);line-height:1.8;padding-left:1.3rem;position:relative}
+.pp-body ul li::before{content:'';position:absolute;left:0;top:.55rem;width:6px;height:6px;border-radius:50%;background:var(--g500)}
+.pp-body strong{color:var(--n800)}
+.pp-table{width:100%;border-collapse:collapse;margin:.5rem 0 1rem;font-size:.82rem}
+.pp-table th,.pp-table td{border:1px solid var(--u100);padding:.65rem .85rem;text-align:left;line-height:1.7}
+.pp-table th{background:var(--n50);color:var(--n800);font-weight:700;font-size:.76rem}
+.pp-table td{color:var(--u700)}
+.pp-note{background:var(--g50);border:1px solid var(--g100);border-left:3px solid var(--g500);
+  border-radius:6px;padding:1rem 1.2rem;margin-top:.5rem}
+.pp-note p{font-size:.83rem;margin-bottom:.4rem}
+.pp-note p:last-child{margin-bottom:0}
+@media(max-width:640px){.pp-body{padding-left:0;margin-top:.9rem}}
+</style>
+</head>
+<body>
+
+<div class="ribbon" aria-hidden="true"></div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-in">
+    <img class="hdr-logo"
+         src="https://lh3.googleusercontent.com/d/1qIREbhnqt9n4xWbdqe5V8lnypb4DKtVS"
+         alt="ตราสัญลักษณ์โรงพยาบาลสันทราย"
+         onerror="this.style.display='none'">
+    <div class="hdr-sep" aria-hidden="true"></div>
+    <div class="hdr-id">
+      <h1>คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</h1>
+      <p>Human Research Ethics Committee · Sansai Hospital · เขตสุขภาพที่ 1 จ.เชียงใหม่</p>
+    </div>
+    <div class="hdr-util">
+      <button class="btn btn-gold" onclick="SITE.goLogin()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        เข้าสู่ระบบ
+      </button>
+      <button class="nb-toggle" id="nbToggleBtn" onclick="nbMobileToggle()"
+              aria-label="เปิดเมนูหลัก" aria-expanded="false" aria-controls="nbList">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="13" x2="20" y2="13"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MAIN MENU — เมนูหลักแนวนอน พร้อมเมนูย่อยแบบ dropdown
+══════════════════════════════════════════════════════════════ -->
+<nav class="nb" aria-label="เมนูหลัก" id="nbBar">
+  <div class="nb-in">
+    <ul class="nb-list" id="nbList" role="menubar">
+      <li class="nb-item" role="none">
+        <a class="nb-link" role="menuitem" href="index.html">หน้าแรก</a>
+      </li>
+      <li class="nb-item" role="none">
+        <a class="nb-link" role="menuitem" href="process.html">ขั้นตอนการยื่นขอ</a>
+      </li>
+      <li class="nb-item" role="none">
+        <a class="nb-link" role="menuitem" href="documents.html">เตรียมเอกสาร</a>
+      </li>
+      <li class="nb-item has-drop" role="none">
+        <button class="nb-link" role="menuitem" aria-haspopup="true" aria-expanded="false"
+                onclick="nbToggle(event,this)">
+          <span>มาตรฐานการวิจัย</span>
+          <svg class="nb-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="nb-panel" role="menu">
+          <a role="menuitem" href="standards.html">มาตรฐานและ SOP คณะกรรมการ</a>
+          <a role="menuitem" href="training.html">อบรมจริยธรรมการวิจัย</a>
+        </div>
+      </li>
+      <li class="nb-item" role="none">
+        <a class="nb-link" role="menuitem" href="tracking.html">ติดตามสถานะโครงการ</a>
+      </li>
+      <li class="nb-item" role="none">
+        <a class="nb-link" role="menuitem" href="contact.html">ติดต่อเรา</a>
+      </li>
+      <li class="nb-item has-drop" role="none">
+        <button class="nb-link" role="menuitem" aria-haspopup="true" aria-expanded="false"
+                onclick="nbToggle(event,this)">
+          <span>ระบบออนไลน์</span>
+          <svg class="nb-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="nb-panel" role="menu">
+          <a role="menuitem" href="#" onclick="SITE.goRegister();return false;">สมัครสมาชิก</a>
+          <a role="menuitem" href="https://drive.google.com/file/d/1x6n0d6hTxsVtbENyd1L_UzOV4s2UXL-w/view" target="_blank" rel="noopener noreferrer">คู่มือการใช้งานระบบ</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- PAGE BANNER -->
+<section class="pg-hero" aria-labelledby="pg-h">
+  <div class="container">
+    <div class="pg-hero-in">
+      <div class="crumb"><a href="index.html">หน้าแรก</a><span>／</span><span>นโยบายความเป็นส่วนตัว</span></div>
+      <div class="eyebrow">EC Online Submission System</div>
+      <h1 class="pg-title" id="pg-h">นโยบายความเป็นส่วนตัว (PDPA)</h1>
+      <p class="pg-desc">แนวปฏิบัติเกี่ยวกับการเก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลของระบบ EC Online Submission ภายใต้พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY POLICY CONTENT -->
+<section class="sec" aria-labelledby="pp-h">
+  <div class="container" style="max-width:880px">
+
+    <span class="pp-updated rev"><i class="ti ti-clock-hour-4" aria-hidden="true"></i> ปรับปรุงล่าสุด: 22 กรกฎาคม 2569 &nbsp;·&nbsp; มีผลบังคับใช้ตั้งแต่วันที่ 22 กรกฎาคม 2569</span>
+
+    <div class="pp-toc rev">
+      <div class="pp-toc-ttl">สารบัญ</div>
+      <ol>
+        <li><a href="#pp-1">ข้อมูลทั่วไปและผู้ควบคุมข้อมูล</a></li>
+        <li><a href="#pp-2">ข้อมูลส่วนบุคคลที่เก็บรวบรวม</a></li>
+        <li><a href="#pp-3">คุกกี้ (Cookies)</a></li>
+        <li><a href="#pp-4">วัตถุประสงค์ในการเก็บรวบรวมและใช้ข้อมูล</a></li>
+        <li><a href="#pp-5">ฐานทางกฎหมายในการประมวลผลข้อมูล</a></li>
+        <li><a href="#pp-6">การเปิดเผยข้อมูลแก่บุคคลที่สาม</a></li>
+        <li><a href="#pp-7">ระยะเวลาในการเก็บรักษาข้อมูล</a></li>
+        <li><a href="#pp-8">มาตรการรักษาความปลอดภัยของข้อมูล</a></li>
+        <li><a href="#pp-9">สิทธิของเจ้าของข้อมูลส่วนบุคคล</a></li>
+        <li><a href="#pp-10">การเปลี่ยนแปลงนโยบาย</a></li>
+        <li><a href="#pp-11">ช่องทางติดต่อเจ้าหน้าที่คุ้มครองข้อมูลส่วนบุคคล (DPO)</a></li>
+      </ol>
+    </div>
+
+    <article class="pp-sec rev" id="pp-1">
+      <div class="pp-sec-hd"><div class="pp-num">1</div><h2>ข้อมูลทั่วไปและผู้ควบคุมข้อมูล</h2></div>
+      <div class="pp-body">
+        <p>โรงพยาบาลสันทราย โดยคณะกรรมการจริยธรรมการวิจัยในมนุษย์ ("คณะกรรมการฯ" หรือ "เรา") เป็นผู้ควบคุมข้อมูลส่วนบุคคล (Data Controller) สำหรับข้อมูลที่เก็บรวบรวมผ่านเว็บไซต์และระบบ EC Online Submission ("ระบบ") ซึ่งใช้สำหรับการยื่นขอ ติดตาม และพิจารณาจริยธรรมการวิจัยในมนุษย์</p>
+        <p>นโยบายฉบับนี้จัดทำขึ้นเพื่อชี้แจงวิธีการเก็บรวบรวม ใช้ เปิดเผย และคุ้มครองข้อมูลส่วนบุคคลของท่าน ไม่ว่าท่านจะเป็นผู้วิจัย ผู้เข้าร่วมวิจัย กรรมการ เจ้าหน้าที่ หรือผู้เยี่ยมชมเว็บไซต์ทั่วไป ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA)</p>
+      </div>
+    </article>
+
+    <article class="pp-sec rev" id="pp-2">
+      <div class="pp-sec-hd"><div class="pp-num">2</div><h2>ข้อมูลส่วนบุคคลที่เก็บรวบรวม</h2></div>
+      <div class="pp-body">
+        <p>เราเก็บรวบรวมข้อมูลส่วนบุคคลเท่าที่จำเป็นตามลักษณะการใช้งาน ดังนี้</p>
+        <ul>
+          <li><strong>ข้อมูลบัญชีผู้ใช้งาน:</strong> ชื่อ-นามสกุล อีเมล เบอร์โทรศัพท์ หน่วยงาน/สังกัด และตำแหน่ง สำหรับการลงทะเบียนและเข้าสู่ระบบ</li>
+          <li><strong>ข้อมูลโครงการวิจัย:</strong> รายละเอียดโครงร่างการวิจัย เอกสารแนบ และผลการพิจารณาจริยธรรม ที่ผู้วิจัยยื่นผ่านระบบ</li>
+          <li><strong>ข้อมูลการติดต่อผ่าน LINE:</strong> LINE User ID สำหรับส่งการแจ้งเตือนสถานะโครงการ (เฉพาะผู้ที่เชื่อมต่อบัญชี LINE ด้วยความสมัครใจ)</li>
+          <li><strong>ข้อมูลการใช้งานเว็บไซต์:</strong> หมายเลข IP Address, ประเภทเบราว์เซอร์และอุปกรณ์ (User Agent), วันเวลาที่เข้าใช้งาน และคุกกี้ ตามที่ระบุในหัวข้อที่ 3</li>
+        </ul>
+        <p>ในกรณีเป็นผู้เยี่ยมชมเว็บไซต์ทั่วไปที่ยังไม่ได้ลงทะเบียน เราจะเก็บเฉพาะข้อมูลการใช้งานเว็บไซต์ตามที่ท่านยินยอมผ่านแถบคุกกี้เท่านั้น</p>
+      </div>
+    </article>
+
+    <article class="pp-sec rev" id="pp-3">
+      <div class="pp-sec-hd"><div class="pp-num">3</div><h2>คุกกี้ (Cookies)</h2></div>
+      <div class="pp-body">
+        <p>เว็บไซต์ของเราใช้คุกกี้และเทคโนโลยีที่คล้ายกัน (เช่น local storage ของเบราว์เซอร์) เพื่อจดจำการตั้งค่าและวิเคราะห์การใช้งาน โดยแบ่งเป็น 2 ประเภท ดังนี้</p>
+        <table class="pp-table">
+          <thead><tr><th style="width:26%">ประเภทคุกกี้</th><th>รายละเอียด</th><th style="width:16%">ปิดได้หรือไม่</th></tr></thead>
+          <tbody>
+            <tr><td>คุกกี้ที่จำเป็น</td><td>จำเป็นต่อการทำงานพื้นฐาน เช่น การนำทางหน้าเว็บ สถานะการเข้าสู่ระบบ และความปลอดภัยของระบบ</td><td>ไม่สามารถปิดได้</td></tr>
+            <tr><td>คุกกี้เพื่อการวิเคราะห์</td><td>ใช้บันทึกสถิติการเข้าใช้งาน เช่น จำนวนครั้งที่เข้าชม หมายเลข IP และเบราว์เซอร์ เพื่อนำไปปรับปรุงบริการ</td><td>ปิดได้ผ่านแถบตั้งค่าคุกกี้</td></tr>
+          </tbody>
+        </table>
+        <p>ท่านสามารถเลือกความยินยอมการใช้คุกกี้ได้ผ่านแถบคุกกี้ที่ปรากฏเมื่อเข้าใช้งานเว็บไซต์ครั้งแรก และสามารถเปลี่ยนแปลงการตั้งค่าได้ทุกเมื่อโดยล้างข้อมูลเบราว์เซอร์ (site data) แล้วโหลดหน้าเว็บใหม่</p>
+      </div>
+    </article>
+
+    <article class="pp-sec rev" id="pp-4">
+      <div class="pp-sec-hd"><div class="pp-num">4</div><h2>วัตถุประสงค์ในการเก็บรวบรวมและใช้ข้อมูล</h2></div>
+      <div class="pp-body">
+        <ul>
+          <li>เพื่อลงทะเบียน ยืนยันตัวตน และบริหารจัดการบัญชีผู้ใช้งานระบบ</li>
+          <li>เพื่อดำเนินกระบวนการพิจารณาจริยธรรมการวิจัย ติดตามสถานะโครงการ และแจ้งผลการพิจารณา</li>
+          <li>เพื่อส่งการแจ้งเตือนที่เกี่ยวข้องกับโครงการวิจัยผ่านอีเมลหรือ LINE</li>
+          <li>เพื่อรักษาความปลอดภัยของระบบ ตรวจสอบการใช้งานที่ผิดปกติ และจัดทำ audit log</li>
+          <li>เพื่อวิเคราะห์และปรับปรุงประสิทธิภาพการให้บริการของเว็บไซต์</li>
+        </ul>
+        <p>เราจะไม่นำข้อมูลส่วนบุคคลของท่านไปใช้เพื่อวัตถุประสงค์ทางการตลาดหรือจำหน่ายให้แก่บุคคลภายนอกโดยเด็ดขาด</p>
+      </div>
+    </article>
+
+    <article class="pp-sec rev" id="pp-5">
+      <div class="pp-sec-hd"><div class="pp-num">5</div><h2>ฐานทางกฎหมายในการประมวลผลข้อมูล</h2></div>
+      <div class="pp-body">
+        <p>เราประมวลผลข้อมูลส่วนบุคคลของท่านภายใต้ฐานทางกฎหมายอย่างน้อยหนึ่งข้อดังต่อไปนี้ ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562</p>
+        <ul>
+          <li><strong>ความยินยอม (Consent):</strong> สำหรับคุกกี้เพื่อการวิเคราะห์ และการเชื่อมต่อ LINE เพื่อรับการแจ้งเตือน</li>
+          <li><strong>การปฏิบัติตามสัญญา:</strong> เพื่อให้บริการตามที่ท่านลงทะเบียนใช้งานระบบ</li>
+          <li><strong>ภารกิจของรัฐ/ประโยชน์สาธารณะ:</strong> เพื่อดำเนินภารกิจของคณะกรรมการจริยธรรมการวิจัยในมนุษย์ตามมาตรฐานสากล</li>
+          <li><strong>ประโยชน์โดยชอบด้วยกฎหมาย:</strong> เพื่อรักษาความปลอดภัยของระบบและป้องกันการใช้งานที่ไม่เหมาะสม</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="pp-sec rev" id="pp-6">
+      <div class="pp-sec-hd"><div class="pp-num">6</div><h2>การเปิดเผยข้อมูลแก่บุคคลที่สาม</h2></div>
+      <div class="pp-body">
+        <p>เราจะไม่เปิดเผยข้อมูลส่วนบุคคลของท่านแก่บุคคลภายนอก เว้นแต่ในกรณีดังต่อไปนี้</p>
+        <ul>
+          <li>แก่คณะกรรมการจริยธรรมการวิจัยและเจ้าหน้าที่ที่เกี่ยวข้องโดยตรงกับการพิจารณาโครงการของท่าน</li>
+          <li>แก่หน่วยงานกำกับดูแลตามที่กฎหมายกำหนด เช่น สำนักงานการวิจัยแห่งชาติ (วช.) หรือหน่วยงานตรวจสอบมาตรฐานการวิจัย</li>
+          <li>แก่ผู้ให้บริการที่เราใช้เพื่อการดำเนินงานของระบบ (เช่น ผู้ให้บริการคลาวด์) ภายใต้ข้อตกลงรักษาความลับ</li>
+          <li>ตามคำสั่งศาลหรือที่กฎหมายกำหนดให้ต้องเปิดเผย</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="pp-sec rev" id="pp-7">
+      <div class="pp-sec-hd"><div class="pp-num">7</div><h2>ระยะเวลาในการเก็บรักษาข้อมูล</h2></div>
+      <div class="pp-body">
+        <ul>
+          <li>ข้อมูลบัญชีผู้ใช้และโครงการวิจัย: เก็บรักษาตลอดระยะเวลาที่ท่านใช้งานระบบ และตามระเบียบการเก็บเอกสารของโรงพยาบาล</li>
+          <li>บันทึก Audit log และประวัติการใช้งานเพื่อความปลอดภัย: เก็บรักษาไม่เกิน 1 ปี</li>
+          <li>ข้อมูลความยินยอมเกี่ยวกับคุกกี้และ PDPA: เก็บรักษาไว้เพื่อเป็นหลักฐานการให้ความยินยอมตราบเท่าที่ท่านยังใช้งานเว็บไซต์</li>
+        </ul>
+        <p>เมื่อพ้นระยะเวลาดังกล่าว หรือเมื่อไม่มีความจำเป็นตามวัตถุประสงค์ที่เก็บรวบรวมแล้ว เราจะดำเนินการลบหรือทำให้ข้อมูลไม่สามารถระบุตัวตนได้</p>
+      </div>
+    </article>
+
+    <article class="pp-sec rev" id="pp-8">
+      <div class="pp-sec-hd"><div class="pp-num">8</div><h2>มาตรการรักษาความปลอดภัยของข้อมูล</h2></div>
+      <div class="pp-body">
+        <p>เรากำหนดมาตรการเชิงเทคนิคและการบริหารจัดการเพื่อคุ้มครองข้อมูลส่วนบุคคลของท่าน ได้แก่ การจำกัดสิทธิ์การเข้าถึงข้อมูลตามหน้าที่ความรับผิดชอบ การเข้ารหัสข้อมูลสำคัญ การบันทึก Audit log เพื่อตรวจสอบย้อนหลัง และการทบทวนมาตรการรักษาความปลอดภัยอย่างสม่ำเสมอ</p>
+      </div>
+    </article>
+
+    <article class="pp-sec rev" id="pp-9">
+      <div class="pp-sec-hd"><div class="pp-num">9</div><h2>สิทธิของเจ้าของข้อมูลส่วนบุคคล</h2></div>
+      <div class="pp-body">
+        <p>ภายใต้ PDPA ท่านมีสิทธิดังต่อไปนี้เกี่ยวกับข้อมูลส่วนบุคคลของท่าน</p>
+        <ul>
+          <li>สิทธิขอเข้าถึงและขอรับสำเนาข้อมูลส่วนบุคคล</li>
+          <li>สิทธิขอแก้ไขข้อมูลส่วนบุคคลให้ถูกต้องและเป็นปัจจุบัน</li>
+          <li>สิทธิขอลบหรือทำลายข้อมูลส่วนบุคคล เมื่อหมดความจำเป็นตามวัตถุประสงค์</li>
+          <li>สิทธิขอถอนความยินยอม (สำหรับข้อมูลที่ประมวลผลบนฐานความยินยอม เช่น คุกกี้เพื่อการวิเคราะห์)</li>
+          <li>สิทธิคัดค้านการประมวลผลข้อมูลส่วนบุคคลในบางกรณี</li>
+          <li>สิทธิร้องเรียนต่อหน่วยงานที่เกี่ยวข้องหากเห็นว่าข้อมูลของท่านไม่ได้รับการคุ้มครองตามกฎหมาย</li>
+        </ul>
+        <p>ท่านสามารถใช้สิทธิดังกล่าวได้โดยติดต่อผ่านช่องทางในหัวข้อที่ 11</p>
+      </div>
+    </article>
+
+    <article class="pp-sec rev" id="pp-10">
+      <div class="pp-sec-hd"><div class="pp-num">10</div><h2>การเปลี่ยนแปลงนโยบาย</h2></div>
+      <div class="pp-body">
+        <p>เราอาจปรับปรุงนโยบายความเป็นส่วนตัวฉบับนี้เป็นครั้งคราว เพื่อให้สอดคล้องกับการเปลี่ยนแปลงของกฎหมายหรือลักษณะการให้บริการ โดยจะแจ้งวันที่ปรับปรุงล่าสุดไว้ที่ด้านบนของหน้านี้ และหากมีการเปลี่ยนแปลงที่มีนัยสำคัญ เราจะแจ้งให้ท่านทราบผ่านแถบคุกกี้หรือช่องทางที่เหมาะสมอีกครั้ง</p>
+      </div>
+    </article>
+
+    <article class="pp-sec rev" id="pp-11">
+      <div class="pp-sec-hd"><div class="pp-num">11</div><h2>ช่องทางติดต่อเจ้าหน้าที่คุ้มครองข้อมูลส่วนบุคคล (DPO)</h2></div>
+      <div class="pp-body">
+        <p>หากท่านมีข้อสงสัยเกี่ยวกับนโยบายฉบับนี้ หรือต้องการใช้สิทธิ์ตาม PDPA สามารถติดต่อได้ตามช่องทางด้านล่าง</p>
+        <div class="pp-note">
+          <p><i class="ti ti-building-hospital" aria-hidden="true"></i> คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</p>
+          <p><i class="ti ti-phone" aria-hidden="true"></i> โทรศัพท์: <strong>053-921-199 ต่อ 168</strong></p>
+          <p><i class="ti ti-mail" aria-hidden="true"></i> อีเมล: <a href="mailto:sireetorn.wa@sansaihospital.go.th" style="color:var(--n700);text-decoration:underline">sireetorn.wa@sansaihospital.go.th</a></p>
+          <p><i class="ti ti-clock-hour-4" aria-hidden="true"></i> วันเวลาทำการ: จันทร์–ศุกร์ 08:30–16:30 น.</p>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- RELATED LINKS -->
+
+<section class="sec" aria-labelledby="rel-h">
+  <div class="container">
+    <div class="sec-head rev">
+      <div class="sec-eye">ดูเพิ่มเติม</div>
+      <h2 class="sec-ttl" id="rel-h">ขั้นตอนและเอกสารที่เกี่ยวข้อง</h2>
+      <p class="sec-dsc">ลิงก์ไปยังหน้าอื่นที่เกี่ยวข้องกับการยื่นขอรับการพิจารณาจริยธรรมการวิจัย</p>
+    </div>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap" class="rev">
+      <button class="btn btn-ghost" style="border-color:var(--u200);color:var(--n700)" onclick="location.href='process.html'">
+        <i class="ti ti-list-check" aria-hidden="true"></i> ดูขั้นตอนการยื่น
+      </button>
+      <button class="btn btn-ghost" style="border-color:var(--u200);color:var(--n700)" onclick="location.href='documents.html'">
+        <i class="ti ti-files" aria-hidden="true"></i> เตรียมเอกสาร
+      </button>
+      <button class="btn btn-gold" onclick="SITE.goRegister()">
+        <i class="ti ti-user-plus" aria-hidden="true"></i> ลงทะเบียนเริ่มยื่น
+      </button>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer class="ftr">
+  <div class="container">
+    <div class="ftr-g">
+      <div class="fcol"><h4>โรงพยาบาลสันทราย</h4>
+        <p>เลขที่ 201 หมู่ 11 ตำบลหนองหาร</p>
+        <p>อำเภอสันทราย จังหวัดเชียงใหม่ 50290</p>
+        <p style="margin-top:.5rem">โทรศัพท์: 053-921-199 ต่อ 168</p>
+        <p>เขตสุขภาพที่ 1 · กระทรวงสาธารณสุข</p>
+      </div>
+      <div class="fcol"><h4>ระบบ EC Online</h4>
+        <a href="#" onclick="SITE.goLogin()">เข้าสู่ระบบ</a>
+        <a href="#" onclick="SITE.goRegister()">ลงทะเบียนผู้ใช้ใหม่</a>
+        <a href="process.html">ขั้นตอนการยื่นขอ</a>
+        <a href="documents.html">เตรียมเอกสาร</a>
+        <a href="standards.html">มาตรฐานการวิจัย</a>
+        <a href="training.html">อบรมจริยธรรมการวิจัย</a>
+        <a href="index.html#calendar">ปฏิทินการประชุม</a>
+        <a href="index.html#news">ประกาศและข่าวสาร</a>
+        <a href="contact.html">ติดต่อเรา</a>
+      </div>
+      <div class="fcol"><h4>นโยบายและกฎระเบียบ</h4>
+        <a href="privacy-policy.html">นโยบายความเป็นส่วนตัว (PDPA)</a>
+        <a href="#">เงื่อนไขการใช้งาน</a>
+        <a href="#">มาตรฐาน ICH-GCP</a>
+        <a href="#">แนวทาง NECAST</a>
+      </div>
+    </div>
+    <div class="fbot">
+      <span>© พ.ศ. 2568 โรงพยาบาลสันทราย · ระบบ EC Online Submission v1.0 · พัฒนาโดยกลุ่มงานพัฒนาคุณภาพและมาตรฐาน</span>
+      <span class="pdpa">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        PDPA Compliant · พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+var APP_URL = 'app.html';
+var SITE = {
+  goLogin:    function() { window.location.href = APP_URL; },
+  goRegister: function() { window.location.href = APP_URL + '?action=register'; }
+};
+
+/* reveal on scroll */
+(function() {
+  var els = document.querySelectorAll('.rev');
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold:.08, rootMargin:'0px 0px -24px 0px' });
+  els.forEach(function(el) { io.observe(el); });
+})();
+
+/* เมนูหลักแนวนอน + dropdown ย่อย */
+function nbCloseAll(except) {
+  document.querySelectorAll('.nb-item.has-drop.open').forEach(function(li) {
+    if (li === except) return;
+    li.classList.remove('open');
+    var btn = li.querySelector('.nb-link');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  });
+}
+function nbToggle(e, btn) {
+  if (e) e.stopPropagation();
+  var li = btn.closest('.nb-item');
+  if (!li) return;
+  var willOpen = !li.classList.contains('open');
+  nbCloseAll(willOpen ? li : null);
+  li.classList.toggle('open', willOpen);
+  btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nb-item.has-drop')) nbCloseAll();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') nbCloseAll();
+});
+
+/* เปิด/ปิด dropdown ด้วยเมาส์ hover เฉพาะจอที่มีเมาส์จริง (desktop) */
+(function() {
+  if (!window.matchMedia || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  document.querySelectorAll('.nb-item.has-drop').forEach(function(li) {
+    var closeTimer = null;
+    li.addEventListener('mouseenter', function() {
+      clearTimeout(closeTimer);
+      nbCloseAll(li);
+      li.classList.add('open');
+      var btn = li.querySelector('.nb-link');
+      if (btn) btn.setAttribute('aria-expanded', 'true');
+    });
+    li.addEventListener('mouseleave', function() {
+      closeTimer = setTimeout(function() {
+        li.classList.remove('open');
+        var btn = li.querySelector('.nb-link');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+      }, 150);
+    });
+  });
+})();
+
+/* ปุ่มแฮมเบอร์เกอร์ — เปิด/ปิดเมนูบนมือถือ */
+function nbMobileToggle() {
+  var bar = document.getElementById('nbBar');
+  var btn = document.getElementById('nbToggleBtn');
+  if (!bar) return;
+  var willOpen = !bar.classList.contains('mobile-open');
+  bar.classList.toggle('mobile-open', willOpen);
+  if (btn) btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+  if (!willOpen) nbCloseAll();
+}
+</script>
+</body>
+</html>
