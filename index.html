@@ -798,6 +798,66 @@ html,body{max-width:100%;overflow-x:clip}
 .trk-cta:hover .trk-cta-arrow{background:var(--g500);border-color:var(--g500);color:var(--n900)}
 @media(max-width:640px){.trk-cta{flex-wrap:wrap;padding:1.4rem}}
 
+/* ══════════════════════════════════════════════════════════════
+   COOKIE CONSENT BANNER + SETTINGS MODAL (PDPA)
+══════════════════════════════════════════════════════════════ */
+#ck-banner{position:fixed;left:0;right:0;bottom:0;z-index:9990;
+  background:#fff;border-top:3px solid var(--g500);
+  box-shadow:0 -6px 28px rgba(11,31,53,.18);
+  padding:1.1rem 1.4rem;display:flex;align-items:flex-start;gap:1.25rem;flex-wrap:wrap;
+  animation:ckSlideUp .4s var(--ease)}
+#ck-banner.ck-hidden{display:none}
+@keyframes ckSlideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.ck-ico{flex-shrink:0;width:38px;height:38px;border-radius:9px;background:var(--n50);
+  color:var(--n700);display:flex;align-items:center;justify-content:center;font-size:1.05rem;margin-top:.1rem}
+.ck-text{flex:1;min-width:260px}
+.ck-text h4{font-family:var(--ffs);font-size:.9rem;font-weight:700;color:var(--n800);margin-bottom:.3rem}
+.ck-text p{font-size:.78rem;color:var(--u500);line-height:1.75}
+.ck-text a{color:var(--g600);font-weight:700;text-decoration:underline;cursor:pointer}
+.ck-actions{display:flex;gap:.55rem;align-items:center;flex-wrap:wrap;flex-shrink:0}
+.ck-btn{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--ff);
+  font-size:.78rem;font-weight:700;padding:.55rem 1.05rem;border-radius:6px;
+  cursor:pointer;transition:background .16s,border-color .16s;white-space:nowrap;border:1.5px solid transparent}
+.ck-btn-accept{background:var(--g500);color:var(--n900)}
+.ck-btn-accept:hover{background:var(--g400)}
+.ck-btn-reject{background:transparent;color:var(--n700);border-color:var(--u200)}
+.ck-btn-reject:hover{background:var(--u50)}
+.ck-btn-settings{background:transparent;color:var(--n700);border-color:var(--u200)}
+.ck-btn-settings:hover{background:var(--u50)}
+@media(max-width:640px){#ck-banner{padding:1rem}.ck-actions{width:100%}.ck-actions .ck-btn{flex:1;justify-content:center}}
+
+/* modal */
+#ck-modal-overlay{position:fixed;inset:0;background:rgba(11,31,53,.55);z-index:9995;
+  display:none;align-items:center;justify-content:center;padding:1.25rem}
+#ck-modal-overlay.ck-open{display:flex}
+.ck-modal{background:#fff;border-radius:14px;box-shadow:0 20px 60px rgba(11,31,53,.3);
+  width:100%;max-width:560px;max-height:82vh;overflow-y:auto}
+.ck-modal-hd{background:var(--n900);padding:1.2rem 1.4rem;border-radius:14px 14px 0 0;
+  border-bottom:2px solid var(--g500);display:flex;align-items:center;justify-content:space-between;gap:.75rem}
+.ck-modal-hd h3{font-family:var(--ffs);font-size:1rem;color:#fff;font-weight:700}
+.ck-modal-hd button{background:rgba(255,255,255,.14);border:none;color:#fff;border-radius:50%;
+  width:30px;height:30px;font-size:.85rem;cursor:pointer;flex-shrink:0}
+.ck-modal-body{padding:1.4rem}
+.ck-modal-body>p{font-size:.8rem;color:var(--u500);line-height:1.8;margin-bottom:1.1rem}
+.ck-opt{background:var(--u50);border:1px solid var(--u100);border-radius:10px;padding:1rem 1.1rem;margin-bottom:.85rem}
+.ck-opt-hd{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.4rem}
+.ck-opt-hd h4{font-family:var(--ffs);font-size:.86rem;color:var(--n800);font-weight:700;display:flex;align-items:center;gap:.4rem}
+.ck-opt-hd h4 .ck-req-tag{font-family:var(--ff);font-size:.6rem;font-weight:700;background:var(--n700);
+  color:#fff;padding:2px 8px;border-radius:20px}
+.ck-opt p{font-size:.76rem;color:var(--u500);line-height:1.7}
+.ck-toggle{position:relative;flex-shrink:0}
+.ck-toggle input{opacity:0;width:0;height:0;position:absolute}
+.ck-toggle-slider{display:block;width:42px;height:23px;background:#ccc;border-radius:24px;
+  cursor:pointer;transition:background .18s;position:relative}
+.ck-toggle-slider::after{content:'';position:absolute;top:2.5px;left:3px;width:18px;height:18px;
+  background:#fff;border-radius:50%;transition:transform .18s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.ck-toggle input:checked+.ck-toggle-slider{background:var(--g500)}
+.ck-toggle input:checked+.ck-toggle-slider::after{transform:translateX(19px)}
+.ck-toggle input:disabled+.ck-toggle-slider{background:var(--n700);cursor:not-allowed;opacity:.8}
+.ck-toggle input:disabled+.ck-toggle-slider::after{transform:translateX(19px)}
+.ck-modal-ftr{padding:1rem 1.4rem;border-top:1px solid var(--u100);display:flex;gap:.6rem;
+  justify-content:flex-end;flex-wrap:wrap}
+
 </style>
 </head>
 <body>
@@ -1224,7 +1284,7 @@ html,body{max-width:100%;overflow-x:clip}
         <a href="contact.html" data-en="Contact Us">ติดต่อเรา</a>
       </div>
       <div class="fcol"><h4 data-en="Policies & Regulations">นโยบายและกฎระเบียบ</h4>
-        <a href="#" data-en="Privacy Policy (PDPA)">นโยบายความเป็นส่วนตัว (PDPA)</a>
+        <a href="privacy-policy.html" data-en="Privacy Policy (PDPA)">นโยบายความเป็นส่วนตัว (PDPA)</a>
         <a href="#" data-en="Terms of Use">เงื่อนไขการใช้งาน</a>
         <a href="#" data-en="ICH-GCP Standards">มาตรฐาน ICH-GCP</a>
         <a href="#" data-en="NECAST Guidelines">แนวทาง NECAST</a>
@@ -2199,5 +2259,164 @@ function annOpen() {
   });
 })();
 </script>
+<!-- ══════════════════════════════════════════════════════════════
+     COOKIE CONSENT BANNER (PDPA)
+══════════════════════════════════════════════════════════════ -->
+<div id="ck-banner" class="ck-hidden" role="dialog" aria-label="การตั้งค่าคุกกี้">
+  <div class="ck-ico" aria-hidden="true"><i class="ti ti-cookie"></i></div>
+  <div class="ck-text">
+    <h4 data-en="This website uses cookies">เว็บไซต์นี้ใช้คุกกี้</h4>
+    <p data-en="We use cookies necessary for the site to function, and to understand how the site is used, in order to improve your experience, under the Personal Data Protection Act B.E. 2562 (PDPA). Read our">
+      เราใช้คุกกี้ที่จำเป็นต่อการทำงานของเว็บไซต์ และคุกกี้เพื่อวิเคราะห์การใช้งาน เพื่อพัฒนาประสบการณ์การใช้งานของท่าน
+      ภายใต้พระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) อ่าน<a id="ck-link-policy" data-en="full Privacy Policy">นโยบายความเป็นส่วนตัวฉบับเต็ม</a>
+    </p>
+  </div>
+  <div class="ck-actions">
+    <button class="ck-btn ck-btn-reject" id="ck-btn-reject" data-en="Necessary only">เฉพาะที่จำเป็น</button>
+    <button class="ck-btn ck-btn-settings" id="ck-btn-settings" data-en="Settings">ตั้งค่า</button>
+    <button class="ck-btn ck-btn-accept" id="ck-btn-accept" data-en="Accept all">ยอมรับทั้งหมด</button>
+  </div>
+</div>
+
+<div id="ck-modal-overlay">
+  <div class="ck-modal">
+    <div class="ck-modal-hd">
+      <h3 data-en="Cookie Settings">ตั้งค่าคุกกี้</h3>
+      <button id="ck-modal-close" aria-label="ปิด"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <div class="ck-modal-body">
+      <p data-en="You can choose which categories of cookies to allow below. Cookies necessary for the site to function cannot be disabled.">
+        ท่านสามารถเลือกเปิด/ปิดการใช้งานคุกกี้แต่ละประเภทได้ตามด้านล่างนี้ ยกเว้นคุกกี้ที่มีความจำเป็นต่อการทำงานของเว็บไซต์ซึ่งไม่สามารถปิดได้
+      </p>
+      <div class="ck-opt">
+        <div class="ck-opt-hd">
+          <h4 data-en="Necessary cookies"><span>คุกกี้ที่จำเป็น</span> <span class="ck-req-tag" data-en="Required">จำเป็น</span></h4>
+          <label class="ck-toggle"><input type="checkbox" checked disabled><span class="ck-toggle-slider"></span></label>
+        </div>
+        <p data-en="Required for core site functions such as page navigation, login sessions and security. The site cannot function properly without these.">
+          จำเป็นสำหรับการทำงานพื้นฐานของเว็บไซต์ เช่น การนำทางหน้าเว็บ การเข้าสู่ระบบ และความปลอดภัย เว็บไซต์ไม่สามารถทำงานได้ตามปกติหากปิดคุกกี้ประเภทนี้
+        </p>
+      </div>
+      <div class="ck-opt">
+        <div class="ck-opt-hd">
+          <h4 data-en="Analytics cookies">คุกกี้เพื่อการวิเคราะห์</h4>
+          <label class="ck-toggle"><input type="checkbox" id="ck-opt-analytics" checked><span class="ck-toggle-slider"></span></label>
+        </div>
+        <p data-en="Help us understand how visitors use the site (e.g. number of visits, IP address, browser) so we can improve the service. If disabled, we will not record this information.">
+          ช่วยให้เราเข้าใจการใช้งานเว็บไซต์ของผู้เข้าชม เช่น จำนวนครั้งที่เข้าใช้งาน หมายเลข IP และเบราว์เซอร์ที่ใช้ เพื่อนำไปปรับปรุงบริการ หากปิด เราจะไม่บันทึกข้อมูลดังกล่าว
+        </p>
+      </div>
+    </div>
+    <div class="ck-modal-ftr">
+      <button class="ck-btn ck-btn-settings" id="ck-btn-modal-reject" data-en="Necessary only">เฉพาะที่จำเป็น</button>
+      <button class="ck-btn ck-btn-accept" id="ck-btn-modal-save" data-en="Save settings">บันทึกการตั้งค่า</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  var LS_KEY = 'ec_cookie_consent';
+  var CONSENT_VERSION = '1.0';
+
+  var banner   = document.getElementById('ck-banner');
+  var overlay  = document.getElementById('ck-modal-overlay');
+  var chkAnalytics = document.getElementById('ck-opt-analytics');
+
+  function getSaved() {
+    try { return JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch(e) { return null; }
+  }
+
+  function hideBanner() {
+    if (!banner) return;
+    banner.style.transition = 'transform .3s ease, opacity .3s ease';
+    banner.style.transform  = 'translateY(100%)';
+    banner.style.opacity    = '0';
+    setTimeout(function() { banner.classList.add('ck-hidden'); }, 300);
+  }
+
+  function closeModal() { if (overlay) overlay.classList.remove('ck-open'); }
+
+  function openModal() {
+    var saved = getSaved();
+    if (chkAnalytics) chkAnalytics.checked = saved ? !!saved.analytics : true;
+    if (overlay) overlay.classList.add('ck-open');
+  }
+
+  /* ── ดึง IP address ผู้เข้าชมผ่าน ipify (ฝั่ง client เนื่องจาก GAS ไม่ส่ง IP มาให้โดยตรง) ── */
+  function getClientIp_(callback) {
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://api.ipify.org?format=json', true);
+      xhr.timeout = 3000;
+      xhr.onload = function() {
+        try { callback(JSON.parse(xhr.responseText).ip || ''); } catch(e) { callback(''); }
+      };
+      xhr.onerror = xhr.ontimeout = function() { callback(''); };
+      xhr.send();
+    } catch(e) { callback(''); }
+  }
+
+  /* ── บันทึกการยินยอมคุกกี้ + IP ลง Google Sheet (PdpaConsents) ผ่าน GAS ── */
+  function logConsent_(actionLabel, choices) {
+    if (!GAS_URL) return;
+    getClientIp_(function(ip) {
+      var body = JSON.stringify({
+        action: 'recordPdpaConsent',
+        origin: window.location.origin,
+        payload: {
+          username:  'anonymous',
+          ip:        ip,
+          userAgent: navigator.userAgent,
+          version:   CONSENT_VERSION,
+          action:    actionLabel,
+          page:      'home_cookie_banner'
+        }
+      });
+      fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: body })
+        .catch(function(e) { console.warn('cookie consent log failed:', e); });
+    });
+  }
+
+  function saveConsent(choices, actionLabel) {
+    var record = {
+      essential: true,
+      analytics: !!choices.analytics,
+      version:   CONSENT_VERSION,
+      savedAt:   new Date().toISOString()
+    };
+    try { localStorage.setItem(LS_KEY, JSON.stringify(record)); } catch(e) {}
+    hideBanner();
+    closeModal();
+    logConsent_(actionLabel, record);
+  }
+
+  var btnAccept   = document.getElementById('ck-btn-accept');
+  var btnReject   = document.getElementById('ck-btn-reject');
+  var btnSettings = document.getElementById('ck-btn-settings');
+  var btnModalSave   = document.getElementById('ck-btn-modal-save');
+  var btnModalReject = document.getElementById('ck-btn-modal-reject');
+  var btnModalClose  = document.getElementById('ck-modal-close');
+  var linkPolicy     = document.getElementById('ck-link-policy');
+
+  if (btnAccept)   btnAccept.addEventListener('click', function() { saveConsent({ analytics: true }, 'accept_all'); });
+  if (btnReject)   btnReject.addEventListener('click', function() { saveConsent({ analytics: false }, 'reject_nonessential'); });
+  if (btnSettings) btnSettings.addEventListener('click', openModal);
+  if (btnModalReject) btnModalReject.addEventListener('click', function() { saveConsent({ analytics: false }, 'reject_nonessential'); });
+  if (btnModalSave)   btnModalSave.addEventListener('click', function() {
+    saveConsent({ analytics: chkAnalytics ? chkAnalytics.checked : true }, 'custom:analytics=' + (chkAnalytics ? chkAnalytics.checked : true));
+  });
+  if (btnModalClose) btnModalClose.addEventListener('click', closeModal);
+  if (linkPolicy) linkPolicy.addEventListener('click', function() { window.location.href = 'privacy-policy.html'; });
+
+  /* แสดง banner เฉพาะเมื่อยังไม่เคยตั้งค่า (หรือฉบับนโยบายเปลี่ยนไปจากที่เคยยอมรับ) */
+  var existing = getSaved();
+  if (!existing || existing.version !== CONSENT_VERSION) {
+    if (banner) banner.classList.remove('ck-hidden');
+  }
+})();
+</script>
+
 </body>
 </html>
