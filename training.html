@@ -187,6 +187,10 @@ button{font-family:inherit;cursor:pointer}
 .trn-bar-gold{background:var(--g500)}
 .trn-bar-green{background:var(--gr700)}
 .trn-bar-slate{background:var(--u700)}
+.trn-cover-wrap{overflow:hidden}
+.trn-cover{width:100%;aspect-ratio:3/2;object-fit:cover;object-position:top center;
+  display:block;background:var(--u50);transition:transform .3s var(--ease)}
+.trn-card:hover .trn-cover{transform:scale(1.03)}
 .trn-body{padding:1.5rem 1.4rem 1.3rem;flex:1;display:flex;flex-direction:column}
 .trn-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem;margin-bottom:1rem}
 .trn-org{display:flex;align-items:center;gap:.6rem;min-width:0}
@@ -388,6 +392,7 @@ button{font-family:inherit;cursor:pointer}
 
       <!-- NECAST -->
       <a class="trn-card rev" style="transition-delay:.05s" href="https://elearning-necast.nrct.go.th/" target="_blank" rel="noopener noreferrer">
+        <div class="trn-cover-wrap"><img class="trn-cover" src="images/training-necast.jpg" alt="ระบบ E-Learning จริยธรรมการวิจัยในมนุษย์ (NECAST) — สำนักงานการวิจัยแห่งชาติ" loading="lazy"></div>
         <div class="trn-bar trn-bar-navy" aria-hidden="true"></div>
         <div class="trn-body">
           <div class="trn-top">
@@ -410,6 +415,7 @@ button{font-family:inherit;cursor:pointer}
 
       <!-- Chula MOOC -->
       <a class="trn-card rev" style="transition-delay:.11s" href="https://www.mycourseville.com/?q=onlinecourse%2Fcourse%2F34723" target="_blank" rel="noopener noreferrer">
+        <div class="trn-cover-wrap"><img class="trn-cover" src="images/training-chulamooc.jpg" alt="จริยธรรมการวิจัยในคน รุ่นที่ 2 — Chula MOOC จุฬาลงกรณ์มหาวิทยาลัย" loading="lazy"></div>
         <div class="trn-bar trn-bar-gold" aria-hidden="true"></div>
         <div class="trn-body">
           <div class="trn-top">
@@ -431,6 +437,7 @@ button{font-family:inherit;cursor:pointer}
 
       <!-- Thai MOOC -->
       <a class="trn-card rev" style="transition-delay:.17s" href="https://thaimooc.ac.th/courses/NU00442" target="_blank" rel="noopener noreferrer">
+        <div class="trn-cover-wrap"><img class="trn-cover" src="images/training-thaimooc.jpg" alt="จริยธรรมการวิจัยในมนุษย์เบื้องต้น (NU00442) — Thai MOOC มหาวิทยาลัยนเรศวร" loading="lazy"></div>
         <div class="trn-bar trn-bar-green" aria-hidden="true"></div>
         <div class="trn-body">
           <div class="trn-top">
@@ -452,6 +459,7 @@ button{font-family:inherit;cursor:pointer}
 
       <!-- Mahidol e-learning -->
       <a class="trn-card rev" style="transition-delay:.23s" href="https://sp.mahidol.ac.th/e-learning/course.php" target="_blank" rel="noopener noreferrer">
+        <div class="trn-cover-wrap"><img class="trn-cover" src="images/training-mahidol.jpg" alt="ชุดวิดีโอบรรยาย Human Subjects Research — มหาวิทยาลัยมหิดล ศูนย์ส่งเสริมจริยธรรมการวิจัย" loading="lazy"></div>
         <div class="trn-bar trn-bar-slate" aria-hidden="true"></div>
         <div class="trn-body">
           <div class="trn-top">
