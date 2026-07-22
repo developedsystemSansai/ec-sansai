@@ -1742,7 +1742,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             class="faq-search-input"
             type="text"
             id="faq-search"
-            placeholder="<i class="ti ti-search" aria-hidden="true"></i> ค้นหาคำถาม เช่น เอกสาร, รอนาน, GCP..."
+            placeholder="ค้นหาคำถาม เช่น เอกสาร, รอนาน, GCP..."
             oninput="filterFAQ(this.value)"
             autocomplete="off"
           >
@@ -2346,7 +2346,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
 
               <!-- filter bar -->
               <div class="search-bar" style="margin-bottom:16px">
-                <input type="text" id="mtg-search" class="form-control" placeholder="<i class="ti ti-search" aria-hidden="true"></i> ค้นหาชื่อ / รหัสการประชุม..." oninput="filterMeetingTable()">
+                <input type="text" id="mtg-search" class="form-control" placeholder="ค้นหาชื่อ / รหัสการประชุม..." oninput="filterMeetingTable()">
                 <select id="mtg-status-filter" class="form-control" style="max-width:180px" onchange="filterMeetingTable()">
                   <option value="">สถานะทั้งหมด</option>
                   <option>รอตรวจสอบ</option>
@@ -2460,7 +2460,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
               </div>
             </div>
             <div class="search-bar">
-              <input type="text" id="sp-search" class="form-control" placeholder="<i class="ti ti-search" aria-hidden="true"></i> ค้นหารหัส / ชื่อโครงการ..." oninput="filterStaffProjects()">
+              <input type="text" id="sp-search" class="form-control" placeholder="ค้นหารหัส / ชื่อโครงการ..." oninput="filterStaffProjects()">
               <select id="sp-status-filter" class="form-control" style="max-width:200px" onchange="filterStaffProjects()">
                 <option value="">สถานะทั้งหมด</option>
                 <option>รอพิจารณา</option>
@@ -2632,7 +2632,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       </div>
 
       <div class="search-bar" style="margin-bottom:16px">
-        <input type="text" id="min-search" class="form-control" placeholder="<i class="ti ti-search" aria-hidden="true"></i> ค้นหาชื่อรายงาน / วันที่..." oninput="filterMinutes()">
+        <input type="text" id="min-search" class="form-control" placeholder="ค้นหาชื่อรายงาน / วันที่..." oninput="filterMinutes()">
         <button class="btn btn-sm btn-outline" onclick="loadMeetingMinutes()"><i class="ti ti-refresh" aria-hidden="true"></i></button>
       </div>
 
@@ -2740,7 +2740,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <!-- Tab: รายชื่อผู้ใช้ -->
             <div id="users-tab-list" class="tab-panel active">
               <div class="search-bar" style="margin-top:12px">
-                <input type="text" class="form-control" id="user-search-input" placeholder="<i class="ti ti-search" aria-hidden="true"></i> ค้นหา username / ชื่อ / อีเมล..." oninput="filterUsersTable()">
+                <input type="text" class="form-control" id="user-search-input" placeholder="ค้นหา username / ชื่อ / อีเมล..." oninput="filterUsersTable()">
                 <select class="form-control" id="user-filter-role" style="max-width:160px" onchange="filterUsersTable()"><option value="">สิทธิ์ทั้งหมด</option><option value="admin">Admin</option><option value="staff">Staff</option><option value="committee">Committee</option><option value="researcher">Researcher</option><option value="pending">รออนุมัติ</option></select>
                 <select class="form-control" id="user-filter-status" style="max-width:140px" onchange="filterUsersTable()"><option value="">สถานะทั้งหมด</option><option value="active">Active</option><option value="pending">Pending</option><option value="inactive">Inactive</option></select>
                 <button class="btn btn-outline btn-sm" onclick="loadUsersData()"><i class="ti ti-refresh" aria-hidden="true"></i></button>
@@ -2797,7 +2797,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                   <div class="table-card-header">
                     <h3>รายชื่อกรรมการ — LINE User ID</h3>
                     <div style="display:flex;gap:8px">
-                      <input type="text" id="line-committee-search" class="form-control" placeholder="<i class="ti ti-search" aria-hidden="true"></i> ค้นหา..." style="max-width:180px;height:32px;font-size:12px" oninput="renderLineCommitteeTable()">
+                      <input type="text" id="line-committee-search" class="form-control" placeholder="ค้นหา..." style="max-width:180px;height:32px;font-size:12px" oninput="renderLineCommitteeTable()">
                       <button class="btn btn-outline btn-sm" onclick="renderLineCommitteeTable()"><i class="ti ti-refresh" aria-hidden="true"></i></button>
                     </div>
                   </div>
