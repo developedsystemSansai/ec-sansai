@@ -66,6 +66,13 @@ button{font-family:inherit;cursor:pointer}
   line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hdr-id p{font-size:.72rem;color:rgba(255,255,255,.42);letter-spacing:.02em;margin-top:2px}
 .hdr-nav{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.lang-switch{display:flex;border:1.5px solid rgba(255,255,255,.22);border-radius:4px;
+  overflow:hidden;flex-shrink:0;margin-left:.15rem}
+.lang-btn{background:transparent;border:0;color:rgba(255,255,255,.6);font-size:.74rem;
+  font-weight:700;font-family:var(--ff);padding:.44rem .6rem;cursor:pointer;line-height:1;
+  transition:background .15s,color .15s}
+.lang-btn:hover{background:rgba(255,255,255,.09);color:#fff}
+.lang-btn.active{background:var(--g500);color:var(--n900)}
 
 /* ── Buttons ── */
 .btn{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--ff);
@@ -119,6 +126,18 @@ button{font-family:inherit;cursor:pointer}
    HERO
 ══════════════════════════════════════════════════════════════ */
 .hero{background:var(--n900);position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;overflow:hidden;z-index:0}
+.hero-bg-slide{position:absolute;inset:0;background-size:cover;background-position:center;
+  transform:translateX(100%);transition:transform 1.8s cubic-bezier(.65,0,.35,1)}
+.hero-bg-slide.no-transition{transition:none}
+.hero-bg-slide.is-active{transform:translateX(0)}
+.hero-bg-slide.is-prev{transform:translateX(-100%)}
+.hero-bg-overlay{position:absolute;inset:0;z-index:0;
+  background:linear-gradient(100deg,rgba(11,31,53,.95) 0%,rgba(11,31,53,.9) 40%,rgba(11,31,53,.68) 100%)}
+@media(prefers-reduced-motion:reduce){
+  .hero-bg-slide{transition:opacity .6s ease;transform:none!important;opacity:0}
+  .hero-bg-slide.is-active{opacity:1}
+}
 .hero::before{content:'';position:absolute;inset:0;
   background:repeating-linear-gradient(90deg,transparent 0,transparent 95px,
     rgba(255,255,255,.018) 95px,rgba(255,255,255,.018) 96px);pointer-events:none}
@@ -768,8 +787,8 @@ html,body{max-width:100%;overflow-x:clip}
          onerror="this.style.display='none'">
     <div class="hdr-sep" aria-hidden="true"></div>
     <div class="hdr-id">
-      <h1>คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</h1>
-      <p>Human Research Ethics Committee · Sansai Hospital · เขตสุขภาพที่ 1 จ.เชียงใหม่</p>
+      <h1 data-en="Human Research Ethics Committee, Sansai Hospital">คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</h1>
+      <p data-en="Human Research Ethics Committee · Sansai Hospital · Health Region 1, Chiang Mai">Human Research Ethics Committee · Sansai Hospital · เขตสุขภาพที่ 1 จ.เชียงใหม่</p>
     </div>
     <nav class="hdr-nav" aria-label="การดำเนินการหลัก">
       <!-- เมนูลัด — dropdown รวมลิงก์ไปหน้าย่อย (ขั้นตอน / เตรียมเอกสาร / ปฏิทิน / ข่าวสาร / ติดตามสถานะ) -->
@@ -777,34 +796,34 @@ html,body{max-width:100%;overflow-x:clip}
         <button class="btn btn-ghost hdr-menu-btn" onclick="hdrMenuToggle(event)"
                 aria-haspopup="true" aria-expanded="false" aria-controls="hdrMenuPanel">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="13" x2="20" y2="13"/><line x1="4" y1="19" x2="14" y2="19"/></svg>
-          เมนู
+          <span data-en="Menu">เมนู</span>
           <svg class="hdr-menu-caret" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="hdr-menu-panel" id="hdrMenuPanel" role="menu" aria-label="เมนูลัด">
           <a role="menuitem" href="process.html">
             <i class="ti ti-list-check" aria-hidden="true"></i>
-            <span><strong>ขั้นตอนการยื่นขอ</strong><small>กระบวนการพิจารณาจริยธรรมการวิจัย</small></span>
+            <span><strong data-en="Application Process">ขั้นตอนการยื่นขอ</strong><small data-en="The ethics review process">กระบวนการพิจารณาจริยธรรมการวิจัย</small></span>
           </a>
           <a role="menuitem" href="documents.html">
             <i class="ti ti-files" aria-hidden="true"></i>
-            <span><strong>เตรียมเอกสาร</strong><small>เอกสารที่ต้องเตรียมก่อนยื่น + แบบฟอร์มดาวน์โหลด</small></span>
+            <span><strong data-en="Required Documents">เตรียมเอกสาร</strong><small data-en="Documents to prepare + downloadable forms">เอกสารที่ต้องเตรียมก่อนยื่น + แบบฟอร์มดาวน์โหลด</small></span>
           </a>
           <a role="menuitem" href="#calendar">
             <i class="ti ti-calendar-event" aria-hidden="true"></i>
-            <span><strong>ปฏิทินการประชุม</strong><small>ตรวจสอบวันประชุมคณะกรรมการ</small></span>
+            <span><strong data-en="Meeting Calendar">ปฏิทินการประชุม</strong><small data-en="Check committee meeting dates">ตรวจสอบวันประชุมคณะกรรมการ</small></span>
           </a>
           <a role="menuitem" href="#news">
             <i class="ti ti-news" aria-hidden="true"></i>
-            <span><strong>ประกาศและข่าวสาร</strong><small>ข่าวสารล่าสุดจากคณะกรรมการ</small></span>
+            <span><strong data-en="News & Announcements">ประกาศและข่าวสาร</strong><small data-en="Latest news from the committee">ข่าวสารล่าสุดจากคณะกรรมการ</small></span>
           </a>
           <a role="menuitem" href="contact.html">
             <i class="ti ti-map-pin" aria-hidden="true"></i>
-            <span><strong>ติดต่อเรา</strong><small>ช่องทางติดต่อ เวลาให้บริการ และแผนที่</small></span>
+            <span><strong data-en="Contact Us">ติดต่อเรา</strong><small data-en="Contact channels, hours, and map">ช่องทางติดต่อ เวลาให้บริการ และแผนที่</small></span>
           </a>
           <div class="hdr-menu-sep" role="separator"></div>
           <a role="menuitem" href="tracking.html">
             <i class="ti ti-search" aria-hidden="true"></i>
-            <span><strong>ติดตามสถานะโครงการ</strong><small>ค้นหาสถานะโครงการด้วยอีเมลที่ใช้ยื่น</small></span>
+            <span><strong data-en="Track Project Status">ติดตามสถานะโครงการ</strong><small data-en="Search by the email used to submit">ค้นหาสถานะโครงการด้วยอีเมลที่ใช้ยื่น</small></span>
           </a>
         </div>
       </div>
@@ -812,16 +831,20 @@ html,body{max-width:100%;overflow-x:clip}
       <button class="btn btn-guide" onclick="annOpen()" aria-label="เปิดคู่มือการใช้งาน" title="คู่มือการใช้งานระบบ">
         <span class="guide-dot" aria-hidden="true"></span>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        คู่มือ
+        <span data-en="Guide">คู่มือ</span>
       </button>
       <button class="btn btn-ghost" onclick="SITE.goRegister()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-        สมัครสมาชิก
+        <span data-en="Register">สมัครสมาชิก</span>
       </button>
       <button class="btn btn-gold" onclick="SITE.goLogin()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        เข้าสู่ระบบ
+        <span data-en="Log in">เข้าสู่ระบบ</span>
       </button>
+      <div class="lang-switch" role="group" aria-label="เลือกภาษา / Language">
+        <button type="button" class="lang-btn" data-lang="th" onclick="setLang('th')" aria-pressed="true">ไทย</button>
+        <button type="button" class="lang-btn" data-lang="en" onclick="setLang('en')" aria-pressed="false">EN</button>
+      </div>
     </nav>
   </div>
 </header>
@@ -830,50 +853,55 @@ html,body{max-width:100%;overflow-x:clip}
      HERO
 ══════════════════════════════════════════════════════════════ -->
 <section class="hero" aria-labelledby="hero-h">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-bg-slide" style="background-image:url('images/hero-bg-1.jpg')"></div>
+    <div class="hero-bg-slide" style="background-image:url('images/hero-bg-2.jpg')"></div>
+    <div class="hero-bg-overlay"></div>
+  </div>
   <div class="hero-stripe" aria-hidden="true"></div>
   <div class="container">
     <div class="hero-in">
       <div>
         <div class="eyebrow">EC Online Submission System</div>
         <h1 class="hero-title" id="hero-h">
-          ยื่นขอรับการพิจารณา<mark>จริยธรรมการวิจัย</mark><br>ในมนุษย์ผ่านระบบออนไลน์
+          <span data-en="Submit for Human Research">ยื่นขอรับการพิจารณา</span><mark data-en="Ethics Review">จริยธรรมการวิจัย</mark><br><span data-en="Online">ในมนุษย์ผ่านระบบออนไลน์</span>
         </h1>
-        <p class="hero-desc">
+        <p class="hero-desc" data-en="Sansai Hospital offers online document submission, status tracking, and review results. Operated in accordance with ICH-GCP standards and NRCT guidelines.">
           โรงพยาบาลสันทราย เปิดให้บริการยื่นเอกสาร ติดตามสถานะ และรับผลการพิจารณาผ่านระบบออนไลน์
           ดำเนินการตามมาตรฐาน ICH-GCP และแนวทางของ วช.
         </p>
         <div class="hero-cta">
           <button class="btn btn-gold btn-gold-lg" onclick="SITE.goLogin()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-            เข้าสู่ระบบ
+            <span data-en="Log in">เข้าสู่ระบบ</span>
           </button>
           <button class="btn btn-wht" onclick="SITE.goRegister()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-            ลงทะเบียนครั้งแรก
+            <span data-en="Register">ลงทะเบียนครั้งแรก</span>
           </button>
           <a class="btn btn-wht" href="#calendar">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            ปฏิทินการประชุม
+            <span data-en="Meeting Calendar">ปฏิทินการประชุม</span>
           </a>
           <!-- ลิงก์คู่มือใน hero -->
           <button class="btn btn-wht" onclick="annOpen()" style="opacity:.88">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
-            คู่มือการใช้งาน
+            <span data-en="User Guide">คู่มือการใช้งาน</span>
           </button>
         </div>
       </div>
       <div class="hero-stats" aria-label="ข้อมูลสำคัญ">
         <div class="stat">
-          <div class="stat-val">Online 24 ชม.</div>
-          <div class="stat-lbl">ยื่นเอกสารได้ตลอดเวลา ไม่ต้องเดินทางมาที่โรงพยาบาล</div>
+          <div class="stat-val" data-en="Online 24/7">Online 24 ชม.</div>
+          <div class="stat-lbl" data-en="Submit documents anytime, no need to visit the hospital">ยื่นเอกสารได้ตลอดเวลา ไม่ต้องเดินทางมาที่โรงพยาบาล</div>
         </div>
         <div class="stat">
-          <div class="stat-val">3 ประเภท</div>
-          <div class="stat-lbl">การพิจารณาแบบยกเว้น เร่งด่วน และเต็มรูปแบบ</div>
+          <div class="stat-val" data-en="3 Categories">3 ประเภท</div>
+          <div class="stat-lbl" data-en="Exempt, Expedited, and Full Board review">การพิจารณาแบบยกเว้น เร่งด่วน และเต็มรูปแบบ</div>
         </div>
         <div class="stat">
           <div class="stat-val">PDPA 2562</div>
-          <div class="stat-lbl">ข้อมูลของท่านได้รับการคุ้มครองตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล</div>
+          <div class="stat-lbl" data-en="Your data is protected under the Personal Data Protection Act">ข้อมูลของท่านได้รับการคุ้มครองตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล</div>
         </div>
       </div>
     </div>
@@ -887,13 +915,8 @@ html,body{max-width:100%;overflow-x:clip}
 <!-- ══════════════════════════════════════════════════════════════
      REVIEW TYPES
 ══════════════════════════════════════════════════════════════ -->
-<section class="sec" aria-labelledby="type-h">
+<section class="sec" aria-label="ประเภทการพิจารณาจริยธรรมการวิจัย">
   <div class="container">
-    <div class="sec-head rev">
-      <div class="sec-eye">ประเภทการพิจารณา</div>
-      <h2 class="sec-ttl" id="type-h">ประเภทการพิจารณาจริยธรรมการวิจัย</h2>
-      <p class="sec-dsc">คณะกรรมการดำเนินการพิจารณาใน 3 ระดับ ตามระดับความเสี่ยงของโครงการวิจัย</p>
-    </div>
 
     <!-- ── Review Stats Dashboard ──────────────────────────────── -->
     <div class="review-stats rev" id="review-stats" aria-label="สถิติโครงการในระบบ">
@@ -901,9 +924,9 @@ html,body{max-width:100%;overflow-x:clip}
       <!-- Header -->
       <div class="rs-section-head">
         <div>
-          <div class="rs-eyebrow">สถิติโครงการในระบบ</div>
-          <div class="rs-title">ภาพรวมการพิจารณาจริยธรรมการวิจัย</div>
-          <div class="rs-desc">ข้อมูลจำนวนโครงการที่อยู่ในกระบวนการพิจารณา แยกตามระดับความเสี่ยง</div>
+          <div class="rs-eyebrow" data-en="Project Statistics">สถิติโครงการในระบบ</div>
+          <div class="rs-title" data-en="Ethics Review Overview">ภาพรวมการพิจารณาจริยธรรมการวิจัย</div>
+          <div class="rs-desc" data-en="Number of projects currently under review, by risk level">ข้อมูลจำนวนโครงการที่อยู่ในกระบวนการพิจารณา แยกตามระดับความเสี่ยง</div>
         </div>
         <span class="rs-updated" id="rs-updated" aria-live="polite">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.31-4.23"/></svg>
@@ -914,24 +937,24 @@ html,body{max-width:100%;overflow-x:clip}
       <!-- แถว 1: กำลังพิจารณา -->
       <div class="rs-row-active">
         <div class="rs-card rs-total">
-          <div class="rs-total-lbl">รวมกำลังพิจารณา</div>
+          <div class="rs-total-lbl" data-en="Total Under Review">รวมกำลังพิจารณา</div>
           <div class="rs-val" id="rs-total">—</div>
-          <div class="rs-lbl">โครงการ · ทั้ง 3 ประเภท</div>
+          <div class="rs-lbl" data-en="Projects · all 3 categories">โครงการ · ทั้ง 3 ประเภท</div>
         </div>
         <div class="rs-card rs-exempt">
           <div class="rs-type-lbl">Exempt Review</div>
           <div class="rs-val" id="rs-exempt">—</div>
-          <div class="rs-lbl">การพิจารณาแบบยกเว้น</div>
+          <div class="rs-lbl" data-en="Exempt-category review">การพิจารณาแบบยกเว้น</div>
         </div>
         <div class="rs-card rs-expedited">
           <div class="rs-type-lbl">Expedited Review</div>
           <div class="rs-val" id="rs-expedited">—</div>
-          <div class="rs-lbl">การพิจารณาแบบเร่งด่วน</div>
+          <div class="rs-lbl" data-en="Expedited-category review">การพิจารณาแบบเร่งด่วน</div>
         </div>
         <div class="rs-card rs-fullboard">
           <div class="rs-type-lbl">Full Board Review</div>
           <div class="rs-val" id="rs-fullboard">—</div>
-          <div class="rs-lbl">การพิจารณาแบบเต็มรูปแบบ</div>
+          <div class="rs-lbl" data-en="Full board review">การพิจารณาแบบเต็มรูปแบบ</div>
         </div>
       </div>
 
@@ -944,7 +967,7 @@ html,body{max-width:100%;overflow-x:clip}
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
           <div>
-            <div class="rs-sum-lbl">ได้รับการรับรองแล้ว</div>
+            <div class="rs-sum-lbl" data-en="Approved">ได้รับการรับรองแล้ว</div>
             <div class="rs-sum-val" id="rs-approved">—</div>
           </div>
         </div>
@@ -953,7 +976,7 @@ html,body{max-width:100%;overflow-x:clip}
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
           </div>
           <div>
-            <div class="rs-sum-lbl">ปิดโครงการแล้ว</div>
+            <div class="rs-sum-lbl" data-en="Closed">ปิดโครงการแล้ว</div>
             <div class="rs-sum-val" id="rs-closed">—</div>
           </div>
         </div>
@@ -976,23 +999,23 @@ html,body{max-width:100%;overflow-x:clip}
       <article class="tc tc-blue rev" style="transition-delay:.06s">
         <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <span class="tc-tag">Exempt Review</span>
-        <h3>การพิจารณาแบบยกเว้น</h3>
-        <p>โครงการที่มีความเสี่ยงต่ำมาก ใช้ข้อมูลทุติยภูมิหรือข้อมูลที่ไม่ระบุตัวตน</p>
-        <ul><li>การวิจัยเชิงสังเกตที่ไม่รุกราน</li><li>การวิเคราะห์ข้อมูลย้อนหลัง</li><li>การศึกษาจากเอกสารทางการแพทย์</li></ul>
+        <h3 data-en="Exempt Review">การพิจารณาแบบยกเว้น</h3>
+        <p data-en="Very-low-risk projects using secondary or de-identified data">โครงการที่มีความเสี่ยงต่ำมาก ใช้ข้อมูลทุติยภูมิหรือข้อมูลที่ไม่ระบุตัวตน</p>
+        <ul><li data-en="Non-invasive observational research">การวิจัยเชิงสังเกตที่ไม่รุกราน</li><li data-en="Retrospective data analysis">การวิเคราะห์ข้อมูลย้อนหลัง</li><li data-en="Studies based on medical records">การศึกษาจากเอกสารทางการแพทย์</li></ul>
       </article>
       <article class="tc tc-amber rev" style="transition-delay:.14s">
         <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
         <span class="tc-tag">Expedited Review</span>
-        <h3>การพิจารณาแบบเร่งด่วน</h3>
-        <p>โครงการที่มีความเสี่ยงต่ำ พิจารณาโดยประธานหรือกรรมการที่ได้รับมอบหมาย</p>
-        <ul><li>การเก็บตัวอย่างเลือดปริมาณน้อย</li><li>การสำรวจและสัมภาษณ์ที่ไม่กระทบ</li><li>การวิจัยด้านพฤติกรรมศาสตร์</li></ul>
+        <h3 data-en="Expedited Review">การพิจารณาแบบเร่งด่วน</h3>
+        <p data-en="Low-risk projects reviewed by the chair or a delegated committee member">โครงการที่มีความเสี่ยงต่ำ พิจารณาโดยประธานหรือกรรมการที่ได้รับมอบหมาย</p>
+        <ul><li data-en="Small-volume blood sample collection">การเก็บตัวอย่างเลือดปริมาณน้อย</li><li data-en="Non-invasive surveys and interviews">การสำรวจและสัมภาษณ์ที่ไม่กระทบ</li><li data-en="Behavioral science research">การวิจัยด้านพฤติกรรมศาสตร์</li></ul>
       </article>
       <article class="tc tc-red rev" style="transition-delay:.22s">
         <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
         <span class="tc-tag">Full Board Review</span>
-        <h3>การพิจารณาแบบเต็มรูปแบบ</h3>
-        <p>โครงการที่มีความเสี่ยงสูง เกี่ยวข้องกับกลุ่มเปราะบาง หรือการทดลองทางคลินิก</p>
-        <ul><li>การทดลองทางคลินิก (Clinical Trial)</li><li>การวิจัยในกลุ่มเด็กและผู้ด้อยโอกาส</li><li>การวิจัยเกี่ยวกับยาและเครื่องมือแพทย์</li></ul>
+        <h3 data-en="Full Board Review">การพิจารณาแบบเต็มรูปแบบ</h3>
+        <p data-en="High-risk projects involving vulnerable groups or clinical trials">โครงการที่มีความเสี่ยงสูง เกี่ยวข้องกับกลุ่มเปราะบาง หรือการทดลองทางคลินิก</p>
+        <ul><li data-en="Clinical Trials">การทดลองทางคลินิก (Clinical Trial)</li><li data-en="Research involving children and disadvantaged groups">การวิจัยในกลุ่มเด็กและผู้ด้อยโอกาส</li><li data-en="Research involving drugs and medical devices">การวิจัยเกี่ยวกับยาและเครื่องมือแพทย์</li></ul>
       </article>
     </div>
   </div>
@@ -1004,9 +1027,9 @@ html,body{max-width:100%;overflow-x:clip}
 <section class="sec" id="tracking" aria-labelledby="track-h">
   <div class="container">
     <div class="sec-head rev">
-      <div class="sec-eye">ติดตามสถานะโครงการวิจัย</div>
+      <div class="sec-eye" data-en="Track Project Status">ติดตามสถานะโครงการวิจัย</div>
       <h2 class="sec-ttl" id="track-h">Research Ethics Committee Tracking System</h2>
-      <p class="sec-dsc">ค้นหาโครงการของท่านด้วยอีเมลที่ใช้ยื่น หรือดูภาพรวมสถานะโครงการวิจัยทั้งหมดในระบบ</p>
+      <p class="sec-dsc" data-en="Search your project by the email used to submit, or view an overview of all project statuses in the system">ค้นหาโครงการของท่านด้วยอีเมลที่ใช้ยื่น หรือดูภาพรวมสถานะโครงการวิจัยทั้งหมดในระบบ</p>
     </div>
 
     <a href="tracking.html" class="trk-cta rev" aria-label="ไปที่หน้าติดตามสถานะโครงการวิจัย">
@@ -1026,9 +1049,9 @@ html,body{max-width:100%;overflow-x:clip}
 <section class="sec" id="calendar" aria-labelledby="cal-h">
   <div class="container">
     <div class="sec-head rev">
-      <div class="sec-eye">ปฏิทินการประชุม</div>
-      <h2 class="sec-ttl" id="cal-h">กำหนดการประชุมคณะกรรมการจริยธรรม</h2>
-      <p class="sec-dsc">ตรวจสอบวันประชุมเพื่อวางแผนการยื่นเอกสาร — ควรยื่นล่วงหน้าอย่างน้อย 15 วันทำการ</p>
+      <div class="sec-eye" data-en="Meeting Calendar">ปฏิทินการประชุม</div>
+      <h2 class="sec-ttl" id="cal-h" data-en="Ethics Committee Meeting Schedule">กำหนดการประชุมคณะกรรมการจริยธรรม</h2>
+      <p class="sec-dsc" data-en="Check meeting dates to plan your submission — please submit at least 15 business days in advance">ตรวจสอบวันประชุมเพื่อวางแผนการยื่นเอกสาร — ควรยื่นล่วงหน้าอย่างน้อย 15 วันทำการ</p>
     </div>
 
     <div class="cal-layout rev">
@@ -1095,8 +1118,8 @@ html,body{max-width:100%;overflow-x:clip}
     <div class="news-lay">
       <div>
         <div class="sec-head rev">
-          <div class="sec-eye">ประกาศ / ข่าวสาร</div>
-          <h2 class="sec-ttl" id="news-h">ประกาศและข่าวสารจากคณะกรรมการ</h2>
+          <div class="sec-eye" data-en="Announcements / News">ประกาศ / ข่าวสาร</div>
+          <h2 class="sec-ttl" id="news-h" data-en="Announcements & News from the Committee">ประกาศและข่าวสารจากคณะกรรมการ</h2>
         </div>
         <div id="nlist" role="feed" aria-label="รายการประกาศ"></div>
         <button class="news-more" id="nbtn" style="display:none" aria-expanded="false">
@@ -1108,34 +1131,34 @@ html,body{max-width:100%;overflow-x:clip}
         <div class="qbox">
           <div class="qbox-ttl">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            การดำเนินการด่วน
+            <span data-en="Quick Actions">การดำเนินการด่วน</span>
           </div>
           <button class="qa qa-prim" onclick="SITE.goLogin()">
             <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg></div>
-            <span class="qa-lbl">เข้าสู่ระบบ<span class="qa-sub">สำหรับผู้มีบัญชีอยู่แล้ว</span></span>
+            <span class="qa-lbl"><span data-en="Log in">เข้าสู่ระบบ</span><span class="qa-sub" data-en="For existing account holders">สำหรับผู้มีบัญชีอยู่แล้ว</span></span>
           </button>
           <button class="qa" onclick="SITE.goRegister()">
             <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
-            <span class="qa-lbl">ลงทะเบียนผู้ใช้ใหม่<span class="qa-sub">สำหรับผู้วิจัยที่ยังไม่มีบัญชี</span></span>
+            <span class="qa-lbl"><span data-en="Register">ลงทะเบียนผู้ใช้ใหม่</span><span class="qa-sub" data-en="For researchers without an account">สำหรับผู้วิจัยที่ยังไม่มีบัญชี</span></span>
           </button>
           <a class="qa" href="process.html">
             <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-            <span class="qa-lbl">ขั้นตอนการยื่น<span class="qa-sub">ดูกระบวนการพิจารณาทั้งหมด</span></span>
+            <span class="qa-lbl"><span data-en="Application Process">ขั้นตอนการยื่น</span><span class="qa-sub" data-en="View the full review process">ดูกระบวนการพิจารณาทั้งหมด</span></span>
           </a>
           <a class="qa" href="documents.html">
             <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-            <span class="qa-lbl">เตรียมเอกสาร<span class="qa-sub">รายการเอกสารและแบบฟอร์ม</span></span>
+            <span class="qa-lbl"><span data-en="Required Documents">เตรียมเอกสาร</span><span class="qa-sub" data-en="List of documents and forms">รายการเอกสารและแบบฟอร์ม</span></span>
           </a>
           <a class="qa" href="#calendar">
             <div class="qa-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-            <span class="qa-lbl">ปฏิทินการประชุม<span class="qa-sub">ตรวจสอบวันประชุมที่กำลังจะมาถึง</span></span>
+            <span class="qa-lbl"><span data-en="Meeting Calendar">ปฏิทินการประชุม</span><span class="qa-sub" data-en="Check upcoming meeting dates">ตรวจสอบวันประชุมที่กำลังจะมาถึง</span></span>
           </a>
           <div class="qc">
-            <strong>ติดต่อสอบถาม</strong><br>
-            กลุ่มงานพัฒนาคุณภาพและมาตรฐาน<br>
-            โรงพยาบาลสันทราย โทร. 053-849-300 ต่อ 168<br>
-            อีเมล: <a href="mailto:sireetorn.wa@sansaihospital.go.th">sireetorn.wa@sansaihospital.go.th</a><br>
-            วันจันทร์–ศุกร์ เวลา 08.30–16.30 น.
+            <strong data-en="Contact">ติดต่อสอบถาม</strong><br>
+            <span data-en="Quality Development and Standards Group">กลุ่มงานพัฒนาคุณภาพและมาตรฐาน</span><br>
+            <span data-en="Sansai Hospital, Tel. 053-849-300 ext. 168">โรงพยาบาลสันทราย โทร. 053-849-300 ต่อ 168</span><br>
+            <span data-en="Email:">อีเมล:</span> <a href="mailto:sireetorn.wa@sansaihospital.go.th">sireetorn.wa@sansaihospital.go.th</a><br>
+            <span data-en="Monday–Friday, 08:30–16:30">วันจันทร์–ศุกร์ เวลา 08.30–16.30 น.</span>
           </div>
         </div>
       </aside>
@@ -1149,33 +1172,33 @@ html,body{max-width:100%;overflow-x:clip}
 <footer class="ftr">
   <div class="container">
     <div class="ftr-g">
-      <div class="fcol"><h4>โรงพยาบาลสันทราย</h4>
-        <p>เลขที่ 201 หมู่ 11 ตำบลหนองหาร</p>
-        <p>อำเภอสันทราย จังหวัดเชียงใหม่ 50290</p>
-        <p style="margin-top:.5rem">โทรศัพท์: 053-921-199 ต่อ 168</p>
-        <p>เขตสุขภาพที่ 1 · กระทรวงสาธารณสุข</p>
+      <div class="fcol"><h4 data-en="Sansai Hospital">โรงพยาบาลสันทราย</h4>
+        <p data-en="201 Moo 11, Nong Han Subdistrict">เลขที่ 201 หมู่ 11 ตำบลหนองหาร</p>
+        <p data-en="Sansai District, Chiang Mai 50290">อำเภอสันทราย จังหวัดเชียงใหม่ 50290</p>
+        <p style="margin-top:.5rem" data-en="Tel: 053-921-199 ext. 168">โทรศัพท์: 053-921-199 ต่อ 168</p>
+        <p data-en="Health Region 1 · Ministry of Public Health">เขตสุขภาพที่ 1 · กระทรวงสาธารณสุข</p>
       </div>
-      <div class="fcol"><h4>ระบบ EC Online</h4>
-        <a href="#" onclick="SITE.goLogin()">เข้าสู่ระบบ</a>
-        <a href="#" onclick="SITE.goRegister()">ลงทะเบียนผู้ใช้ใหม่</a>
-        <a href="process.html">ขั้นตอนการยื่นขอ</a>
-        <a href="documents.html">เตรียมเอกสาร</a>
-        <a href="#calendar">ปฏิทินการประชุม</a>
-        <a href="#news">ประกาศและข่าวสาร</a>
-        <a href="contact.html">ติดต่อเรา</a>
+      <div class="fcol"><h4 data-en="EC Online System">ระบบ EC Online</h4>
+        <a href="#" onclick="SITE.goLogin()" data-en="Log in">เข้าสู่ระบบ</a>
+        <a href="#" onclick="SITE.goRegister()" data-en="Register">ลงทะเบียนผู้ใช้ใหม่</a>
+        <a href="process.html" data-en="Application Process">ขั้นตอนการยื่นขอ</a>
+        <a href="documents.html" data-en="Required Documents">เตรียมเอกสาร</a>
+        <a href="#calendar" data-en="Meeting Calendar">ปฏิทินการประชุม</a>
+        <a href="#news" data-en="News & Announcements">ประกาศและข่าวสาร</a>
+        <a href="contact.html" data-en="Contact Us">ติดต่อเรา</a>
       </div>
-      <div class="fcol"><h4>นโยบายและกฎระเบียบ</h4>
-        <a href="#">นโยบายความเป็นส่วนตัว (PDPA)</a>
-        <a href="#">เงื่อนไขการใช้งาน</a>
-        <a href="#">มาตรฐาน ICH-GCP</a>
-        <a href="#">แนวทาง NECAST</a>
+      <div class="fcol"><h4 data-en="Policies & Regulations">นโยบายและกฎระเบียบ</h4>
+        <a href="#" data-en="Privacy Policy (PDPA)">นโยบายความเป็นส่วนตัว (PDPA)</a>
+        <a href="#" data-en="Terms of Use">เงื่อนไขการใช้งาน</a>
+        <a href="#" data-en="ICH-GCP Standards">มาตรฐาน ICH-GCP</a>
+        <a href="#" data-en="NECAST Guidelines">แนวทาง NECAST</a>
       </div>
     </div>
     <div class="fbot">
-      <span>© พ.ศ. 2568 โรงพยาบาลสันทราย · ระบบ EC Online Submission v1.0 · พัฒนาโดยกลุ่มงานพัฒนาคุณภาพและมาตรฐาน</span>
+      <span data-en="© 2025 Sansai Hospital · EC Online Submission System v1.0 · Developed by the Quality Development and Standards Group">© พ.ศ. 2568 โรงพยาบาลสันทราย · ระบบ EC Online Submission v1.0 · พัฒนาโดยกลุ่มงานพัฒนาคุณภาพและมาตรฐาน</span>
       <span class="pdpa">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        PDPA Compliant · พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
+        <span data-en="PDPA Compliant · Personal Data Protection Act B.E. 2562">PDPA Compliant · พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562</span>
       </span>
     </div>
   </div>
@@ -1538,12 +1561,75 @@ function escH(s) {
 CAL.init();
 
 /* ══════════════════════════════════════════════════════════════
+   HERO BACKGROUND CAROUSEL — เลื่อนภาพขวาไปซ้ายแบบภาพต่อภาพ
+══════════════════════════════════════════════════════════════ */
+(function() {
+  var slides = document.querySelectorAll('.hero-bg-slide');
+  if (slides.length < 2) return;
+
+  var reduced = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var i = 0;
+  slides[0].classList.add('is-active');
+
+  if (reduced) return; // ภาพแรกนิ่ง ไม่หมุนอัตโนมัติ
+
+  slides.forEach(function(s) {
+    s.addEventListener('transitionend', function(e) {
+      if (e.propertyName !== 'transform') return;
+      if (s.classList.contains('is-prev')) {
+        s.classList.add('no-transition');
+        s.classList.remove('is-prev');
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() { s.classList.remove('no-transition'); });
+        });
+      }
+    });
+  });
+
+  setInterval(function() {
+    var cur = slides[i];
+    var next = slides[(i + 1) % slides.length];
+    cur.classList.remove('is-active');
+    cur.classList.add('is-prev');
+    next.classList.add('is-active');
+    i = (i + 1) % slides.length;
+  }, 6500);
+})();
+
+/* ══════════════════════════════════════════════════════════════
    REVIEW STATS — ดึงจำนวนโครงการจาก GAS (public, no auth)
 ══════════════════════════════════════════════════════════════ */
 (function() {
   function setVal(id, val) {
     var el = document.getElementById(id);
     if (el) el.textContent = val;
+  }
+
+  var prefersReducedMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* วิ่งตัวเลขขึ้นแบบ count-up เมื่อได้รับข้อมูลสถิติจริง */
+  function animateCount(id, target) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    target = Number(target) || 0;
+    if (prefersReducedMotion) { el.textContent = target; return; }
+    var start = parseInt(el.textContent, 10);
+    if (isNaN(start)) start = 0;
+    if (start === target) { el.textContent = target; return; }
+    var duration = 900;
+    var t0 = null;
+    function step(ts) {
+      if (!t0) t0 = ts;
+      var p = Math.min((ts - t0) / duration, 1);
+      var eased = 1 - Math.pow(1 - p, 3); // ease-out cubic
+      el.textContent = Math.round(start + (target - start) * eased);
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(step);
   }
 
   function loadStats() {
@@ -1569,12 +1655,12 @@ CAL.init();
         if (res && res.success && res.data) {
           var d = res.data;
           var total = (d.exempt || 0) + (d.expedited || 0) + (d.fullboard || 0);
-          setVal('rs-total',     total);
-          setVal('rs-exempt',    d.exempt    || 0);
-          setVal('rs-expedited', d.expedited || 0);
-          setVal('rs-fullboard', d.fullboard || 0);
-          setVal('rs-approved',  d.approved  || 0);
-          setVal('rs-closed',    d.closed    || 0);
+          animateCount('rs-total',     total);
+          animateCount('rs-exempt',    d.exempt    || 0);
+          animateCount('rs-expedited', d.expedited || 0);
+          animateCount('rs-fullboard', d.fullboard || 0);
+          animateCount('rs-approved',  d.approved  || 0);
+          animateCount('rs-closed',    d.closed    || 0);
 
           var now = new Date();
           var hh = now.getHours().toString().padStart(2,'0');
@@ -1721,6 +1807,23 @@ document.addEventListener('click', function(e) {
     hdrMenuClose();
   }
 });
+
+/* พรีวิวเมนูด้วยการนำเมาส์ไปแตะ (เฉพาะอุปกรณ์ที่มีเมาส์จริง ไม่ใช่จอสัมผัส) */
+(function() {
+  if (!window.matchMedia || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  var menu = document.getElementById('hdrMenu');
+  if (!menu) return;
+  var closeTimer = null;
+  menu.addEventListener('mouseenter', function() {
+    clearTimeout(closeTimer);
+    menu.classList.add('open');
+    var btn = menu.querySelector('.hdr-menu-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  });
+  menu.addEventListener('mouseleave', function() {
+    closeTimer = setTimeout(function() { hdrMenuClose(); }, 150);
+  });
+})();
 
 /* ปิด modal ด้วย Escape key */
 document.addEventListener('keydown', function(e) {
