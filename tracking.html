@@ -252,7 +252,15 @@ button{font-family:inherit;cursor:pointer;background:none;border:none}
 }
 
 /* ── Footer (same as index.html) ── */
-.ftr{background:var(--n900);border-top:2px solid var(--g500);padding-block:3rem 2rem}
+.ftr{background:var(--n900);border-top:2px solid var(--g500);padding-block:3rem 2rem;position:relative;overflow:hidden}
+.ftr::before{content:'';position:absolute;inset:-20px;
+  background:url('images/footer-bg.jpg') center/cover no-repeat;
+  filter:blur(10px) saturate(1.05) brightness(.5);
+  transform:scale(1.08);z-index:0;pointer-events:none}
+.ftr::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(11,31,53,.88) 0%,rgba(11,31,53,.93) 100%);
+  z-index:1;pointer-events:none}
+.ftr .container{position:relative;z-index:2}
 .ftr-g{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:3rem;margin-bottom:2rem}
 .fcol h4{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g400);margin-bottom:1rem}
 .fcol p,.fcol a{font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.9;display:block;transition:color .15s}
