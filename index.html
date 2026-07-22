@@ -856,6 +856,7 @@ html,body{max-width:100%;overflow-x:clip}
   <div class="hero-bg" aria-hidden="true">
     <div class="hero-bg-slide" style="background-image:url('images/hero-bg-1.jpg')"></div>
     <div class="hero-bg-slide" style="background-image:url('images/hero-bg-2.jpg')"></div>
+    <div class="hero-bg-slide" style="background-image:url('images/hero-bg-3.jpg')"></div>
     <div class="hero-bg-overlay"></div>
   </div>
   <div class="hero-stripe" aria-hidden="true"></div>
@@ -1596,6 +1597,46 @@ CAL.init();
     next.classList.add('is-active');
     i = (i + 1) % slides.length;
   }, 6500);
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   LANGUAGE SWITCH — ไทย / English (data-en attribute based)
+══════════════════════════════════════════════════════════════ */
+(function() {
+  var LS_KEY = 'ec_lang';
+
+  /* เก็บข้อความไทยต้นฉบับ + ข้อความอังกฤษ ของทุก element ที่มี data-en ไว้ล่วงหน้า
+     เพื่อสลับไปมาได้โดยไม่ต้องแก้ไข DOM ซ้ำซ้อน */
+  var entries = Array.prototype.map.call(
+    document.querySelectorAll('[data-en]'),
+    function(el) {
+      return { el: el, th: el.textContent, en: el.getAttribute('data-en') };
+    }
+  );
+
+  function applyLang(lang) {
+    var l = (lang === 'en') ? 'en' : 'th';
+
+    entries.forEach(function(item) {
+      item.el.textContent = (l === 'en') ? item.en : item.th;
+    });
+
+    document.documentElement.setAttribute('lang', l);
+
+    document.querySelectorAll('.lang-btn').forEach(function(btn) {
+      var isActive = btn.getAttribute('data-lang') === l;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+
+    try { localStorage.setItem(LS_KEY, l); } catch (e) {}
+  }
+
+  window.setLang = function(lang) { applyLang(lang); };
+
+  var saved = null;
+  try { saved = localStorage.getItem(LS_KEY); } catch (e) {}
+  applyLang(saved === 'en' ? 'en' : 'th');
 })();
 
 /* ══════════════════════════════════════════════════════════════
