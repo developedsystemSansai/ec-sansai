@@ -167,22 +167,31 @@ button{font-family:inherit;cursor:pointer}
 .dc h4{font-size:.84rem;font-weight:700;color:var(--n800);margin-bottom:.5rem;line-height:1.45}
 .dc p{font-size:.72rem;color:var(--u500);line-height:1.72}
 
-/* IMPORTANT-ANNOUNCEMENT DOCUMENT CARDS (ผังขั้นตอน / SOP / คำสั่งแต่งตั้งกรรมการ) */
-.doc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:1.75rem}
-@media(max-width:900px){.doc-grid{grid-template-columns:1fr}}
-.doc-card{display:flex;flex-direction:column;gap:.9rem;background:var(--white);
-  border:1.5px solid var(--g100);border-radius:10px;padding:1.4rem 1.3rem;
-  transition:border-color .18s var(--ease),box-shadow .18s var(--ease),transform .18s var(--ease)}
-.doc-card:hover{border-color:var(--g400);box-shadow:0 10px 28px rgba(181,138,42,.16);transform:translateY(-2px)}
+/* IMPORTANT-ANNOUNCEMENT DOCUMENTS (ผังขั้นตอน / SOP / คำสั่งแต่งตั้งกรรมการ) — พรีวิวฝังในหน้า */
+.doc-list{display:flex;flex-direction:column;gap:1.25rem;margin-top:1.75rem}
+.doc-item{background:var(--white);border:1.5px solid var(--g100);border-radius:12px;overflow:hidden;
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+.doc-item:hover{border-color:var(--g400);box-shadow:0 10px 28px rgba(181,138,42,.12)}
+.doc-item-hd{display:flex;align-items:center;gap:1rem;padding:1.2rem 1.3rem;flex-wrap:wrap}
 .doc-ico{width:44px;height:44px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
 .doc-ico-red{background:#fdeceb;color:#c0392b}
 .doc-ico-blue{background:var(--n50);color:var(--n700)}
+.doc-txt{flex:1;min-width:200px}
 .doc-txt strong{display:block;font-size:.92rem;font-weight:700;color:var(--n800);line-height:1.45;margin-bottom:.3rem}
 .doc-txt span{display:block;font-size:.78rem;color:var(--u500);line-height:1.5}
-.doc-btn{display:inline-flex;align-items:center;gap:.4rem;align-self:flex-start;
+.doc-actions{display:flex;gap:.55rem;flex-shrink:0}
+.doc-btn{display:inline-flex;align-items:center;gap:.4rem;
   background:var(--g500);color:var(--n900);font-size:.78rem;font-weight:700;
-  padding:.45rem 1rem;border-radius:6px;transition:background .16s}
-.doc-card:hover .doc-btn{background:var(--g400)}
+  padding:.5rem 1rem;border-radius:6px;transition:background .16s;white-space:nowrap}
+.doc-btn:hover{background:var(--g400)}
+.doc-btn-ghost{background:var(--u50);color:var(--n700);border:1px solid var(--u200)}
+.doc-btn-ghost:hover{background:var(--u100)}
+.doc-frame-wrap{border-top:1px solid var(--u100);background:var(--u50)}
+.doc-view-frame{width:100%;height:min(72vh,640px);border:0;display:block}
+@media(max-width:640px){.doc-view-frame{height:78vh}}
+.doc-hint{display:flex;align-items:center;gap:6px;padding:.55rem 1.3rem;
+  font-size:.7rem;color:var(--u500);background:var(--u50);border-top:1px solid var(--u100)}
+.doc-hint i{color:var(--g600);font-size:13px}
 
 /* พรีวิวหน้าแรกของเอกสาร (ดึงจาก Google Drive thumbnail) */
 .doc-thumb{position:relative;width:100%;aspect-ratio:4/3;border-radius:8px;overflow:hidden;
@@ -417,37 +426,63 @@ button{font-family:inherit;cursor:pointer}
       <h2 class="sec-ttl" id="std-h">มาตรฐานการวิจัย</h2>
       <p class="sec-dsc">กรุณาอ่านเอกสารต่อไปนี้ก่อนยื่นขอรับการพิจารณาจริยธรรมการวิจัยทุกครั้ง</p>
     </div>
-    <div class="doc-grid">
-      <a class="doc-card rev" style="transition-delay:.06s"
-         href="https://drive.google.com/file/d/1D5L22gQ-rCoQSbk58cLhKSkYbrZFHHg5/view?usp=drive_link"
-         target="_blank" rel="noopener noreferrer">
-        <div class="doc-ico doc-ico-red" aria-hidden="true"><i class="ti ti-book-2"></i></div>
-        <div class="doc-txt">
-          <strong>ผังขั้นตอนการพิจารณาจริยธรรม</strong>
-          <span>แนวทางปฏิบัติสำหรับผู้ยื่นขอ</span>
+    <div class="doc-list">
+      <article class="doc-item rev" style="transition-delay:.06s">
+        <div class="doc-item-hd">
+          <div class="doc-ico doc-ico-red" aria-hidden="true"><i class="ti ti-book-2"></i></div>
+          <div class="doc-txt">
+            <strong>ผังขั้นตอนการพิจารณาจริยธรรม</strong>
+            <span>แนวทางปฏิบัติสำหรับผู้ยื่นขอ</span>
+          </div>
+          <div class="doc-actions">
+            <a class="doc-btn doc-btn-ghost" href="https://drive.google.com/file/d/1D5L22gQ-rCoQSbk58cLhKSkYbrZFHHg5/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
+              <i class="ti ti-arrows-maximize" aria-hidden="true"></i> เปิดเต็มจอ
+            </a>
+          </div>
         </div>
-        <span class="doc-btn"><i class="ti ti-file-description" aria-hidden="true"></i> เปิด PDF</span>
-      </a>
-      <a class="doc-card rev" style="transition-delay:.12s"
-         href="https://drive.google.com/file/d/1teOi9kdtky3VpshJ0dJvsA8iZ0o_1aZ6/view?usp=drive_link"
-         target="_blank" rel="noopener noreferrer">
-        <div class="doc-ico doc-ico-red" aria-hidden="true"><i class="ti ti-book-2"></i></div>
-        <div class="doc-txt">
-          <strong>SOP คณะกรรมการวิจัยฯ ฉบับ 14.2.68</strong>
-          <span>มาตรฐานการปฏิบัติงาน</span>
+        <div class="doc-frame-wrap">
+          <iframe class="doc-view-frame" src="https://drive.google.com/file/d/1D5L22gQ-rCoQSbk58cLhKSkYbrZFHHg5/preview" loading="lazy" title="พรีวิว: ผังขั้นตอนการพิจารณาจริยธรรม"></iframe>
         </div>
-        <span class="doc-btn"><i class="ti ti-file-description" aria-hidden="true"></i> เปิด PDF</span>
-      </a>
-      <a class="doc-card rev" style="transition-delay:.18s"
-         href="https://drive.google.com/file/d/1emwdxRJxoUXeF_qdlIOgJjbUttSSts2n/view?usp=sharing"
-         target="_blank" rel="noopener noreferrer">
-        <div class="doc-ico doc-ico-blue" aria-hidden="true"><i class="ti ti-clipboard-list"></i></div>
-        <div class="doc-txt">
-          <strong>คำสั่งแต่งตั้งคณะกรรมการจริยธรรมการวิจัยในมนุษย์</strong>
-          <span>รายชื่อกรรมการและขอบเขตหน้าที่</span>
+        <div class="doc-hint"><i class="ti ti-info-circle" aria-hidden="true"></i> เลื่อนขึ้น-ลงในกรอบด้านบนเพื่ออ่านทุกหน้า</div>
+      </article>
+
+      <article class="doc-item rev" style="transition-delay:.12s">
+        <div class="doc-item-hd">
+          <div class="doc-ico doc-ico-red" aria-hidden="true"><i class="ti ti-book-2"></i></div>
+          <div class="doc-txt">
+            <strong>SOP คณะกรรมการวิจัยฯ ฉบับ 14.2.68</strong>
+            <span>มาตรฐานการปฏิบัติงาน</span>
+          </div>
+          <div class="doc-actions">
+            <a class="doc-btn doc-btn-ghost" href="https://drive.google.com/file/d/1teOi9kdtky3VpshJ0dJvsA8iZ0o_1aZ6/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
+              <i class="ti ti-arrows-maximize" aria-hidden="true"></i> เปิดเต็มจอ
+            </a>
+          </div>
         </div>
-        <span class="doc-btn"><i class="ti ti-file-description" aria-hidden="true"></i> เปิด PDF</span>
-      </a>
+        <div class="doc-frame-wrap">
+          <iframe class="doc-view-frame" src="https://drive.google.com/file/d/1teOi9kdtky3VpshJ0dJvsA8iZ0o_1aZ6/preview" loading="lazy" title="พรีวิว: SOP คณะกรรมการวิจัยฯ ฉบับ 14.2.68"></iframe>
+        </div>
+        <div class="doc-hint"><i class="ti ti-info-circle" aria-hidden="true"></i> เลื่อนขึ้น-ลงในกรอบด้านบนเพื่ออ่านทุกหน้า</div>
+      </article>
+
+      <article class="doc-item rev" style="transition-delay:.18s">
+        <div class="doc-item-hd">
+          <div class="doc-ico doc-ico-blue" aria-hidden="true"><i class="ti ti-clipboard-list"></i></div>
+          <div class="doc-txt">
+            <strong>คำสั่งแต่งตั้งคณะกรรมการจริยธรรมการวิจัยในมนุษย์</strong>
+            <span>รายชื่อกรรมการและขอบเขตหน้าที่</span>
+          </div>
+          <div class="doc-actions">
+            <a class="doc-btn doc-btn-ghost" href="https://drive.google.com/file/d/1emwdxRJxoUXeF_qdlIOgJjbUttSSts2n/view?usp=sharing" target="_blank" rel="noopener noreferrer">
+              <i class="ti ti-arrows-maximize" aria-hidden="true"></i> เปิดเต็มจอ
+            </a>
+          </div>
+        </div>
+        <div class="doc-frame-wrap">
+          <iframe class="doc-view-frame" src="https://drive.google.com/file/d/1emwdxRJxoUXeF_qdlIOgJjbUttSSts2n/preview" loading="lazy" title="พรีวิว: คำสั่งแต่งตั้งคณะกรรมการจริยธรรมการวิจัยในมนุษย์"></iframe>
+        </div>
+        <div class="doc-hint"><i class="ti ti-info-circle" aria-hidden="true"></i> เลื่อนขึ้น-ลงในกรอบด้านบนเพื่ออ่านทุกหน้า</div>
+      </article>
     </div>
   </div>
 </section>
