@@ -684,6 +684,23 @@ document.addEventListener('click', function(e) {
     hdrMenuClose();
   }
 });
+
+/* พรีวิวเมนูด้วยการนำเมาส์ไปแตะ (เฉพาะอุปกรณ์ที่มีเมาส์จริง ไม่ใช่จอสัมผัส) */
+(function() {
+  if (!window.matchMedia || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  var menu = document.getElementById('hdrMenu');
+  if (!menu) return;
+  var closeTimer = null;
+  menu.addEventListener('mouseenter', function() {
+    clearTimeout(closeTimer);
+    menu.classList.add('open');
+    var btn = menu.querySelector('.hdr-menu-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  });
+  menu.addEventListener('mouseleave', function() {
+    closeTimer = setTimeout(function() { hdrMenuClose(); }, 150);
+  });
+})();
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') hdrMenuClose();
 });
