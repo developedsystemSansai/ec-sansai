@@ -48,8 +48,7 @@ button{font-family:inherit;cursor:pointer}
   var(--n800) 0% 33.33%,var(--g500) 33.33% 66.66%,var(--gr700) 66.66% 100%)}
 
 /* HEADER */
-.hdr{position:sticky;top:0;z-index:300;background:var(--n900);
-  border-bottom:2px solid var(--g500);box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.hdr{position:sticky;top:0;z-index:300;background:var(--n900);box-shadow:0 2px 16px rgba(0,0,0,.3)}
 .hdr-in{display:flex;align-items:center;gap:1.2rem;padding-block:11px;
   max-width:1128px;margin-inline:auto;padding-inline:2rem}
 .hdr-logo{height:48px;width:auto;object-fit:contain;flex-shrink:0}
@@ -58,8 +57,10 @@ button{font-family:inherit;cursor:pointer}
 .hdr-id h1{font-family:var(--ffs);font-size:.875rem;font-weight:600;color:#fff;
   line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hdr-id p{font-size:.72rem;color:rgba(255,255,255,.42);letter-spacing:.02em;margin-top:2px}
-.hdr-nav{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.hdr-util{display:flex;align-items:center;gap:.6rem;flex-shrink:0;margin-left:auto}
+.hdr-util>*{flex-shrink:0}
 
+/* ── Buttons ── */
 .btn{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--ff);
   font-size:.84rem;font-weight:600;padding:.5rem 1.1rem;border-radius:4px;
   border:1.5px solid transparent;
@@ -70,29 +71,62 @@ button{font-family:inherit;cursor:pointer}
   border-color:rgba(255,255,255,.22)}
 .btn-ghost:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.4);color:#fff}
 .btn-gold{background:var(--g500);color:var(--n900);border-color:var(--g500)}
+.btn-guide{position:relative;background:rgba(255,255,255,.1);color:rgba(255,255,255,.9);
+  border-color:rgba(255,255,255,.25);gap:.4rem}
+.btn-guide:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.5);color:#fff}
 .btn-gold:hover{background:var(--g400);border-color:var(--g400);
   transform:translateY(-1px);box-shadow:0 4px 14px rgba(181,138,42,.35)}
 
-/* dropdown menu */
-.hdr-menu{position:relative}
-.hdr-menu-caret{transition:transform .18s var(--ease)}
-.hdr-menu.open .hdr-menu-caret{transform:rotate(180deg)}
-.hdr-menu-panel{position:absolute;top:calc(100% + 10px);left:0;min-width:280px;
-  background:var(--white);border:1px solid var(--u200);border-radius:8px;
-  box-shadow:0 12px 32px rgba(11,31,53,.22);padding:.5rem;z-index:400;
-  opacity:0;visibility:hidden;transform:translateY(-6px);
+/* ══════════════════════════════════════════════════════════════
+   MAIN MENU BAR — เมนูแนวนอนใต้แถบชื่อหน่วยงาน
+══════════════════════════════════════════════════════════════ */
+.nb{position:sticky;top:70px;z-index:290;background:var(--n800);
+  border-top:1px solid rgba(255,255,255,.07);border-bottom:2px solid var(--g500)}
+.nb-in{max-width:1128px;margin-inline:auto;padding-inline:1.4rem}
+.nb-list{display:flex;align-items:stretch;flex-wrap:wrap}
+.nb-item{position:relative;display:flex}
+.nb-link{display:flex;align-items:center;gap:.32rem;padding:.78rem .85rem;
+  font-size:.83rem;font-weight:500;color:rgba(255,255,255,.66);
+  background:none;border:none;font-family:var(--ff);white-space:nowrap;
+  position:relative;transition:color .16s}
+.nb-link::after{content:'';position:absolute;left:.85rem;right:.85rem;bottom:0;height:2px;
+  background:var(--g500);transform:scaleX(0);transform-origin:center;
+  transition:transform .18s var(--ease)}
+.nb-link:hover,.nb-link.is-active{color:#fff}
+.nb-link:hover::after,.nb-link.is-active::after{transform:scaleX(1)}
+.nb-caret{width:9px;height:9px;flex-shrink:0;transition:transform .18s var(--ease)}
+.nb-item.open .nb-caret{transform:rotate(180deg)}
+.nb-panel{position:absolute;top:100%;left:0;min-width:236px;background:var(--white);
+  border:1px solid var(--u200);border-radius:0 0 8px 8px;box-shadow:0 14px 30px rgba(11,31,53,.24);
+  padding:.4rem;z-index:295;opacity:0;visibility:hidden;transform:translateY(-6px);
   transition:opacity .16s var(--ease),transform .16s var(--ease),visibility .16s}
-.hdr-menu.open .hdr-menu-panel{opacity:1;visibility:visible;transform:none}
-.hdr-menu-panel a{display:flex;align-items:flex-start;gap:.7rem;padding:.6rem .7rem;
-  border-radius:6px;transition:background .14s}
-.hdr-menu-panel a:hover{background:var(--u50)}
-.hdr-menu-panel a i{font-size:1rem;color:var(--g600);flex-shrink:0;margin-top:2px}
-.hdr-menu-panel a strong{display:block;font-size:.82rem;font-weight:700;color:var(--n800);line-height:1.4}
-.hdr-menu-panel a small{display:block;font-size:.7rem;color:var(--u500);margin-top:2px;line-height:1.5}
-.hdr-menu-sep{height:1px;background:var(--u100);margin:.4rem .3rem}
-.hdr-menu-panel a.active{background:var(--g50)}
-.hdr-menu-panel a.active strong{color:var(--g700)}
-
+.nb-item.open .nb-panel{opacity:1;visibility:visible;transform:none}
+.nb-panel a{display:block;padding:.62rem .75rem;border-radius:6px;font-size:.82rem;
+  color:var(--n800);font-weight:500;transition:background .14s}
+.nb-panel a:hover{background:var(--u50)}
+@media(hover:hover) and (pointer:fine){
+  .nb-item.has-drop:hover .nb-panel{opacity:1;visibility:visible;transform:none}
+  .nb-item.has-drop:hover .nb-caret{transform:rotate(180deg)}
+}
+.nb-toggle{display:none;background:none;border:1.5px solid rgba(255,255,255,.22);
+  border-radius:5px;color:#fff;width:34px;height:34px;align-items:center;
+  justify-content:center;flex-shrink:0}
+@media(max-width:900px){
+  .nb{position:static}
+  .nb-toggle{display:inline-flex}
+  .nb-in{padding-block:.2rem}
+  .nb-list{display:none;flex-direction:column;width:100%;padding-block:.3rem .5rem}
+  .nb.mobile-open .nb-list{display:flex}
+  .nb-item{width:100%}
+  .nb-link{width:100%;padding:.78rem .1rem;justify-content:space-between}
+  .nb-link::after{display:none}
+  .nb-panel{position:static;box-shadow:none;border:none;border-radius:6px;
+    background:rgba(255,255,255,.05);opacity:1;visibility:visible;transform:none;
+    display:none;margin:0 0 .3rem;padding:.15rem}
+  .nb-item.open .nb-panel{display:block}
+  .nb-panel a{color:rgba(255,255,255,.7)}
+  .nb-panel a:hover{background:rgba(255,255,255,.08)}
+}
 /* PAGE BANNER */
 .pg-hero{background:var(--n900);position:relative;overflow:hidden}
 .pg-hero::before{content:'';position:absolute;inset:0;
@@ -246,14 +280,10 @@ button{font-family:inherit;cursor:pointer}
 }
 @media(max-width:960px){
   .hdr-in{padding-inline:1.2rem}
-  .btn-ghost:not(.hdr-menu-btn){display:none}
   .container{padding-inline:1.2rem}
   .ftr-g{grid-template-columns:1fr;gap:1.5rem}
   .docs4{grid-template-columns:1fr 1fr}
   .dl-stats{display:none}
-}
-@media(max-width:520px){
-  .hdr-menu-panel{position:fixed;left:.75rem;right:.75rem;top:64px;min-width:0;width:auto}
 }
 @media(max-width:600px){
   .container{padding-inline:1rem}
@@ -294,53 +324,65 @@ button{font-family:inherit;cursor:pointer}
       <h1>คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</h1>
       <p>Human Research Ethics Committee · Sansai Hospital · เขตสุขภาพที่ 1 จ.เชียงใหม่</p>
     </div>
-    <nav class="hdr-nav" aria-label="การดำเนินการหลัก">
-      <div class="hdr-menu" id="hdrMenu">
-        <button class="btn btn-ghost hdr-menu-btn" onclick="hdrMenuToggle(event)"
-                aria-haspopup="true" aria-expanded="false" aria-controls="hdrMenuPanel">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="13" x2="20" y2="13"/><line x1="4" y1="19" x2="14" y2="19"/></svg>
-          เมนู
-          <svg class="hdr-menu-caret" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="hdr-menu-panel" id="hdrMenuPanel" role="menu" aria-label="เมนูลัด">
-          <a role="menuitem" href="process.html">
-            <i class="ti ti-list-check" aria-hidden="true"></i>
-            <span><strong>ขั้นตอนการยื่นขอ</strong><small>กระบวนการพิจารณาจริยธรรมการวิจัย</small></span>
-          </a>
-          <a role="menuitem" href="documents.html">
-            <i class="ti ti-files" aria-hidden="true"></i>
-            <span><strong>เตรียมเอกสาร</strong><small>เอกสารที่ต้องเตรียมก่อนยื่น + แบบฟอร์มดาวน์โหลด</small></span>
-          </a>
-          <a role="menuitem" href="standards.html" class="active">
-            <i class="ti ti-certificate" aria-hidden="true"></i>
-            <span><strong>มาตรฐานการวิจัย</strong><small>ผังขั้นตอน, SOP คณะกรรมการ และคำสั่งแต่งตั้งกรรมการ</small></span>
-          </a>
-          <a role="menuitem" href="index.html#calendar">
-            <i class="ti ti-calendar-event" aria-hidden="true"></i>
-            <span><strong>ปฏิทินการประชุม</strong><small>ตรวจสอบวันประชุมคณะกรรมการ</small></span>
-          </a>
-          <a role="menuitem" href="index.html#news">
-            <i class="ti ti-news" aria-hidden="true"></i>
-            <span><strong>ประกาศและข่าวสาร</strong><small>ข่าวสารล่าสุดจากคณะกรรมการ</small></span>
-          </a>
-          <div class="hdr-menu-sep" role="separator"></div>
-          <a role="menuitem" href="tracking.html">
-            <i class="ti ti-search" aria-hidden="true"></i>
-            <span><strong>ติดตามสถานะโครงการ</strong><small>ค้นหาสถานะโครงการด้วยอีเมลที่ใช้ยื่น</small></span>
-          </a>
-        </div>
-      </div>
-      <button class="btn btn-ghost" onclick="location.href='index.html'">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        หน้าแรก
-      </button>
+    <div class="hdr-util">
       <button class="btn btn-gold" onclick="SITE.goLogin()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
         เข้าสู่ระบบ
       </button>
-    </nav>
+      <button class="nb-toggle" id="nbToggleBtn" onclick="nbMobileToggle()"
+              aria-label="เปิดเมนูหลัก" aria-expanded="false" aria-controls="nbList">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="13" x2="20" y2="13"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+      </button>
+    </div>
   </div>
 </header>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MAIN MENU — เมนูหลักแนวนอน พร้อมเมนูย่อยแบบ dropdown
+══════════════════════════════════════════════════════════════ -->
+<nav class="nb" aria-label="เมนูหลัก" id="nbBar">
+  <div class="nb-in">
+    <ul class="nb-list" id="nbList" role="menubar">
+      <li class="nb-item" role="none">
+        <a class="nb-link" role="menuitem" href="index.html">หน้าแรก</a>
+      </li>
+      <li class="nb-item" role="none">
+        <a class="nb-link" role="menuitem" href="process.html">ขั้นตอนการยื่นขอ</a>
+      </li>
+      <li class="nb-item" role="none">
+        <a class="nb-link" role="menuitem" href="documents.html">เตรียมเอกสาร</a>
+      </li>
+      <li class="nb-item has-drop" role="none">
+        <button class="nb-link is-active" role="menuitem" aria-haspopup="true" aria-expanded="false"
+                onclick="nbToggle(event,this)">
+          <span>มาตรฐานการวิจัย</span>
+          <svg class="nb-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="nb-panel" role="menu">
+          <a role="menuitem" href="standards.html">มาตรฐานและ SOP คณะกรรมการ</a>
+          <a role="menuitem" href="training.html">อบรมจริยธรรมการวิจัย</a>
+        </div>
+      </li>
+      <li class="nb-item" role="none">
+        <a class="nb-link" role="menuitem" href="tracking.html">ติดตามสถานะโครงการ</a>
+      </li>
+      <li class="nb-item" role="none">
+        <a class="nb-link" role="menuitem" href="contact.html">ติดต่อเรา</a>
+      </li>
+      <li class="nb-item has-drop" role="none">
+        <button class="nb-link" role="menuitem" aria-haspopup="true" aria-expanded="false"
+                onclick="nbToggle(event,this)">
+          <span>ระบบออนไลน์</span>
+          <svg class="nb-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="nb-panel" role="menu">
+          <a role="menuitem" href="#" onclick="SITE.goRegister();return false;">สมัครสมาชิก</a>
+          <a role="menuitem" href="https://drive.google.com/file/d/1x6n0d6hTxsVtbENyd1L_UzOV4s2UXL-w/view" target="_blank" rel="noopener noreferrer">คู่มือการใช้งานระบบ</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
 
 <!-- PAGE BANNER -->
 <section class="pg-hero" aria-labelledby="pg-h">
@@ -436,7 +478,10 @@ button{font-family:inherit;cursor:pointer}
         <a href="process.html">ขั้นตอนการยื่นขอ</a>
         <a href="documents.html">เตรียมเอกสาร</a>
         <a href="standards.html">มาตรฐานการวิจัย</a>
+        <a href="training.html">อบรมจริยธรรมการวิจัย</a>
         <a href="index.html#calendar">ปฏิทินการประชุม</a>
+        <a href="index.html#news">ประกาศและข่าวสาร</a>
+        <a href="contact.html">ติดต่อเรา</a>
       </div>
       <div class="fcol"><h4>นโยบายและกฎระเบียบ</h4>
         <a href="#">นโยบายความเป็นส่วนตัว (PDPA)</a>
@@ -478,49 +523,63 @@ var SITE = {
   els.forEach(function(el) { io.observe(el); });
 })();
 
-/* header dropdown menu */
-function hdrMenuToggle(e) {
-  if (e) e.stopPropagation();
-  var menu = document.getElementById('hdrMenu');
-  if (!menu) return;
-  var willOpen = !menu.classList.contains('open');
-  menu.classList.toggle('open', willOpen);
-  var btn = menu.querySelector('.hdr-menu-btn');
-  if (btn) btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+/* เมนูหลักแนวนอน + dropdown ย่อย */
+function nbCloseAll(except) {
+  document.querySelectorAll('.nb-item.has-drop.open').forEach(function(li) {
+    if (li === except) return;
+    li.classList.remove('open');
+    var btn = li.querySelector('.nb-link');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  });
 }
-function hdrMenuClose() {
-  var menu = document.getElementById('hdrMenu');
-  if (!menu) return;
-  menu.classList.remove('open');
-  var btn = menu.querySelector('.hdr-menu-btn');
-  if (btn) btn.setAttribute('aria-expanded', 'false');
+function nbToggle(e, btn) {
+  if (e) e.stopPropagation();
+  var li = btn.closest('.nb-item');
+  if (!li) return;
+  var willOpen = !li.classList.contains('open');
+  nbCloseAll(willOpen ? li : null);
+  li.classList.toggle('open', willOpen);
+  btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
 }
 document.addEventListener('click', function(e) {
-  var menu = document.getElementById('hdrMenu');
-  if (menu && menu.classList.contains('open') && !menu.contains(e.target)) {
-    hdrMenuClose();
-  }
+  if (!e.target.closest('.nb-item.has-drop')) nbCloseAll();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') nbCloseAll();
 });
 
-/* พรีวิวเมนูด้วยการนำเมาส์ไปแตะ (เฉพาะอุปกรณ์ที่มีเมาส์จริง ไม่ใช่จอสัมผัส) */
+/* เปิด/ปิด dropdown ด้วยเมาส์ hover เฉพาะจอที่มีเมาส์จริง (desktop) */
 (function() {
   if (!window.matchMedia || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  var menu = document.getElementById('hdrMenu');
-  if (!menu) return;
-  var closeTimer = null;
-  menu.addEventListener('mouseenter', function() {
-    clearTimeout(closeTimer);
-    menu.classList.add('open');
-    var btn = menu.querySelector('.hdr-menu-btn');
-    if (btn) btn.setAttribute('aria-expanded', 'true');
-  });
-  menu.addEventListener('mouseleave', function() {
-    closeTimer = setTimeout(function() { hdrMenuClose(); }, 150);
+  document.querySelectorAll('.nb-item.has-drop').forEach(function(li) {
+    var closeTimer = null;
+    li.addEventListener('mouseenter', function() {
+      clearTimeout(closeTimer);
+      nbCloseAll(li);
+      li.classList.add('open');
+      var btn = li.querySelector('.nb-link');
+      if (btn) btn.setAttribute('aria-expanded', 'true');
+    });
+    li.addEventListener('mouseleave', function() {
+      closeTimer = setTimeout(function() {
+        li.classList.remove('open');
+        var btn = li.querySelector('.nb-link');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+      }, 150);
+    });
   });
 })();
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') hdrMenuClose();
-});
+
+/* ปุ่มแฮมเบอร์เกอร์ — เปิด/ปิดเมนูบนมือถือ */
+function nbMobileToggle() {
+  var bar = document.getElementById('nbBar');
+  var btn = document.getElementById('nbToggleBtn');
+  if (!bar) return;
+  var willOpen = !bar.classList.contains('mobile-open');
+  bar.classList.toggle('mobile-open', willOpen);
+  if (btn) btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+  if (!willOpen) nbCloseAll();
+}
 </script>
 </body>
 </html>
