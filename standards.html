@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+   <script src="config.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="มาตรฐานการวิจัยและประกาศสำคัญ — ผังขั้นตอนการพิจารณาจริยธรรม, SOP คณะกรรมการวิจัยฯ, และคำสั่งแต่งตั้งคณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย">
+<title>มาตรฐานการวิจัย — คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+:root {
+  --n900:#0b1f35; --n800:#112844; --n700:#173454; --n600:#1e4068;
+  --n400:#3d6491; --n100:#dce7f3; --n50:#eef3f9;
+  --g700:#7c5c18; --g600:#9a7220; --g500:#b58a2a; --g400:#c9a037;
+  --g100:#f0e3c0; --g50:#f8f2e1;
+  --gr800:#164d34; --gr700:#1b5e3e; --gr100:#d6ede3; --gr50:#eaf4ee;
+  --r700:#b91c1c; --r50:#fef2f2;
+  --u900:#151e28; --u700:#344255; --u500:#5a6e85;
+  --u300:#a8b8cb; --u200:#d0dae6; --u100:#e8edf5; --u50:#f4f6fa;
+  --white:#ffffff;
+  --ff:'Sarabun','Helvetica Neue',Arial,sans-serif;
+  --ffs:'Noto Serif Thai',Georgia,serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html,body{max-width:100%;overflow-x:hidden}
+*{min-width:0}
+body{font-family:var(--ff);color:var(--u700);background:var(--white);
+     line-height:1.65;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font-family:inherit;cursor:pointer}
+.container{max-width:1128px;margin-inline:auto;padding-inline:2rem}
+
+.rev{opacity:0;transform:translateY(14px);
+  transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.rev.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .rev{opacity:1!important;transform:none!important;transition:none!important}
+}
+
+.ribbon{height:4px;background:linear-gradient(90deg,
+  var(--n800) 0% 33.33%,var(--g500) 33.33% 66.66%,var(--gr700) 66.66% 100%)}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:300;background:var(--n900);
+  border-bottom:2px solid var(--g500);box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.hdr-in{display:flex;align-items:center;gap:1.2rem;padding-block:11px;
+  max-width:1128px;margin-inline:auto;padding-inline:2rem}
+.hdr-logo{height:48px;width:auto;object-fit:contain;flex-shrink:0}
+.hdr-sep{width:1px;height:38px;background:rgba(255,255,255,.16);flex-shrink:0}
+.hdr-id{flex:1;min-width:0}
+.hdr-id h1{font-family:var(--ffs);font-size:.875rem;font-weight:600;color:#fff;
+  line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-id p{font-size:.72rem;color:rgba(255,255,255,.42);letter-spacing:.02em;margin-top:2px}
+.hdr-nav{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+
+.btn{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--ff);
+  font-size:.84rem;font-weight:600;padding:.5rem 1.1rem;border-radius:4px;
+  border:1.5px solid transparent;
+  transition:background .18s var(--ease),border-color .18s,color .18s,
+             transform .18s,box-shadow .18s;white-space:nowrap;line-height:1}
+.btn svg{flex-shrink:0}
+.btn-ghost{background:transparent;color:rgba(255,255,255,.72);
+  border-color:rgba(255,255,255,.22)}
+.btn-ghost:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.4);color:#fff}
+.btn-gold{background:var(--g500);color:var(--n900);border-color:var(--g500)}
+.btn-gold:hover{background:var(--g400);border-color:var(--g400);
+  transform:translateY(-1px);box-shadow:0 4px 14px rgba(181,138,42,.35)}
+
+/* dropdown menu */
+.hdr-menu{position:relative}
+.hdr-menu-caret{transition:transform .18s var(--ease)}
+.hdr-menu.open .hdr-menu-caret{transform:rotate(180deg)}
+.hdr-menu-panel{position:absolute;top:calc(100% + 10px);left:0;min-width:280px;
+  background:var(--white);border:1px solid var(--u200);border-radius:8px;
+  box-shadow:0 12px 32px rgba(11,31,53,.22);padding:.5rem;z-index:400;
+  opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity .16s var(--ease),transform .16s var(--ease),visibility .16s}
+.hdr-menu.open .hdr-menu-panel{opacity:1;visibility:visible;transform:none}
+.hdr-menu-panel a{display:flex;align-items:flex-start;gap:.7rem;padding:.6rem .7rem;
+  border-radius:6px;transition:background .14s}
+.hdr-menu-panel a:hover{background:var(--u50)}
+.hdr-menu-panel a i{font-size:1rem;color:var(--g600);flex-shrink:0;margin-top:2px}
+.hdr-menu-panel a strong{display:block;font-size:.82rem;font-weight:700;color:var(--n800);line-height:1.4}
+.hdr-menu-panel a small{display:block;font-size:.7rem;color:var(--u500);margin-top:2px;line-height:1.5}
+.hdr-menu-sep{height:1px;background:var(--u100);margin:.4rem .3rem}
+.hdr-menu-panel a.active{background:var(--g50)}
+.hdr-menu-panel a.active strong{color:var(--g700)}
+
+/* PAGE BANNER */
+.pg-hero{background:var(--n900);position:relative;overflow:hidden}
+.pg-hero::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,transparent 0,transparent 95px,
+    rgba(255,255,255,.018) 95px,rgba(255,255,255,.018) 96px);pointer-events:none}
+.pg-hero-in{position:relative;z-index:1;padding-block:44px 46px}
+.crumb{display:flex;align-items:center;gap:.5rem;font-size:.76rem;
+  color:rgba(255,255,255,.45);margin-bottom:1rem}
+.crumb a{color:rgba(255,255,255,.7);transition:color .15s}
+.crumb a:hover{color:var(--g400)}
+.eyebrow{display:inline-flex;align-items:center;gap:.75rem;
+  font-size:.65rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--g400);margin-bottom:1rem}
+.eyebrow::before,.eyebrow::after{content:'';display:block;height:1px;
+  width:18px;background:var(--g500);opacity:.7}
+.pg-title{font-family:var(--ffs);font-size:clamp(1.35rem,3vw,2rem);
+  font-weight:700;color:#fff;line-height:1.4;margin-bottom:.85rem}
+.pg-desc{font-size:.92rem;color:rgba(255,255,255,.55);line-height:1.85;max-width:64ch}
+
+/* SECTIONS */
+.sec{padding-block:4rem}
+.sec-alt{background:var(--u50)}
+.sec-gold{background:var(--g50);border-top:1.5px solid var(--g100);border-bottom:1.5px solid var(--g100)}
+.sec-head{margin-bottom:2.5rem}
+.sec-eye{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--g600);display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
+.sec-eye::after{content:'';height:1px;width:36px;background:var(--u200)}
+.sec-ttl{font-family:var(--ffs);font-size:1.4rem;font-weight:700;
+  color:var(--n800);line-height:1.4}
+.sec-dsc{font-size:.875rem;color:var(--u500);margin-top:.75rem;
+  line-height:1.8;max-width:60ch}
+
+/* DOC CARDS */
+.docs4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.dc{background:var(--white);border:1px solid rgba(181,138,42,.2);border-radius:4px;padding:1.4rem 1.2rem}
+.dc-seq{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g600);margin-bottom:.5rem}
+.dc h4{font-size:.84rem;font-weight:700;color:var(--n800);margin-bottom:.5rem;line-height:1.45}
+.dc p{font-size:.72rem;color:var(--u500);line-height:1.72}
+
+/* IMPORTANT-ANNOUNCEMENT DOCUMENT CARDS (ผังขั้นตอน / SOP / คำสั่งแต่งตั้งกรรมการ) */
+.doc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:1.75rem}
+@media(max-width:900px){.doc-grid{grid-template-columns:1fr}}
+.doc-card{display:flex;flex-direction:column;gap:.9rem;background:var(--white);
+  border:1.5px solid var(--g100);border-radius:10px;padding:1.4rem 1.3rem;
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease),transform .18s var(--ease)}
+.doc-card:hover{border-color:var(--g400);box-shadow:0 10px 28px rgba(181,138,42,.16);transform:translateY(-2px)}
+.doc-ico{width:44px;height:44px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.doc-ico-red{background:#fdeceb;color:#c0392b}
+.doc-ico-blue{background:var(--n50);color:var(--n700)}
+.doc-txt strong{display:block;font-size:.92rem;font-weight:700;color:var(--n800);line-height:1.45;margin-bottom:.3rem}
+.doc-txt span{display:block;font-size:.78rem;color:var(--u500);line-height:1.5}
+.doc-btn{display:inline-flex;align-items:center;gap:.4rem;align-self:flex-start;
+  background:var(--g500);color:var(--n900);font-size:.78rem;font-weight:700;
+  padding:.45rem 1rem;border-radius:6px;transition:background .16s}
+.doc-card:hover .doc-btn{background:var(--g400)}
+
+/* DOWNLOAD PANEL (formerly modal, now inline page content) */
+.dl-panel{background:var(--white);border-radius:8px;border:1px solid var(--g100);overflow:hidden;
+  box-shadow:0 2px 16px rgba(11,31,53,.07)}
+.dl-hdr{background:var(--n900);border-bottom:2px solid var(--g500);padding:1.25rem 1.5rem}
+.dl-hdr-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
+.dl-badge{display:inline-flex;align-items:center;gap:5px;
+  background:rgba(181,138,42,.18);color:var(--g400);
+  font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;margin-bottom:6px}
+.dl-hdr h2{color:#fff;font-family:var(--ffs);font-size:1.1rem;font-weight:600;
+  line-height:1.35;margin-bottom:3px}
+.dl-hdr p{color:rgba(255,255,255,.45);font-size:.76rem}
+.dl-stats{display:flex;gap:1.1rem;align-items:center;flex-shrink:0}
+.dl-stat{text-align:center}
+.dl-stat strong{display:block;font-size:1.5rem;font-weight:700;color:var(--g400);line-height:1}
+.dl-stat span{display:block;font-size:.66rem;color:rgba(255,255,255,.5);margin-top:3px}
+
+/* tabs */
+.dm-tabs{display:flex;padding:0 1.25rem;background:var(--g50);
+  border-bottom:1px solid var(--g100);gap:2px;overflow-x:auto}
+.dm-tab{display:flex;align-items:center;gap:6px;padding:.85rem 1.1rem .75rem;
+  font-family:var(--ff);font-size:.82rem;font-weight:600;color:var(--u500);
+  background:none;border:none;border-bottom:2.5px solid transparent;
+  cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap}
+.dm-tab:hover{color:var(--g700)}
+.dm-tab.active{color:var(--g700);border-bottom-color:var(--g500)}
+.dm-tbadge{background:var(--g100);color:var(--g700);font-size:.62rem;font-weight:700;
+  padding:1px 7px;border-radius:20px;transition:background .15s,color .15s}
+.dm-tab.active .dm-tbadge{background:var(--g500);color:var(--n900)}
+
+/* body */
+.dm-body{padding:1.4rem 1.5rem}
+.dm-panel{display:none}
+.dm-panel.active{display:block}
+
+/* notice bar */
+.dm-notice{display:flex;align-items:flex-start;gap:8px;background:var(--g50);
+  border:1px solid var(--g100);border-radius:4px;padding:.7rem .9rem;
+  margin-bottom:1rem}
+.dm-notice i{color:var(--g600);font-size:15px;flex-shrink:0;margin-top:1px}
+.dm-notice p{font-size:.75rem;color:var(--u700);line-height:1.6}
+.dm-notice strong{color:var(--g700)}
+
+/* doc list */
+.dm-list{display:flex;flex-direction:column;gap:6px}
+.dm-item{display:flex;align-items:center;gap:.75rem;background:var(--u50);
+  border:1px solid var(--u100);border-radius:5px;padding:.85rem 1rem;
+  text-decoration:none;transition:border-color .15s,box-shadow .15s,background .15s}
+.dm-item:hover{border-color:var(--g400);box-shadow:0 2px 8px rgba(181,138,42,.12);
+  background:var(--g50)}
+.dm-item.disabled{opacity:.55;cursor:default;pointer-events:none}
+.dm-ico{width:38px;height:38px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:18px;flex-shrink:0}
+.dm-ico.req{background:var(--g50);color:var(--g700)}
+.dm-ico.opt{background:var(--n50);color:var(--n600)}
+.dm-ico.nil{background:var(--u100);color:var(--u500)}
+.dm-info{flex:1;min-width:0}
+.dm-code{font-size:.64rem;font-weight:700;color:var(--g600);letter-spacing:.05em;margin-bottom:2px}
+.dm-title{font-size:.84rem;color:var(--n800);font-weight:600;line-height:1.45}
+.dm-sub{font-size:.72rem;color:var(--u500);margin-top:2px}
+.btn-dm-open{display:inline-flex;align-items:center;gap:5px;
+  background:var(--n800);color:#fff;border:none;border-radius:4px;
+  padding:.45rem .9rem;font-family:var(--ff);font-size:.74rem;font-weight:600;
+  cursor:pointer;text-decoration:none;white-space:nowrap;flex-shrink:0;
+  transition:background .15s}
+.btn-dm-open:hover{background:var(--n700)}
+.dm-noform{font-size:.72rem;color:var(--u500);white-space:nowrap;flex-shrink:0;padding:0 4px}
+
+/* footer hint */
+.dl-ftr{border-top:1px solid var(--g100);padding:.9rem 1.5rem;background:var(--g50);
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dl-ftr i{color:var(--g500);font-size:16px;flex-shrink:0}
+.dl-ftr span{font-size:.75rem;color:var(--u500);line-height:1.5}
+.dl-ftr strong{color:var(--n800)}
+
+/* FOOTER */
+.ftr{background:var(--n900);border-top:2px solid var(--g500);padding-block:3rem 2rem;margin-top:0}
+.ftr-g{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:3rem;
+  padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:1.5rem}
+.fcol h4{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g400);margin-bottom:1rem}
+.fcol p,.fcol a{font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.9;display:block;transition:color .15s}
+.fcol a:hover{color:var(--g400)}
+.fbot{display:flex;justify-content:space-between;align-items:center;
+  font-size:.72rem;color:rgba(255,255,255,.25);flex-wrap:wrap;gap:.75rem}
+.pdpa{display:inline-flex;align-items:center;gap:.5rem;
+  border:1px solid rgba(255,255,255,.1);border-radius:20px;
+  padding:4px 12px;font-size:.68rem;color:rgba(255,255,255,.35)}
+
+/* RESPONSIVE */
+@media(max-width:1080px){
+  .hdr-in{gap:.8rem}
+  .hdr-id p{display:none}
+}
+@media(max-width:960px){
+  .hdr-in{padding-inline:1.2rem}
+  .btn-ghost:not(.hdr-menu-btn){display:none}
+  .container{padding-inline:1.2rem}
+  .ftr-g{grid-template-columns:1fr;gap:1.5rem}
+  .docs4{grid-template-columns:1fr 1fr}
+  .dl-stats{display:none}
+}
+@media(max-width:520px){
+  .hdr-menu-panel{position:fixed;left:.75rem;right:.75rem;top:64px;min-width:0;width:auto}
+}
+@media(max-width:600px){
+  .container{padding-inline:1rem}
+  .sec{padding-block:2.75rem}
+  .pg-hero-in{padding-block:34px 36px}
+  .docs4{grid-template-columns:1fr}
+  .dm-body{padding:1.1rem}
+  .dl-hdr{padding:1.1rem 1.25rem}
+  .dm-tabs{padding:0 .75rem}
+}
+@media(max-width:480px){
+  .hdr-logo{height:38px}
+  .hdr-sep{height:30px}
+  .hdr-id h1{font-size:.72rem;line-height:1.35}
+  .btn{padding:.42rem .8rem;font-size:.78rem}
+  .pg-title{font-size:1.1rem}
+  .pg-desc{font-size:.85rem}
+  .sec-ttl{font-size:1.15rem}
+  .dl-hdr h2{font-size:.92rem}
+  .dm-item{flex-wrap:wrap}
+  .dm-item .btn-dm-open{margin-left:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="ribbon" aria-hidden="true"></div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-in">
+    <img class="hdr-logo"
+         src="https://lh3.googleusercontent.com/d/1qIREbhnqt9n4xWbdqe5V8lnypb4DKtVS"
+         alt="ตราสัญลักษณ์โรงพยาบาลสันทราย"
+         onerror="this.style.display='none'">
+    <div class="hdr-sep" aria-hidden="true"></div>
+    <div class="hdr-id">
+      <h1>คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</h1>
+      <p>Human Research Ethics Committee · Sansai Hospital · เขตสุขภาพที่ 1 จ.เชียงใหม่</p>
+    </div>
+    <nav class="hdr-nav" aria-label="การดำเนินการหลัก">
+      <div class="hdr-menu" id="hdrMenu">
+        <button class="btn btn-ghost hdr-menu-btn" onclick="hdrMenuToggle(event)"
+                aria-haspopup="true" aria-expanded="false" aria-controls="hdrMenuPanel">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="13" x2="20" y2="13"/><line x1="4" y1="19" x2="14" y2="19"/></svg>
+          เมนู
+          <svg class="hdr-menu-caret" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="hdr-menu-panel" id="hdrMenuPanel" role="menu" aria-label="เมนูลัด">
+          <a role="menuitem" href="process.html">
+            <i class="ti ti-list-check" aria-hidden="true"></i>
+            <span><strong>ขั้นตอนการยื่นขอ</strong><small>กระบวนการพิจารณาจริยธรรมการวิจัย</small></span>
+          </a>
+          <a role="menuitem" href="documents.html">
+            <i class="ti ti-files" aria-hidden="true"></i>
+            <span><strong>เตรียมเอกสาร</strong><small>เอกสารที่ต้องเตรียมก่อนยื่น + แบบฟอร์มดาวน์โหลด</small></span>
+          </a>
+          <a role="menuitem" href="standards.html" class="active">
+            <i class="ti ti-certificate" aria-hidden="true"></i>
+            <span><strong>มาตรฐานการวิจัย</strong><small>ผังขั้นตอน, SOP คณะกรรมการ และคำสั่งแต่งตั้งกรรมการ</small></span>
+          </a>
+          <a role="menuitem" href="index.html#calendar">
+            <i class="ti ti-calendar-event" aria-hidden="true"></i>
+            <span><strong>ปฏิทินการประชุม</strong><small>ตรวจสอบวันประชุมคณะกรรมการ</small></span>
+          </a>
+          <a role="menuitem" href="index.html#news">
+            <i class="ti ti-news" aria-hidden="true"></i>
+            <span><strong>ประกาศและข่าวสาร</strong><small>ข่าวสารล่าสุดจากคณะกรรมการ</small></span>
+          </a>
+          <div class="hdr-menu-sep" role="separator"></div>
+          <a role="menuitem" href="tracking.html">
+            <i class="ti ti-search" aria-hidden="true"></i>
+            <span><strong>ติดตามสถานะโครงการ</strong><small>ค้นหาสถานะโครงการด้วยอีเมลที่ใช้ยื่น</small></span>
+          </a>
+        </div>
+      </div>
+      <button class="btn btn-ghost" onclick="location.href='index.html'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        หน้าแรก
+      </button>
+      <button class="btn btn-gold" onclick="SITE.goLogin()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        เข้าสู่ระบบ
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- PAGE BANNER -->
+<section class="pg-hero" aria-labelledby="pg-h">
+  <div class="container">
+    <div class="pg-hero-in">
+      <div class="crumb"><a href="index.html">หน้าแรก</a><span>／</span><span>มาตรฐานการวิจัย</span></div>
+      <div class="eyebrow">EC Online Submission System</div>
+      <h1 class="pg-title" id="pg-h">มาตรฐานการวิจัย</h1>
+      <p class="pg-desc">ประกาศสำคัญและเอกสารมาตรฐานที่ผู้ยื่นขอรับการพิจารณาจริยธรรมการวิจัยควรอ่านก่อนเริ่มต้นทุกครั้ง</p>
+    </div>
+  </div>
+</section>
+
+<!-- IMPORTANT ANNOUNCEMENT / RESEARCH STANDARDS DOCUMENTS -->
+<section class="sec sec-gold" aria-labelledby="std-h">
+  <div class="container">
+    <div class="sec-head rev">
+      <div class="sec-eye"><i class="ti ti-speakerphone" aria-hidden="true"></i> ประกาศสำคัญ</div>
+      <h2 class="sec-ttl" id="std-h">มาตรฐานการวิจัย</h2>
+      <p class="sec-dsc">กรุณาอ่านเอกสารต่อไปนี้ก่อนยื่นขอรับการพิจารณาจริยธรรมการวิจัยทุกครั้ง</p>
+    </div>
+    <div class="doc-grid">
+      <a class="doc-card rev" style="transition-delay:.06s"
+         href="https://drive.google.com/file/d/1D5L22gQ-rCoQSbk58cLhKSkYbrZFHHg5/view?usp=drive_link"
+         target="_blank" rel="noopener noreferrer">
+        <div class="doc-ico doc-ico-red" aria-hidden="true"><i class="ti ti-book-2"></i></div>
+        <div class="doc-txt">
+          <strong>ผังขั้นตอนการพิจารณาจริยธรรม</strong>
+          <span>แนวทางปฏิบัติสำหรับผู้ยื่นขอ</span>
+        </div>
+        <span class="doc-btn"><i class="ti ti-file-description" aria-hidden="true"></i> เปิด PDF</span>
+      </a>
+      <a class="doc-card rev" style="transition-delay:.12s"
+         href="https://drive.google.com/file/d/1teOi9kdtky3VpshJ0dJvsA8iZ0o_1aZ6/view?usp=drive_link"
+         target="_blank" rel="noopener noreferrer">
+        <div class="doc-ico doc-ico-red" aria-hidden="true"><i class="ti ti-book-2"></i></div>
+        <div class="doc-txt">
+          <strong>SOP คณะกรรมการวิจัยฯ ฉบับ 14.2.68</strong>
+          <span>มาตรฐานการปฏิบัติงาน</span>
+        </div>
+        <span class="doc-btn"><i class="ti ti-file-description" aria-hidden="true"></i> เปิด PDF</span>
+      </a>
+      <a class="doc-card rev" style="transition-delay:.18s"
+         href="https://drive.google.com/file/d/1emwdxRJxoUXeF_qdlIOgJjbUttSSts2n/view?usp=sharing"
+         target="_blank" rel="noopener noreferrer">
+        <div class="doc-ico doc-ico-blue" aria-hidden="true"><i class="ti ti-clipboard-list"></i></div>
+        <div class="doc-txt">
+          <strong>คำสั่งแต่งตั้งคณะกรรมการจริยธรรมการวิจัยในมนุษย์</strong>
+          <span>รายชื่อกรรมการและขอบเขตหน้าที่</span>
+        </div>
+        <span class="doc-btn"><i class="ti ti-file-description" aria-hidden="true"></i> เปิด PDF</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- RELATED LINKS -->
+<section class="sec" aria-labelledby="rel-h">
+  <div class="container">
+    <div class="sec-head rev">
+      <div class="sec-eye">ดูเพิ่มเติม</div>
+      <h2 class="sec-ttl" id="rel-h">ขั้นตอนและเอกสารที่เกี่ยวข้อง</h2>
+      <p class="sec-dsc">ลิงก์ไปยังหน้าอื่นที่เกี่ยวข้องกับการยื่นขอรับการพิจารณาจริยธรรมการวิจัย</p>
+    </div>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap" class="rev">
+      <button class="btn btn-ghost" style="border-color:var(--u200);color:var(--n700)" onclick="location.href='process.html'">
+        <i class="ti ti-list-check" aria-hidden="true"></i> ดูขั้นตอนการยื่น
+      </button>
+      <button class="btn btn-ghost" style="border-color:var(--u200);color:var(--n700)" onclick="location.href='documents.html'">
+        <i class="ti ti-files" aria-hidden="true"></i> เตรียมเอกสาร
+      </button>
+      <button class="btn btn-gold" onclick="SITE.goRegister()">
+        <i class="ti ti-user-plus" aria-hidden="true"></i> ลงทะเบียนเริ่มยื่น
+      </button>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer class="ftr">
+  <div class="container">
+    <div class="ftr-g">
+      <div class="fcol"><h4>โรงพยาบาลสันทราย</h4>
+        <p>เลขที่ 201 หมู่ 11 ตำบลหนองหาร</p>
+        <p>อำเภอสันทราย จังหวัดเชียงใหม่ 50290</p>
+        <p style="margin-top:.5rem">โทรศัพท์: 053-921-199 ต่อ 168</p>
+        <p>เขตสุขภาพที่ 1 · กระทรวงสาธารณสุข</p>
+      </div>
+      <div class="fcol"><h4>ระบบ EC Online</h4>
+        <a href="#" onclick="SITE.goLogin()">เข้าสู่ระบบ</a>
+        <a href="#" onclick="SITE.goRegister()">ลงทะเบียนผู้ใช้ใหม่</a>
+        <a href="process.html">ขั้นตอนการยื่นขอ</a>
+        <a href="documents.html">เตรียมเอกสาร</a>
+        <a href="standards.html">มาตรฐานการวิจัย</a>
+        <a href="index.html#calendar">ปฏิทินการประชุม</a>
+      </div>
+      <div class="fcol"><h4>นโยบายและกฎระเบียบ</h4>
+        <a href="#">นโยบายความเป็นส่วนตัว (PDPA)</a>
+        <a href="#">เงื่อนไขการใช้งาน</a>
+        <a href="#">มาตรฐาน ICH-GCP</a>
+        <a href="#">แนวทาง NECAST</a>
+      </div>
+    </div>
+    <div class="fbot">
+      <span>© พ.ศ. 2568 โรงพยาบาลสันทราย · ระบบ EC Online Submission v1.0 · พัฒนาโดยกลุ่มงานพัฒนาคุณภาพและมาตรฐาน</span>
+      <span class="pdpa">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        PDPA Compliant · พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+var APP_URL = 'app.html';
+var SITE = {
+  goLogin:    function() { window.location.href = APP_URL; },
+  goRegister: function() { window.location.href = APP_URL + '?action=register'; }
+};
+
+/* reveal on scroll */
+(function() {
+  var els = document.querySelectorAll('.rev');
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold:.08, rootMargin:'0px 0px -24px 0px' });
+  els.forEach(function(el) { io.observe(el); });
+})();
+
+/* header dropdown menu */
+function hdrMenuToggle(e) {
+  if (e) e.stopPropagation();
+  var menu = document.getElementById('hdrMenu');
+  if (!menu) return;
+  var willOpen = !menu.classList.contains('open');
+  menu.classList.toggle('open', willOpen);
+  var btn = menu.querySelector('.hdr-menu-btn');
+  if (btn) btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+}
+function hdrMenuClose() {
+  var menu = document.getElementById('hdrMenu');
+  if (!menu) return;
+  menu.classList.remove('open');
+  var btn = menu.querySelector('.hdr-menu-btn');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click', function(e) {
+  var menu = document.getElementById('hdrMenu');
+  if (menu && menu.classList.contains('open') && !menu.contains(e.target)) {
+    hdrMenuClose();
+  }
+});
+
+/* พรีวิวเมนูด้วยการนำเมาส์ไปแตะ (เฉพาะอุปกรณ์ที่มีเมาส์จริง ไม่ใช่จอสัมผัส) */
+(function() {
+  if (!window.matchMedia || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  var menu = document.getElementById('hdrMenu');
+  if (!menu) return;
+  var closeTimer = null;
+  menu.addEventListener('mouseenter', function() {
+    clearTimeout(closeTimer);
+    menu.classList.add('open');
+    var btn = menu.querySelector('.hdr-menu-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  });
+  menu.addEventListener('mouseleave', function() {
+    closeTimer = setTimeout(function() { hdrMenuClose(); }, 150);
+  });
+})();
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') hdrMenuClose();
+});
+</script>
+</body>
+</html>
