@@ -433,25 +433,13 @@ button{font-family:inherit;cursor:pointer}
 .news-banner-next{right:14px}
 @media(max-width:600px){.news-banner-nav{width:32px;height:32px}}
 
-/* Glossy film-shade panels flanking the image */
-.news-banner-shade{position:absolute;top:0;bottom:0;width:13%;z-index:2;
-  pointer-events:none;overflow:hidden;
-  background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.015) 100%)}
-.news-banner-shade::before{content:'';position:absolute;inset:-15% -70%;
-  background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.32) 46%,
-    rgba(255,255,255,.04) 56%,transparent 80%);
-  background-size:220% 220%;
-  animation:newsShadeShimmer 7s ease-in-out infinite}
-.news-banner-shade-l{left:0;border-right:1px solid rgba(255,255,255,.08)}
-.news-banner-shade-r{right:0;border-left:1px solid rgba(255,255,255,.08)}
-@keyframes newsShadeShimmer{
-  0%,100%{background-position:0% 30%}
-  50%{background-position:100% 70%}
-}
-@media(prefers-reduced-motion:reduce){
-  .news-banner-shade::before{animation:none}
-}
-@media(max-width:600px){.news-banner-shade{width:9%}}
+/* Edge-to-image vignette shade (opaque at outer edge, fades in toward the photo) */
+.news-banner-shade{position:absolute;top:0;bottom:0;width:16%;z-index:2;pointer-events:none}
+.news-banner-shade-l{left:0;
+  background:linear-gradient(90deg,#0b1f35 0%,rgba(11,31,53,.85) 35%,rgba(11,31,53,0) 100%)}
+.news-banner-shade-r{right:0;
+  background:linear-gradient(270deg,#0b1f35 0%,rgba(11,31,53,.85) 35%,rgba(11,31,53,0) 100%)}
+@media(max-width:600px){.news-banner-shade{width:10%}}
 .news-banner-dots{position:absolute;left:0;right:0;bottom:.7rem;z-index:2;
   display:flex;justify-content:center;gap:6px;pointer-events:none}
 .news-banner-dots span{width:6px;height:6px;border-radius:50%;
