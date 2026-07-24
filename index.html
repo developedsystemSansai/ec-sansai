@@ -157,11 +157,11 @@ button{font-family:inherit;cursor:pointer}
 .hero{background:var(--n900);position:relative;overflow:hidden}
 .hero-bg{position:absolute;inset:0;overflow:hidden;z-index:0}
 .hero-bg-slide{position:absolute;inset:0;background-size:cover;background-position:center;
-  transform:translateX(100%);transition:transform 1.8s cubic-bezier(.65,0,.35,1)}
+  transform:translateX(-100%);transition:transform 1.8s cubic-bezier(.65,0,.35,1)}
 .hero-bg-slide.no-transition{transition:none}
 .hero-bg-slide.is-active{transform:translateX(0)}
-.hero-bg-slide.is-prev{transform:translateX(-100%)}
-.hero-bg-overlay{position:absolute;inset:0;z-index:0;
+.hero-bg-slide.is-prev{transform:translateX(100%)}
+.hero-bg-overlay{position:absolute;inset:0;z-index:0;pointer-events:none;
   background:linear-gradient(100deg,rgba(11,31,53,.95) 0%,rgba(11,31,53,.9) 40%,rgba(11,31,53,.68) 100%)}
 @media(prefers-reduced-motion:reduce){
   .hero-bg-slide{transition:opacity .6s ease;transform:none!important;opacity:0}
@@ -218,11 +218,11 @@ button{font-family:inherit;cursor:pointer}
 /* ══════════════════════════════════════════════════════════════
    CALENDAR SECTION
 ══════════════════════════════════════════════════════════════ */
-.cal-layout{display:grid;grid-template-columns:1fr 320px;gap:2.5rem;align-items:start}
+.cal-layout{display:grid;grid-template-columns:minmax(0,440px) 320px;gap:2.5rem;align-items:start}
 
 /* Calendar widget */
 .cal-widget{background:var(--white);border:1px solid var(--u200);border-radius:8px;
-  box-shadow:0 2px 12px rgba(11,31,53,.08);overflow:hidden}
+  box-shadow:0 2px 12px rgba(11,31,53,.08);overflow:hidden;max-width:440px}
 
 .cal-nav{display:flex;align-items:center;justify-content:space-between;
   padding:1rem 1.25rem;background:var(--n900);border-bottom:2px solid var(--g500)}
@@ -955,6 +955,14 @@ html,body{max-width:100%;overflow-x:clip}
 ══════════════════════════════════════════════════════════════ -->
 <section class="hero" aria-labelledby="hero-h">
   <div class="hero-bg" aria-hidden="true">
+    <a class="hero-bg-slide" href="#" onclick="annOpen();return false;"
+       aria-label="เปิดคู่มือการใช้งานระบบ" style="cursor:pointer;background-image:url('images/hero-bg-manual.jpg')"></a>
+    <a class="hero-bg-slide" href="https://developedsystemsansai.github.io/ec-sansai/privacy-policy.html"
+       aria-label="ดูนโยบาย PDPA" style="cursor:pointer;background-image:url('images/hero-bg-pdpa.jpg')"></a>
+    <a class="hero-bg-slide" href="https://developedsystemsansai.github.io/ec-sansai/documents.html"
+       aria-label="ไปหน้าเตรียมเอกสาร" style="cursor:pointer;background-image:url('images/hero-bg-ecss001.jpg')"></a>
+    <a class="hero-bg-slide" href="#" onclick="SITE.goLogin();return false;"
+       aria-label="เข้าสู่ระบบ EC Online Submission" style="cursor:pointer;background-image:url('images/hero-bg-ecsubmission.jpg')"></a>
     <div class="hero-bg-slide" style="background-image:url('images/hero-bg-1.jpg')"></div>
     <div class="hero-bg-slide" style="background-image:url('images/hero-bg-2.jpg')"></div>
     <div class="hero-bg-slide" style="background-image:url('images/hero-bg-3.jpg')"></div>
