@@ -218,11 +218,11 @@ button{font-family:inherit;cursor:pointer}
 /* ══════════════════════════════════════════════════════════════
    CALENDAR SECTION
 ══════════════════════════════════════════════════════════════ */
-.cal-layout{display:grid;grid-template-columns:minmax(0,440px) 320px;gap:2.5rem;align-items:start}
+.cal-layout{display:grid;grid-template-columns:minmax(0,460px) 1fr;gap:2.5rem;align-items:start}
 
 /* Calendar widget */
 .cal-widget{background:var(--white);border:1px solid var(--u200);border-radius:8px;
-  box-shadow:0 2px 12px rgba(11,31,53,.08);overflow:hidden;max-width:440px}
+  box-shadow:0 2px 12px rgba(11,31,53,.08);overflow:hidden;max-width:460px}
 
 .cal-nav{display:flex;align-items:center;justify-content:space-between;
   padding:1rem 1.25rem;background:var(--n900);border-bottom:2px solid var(--g500)}
@@ -400,6 +400,27 @@ button{font-family:inherit;cursor:pointer}
   background:none;font-family:inherit;cursor:pointer;
   transition:color .15s,border-color .15s}
 .news-more:hover{color:var(--g600);border-color:var(--g400)}
+
+/* Announcement banner slider (below news list) */
+.news-banner{position:relative;width:100%;aspect-ratio:1672/941;max-width:640px;
+  margin-top:2rem;border-radius:10px;overflow:hidden;
+  box-shadow:0 4px 18px rgba(11,31,53,.14);background:var(--n900)}
+.news-banner-slide{position:absolute;inset:0;display:block;
+  background-size:cover;background-position:center;cursor:pointer;
+  transform:translateX(-100%);transition:transform 1.8s cubic-bezier(.65,0,.35,1)}
+.news-banner-slide.no-transition{transition:none}
+.news-banner-slide.is-active{transform:translateX(0)}
+.news-banner-slide.is-prev{transform:translateX(100%)}
+@media(prefers-reduced-motion:reduce){
+  .news-banner-slide{transition:opacity .6s ease;transform:none!important;opacity:0}
+  .news-banner-slide.is-active{opacity:1}
+}
+.news-banner-dots{position:absolute;left:0;right:0;bottom:.7rem;z-index:2;
+  display:flex;justify-content:center;gap:6px;pointer-events:none}
+.news-banner-dots span{width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,.4);transition:background .2s}
+.news-banner-dots span.is-active{background:#fff}
+@media(max-width:600px){.news-banner{max-width:100%}}
 
 /* Quick Box */
 .qbox{background:var(--n900);border-radius:8px;padding:2rem;
@@ -955,17 +976,8 @@ html,body{max-width:100%;overflow-x:clip}
 ══════════════════════════════════════════════════════════════ -->
 <section class="hero" aria-labelledby="hero-h">
   <div class="hero-bg" aria-hidden="true">
-    <a class="hero-bg-slide" href="#" onclick="annOpen();return false;"
-       aria-label="เปิดคู่มือการใช้งานระบบ" style="cursor:pointer;background-image:url('images/hero-bg-manual.jpg')"></a>
-    <a class="hero-bg-slide" href="https://developedsystemsansai.github.io/ec-sansai/privacy-policy.html"
-       aria-label="ดูนโยบาย PDPA" style="cursor:pointer;background-image:url('images/hero-bg-pdpa.jpg')"></a>
-    <a class="hero-bg-slide" href="https://developedsystemsansai.github.io/ec-sansai/documents.html"
-       aria-label="ไปหน้าเตรียมเอกสาร" style="cursor:pointer;background-image:url('images/hero-bg-ecss001.jpg')"></a>
-    <a class="hero-bg-slide" href="#" onclick="SITE.goLogin();return false;"
-       aria-label="เข้าสู่ระบบ EC Online Submission" style="cursor:pointer;background-image:url('images/hero-bg-ecsubmission.jpg')"></a>
     <div class="hero-bg-slide" style="background-image:url('images/hero-bg-1.jpg')"></div>
     <div class="hero-bg-slide" style="background-image:url('images/hero-bg-2.jpg')"></div>
-    <div class="hero-bg-slide" style="background-image:url('images/hero-bg-3.jpg')"></div>
     <div class="hero-bg-overlay"></div>
   </div>
   <div class="hero-stripe" aria-hidden="true"></div>
@@ -1222,6 +1234,19 @@ html,body{max-width:100%;overflow-x:clip}
           ดูประกาศทั้งหมด
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </button>
+
+        <!-- Announcement banner slider -->
+        <div class="news-banner" aria-label="แบนเนอร์ประกาศ">
+          <a class="news-banner-slide" href="#" onclick="annOpen();return false;"
+             aria-label="เปิดคู่มือการใช้งานระบบ" style="background-image:url('images/hero-bg-manual.jpg')"></a>
+          <a class="news-banner-slide" href="https://developedsystemsansai.github.io/ec-sansai/privacy-policy.html"
+             aria-label="ดูนโยบาย PDPA" style="background-image:url('images/hero-bg-pdpa.jpg')"></a>
+          <a class="news-banner-slide" href="https://developedsystemsansai.github.io/ec-sansai/documents.html"
+             aria-label="ไปหน้าเตรียมเอกสาร" style="background-image:url('images/hero-bg-ecss001.jpg')"></a>
+          <a class="news-banner-slide" href="#" onclick="SITE.goLogin();return false;"
+             aria-label="เข้าสู่ระบบ EC Online Submission" style="background-image:url('images/hero-bg-ecsubmission.jpg')"></a>
+          <div class="news-banner-dots" aria-hidden="true"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1659,6 +1684,56 @@ CAL.init();
     next.classList.add('is-active');
     i = (i + 1) % slides.length;
   }, 6500);
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   NEWS BANNER CAROUSEL — แบนเนอร์ประกาศใต้รายการข่าว
+══════════════════════════════════════════════════════════════ */
+(function() {
+  var slides = document.querySelectorAll('.news-banner-slide');
+  var dotsWrap = document.querySelector('.news-banner-dots');
+  if (!slides.length) return;
+
+  var reduced = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (dotsWrap) {
+    slides.forEach(function() {
+      var d = document.createElement('span');
+      dotsWrap.appendChild(d);
+    });
+  }
+  var dots = dotsWrap ? dotsWrap.querySelectorAll('span') : [];
+
+  var i = 0;
+  slides[0].classList.add('is-active');
+  if (dots[0]) dots[0].classList.add('is-active');
+
+  if (reduced || slides.length < 2) return;
+
+  slides.forEach(function(s) {
+    s.addEventListener('transitionend', function(e) {
+      if (e.propertyName !== 'transform') return;
+      if (s.classList.contains('is-prev')) {
+        s.classList.add('no-transition');
+        s.classList.remove('is-prev');
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() { s.classList.remove('no-transition'); });
+        });
+      }
+    });
+  });
+
+  setInterval(function() {
+    var cur = slides[i];
+    var next = slides[(i + 1) % slides.length];
+    cur.classList.remove('is-active');
+    cur.classList.add('is-prev');
+    next.classList.add('is-active');
+    if (dots[i]) dots[i].classList.remove('is-active');
+    i = (i + 1) % slides.length;
+    if (dots[i]) dots[i].classList.add('is-active');
+  }, 5500);
 })();
 
 /* ══════════════════════════════════════════════════════════════
