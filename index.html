@@ -404,8 +404,16 @@ button{font-family:inherit;cursor:pointer}
 /* Announcement banner slider (below news list) */
 .news-banner{position:relative;width:100%;aspect-ratio:1672/941;max-width:100%;
   max-height:560px;margin-top:2rem;border-radius:10px;overflow:hidden;
-  box-shadow:0 4px 18px rgba(11,31,53,.14);background:var(--n900)}
-.news-banner-slide{position:absolute;inset:0;display:block;
+  box-shadow:0 4px 18px rgba(11,31,53,.14);
+  background:linear-gradient(135deg,#0b1f35 0%,#16324f 48%,#0b1f35 100%)}
+.news-banner::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    radial-gradient(circle at 8% 18%,rgba(199,163,90,.16) 0,transparent 38%),
+    radial-gradient(circle at 94% 82%,rgba(255,255,255,.07) 0,transparent 42%),
+    repeating-linear-gradient(115deg,rgba(255,255,255,.025) 0 2px,transparent 2px 26px)}
+.news-banner::after{content:'';position:absolute;left:0;right:0;top:0;height:3px;
+  z-index:1;pointer-events:none;background:var(--g500)}
+.news-banner-slide{position:absolute;inset:0;display:block;z-index:1;
   background-size:contain;background-repeat:no-repeat;background-position:center;cursor:pointer;
   transform:translateX(-100%);transition:transform 1.8s cubic-bezier(.65,0,.35,1)}
 .news-banner-slide.no-transition{transition:none}
@@ -415,6 +423,35 @@ button{font-family:inherit;cursor:pointer}
   .news-banner-slide{transition:opacity .6s ease;transform:none!important;opacity:0}
   .news-banner-slide.is-active{opacity:1}
 }
+.news-banner-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);
+  color:rgba(255,255,255,.85);width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:background .15s,color .15s}
+.news-banner-nav:hover{background:rgba(255,255,255,.22);color:#fff}
+.news-banner-prev{left:14px}
+.news-banner-next{right:14px}
+@media(max-width:600px){.news-banner-nav{width:32px;height:32px}}
+
+/* Glossy film-shade panels flanking the image */
+.news-banner-shade{position:absolute;top:0;bottom:0;width:13%;z-index:2;
+  pointer-events:none;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.015) 100%)}
+.news-banner-shade::before{content:'';position:absolute;inset:-15% -70%;
+  background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.32) 46%,
+    rgba(255,255,255,.04) 56%,transparent 80%);
+  background-size:220% 220%;
+  animation:newsShadeShimmer 7s ease-in-out infinite}
+.news-banner-shade-l{left:0;border-right:1px solid rgba(255,255,255,.08)}
+.news-banner-shade-r{right:0;border-left:1px solid rgba(255,255,255,.08)}
+@keyframes newsShadeShimmer{
+  0%,100%{background-position:0% 30%}
+  50%{background-position:100% 70%}
+}
+@media(prefers-reduced-motion:reduce){
+  .news-banner-shade::before{animation:none}
+}
+@media(max-width:600px){.news-banner-shade{width:9%}}
 .news-banner-dots{position:absolute;left:0;right:0;bottom:.7rem;z-index:2;
   display:flex;justify-content:center;gap:6px;pointer-events:none}
 .news-banner-dots span{width:6px;height:6px;border-radius:50%;
@@ -1246,6 +1283,14 @@ html,body{max-width:100%;overflow-x:clip}
           <a class="news-banner-slide" href="#" onclick="SITE.goLogin();return false;"
              aria-label="เข้าสู่ระบบ EC Online Submission" style="background-image:url('images/hero-bg-ecsubmission.jpg')"></a>
           <div class="news-banner-dots" aria-hidden="true"></div>
+          <div class="news-banner-shade news-banner-shade-l" aria-hidden="true"></div>
+          <div class="news-banner-shade news-banner-shade-r" aria-hidden="true"></div>
+          <button type="button" class="news-banner-nav news-banner-prev" aria-label="ภาพก่อนหน้า" onclick="newsBannerGo(-1)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button type="button" class="news-banner-nav news-banner-next" aria-label="ภาพถัดไป" onclick="newsBannerGo(1)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
         </div>
       </div>
     </div>
@@ -1689,6 +1734,7 @@ CAL.init();
 /* ══════════════════════════════════════════════════════════════
    NEWS BANNER CAROUSEL — แบนเนอร์ประกาศใต้รายการข่าว
 ══════════════════════════════════════════════════════════════ */
+var newsBannerGo = function(){};
 (function() {
   var slides = document.querySelectorAll('.news-banner-slide');
   var dotsWrap = document.querySelector('.news-banner-dots');
@@ -1724,16 +1770,25 @@ CAL.init();
     });
   });
 
-  setInterval(function() {
+  function goTo(target) {
     var cur = slides[i];
-    var next = slides[(i + 1) % slides.length];
+    var next = slides[target];
+    if (next === cur) return;
     cur.classList.remove('is-active');
     cur.classList.add('is-prev');
     next.classList.add('is-active');
     if (dots[i]) dots[i].classList.remove('is-active');
-    i = (i + 1) % slides.length;
+    i = target;
     if (dots[i]) dots[i].classList.add('is-active');
-  }, 5500);
+  }
+
+  var timer = setInterval(function() { goTo((i + 1) % slides.length); }, 5500);
+
+  newsBannerGo = function(dir) {
+    clearInterval(timer);
+    goTo((i + dir + slides.length) % slides.length);
+    timer = setInterval(function() { goTo((i + 1) % slides.length); }, 5500);
+  };
 })();
 
 /* ══════════════════════════════════════════════════════════════
