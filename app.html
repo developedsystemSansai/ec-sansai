@@ -2,6 +2,7 @@
     <html lang="th">
     <head>
         <script src="config.js"></script>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <!--
       GAS API Bridge — วาง Deployment URL ตรงนี้
           GAS → Deploy → Manage Deployments → คัดลอก Web App URL
@@ -32,7 +33,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
 
       // ACTION_MAP: funcName → function(...args) → Promise
       var M = {
-        login:                       function(u,p)              { return callGAS('login',                       {username:u, password:p}); },
+        login:                       function(u,p,captcha)     { return callGAS('login',                       {username:u, password:p, captchaToken:captcha}); },
         logoutSecure:                function(sid,u)            { return callGAS('logoutSecure',                {sessionId:sid, username:u}); },
         validateSession:             function(sid,u)            { return callGAS('validateSession',             {sessionId:sid, username:u}); },
         getCsrfToken:                function(sid)              { return callGAS('getCsrfToken',                {sessionId:sid}); },
@@ -46,8 +47,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         getAllUsers:                  function(sid,cu)           { return callGAS('getAllUsers',                 {sessionId:sid, callerUsername:cu}); },
         getLockedAccounts:            function(sid,cu)           { return callGAS('getLockedAccounts',           {sessionId:sid, callerUsername:cu}); },
         adminUnlockAccount:           function(sid,cu,tu)        { return callGAS('adminUnlockAccount',          {sessionId:sid, callerUsername:cu, targetUsername:tu}); },
-        createUser:                  function(pl,au)            { return callGAS('createUser',                 {payload:pl, adminUsername:au}); },
-        updateUser:                  function(pl,au)            { return callGAS('updateUser',                 {payload:pl, adminUsername:au}); },
+        createUser:                  function(sid,pl,au)       { return callGAS('createUser',                 {sessionId:sid, payload:pl, adminUsername:au}); },
+        updateUser:                  function(sid,pl,au)       { return callGAS('updateUser',                 {sessionId:sid, payload:pl, adminUsername:au}); },
         deleteUser:                  function(sid,tu,au)        { return callGAS('deleteUser',                 {sessionId:sid, targetUsername:tu, adminUsername:au}); },
         approveUser:                 function(sid,tu,au)        { return callGAS('approveUser',                {sessionId:sid, targetUsername:tu, adminUsername:au}); },
         sendWelcomeEmailsToAllUsers: function()                 { return callGAS('sendWelcomeEmailsToAllUsers', {}); },
@@ -56,11 +57,11 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         getAllProjectsRaw:            function(cu)               { return callGAS('getAllProjectsRaw',          {callerUsername:cu}); },
         getAllProjectsWithType:       function(cu)               { return callGAS('getAllProjectsWithType',     {callerUsername:cu}); },
         getMyProjectsWithRevision:   function(sid,u)            { return callGAS('getMyProjectsWithRevision',  {sessionId:sid, username:u}); },
-        saveOrUpdateProjectSecure:   function(pd,isUp)          { return callGAS('saveOrUpdateProjectSecure',  {projectData:pd, isUpdate:isUp}); },
-        updateProjectStatus:         function(pc,ns,su,note)    { return callGAS('updateProjectStatus',        {projectCode:pc, newStatus:ns, staffUsername:su, note:note}); },
-        verifyProjectDocuments:      function(pc,d,su,note)     { return callGAS('verifyProjectDocuments',     {projectCode:pc, decision:d, staffUsername:su, note:note}); },
+        saveOrUpdateProjectSecure:   function(sid,pd,isUp)      { return callGAS('saveOrUpdateProjectSecure',  {sessionId:sid, projectData:pd, isUpdate:isUp}); },
+        updateProjectStatus:         function(sid,pc,ns,su,note){ return callGAS('updateProjectStatus',        {sessionId:sid, projectCode:pc, newStatus:ns, staffUsername:su, note:note}); },
+        verifyProjectDocuments:      function(sid,pc,d,su,note){ return callGAS('verifyProjectDocuments',     {sessionId:sid, projectCode:pc, decision:d, staffUsername:su, note:note}); },
         setProjectType:              function(sid,pc,nt,cu)     { return callGAS('setProjectType',             {sessionId:sid, projectCode:pc, newType:nt, callerUsername:cu}); },
-        reviewRevisionByAdmin:       function(pl,su)            { return callGAS('reviewRevisionByAdmin',      {payload:pl, staffUsername:su}); },
+        reviewRevisionByAdmin:       function(sid,pl,su)       { return callGAS('reviewRevisionByAdmin',      {sessionId:sid, payload:pl, staffUsername:su}); },
         submitRevision:              function(pl)               { return callGAS('submitRevision',             {payload:pl}); },
         uploadFileSecure:            function(b64,fn,mime,pc,u,ft){ return callGAS('uploadFileSecure',        {base64Data:b64, fileName:fn, mimeType:mime, projectCode:pc, username:u, fileType:ft}); },
         getUploadedFiles:            function(sid,pc,cu)        { return callGAS('getUploadedFiles',          {sessionId:sid, projectCode:pc, callerUsername:cu}); },
@@ -1407,6 +1408,9 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       <div style="text-align: right; margin-top: 4px;">
         <a onclick="openForgotPasswordModal()" style="color: var(--navy-main); font-size: 13px; cursor: pointer; text-decoration: underline;">ลืมรหัสผ่าน?</a>
       </div>
+    </div>
+    <div class="form-group">
+      <div class="g-recaptcha" data-sitekey="6LeA1XQtAAAAAJNZRxouTa70h3uMyR4gyc2KNkuk"></div>
     </div>
     <button class="btn-login" id="btn-login-submit" onclick="doLogin()">เข้าสู่ระบบ</button>
     <p class="login-link-row" style="margin-top:14px">ยังไม่มีบัญชี? <a onclick="showRegisterPage()">สมัครสมาชิก / ลงทะเบียน</a></p>
@@ -4926,8 +4930,8 @@ function openVerifyDocsModal(code, title) {
       var btns = document.querySelectorAll('#modal-verify-docs .btn-primary, #modal-verify-docs .btn-danger');
       btns.forEach(function (b) { b.disabled = true; });
 
-      google.script.run
-        .withSuccessHandler(function (res) {
+      getM().verifyProjectDocuments(S.user.sessionId, _verifyCode, decision, S.user.username, note)
+        .then(function (res) {
           btns.forEach(function (b) { b.disabled = false; });
           closeModal('modal-verify-docs');
           if (res && res.success) {
@@ -4937,11 +4941,10 @@ function openVerifyDocsModal(code, title) {
             showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
           }
         })
-        .withFailureHandler(function (e) {
+        .catch(function (e) {
           btns.forEach(function (b) { b.disabled = false; });
           showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
-        })
-        .verifyProjectDocuments(_verifyCode, decision, S.user.username, note);
+        });
     }
 
     function _populateProjectDropdown(preselectedCode) {
@@ -5111,8 +5114,8 @@ function _renderCommitteeCheckboxes(committees) {
   const statusBtn = document.querySelector('#modal-update-status .btn-primary');
   statusBtn.classList.add('btn-loading');
 
-  google.script.run
-    .withSuccessHandler(function(res) {
+  getM().updateProjectStatus(S.user.sessionId, code, status, S.user.username, note)
+    .then(function(res) {
       statusBtn.classList.remove('btn-loading');
       closeModal('modal-update-status');
       if (res && res.success) {
@@ -5122,11 +5125,10 @@ function _renderCommitteeCheckboxes(committees) {
         showToast('เกิดข้อผิดพลาด', 'error');
       }
     })
-    .withFailureHandler(function(e) {
+    .catch(function(e) {
       statusBtn.classList.remove('btn-loading');
       showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
-    })
-    .updateProjectStatus(code, status, S.user.username, note);
+    });
 }
 
     // ════════════════════════════════════════
@@ -5546,8 +5548,13 @@ function openReviewRevisionModal(projectCode) {
       var btns = document.querySelectorAll('#modal-review-revision .btn-primary, #modal-review-revision .btn-danger');
       btns.forEach(function(b) { b.disabled = true; });
       
-      google.script.run
-        .withSuccessHandler(function(res) {
+      getM().reviewRevisionByAdmin(S.user.sessionId, {
+          projectCode: projectCode,
+          decision: decision,
+          note: note,
+          skipCommitteeReeval: skipCommittee
+        }, S.user.username)
+        .then(function(res) {
           btns.forEach(function(b) { b.disabled = false; });
           closeModal('modal-review-revision');
           if (res && res.success) {
@@ -5557,16 +5564,10 @@ function openReviewRevisionModal(projectCode) {
             showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
           }
         })
-        .withFailureHandler(function(e) {
+        .catch(function(e) {
           btns.forEach(function(b) { b.disabled = false; });
           showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
-        })
-        .reviewRevisionByAdmin({
-          projectCode: projectCode,
-          decision: decision,
-          note: note,
-          skipCommitteeReeval: skipCommittee
-        }, S.user.username);
+        });
     }
 
     function handleRevisionFileUpload(input){
@@ -7107,8 +7108,8 @@ function doQuickAssign(){
     ? {payload:payload, adminUsername:S.user.username}
     : {payload:payload, adminUsername:S.user.username};
   var call = isEdit
-    ? getM().updateUser(payload, S.user.username)
-    : getM().createUser(payload, S.user.username);
+    ? getM().updateUser(S.user.sessionId, payload, S.user.username)
+    : getM().createUser(S.user.sessionId, payload, S.user.username);
   call
     .then(function(res) {
       btn.disabled = false; btn.innerHTML = '<i class="ti ti-device-floppy" aria-hidden="true"></i> บันทึก';
@@ -9147,6 +9148,8 @@ async function uploadToGoogleDrive(file) {
     function doLogin() {
       const u = val('inp-user').trim(), p = val('inp-pass').trim();
       if (!u || !p) { showLoginError('กรุณากรอกชื่อผู้ใช้และรหัสผ่าน'); return; }
+      var captchaToken = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse() : '';
+      if (!captchaToken) { showLoginError('กรุณายืนยันว่าคุณไม่ใช่โปรแกรมอัตโนมัติ'); return; }
       const btn = document.getElementById('btn-login-submit');
       btn.disabled = true;
       btn.innerHTML = '<span class="spin-sm"></span> กำลังเข้าสู่ระบบ...';
@@ -9167,15 +9170,17 @@ async function uploadToGoogleDrive(file) {
               enterSystem(res.roles[0]);
             }
           } else {
+            if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
             showLoginError(res.message || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
           }
         })
         .withFailureHandler(function(err) {
           hideGlobalLoading();
           btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
+          if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
           showLoginError('เกิดข้อผิดพลาด: ' + err.message);
         })
-        .login(u, p);
+        .login(u, p, captchaToken);
     }
 
     // Example: submitRegister
@@ -9394,8 +9399,8 @@ function submitRegisterWithPayload(payload, btn) {
         submittedBy: S.user ? S.user.username : '',
         fileIds: _uploadedFileIds.slice()
       };
-      google.script.run
-        .withSuccessHandler(function(r) {
+      getM().saveOrUpdateProjectSecure(S.user.sessionId, projectData, false)
+        .then(function(r) {
           hideGlobalLoading();
           if (r && r.success) {
             showToast('ยื่นโครงการสำเร็จ! รหัส: ' + (r.projectId || '-'));
@@ -9405,12 +9410,11 @@ function submitRegisterWithPayload(payload, btn) {
             btn.disabled = false; btn.innerHTML = '<i class="ti ti-upload" aria-hidden="true"></i> ยื่นโครงการ';
           }
         })
-        .withFailureHandler(function(e) {
+        .catch(function(e) {
           hideGlobalLoading();
           showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
           btn.disabled = false; btn.innerHTML = '<i class="ti ti-upload" aria-hidden="true"></i> ยื่นโครงการ';
-        })
-        .saveOrUpdateProjectSecure(projectData, false);
+        });
     }
 
     // ════════════════════════════════════════
