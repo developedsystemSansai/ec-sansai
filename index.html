@@ -346,22 +346,17 @@ button{font-family:inherit;cursor:pointer}
 ══════════════════════════════════════════════════════════════ */
 .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
 .tc{background:var(--white);border:1px solid var(--u200);border-top-width:3px;
-  border-radius:8px;padding:2rem 1.5rem;
-  transition:box-shadow .22s var(--ease),transform .22s var(--ease)}
-.tc:hover{box-shadow:0 4px 20px rgba(11,31,53,.12);transform:translateY(-3px)}
+  border-radius:4px;padding:1.75rem 1.5rem;
+  transition:box-shadow .22s var(--ease),border-color .22s var(--ease)}
+.tc:hover{box-shadow:0 2px 10px rgba(11,31,53,.08);border-color:var(--u300)}
 .tc-blue{border-top-color:var(--n600)}
 .tc-amber{border-top-color:var(--g500)}
 .tc-red{border-top-color:var(--r700)}
-.tc-icon{width:40px;height:40px;border-radius:4px;display:flex;
-  align-items:center;justify-content:center;margin-bottom:1.2rem}
-.tc-blue .tc-icon{background:var(--n50);color:var(--n600)}
-.tc-amber .tc-icon{background:var(--g50);color:var(--g600)}
-.tc-red .tc-icon{background:var(--r50);color:var(--r700)}
-.tc-tag{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.08em;
-  text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-bottom:.75rem}
-.tc-blue .tc-tag{background:var(--n100);color:var(--n600)}
-.tc-amber .tc-tag{background:var(--g100);color:var(--g700)}
-.tc-red .tc-tag{background:var(--r50);color:var(--r700)}
+.tc-tag{display:block;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:.9rem}
+.tc-blue .tc-tag{color:var(--n600)}
+.tc-amber .tc-tag{color:var(--g700)}
+.tc-red .tc-tag{color:var(--r700)}
 .tc h3{font-family:var(--ffs);font-size:1rem;font-weight:700;
   color:var(--n800);margin-bottom:.75rem;line-height:1.45}
 .tc p{font-size:.84rem;color:var(--u500);line-height:1.8;margin-bottom:1rem}
@@ -722,16 +717,13 @@ button{font-family:inherit;cursor:pointer}
 .rs-sublbl{font-size:.62rem;color:var(--u400);margin-top:.2rem}
 
 /* Summary cards */
-.rs-summary-card{background:var(--white);border:1px solid var(--u200);
-  border-radius:8px;padding:1rem 1.25rem;
-  display:flex;align-items:center;gap:14px;
+.rs-summary-card{background:var(--white);border:1px solid var(--u200);border-left-width:3px;
+  border-radius:4px;padding:1rem 1.25rem;
   transition:box-shadow .18s,border-color .18s}
-.rs-summary-card:hover{box-shadow:0 3px 12px rgba(11,31,53,.07);border-color:var(--u300)}
-.rs-sum-icon{width:40px;height:40px;border-radius:6px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center}
-.rs-summary-card.rs-approved .rs-sum-icon{background:var(--gr50);color:var(--gr700)}
-.rs-summary-card.rs-closed   .rs-sum-icon{background:var(--u100);color:var(--u500)}
-.rs-sum-lbl{font-size:.7rem;color:var(--u500);margin-bottom:.25rem;line-height:1.4}
+.rs-summary-card:hover{box-shadow:0 2px 10px rgba(11,31,53,.06);border-color:var(--u300)}
+.rs-summary-card.rs-approved{border-left-color:var(--gr600)}
+.rs-summary-card.rs-closed{border-left-color:var(--u300)}
+.rs-sum-lbl{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--u500);margin-bottom:.35rem;line-height:1.4}
 .rs-sum-val{font-family:var(--ffs);font-size:1.75rem;font-weight:700;
   line-height:1;font-variant-numeric:tabular-nums}
 .rs-summary-card.rs-approved .rs-sum-val{color:var(--gr700)}
@@ -928,10 +920,10 @@ html,body{max-width:100%;overflow-x:clip}
          alt="ตราสัญลักษณ์โรงพยาบาลสันทราย"
          onerror="this.style.display='none'">
     <div class="hdr-sep" aria-hidden="true"></div>
-    <div class="hdr-id">
-      <h1 data-en="Human Research Ethics Committee, Sansai Hospital">คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</h1>
-      <p data-en="Human Research Ethics Committee · Sansai Hospital · Health Region 1, Chiang Mai">Human Research Ethics Committee · Sansai Hospital · เขตสุขภาพที่ 1 จ.เชียงใหม่</p>
-    </div>
+    <a class="hdr-id" href="./" style="text-decoration:none;color:inherit">
+      <h1 data-en="Research Ethics Review: Online Submission System">ระบบยื่นจริยธรรมการวิจัยในมนุษย์</h1>
+      <p data-en="Sansai Hospital">โรงพยาบาลสันทราย</p>
+    </a>
     <div class="hdr-util">
       <div class="lang-switch" role="group" aria-label="เลือกภาษา / Language">
         <button type="button" class="lang-btn" data-lang="th" onclick="setLang('th')" aria-pressed="true">ไทย</button>
@@ -1096,22 +1088,12 @@ html,body{max-width:100%;overflow-x:clip}
       <!-- แถว 2: ได้รับรอง + ปิดโครงการ -->
       <div class="rs-row-summary">
         <div class="rs-summary-card rs-approved">
-          <div class="rs-sum-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          </div>
-          <div>
-            <div class="rs-sum-lbl" data-en="Approved">ได้รับการรับรองแล้ว</div>
-            <div class="rs-sum-val" id="rs-approved">—</div>
-          </div>
+          <div class="rs-sum-lbl" data-en="Approved">ได้รับการรับรองแล้ว</div>
+          <div class="rs-sum-val" id="rs-approved">—</div>
         </div>
         <div class="rs-summary-card rs-closed">
-          <div class="rs-sum-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-          </div>
-          <div>
-            <div class="rs-sum-lbl" data-en="Closed">ปิดโครงการแล้ว</div>
-            <div class="rs-sum-val" id="rs-closed">—</div>
-          </div>
+          <div class="rs-sum-lbl" data-en="Closed">ปิดโครงการแล้ว</div>
+          <div class="rs-sum-val" id="rs-closed">—</div>
         </div>
       </div>
 
@@ -1130,21 +1112,18 @@ html,body{max-width:100%;overflow-x:clip}
 
     <div class="cards3">
       <article class="tc tc-blue rev" style="transition-delay:.06s">
-        <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <span class="tc-tag">Exempt Review</span>
         <h3 data-en="Exempt Review">การพิจารณาแบบยกเว้น</h3>
         <p data-en="Very-low-risk projects using secondary or de-identified data">โครงการที่มีความเสี่ยงต่ำมาก ใช้ข้อมูลทุติยภูมิหรือข้อมูลที่ไม่ระบุตัวตน</p>
         <ul><li data-en="Non-invasive observational research">การวิจัยเชิงสังเกตที่ไม่รุกราน</li><li data-en="Retrospective data analysis">การวิเคราะห์ข้อมูลย้อนหลัง</li><li data-en="Studies based on medical records">การศึกษาจากเอกสารทางการแพทย์</li></ul>
       </article>
       <article class="tc tc-amber rev" style="transition-delay:.14s">
-        <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
         <span class="tc-tag">Expedited Review</span>
         <h3 data-en="Expedited Review">การพิจารณาแบบเร่งด่วน</h3>
         <p data-en="Low-risk projects reviewed by the chair or a delegated committee member">โครงการที่มีความเสี่ยงต่ำ พิจารณาโดยประธานหรือกรรมการที่ได้รับมอบหมาย</p>
         <ul><li data-en="Small-volume blood sample collection">การเก็บตัวอย่างเลือดปริมาณน้อย</li><li data-en="Non-invasive surveys and interviews">การสำรวจและสัมภาษณ์ที่ไม่กระทบ</li><li data-en="Behavioral science research">การวิจัยด้านพฤติกรรมศาสตร์</li></ul>
       </article>
       <article class="tc tc-red rev" style="transition-delay:.22s">
-        <div class="tc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
         <span class="tc-tag">Full Board Review</span>
         <h3 data-en="Full Board Review">การพิจารณาแบบเต็มรูปแบบ</h3>
         <p data-en="High-risk projects involving vulnerable groups or clinical trials">โครงการที่มีความเสี่ยงสูง เกี่ยวข้องกับกลุ่มเปราะบาง หรือการทดลองทางคลินิก</p>
