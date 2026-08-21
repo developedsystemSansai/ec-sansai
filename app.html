@@ -2938,7 +2938,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <button class="bottom-nav-item" id="bn-more" onclick="toggleMoreMenu()"><span class="bn-icon"><i class="ti ti-menu-2" aria-hidden="true"></i></span>เพิ่มเติม</button>
       </nav>
       <div id="more-overlay" style="display:none; position:fixed; inset:0; z-index:400; background:rgba(0,0,0,.35);" onclick="closeMoreMenu()"></div>
-      <div id="more-menu" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#fff; border-radius:var(--radius-lg) var(--radius-lg) 0 0; z-index:401; box-shadow:var(--shadow-lg); max-height:80vh; display:flex; flex-direction:column;">
+      <div id="more-menu" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#fff; border-radius:var(--radius-lg) var(--radius-lg) 0 0; z-index:401; box-shadow:var(--shadow-lg); max-height:80vh; flex-direction:column;">
         <div style="width:36px; height:4px; background:var(--border); border-radius:2px; margin:10px auto 4px; flex-shrink:0;"></div>
         <div style="padding:4px 8px 2px; font-family:'Sarabun',sans-serif; font-size:12px; font-weight:700; color:var(--text-light); flex-shrink:0;">เมนูทั้งหมด</div>
         <div id="more-menu-list" style="overflow-y:auto; -webkit-overflow-scrolling:touch; padding:4px 8px 8px;"></div>
