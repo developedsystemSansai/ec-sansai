@@ -96,6 +96,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         saveLineUserId:              function(sid,cu,tu,lid)       { return callGAS('saveLineUserId',            {sessionId:sid, callerUsername:cu, targetUsername:tu, lineUserId:lid}); },
         pushLineToUser:              function(sid,cu,tu,ti,bd,bt,att,dids){ return callGAS('pushLineToUser',           {sessionId:sid, callerUsername:cu, targetUsername:tu, title:ti, body:bd, buttonType:bt, attachments:att||[], driveFileIds:dids||[]}); },
         pushLineToAllCommittees:     function(sid,cu,ti,bd,bt,att)        { return callGAS('pushLineToAllCommittees',  {sessionId:sid, callerUsername:cu, title:ti, body:bd, buttonType:bt, attachments:att||[]}); },
+        getUserActivityLog:          function(sid,cu,filters)   { return callGAS('getUserActivityLog',        {sessionId:sid, callerUsername:cu, filters:filters||{}}); },
       };
 
       // ── GASRunner: รองรับ google.script.run.withXxx(fn).FUNC(args) ──
@@ -922,32 +923,53 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     /* ── BOTTOM NAV ── */
     .bottom-nav {
       display: none; position: fixed; bottom: 0; left: 0; right: 0;
-      height: 58px; background: var(--white);
+      min-height: 58px; background: var(--white);
       border-top: 1px solid var(--border);
       box-shadow: 0 -2px 10px rgba(0,0,0,.08);
       z-index: 200; flex-direction: row; align-items: stretch;
+      padding-bottom: env(safe-area-inset-bottom);
     }
     .bottom-nav-item {
       flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 2px;
       background: none; border: none; cursor: pointer;
-      color: var(--text-light);
+      color: var(--text-light); min-height: 52px; min-width: 44px;
       font-family: 'Sarabun', sans-serif; font-size: 10px;
-      padding: 5px 4px; position: relative;
+      padding: 5px 2px; position: relative;
       transition: color .12s; -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
     }
-    .bottom-nav-item .bn-icon { font-size: 18px; line-height: 1; }
+    .bottom-nav-item .bn-icon { font-size: 18px; line-height: 1; position: relative; display: inline-flex; }
     .bottom-nav-item.active { color: var(--navy-main); }
     .bottom-nav-item.active::after {
       content: ''; position: absolute; top: 0; left: 25%; right: 25%;
       height: 2px; background: var(--navy-main); border-radius: 0 0 2px 2px;
     }
     .bottom-nav-badge {
-      position: absolute; top: 4px; right: calc(50% - 18px);
+      position: absolute; top: -6px; right: -10px;
       background: var(--red); color: var(--white);
       border-radius: 8px; padding: 1px 5px;
       font-size: 9px; font-weight: 700; min-width: 14px; text-align: center;
+      box-shadow: 0 0 0 2px var(--white);
     }
+    /* ── MORE MENU (mobile "เพิ่มเติม") — mirrors sidebar-nav dynamically ── */
+    .more-menu-item {
+      display: flex; align-items: center; gap: 12px; width: 100%;
+      padding: 12px 10px; min-height: 48px; background: none; border: none;
+      border-radius: var(--radius); cursor: pointer; text-align: left;
+      font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 600;
+      color: var(--text-dark); -webkit-tap-highlight-color: transparent;
+      transition: background .1s;
+    }
+    .more-menu-item:active, .more-menu-item:hover { background: var(--navy-pale); }
+    .more-menu-item-icon { flex-shrink: 0; width: 20px; display: inline-flex; align-items: center; justify-content: center; color: var(--navy-main); }
+    .more-menu-item-icon svg { width: 17px; height: 17px; }
+    .more-menu-item-label { flex: 1; min-width: 0; }
+    .more-menu-item-badge { flex-shrink: 0; background: var(--red); color: var(--white); border-radius: 10px; padding: 1px 7px; font-size: 11px; font-weight: 700; }
+    .more-menu-item-badge.orange { background: var(--accent, #f0a500); }
+    .more-menu-item-danger { color: var(--red); }
+    .more-menu-item-danger .more-menu-item-icon { color: var(--red); }
+    .more-menu-empty { padding: 18px 10px; text-align: center; font-size: 13px; color: var(--text-light); }
 
     /* ── VERIFY STEP BANNER ── */
     .verify-step-banner {
@@ -1193,13 +1215,14 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       .form-row-prefix .form-group:nth-child(3),
       .form-row-project-header .form-group:last-child { grid-column: 2 / 3; }
       .bottom-nav { display: flex; }
+      .content { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+      .contact-fab { bottom: calc(130px + env(safe-area-inset-bottom)); }
       .stat-card { padding: 11px 12px; }
       .stat-card .num { font-size: 1.25rem; }
       tbody td { padding: 8px 10px; font-size: var(--text-xs); }
       thead th { padding: 8px 10px; }
       .search-bar .form-control { min-width: 100%; }
       .contact-body { grid-template-columns: 1fr; }
-      .contact-fab { bottom: 128px; }
       .contact-popup-overlay { padding: 0; align-items: flex-end; justify-content: stretch; }
       .contact-popup { max-width: 100%; margin: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
     }
@@ -2739,6 +2762,9 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                 <i class="ti ti-lock" aria-hidden="true"></i> บัญชีถูกล็อค
                 <span class="badge-count" id="badge-locked-accounts" style="display:none;background:#d93025;margin-left:4px">0</span>
               </button>
+              <button class="tab-btn" onclick="switchUsersTab(this,'users-tab-activity')">
+                <i class="ti ti-history" aria-hidden="true"></i> กิจกรรมล่าสุด
+              </button>
             </div>
 
             <!-- Tab: รายชื่อผู้ใช้ -->
@@ -2774,7 +2800,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                 <div class="table-card" style="margin-bottom:16px">
                   <div class="table-card-header" style="border-bottom:2px solid #e8faf0"><h3 style="color:#06c755"><i class="ti ti-device-mobile" aria-hidden="true"></i> ส่ง LINE ถึงกรรมการทุกคน</h3></div>
                   <div style="padding:16px;display:flex;flex-direction:column;gap:10px">
-                    <div class="field-group" style="margin-bottom:0"><label>หัวเรื่อง</label><input type="text" id="line-broadcast-title" class="form-control" placeholder="เช่น: <i class="ti ti-calendar" aria-hidden="true"></i> นัดประชุมคณะกรรมการ" maxlength="60"></div>
+                    <div class="field-group" style="margin-bottom:0"><label>หัวเรื่อง</label><input type="text" id="line-broadcast-title" class="form-control" placeholder="เช่น: นัดประชุมคณะกรรมการ" maxlength="60"></div>
                     <div class="field-group" style="margin-bottom:0"><label>รายละเอียด</label><textarea id="line-broadcast-body" class="form-control" rows="3" placeholder="รายละเอียด..." style="resize:vertical"></textarea></div>
  <div class="field-group"style="margin-bottom:0"><label>ปุ่มใน LINE</label><select id="line-broadcast-btntype"class="form-control"style="max-width:240px"><option value="home"> หน้าหลักระบบ</option><option value="meeting"> หน้าการประชุม</option><option value="projects"> โครงการที่ได้รับ</option><option value="none">— ไม่มีปุ่ม —</option></select></div>
                     <!-- ไฟล์แนบ Broadcast — ดาวน์โหลดตรง ไม่ต้องขอสิทธิ์ -->
@@ -2829,6 +2855,44 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                 </div>
               </div>
             </div>
+
+            <!-- Tab: กิจกรรมล่าสุด -->
+            <div id="users-tab-activity" class="tab-panel">
+              <div style="margin-top:14px">
+                <div style="background:linear-gradient(135deg,#37474f,#263238);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:16px;display:flex;align-items:flex-start;gap:14px;box-shadow:0 2px 12px rgba(38,50,56,.18)">
+                  <div style="font-size:28px;flex-shrink:0"><i class="ti ti-history" aria-hidden="true"></i></div>
+                  <div>
+                    <div style="color:#fff;font-weight:700;font-size:14px;margin-bottom:3px">ประวัติกิจกรรมล่าสุด</div>
+                    <div style="color:rgba(255,255,255,.88);font-size:12px;line-height:1.6">ดูรายการส่งอีเมล / พุช LINE / เข้าสู่ระบบ ฯลฯ ทั้งหมดได้จากหน้านี้โดยตรง<br>ไม่ต้องเปิด Google Sheet เพื่อตรวจสอบอีกต่อไป</div>
+                  </div>
+                </div>
+                <div class="search-bar" style="margin-bottom:12px;flex-wrap:wrap">
+                  <select class="form-control" id="activity-filter-type" style="max-width:170px" onchange="loadActivityLog(true)">
+                    <option value="">ทุกประเภทกิจกรรม</option>
+                    <option value="email">ส่งอีเมล</option>
+                    <option value="line_push">พุช LINE</option>
+                    <option value="login">เข้าสู่ระบบ</option>
+                    <option value="user_manage">จัดการผู้ใช้</option>
+                    <option value="other">อื่นๆ</option>
+                  </select>
+                  <select class="form-control" id="activity-filter-status" style="max-width:140px" onchange="loadActivityLog(true)">
+                    <option value="">ทุกสถานะ</option>
+                    <option value="success">สำเร็จ</option>
+                    <option value="failed">ล้มเหลว</option>
+                  </select>
+                  <input type="text" class="form-control" id="activity-filter-search" placeholder="ค้นหา username / รายละเอียด..." oninput="debounceLoadActivityLog()">
+                  <input type="date" class="form-control" id="activity-filter-date" style="max-width:150px" onchange="loadActivityLog(true)">
+                  <button class="btn btn-outline btn-sm" onclick="loadActivityLog(true)"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+                </div>
+                <div class="table-card">
+                  <div class="table-card-header"><h3>รายการกิจกรรม</h3><span id="activity-log-count" style="font-size:12px;color:var(--text-light)"></span></div>
+                  <div id="activity-log-table"></div>
+                  <div id="activity-log-more-wrap" style="display:none;padding:14px;text-align:center">
+                    <button class="btn btn-outline btn-sm" id="activity-log-more-btn" onclick="loadActivityLog(false)">โหลดเพิ่มเติม</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- PROFILE -->
@@ -2869,19 +2933,17 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <button class="bottom-nav-item" id="bn-evaluate" onclick="showPage('evaluate')" style="display:none"><span class="bn-icon"><i class="ti ti-edit" aria-hidden="true"></i></span>ประเมิน</button>
         <button class="bottom-nav-item" id="bn-submit" onclick="showPage('submit')" style="display:none"><span class="bn-icon"><i class="ti ti-upload" aria-hidden="true"></i></span>ยื่น</button>
     <button class="bottom-nav-item" id="bn-research-reports" onclick="showPage('research-reports')" style="display:none">
-      <span class="bn-icon"><i class="ti ti-chart-bar" aria-hidden="true"></i></span>รายงาน
-      <span class="bottom-nav-badge" id="bn-badge-rpt" style="display:none">0</span>
+      <span class="bn-icon"><i class="ti ti-chart-bar" aria-hidden="true"></i><span class="bottom-nav-badge" id="bn-badge-rpt" style="display:none">0</span></span>รายงาน
     </button>
         <button class="bottom-nav-item" id="bn-more" onclick="toggleMoreMenu()"><span class="bn-icon"><i class="ti ti-menu-2" aria-hidden="true"></i></span>เพิ่มเติม</button>
       </nav>
       <div id="more-overlay" style="display:none; position:fixed; inset:0; z-index:400; background:rgba(0,0,0,.35);" onclick="closeMoreMenu()"></div>
-      <div id="more-menu" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#fff; border-radius:var(--radius-lg) var(--radius-lg) 0 0; z-index:401; padding:16px; box-shadow:var(--shadow-lg);">
-        <div style="width:36px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 16px;"></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-          <button style="padding:14px; background:var(--navy-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="showPage('history'); closeMoreMenu()"><i class="ti ti-folders" aria-hidden="true"></i> ประวัติ</button>
-          <button style="padding:14px; background:var(--navy-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="showPage('profile'); closeMoreMenu()"><i class="ti ti-user" aria-hidden="true"></i> โปรไฟล์</button>
-          <button style="padding:14px; background:var(--navy-pale); border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px;" onclick="openNotifPanel(); closeMoreMenu()"><i class="ti ti-bell" aria-hidden="true"></i> แจ้งเตือน</button>
-          <button style="padding:14px; background:var(--red-light); border:1.5px solid #f5bcb8; border-radius:var(--radius); cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; display:flex; align-items:center; gap:8px; color:var(--red);" onclick="doLogout(); closeMoreMenu()"><i class="ti ti-door-exit" aria-hidden="true"></i> ออกจากระบบ</button>
+      <div id="more-menu" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#fff; border-radius:var(--radius-lg) var(--radius-lg) 0 0; z-index:401; box-shadow:var(--shadow-lg); max-height:80vh; display:flex; flex-direction:column;">
+        <div style="width:36px; height:4px; background:var(--border); border-radius:2px; margin:10px auto 4px; flex-shrink:0;"></div>
+        <div style="padding:4px 8px 2px; font-family:'Sarabun',sans-serif; font-size:12px; font-weight:700; color:var(--text-light); flex-shrink:0;">เมนูทั้งหมด</div>
+        <div id="more-menu-list" style="overflow-y:auto; -webkit-overflow-scrolling:touch; padding:4px 8px 8px;"></div>
+        <div style="flex-shrink:0; padding:8px; border-top:1px solid var(--border); padding-bottom:calc(8px + env(safe-area-inset-bottom));">
+          <button class="more-menu-item more-menu-item-danger" onclick="doLogout(); closeMoreMenu()"><span class="more-menu-item-icon"><i class="ti ti-door-exit" aria-hidden="true"></i></span><span class="more-menu-item-label">ออกจากระบบ</span></button>
         </div>
       </div>
     </div>
@@ -2889,6 +2951,15 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     <!-- ═══════════ MODALS ═══════════ -->
 
     <!-- [FIX #2] View Files Modal (Staff) -->
+    <div class="modal-overlay" id="modal-committee-eval-history">
+      <div class="modal modal-lg">
+        <div class="modal-header"><h3><i class="ti ti-history" aria-hidden="true"></i> ประวัติการประเมินของ <span id="ceh-name">-</span></h3><button class="modal-close" onclick="closeModal('modal-committee-eval-history')"><i class="ti ti-x" aria-hidden="true"></i></button></div>
+        <div class="modal-body">
+          <div id="ceh-table"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="modal-overlay" id="modal-view-files">
       <div class="modal modal-lg">
         <div class="modal-header"><h3><i class="ti ti-paperclip" aria-hidden="true"></i> เอกสารของโครงการ</h3><button class="modal-close" onclick="closeModal('modal-view-files')"><i class="ti ti-x" aria-hidden="true"></i></button></div>
@@ -3872,7 +3943,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
               <div style="font-size:11px;color:var(--text-light)">ID: <span id="line-push-uid" style="font-family:monospace"></span></div>
             </div>
           </div>
-          <div class="field-group"><label>หัวเรื่อง</label><input type="text" id="line-push-title" class="form-control" placeholder="เช่น: <i class="ti ti-clipboard-list" aria-hidden="true"></i> มอบหมายโครงการใหม่" maxlength="60"></div>
+          <div class="field-group"><label>หัวเรื่อง</label><input type="text" id="line-push-title" class="form-control" placeholder="เช่น: มอบหมายโครงการใหม่" maxlength="60"></div>
           <div class="field-group"><label>รายละเอียด</label><textarea id="line-push-body" class="form-control" rows="3" placeholder="รายละเอียด..." style="resize:vertical"></textarea></div>
           <div class="field-group">
             <label>ปุ่มใน LINE</label>
@@ -4177,6 +4248,54 @@ function applyRoleUI(role){
   showEl('bn-evaluate',        S._isCommittee || isAdmin);
   showEl('bn-submit',          S._isResearcher);
   showEl('bn-research-reports', S._isResearcher || isStaff || isAdmin);
+
+  syncMoreMenu();
+}
+
+// ── เมนู "เพิ่มเติม" บนมือถือ: ดึงรายการจาก sidebar-nav อัตโนมัติ ──────
+// ป้องกันปัญหาเมนูตกหล่นบนมือถือ (ที่มาของปัญหา: เดิมเขียนรายการตายตัวแยกไว้
+// ต่างหาก ทำให้เมนูใหม่ๆ ที่เพิ่มใน sidebar ไม่ถูกนำมาแสดงบนมือถือ)
+// รายการที่แสดงในแถบล่าง (bottom-nav) อยู่แล้วจะไม่ถูกซ้ำในเมนูนี้อีก
+function syncMoreMenu(){
+  var list=document.getElementById('more-menu-list');
+  if(!list) return;
+  var bottomNavPages=Array.from(document.querySelectorAll('.bottom-nav-item[id^="bn-"]'))
+    .filter(function(b){ return b.id!=='bn-more' && b.style.display!=='none'; })
+    .map(function(b){ return b.id.replace('bn-',''); });
+  var items=Array.from(document.querySelectorAll('#sidebar-nav > a')).filter(function(a){
+    return a.style.display!=='none';
+  });
+  list.innerHTML='';
+  items.forEach(function(a){
+    var page=(a.getAttribute('onclick')||'').match(/showPage\('([^']+)'\)/);
+    page=page?page[1]:null;
+    if(page && bottomNavPages.indexOf(page)!==-1) return; // อยู่ในแถบล่างอยู่แล้ว
+    var iconEl=a.querySelector('.icon');
+    var badgeEl=a.querySelector('[id^="badge-"]');
+    var label=a.textContent.trim();
+    if(badgeEl) label=label.replace(badgeEl.textContent.trim(),'').trim();
+    var btn=document.createElement('button');
+    btn.type='button';
+    btn.className='more-menu-item';
+    btn.innerHTML='<span class="more-menu-item-icon">'+(iconEl?iconEl.innerHTML:'')+'</span>'+
+      '<span class="more-menu-item-label">'+esc(label)+'</span>'+
+      (badgeEl && badgeEl.style.display!=='none' ? '<span class="more-menu-item-badge'+(badgeEl.className.indexOf('orange')!==-1?' orange':'')+'">'+esc(badgeEl.textContent.trim())+'</span>' : '');
+    btn.onclick=function(){ a.click(); closeMoreMenu(); };
+    list.appendChild(btn);
+  });
+  // รายการเสริมที่ไม่ได้อยู่ใน sidebar
+  var extra=[
+    {label:'แจ้งเตือน', icon:'<i class="ti ti-bell" aria-hidden="true"></i>', fn:'openNotifPanel()'}
+  ];
+  extra.forEach(function(x){
+    var btn=document.createElement('button');
+    btn.type='button';
+    btn.className='more-menu-item';
+    btn.innerHTML='<span class="more-menu-item-icon">'+x.icon+'</span><span class="more-menu-item-label">'+esc(x.label)+'</span>';
+    btn.onclick=new Function(x.fn+'; closeMoreMenu();');
+    list.appendChild(btn);
+  });
+  if(!list.children.length) list.innerHTML='<div class="more-menu-empty">ไม่มีเมนูเพิ่มเติม</div>';
 }
 
 // <i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> รวม loadAllData ด้วยเช่นกัน
@@ -5951,6 +6070,31 @@ function viewProjectFiles(projectCode) {
     // ════════════════════════════════════════
     function loadHistory(){ google.script.run.withSuccessHandler(function(res){ var rows=res.data||[]; var el=document.getElementById('history-table'); if(!el) return; if(!rows.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon"><i class="ti ti-inbox" aria-hidden="true"></i></div><p>ไม่มีประวัติ</p></div>'; return; } var html='<table><thead><tr><th>วันที่</th><th>รหัสโครงการ</th><th>มติ</th><th>สถานะ</th></tr></thead><tbody>'; rows.forEach(function(r){ html+='<tr><td>'+formatDate(r.timestamp)+'</td><td><strong>'+esc(r.project_code||'-')+'</strong></td><td><span class="pill pill-blue">'+esc(r.final_decision||'-')+'</span></td><td><span class="pill pill-green">ส่งแล้ว</span></td></tr>'; }); el.innerHTML=html+'</tbody></table>'; }).withFailureHandler(function(){}).getEvaluationHistory(S.user.sessionId, S.user.username); }
 
+// เปิดจากหน้า "จัดการผู้ใช้" — แอดมิน/เจ้าหน้าที่ดูประวัติการประเมินของกรรมการรายบุคคล
+// ใช้ getEvaluationHistory เดิม แต่ส่ง username ของกรรมการเป้าหมายแทนตัวเอง
+function openCommitteeEvalHistoryModal(username, displayName){
+  document.getElementById('ceh-name').textContent = displayName || username;
+  var el = document.getElementById('ceh-table');
+  el.innerHTML = '<div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div>';
+  openModal('modal-committee-eval-history');
+  getM().getEvaluationHistory(S.user.sessionId, username)
+    .then(function(res){
+      if(!res || res.success===false){ throw new Error((res&&res.message)||'load-failed'); }
+      var rows = res.data || [];
+      if(!rows.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon"><i class="ti ti-inbox" aria-hidden="true"></i></div><p>กรรมการท่านนี้ยังไม่มีประวัติการประเมิน</p></div>'; return; }
+      var html='<table><thead><tr><th>วันที่</th><th>รหัสโครงการ</th><th>มติ</th><th>สถานะ</th></tr></thead><tbody>';
+      rows.forEach(function(r){
+        html+='<tr><td>'+formatDate(r.timestamp)+'</td><td><strong>'+esc(r.project_code||'-')+'</strong></td><td><span class="pill pill-blue">'+esc(r.final_decision||'-')+'</span></td><td><span class="pill pill-green">ส่งแล้ว</span></td></tr>';
+      });
+      el.innerHTML = html+'</tbody></table>';
+    })
+    .catch(function(e){
+      console.error('[CommitteeEvalHistory]', e);
+      el.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div><p>ดึงประวัติไม่สำเร็จ</p>'+
+        '<p style="font-size:12px;color:var(--text-light);margin-top:4px">อาจเป็นเพราะฝั่ง backend (getEvaluationHistory) ยังไม่อนุญาตให้แอดมิน/เจ้าหน้าที่ดูประวัติของผู้ใช้อื่น — ต้องปรับสิทธิ์ในฟังก์ชันนี้เพิ่ม</p></div>';
+    });
+}
+
     // ════════════════════════════════════════════════════
     // NOTIFICATIONS — ระบบแจ้งเตือนสมบูรณ์
     // ════════════════════════════════════════════════════
@@ -6529,6 +6673,13 @@ function userActionBtns(u, isPending) {
 
   btns += '<button class="btn btn-sm btn-accent" onclick="openEditUserModal(\'' + un + '\')"><i class="ti ti-pencil" aria-hidden="true"></i> แก้ไข</button> ';
 
+  // ปุ่มดูประวัติการประเมิน (เฉพาะกรรมการ)
+  if (String(u.roles || '').indexOf('committee') !== -1) {
+    btns += '<button class="btn btn-sm" '
+      + 'style="background:#ede7f6;color:#5e35b1;border:1px solid #b39ddb;border-radius:5px;padding:3px 8px;cursor:pointer;font-size:12px" '
+      + 'onclick="openCommitteeEvalHistoryModal(\'' + un + '\',\'' + nm + '\')" title="ดูประวัติการประเมินของกรรมการท่านนี้"><i class="ti ti-history" aria-hidden="true"></i> ประวัติประเมิน</button> ';
+  }
+
   // ปุ่ม Welcome Email (เฉพาะ admin)
   if (S._isAdmin) {
     var alreadySent = String(u.email_sent||'').toLowerCase() === 'true';
@@ -6595,13 +6746,110 @@ function setQAMode(mode) {
 function switchUsersTab(btn, panelId) {
   document.getElementById('users-tab-bar').querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
-  ['users-tab-list','users-tab-line','users-tab-locked'].forEach(function(id){
+  ['users-tab-list','users-tab-line','users-tab-locked','users-tab-activity'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.classList.toggle('active', id===panelId);
   });
   var actions=document.getElementById('users-page-actions');
   if(actions) actions.style.display = panelId==='users-tab-list' ? 'flex' : 'none';
   if(panelId==='users-tab-line') renderLineCommitteeTable();
   if(panelId==='users-tab-locked') loadLockedAccounts();
+  if(panelId==='users-tab-activity') loadActivityLog(true);
+}
+
+// ── กิจกรรมล่าสุด (จัดการผู้ใช้ > กิจกรรมล่าสุด) ─────────────────────────
+// หมายเหตุ: ต้องมีฟังก์ชัน backend "getUserActivityLog" ที่รับ
+// {sessionId, callerUsername, filters:{type,status,search,date,cursor,limit}}
+// และคืนค่า {success, data:{rows:[{time,type,actor,target,detail,status}], nextCursor, total}}
+var _activityLogState = { cursor: null, loading: false, allLoaded: false };
+var _activityDebounceTimer = null;
+function debounceLoadActivityLog(){
+  clearTimeout(_activityDebounceTimer);
+  _activityDebounceTimer = setTimeout(function(){ loadActivityLog(true); }, 400);
+}
+var ACTIVITY_TYPE_META = {
+  email:        { icon:'ti-mail',            color:'#1565c0', label:'ส่งอีเมล' },
+  line_push:    { icon:'ti-device-mobile',   color:'#06c755', label:'พุช LINE' },
+  login:        { icon:'ti-login',           color:'#6b46c1', label:'เข้าสู่ระบบ' },
+  user_manage:  { icon:'ti-users',           color:'#e08a00', label:'จัดการผู้ใช้' },
+  other:        { icon:'ti-list-details',    color:'#607d8b', label:'อื่นๆ' }
+};
+function loadActivityLog(reset){
+  var el=document.getElementById('activity-log-table'); if(!el) return;
+  if(reset){ _activityLogState = { cursor: null, loading:false, allLoaded:false }; el.innerHTML='<div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div>'; }
+  if(_activityLogState.loading || _activityLogState.allLoaded) return;
+  _activityLogState.loading = true;
+  var moreBtn=document.getElementById('activity-log-more-btn');
+  if(moreBtn){ moreBtn.disabled=true; moreBtn.textContent='กำลังโหลด...'; }
+  var filters = {
+    type:   document.getElementById('activity-filter-type').value,
+    status: document.getElementById('activity-filter-status').value,
+    search: document.getElementById('activity-filter-search').value.trim(),
+    date:   document.getElementById('activity-filter-date').value,
+    cursor: _activityLogState.cursor,
+    limit: 30
+  };
+  getM().getUserActivityLog(S.user.sessionId, S.user.username, filters)
+    .then(function(res){
+      _activityLogState.loading = false;
+      if(!res || !res.success){ throw new Error((res&&res.message)||'no-data'); }
+      var data = res.data || {};
+      var rows = data.rows || [];
+      _activityLogState.cursor = data.nextCursor || null;
+      _activityLogState.allLoaded = !data.nextCursor;
+      renderActivityLogTable(rows, reset);
+      var countEl=document.getElementById('activity-log-count');
+      if(countEl) countEl.textContent = (typeof data.total==='number') ? ('ทั้งหมด '+data.total+' รายการ') : '';
+      var wrap=document.getElementById('activity-log-more-wrap');
+      if(wrap) wrap.style.display = _activityLogState.allLoaded ? 'none' : 'block';
+      if(moreBtn){ moreBtn.disabled=false; moreBtn.textContent='โหลดเพิ่มเติม'; }
+    })
+    .catch(function(e){
+      _activityLogState.loading = false;
+      console.error('[ActivityLog]', e);
+      if(reset){
+        el.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="ti ti-history-toggle" aria-hidden="true"></i></div>'+
+          '<p>ยังดึงข้อมูลกิจกรรมไม่ได้</p>'+
+          '<p style="font-size:12px;color:var(--text-light);margin-top:4px">ฟังก์ชัน backend สำหรับบันทึก/ดึงกิจกรรม (getUserActivityLog) ยังไม่ถูกเชื่อมต่อ — เมื่อฝั่ง Apps Script พร้อมแล้ว หน้านี้จะแสดงข้อมูลอัตโนมัติ</p></div>';
+      }
+      var wrap=document.getElementById('activity-log-more-wrap'); if(wrap) wrap.style.display='none';
+      if(moreBtn){ moreBtn.disabled=false; moreBtn.textContent='โหลดเพิ่มเติม'; }
+    });
+}
+function renderActivityLogTable(rows, reset){
+  var el=document.getElementById('activity-log-table'); if(!el) return;
+  if(reset && !rows.length){
+    el.innerHTML='<div class="empty-state"><div class="empty-icon"><i class="ti ti-history" aria-hidden="true"></i></div><p>ยังไม่มีกิจกรรมที่ตรงกับเงื่อนไข</p></div>';
+    return;
+  }
+  var html='';
+  if(reset){
+    html='<table><thead><tr><th>เวลา</th><th>ประเภท</th><th>ผู้ดำเนินการ</th><th>เป้าหมาย</th><th>รายละเอียด</th><th>สถานะ</th></tr></thead><tbody id="activity-log-tbody"></tbody></table>';
+    el.innerHTML=html;
+  }
+  var tbody=document.getElementById('activity-log-tbody');
+  if(!tbody) return;
+  var rowsHtml='';
+  rows.forEach(function(r){
+    var meta = ACTIVITY_TYPE_META[r.type] || ACTIVITY_TYPE_META.other;
+    var ok = (r.status||'success')!=='failed';
+    rowsHtml += '<tr>'+
+      '<td style="white-space:nowrap;font-size:12px;color:var(--text-light)">'+esc(fmtActivityTime(r.time))+'</td>'+
+      '<td><span class="pill" style="background:'+meta.color+'1a;color:'+meta.color+';white-space:nowrap"><i class="ti '+meta.icon+'" aria-hidden="true"></i> '+esc(meta.label)+'</span></td>'+
+      '<td>'+esc(r.actor||'-')+'</td>'+
+      '<td>'+esc(r.target||'-')+'</td>'+
+      '<td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escAttr(r.detail||'')+'">'+esc(r.detail||'-')+'</td>'+
+      '<td>'+(ok ? '<span class="pill pill-green">สำเร็จ</span>' : '<span class="pill pill-red">ล้มเหลว'+(r.errorMsg?(': '+esc(r.errorMsg)):'')+'</span>')+'</td>'+
+      '</tr>';
+  });
+  tbody.insertAdjacentHTML('beforeend', rowsHtml);
+}
+function fmtActivityTime(t){
+  if(!t) return '-';
+  try{
+    var d = new Date(t);
+    if(isNaN(d.getTime())) return String(t);
+    return d.toLocaleString('th-TH', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+  }catch(e){ return String(t); }
 }
 
 function loadLockedAccounts(){
@@ -9520,7 +9768,7 @@ function showPage(page) {
     // BOTTOM NAV
     // ════════════════════════════════════════
     function updateBottomNav(page){ document.querySelectorAll('.bottom-nav-item').forEach(function(el){ el.classList.remove('active'); }); var el=document.getElementById('bn-'+page); if(el) el.classList.add('active'); }
-    function toggleMoreMenu(){ var menu=document.getElementById('more-menu'),ov=document.getElementById('more-overlay'); if(menu.style.display!=='none'){ closeMoreMenu(); return; } menu.style.display='block'; ov.style.display='block'; menu.style.transform='translateY(100%)'; menu.style.transition='transform .25s ease'; requestAnimationFrame(function(){ menu.style.transform='translateY(0)'; }); }
+    function toggleMoreMenu(){ var menu=document.getElementById('more-menu'),ov=document.getElementById('more-overlay'); if(menu.style.display!=='none'){ closeMoreMenu(); return; } syncMoreMenu(); menu.style.display='flex'; ov.style.display='block'; menu.style.transform='translateY(100%)'; menu.style.transition='transform .25s ease'; requestAnimationFrame(function(){ menu.style.transform='translateY(0)'; }); }
     function closeMoreMenu(){ var menu=document.getElementById('more-menu'),ov=document.getElementById('more-overlay'); menu.style.transform='translateY(100%)'; setTimeout(function(){ menu.style.display='none'; ov.style.display='none'; },250); }
     /* ═══════════════════════════════════════
       FAQ LOGIC
