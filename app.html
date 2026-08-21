@@ -74,6 +74,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         adminSkipAcceptanceForAssignment: function(sid,cu,pc,commUser) { return callGAS('adminSkipAcceptanceForAssignment', {sessionId:sid, callerUsername:cu, projectCode:pc, committeeUsername:commUser}); },
         submitEvaluation:            function(pl)               { return callGAS('submitEvaluation',          {payload:pl}); },
         getEvaluationHistory:        function(sid,cu)           { return callGAS('getEvaluationHistory',      {sessionId:sid, committeeUsername:cu}); },
+        getCommitteeEvaluationHistoryAdmin: function(sid,cu,tu) { return callGAS('getCommitteeEvaluationHistoryAdmin', {sessionId:sid, callerUsername:cu, targetUsername:tu}); },
         getCommitteeEvalSummary:     function(pc)               { return callGAS('getCommitteeEvalSummary',   {projectCode:pc}); },
         sendResultToResearcher:      function(pl)               { return callGAS('sendResultToResearcher',    {payload:pl}); },
         getDashboardStats:           function(sid,cu)           { return callGAS('getDashboardStats',         {sessionId:sid, committeeUsername:cu}); },
@@ -1217,6 +1218,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       .bottom-nav { display: flex; }
       .content { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
       .contact-fab { bottom: calc(130px + env(safe-area-inset-bottom)); }
+      /* footer ลิขสิทธิ์ fixed z-index สูงกว่า bottom-nav ทำให้บังปุ่มเมนูล่างบนมือถือ — ซ่อนบนจอเล็กแทน */
+      #copyright-footer { display: none; }
       .stat-card { padding: 11px 12px; }
       .stat-card .num { font-size: 1.25rem; }
       tbody td { padding: 8px 10px; font-size: var(--text-xs); }
@@ -4559,7 +4562,11 @@ function showForgotMessage(type, text) {
       if(!confirm('ยืนยันข้ามขั้นตอนตอบรับแทนกรรมการ "'+committeeUsername+'" สำหรับโครงการ '+projectCode+' ?\n(ใช้เมื่อติดต่อกรรมการแล้วและกรรมการยืนยันด้วยวิธีอื่น)')) return;
       getM().adminSkipAcceptanceForAssignment(S.user.sessionId, S.user.username, projectCode, committeeUsername)
         .then(function(res){
- if(res&&res.success){ showToast('ข้ามตอบรับแทนสำเร็จ'+(res.lineSent?'(แจ้งเตือน LINE แล้ว)':''),'success'); loadAssignments(); }
+          if(res&&res.success){
+            if(res.lineSent){ showToast('ข้ามตอบรับแทนสำเร็จ (แจ้งเตือน LINE แล้ว)','success'); }
+            else { showToast('ข้ามตอบรับแทนสำเร็จ แต่ส่ง LINE ไม่สำเร็จ: '+esc(res.lineError||'ไม่ทราบสาเหตุ'),'error'); }
+            loadAssignments();
+          }
           else showToast('ไม่สำเร็จ: '+esc((res||{}).message||''),'error');
         }).catch(function(e){ showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error'); });
     }
@@ -6077,7 +6084,7 @@ function openCommitteeEvalHistoryModal(username, displayName){
   var el = document.getElementById('ceh-table');
   el.innerHTML = '<div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div>';
   openModal('modal-committee-eval-history');
-  getM().getEvaluationHistory(S.user.sessionId, username)
+  getM().getCommitteeEvaluationHistoryAdmin(S.user.sessionId, S.user.username, username)
     .then(function(res){
       if(!res || res.success===false){ throw new Error((res&&res.message)||'load-failed'); }
       var rows = res.data || [];
@@ -6091,7 +6098,7 @@ function openCommitteeEvalHistoryModal(username, displayName){
     .catch(function(e){
       console.error('[CommitteeEvalHistory]', e);
       el.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div><p>ดึงประวัติไม่สำเร็จ</p>'+
-        '<p style="font-size:12px;color:var(--text-light);margin-top:4px">อาจเป็นเพราะฝั่ง backend (getEvaluationHistory) ยังไม่อนุญาตให้แอดมิน/เจ้าหน้าที่ดูประวัติของผู้ใช้อื่น — ต้องปรับสิทธิ์ในฟังก์ชันนี้เพิ่ม</p></div>';
+        '<p style="font-size:12px;color:var(--text-light);margin-top:4px">ลองรีเฟรชหน้าแล้วลองใหม่อีกครั้ง หากยังไม่สำเร็จให้แจ้งผู้ดูแลระบบ</p></div>';
     });
 }
 
@@ -6809,7 +6816,7 @@ function loadActivityLog(reset){
       if(reset){
         el.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="ti ti-history-toggle" aria-hidden="true"></i></div>'+
           '<p>ยังดึงข้อมูลกิจกรรมไม่ได้</p>'+
-          '<p style="font-size:12px;color:var(--text-light);margin-top:4px">ฟังก์ชัน backend สำหรับบันทึก/ดึงกิจกรรม (getUserActivityLog) ยังไม่ถูกเชื่อมต่อ — เมื่อฝั่ง Apps Script พร้อมแล้ว หน้านี้จะแสดงข้อมูลอัตโนมัติ</p></div>';
+          '<p style="font-size:12px;color:var(--text-light);margin-top:4px">ลองกดปุ่มรีเฟรชอีกครั้ง หากยังไม่สำเร็จให้แจ้งผู้ดูแลระบบ</p></div>';
       }
       var wrap=document.getElementById('activity-log-more-wrap'); if(wrap) wrap.style.display='none';
       if(moreBtn){ moreBtn.disabled=false; moreBtn.textContent='โหลดเพิ่มเติม'; }
@@ -7282,7 +7289,13 @@ function doQuickAssign(){
       if(res&&res.success){
         var ec=res.results?res.results.filter(function(r){return r.emailSent;}).length:0;
         var lc=res.lineSent||0;
- showToast('มอบหมายสำเร็จ'+(skipAcceptance?'':'')+'! '+committeeList.length+'คน | อีเมล '+ec+'| LINE '+lc);
+        showToast('มอบหมายสำเร็จ! '+committeeList.length+'คน | อีเมล '+ec+'| LINE '+lc);
+        // แจ้งเตือนแยกถ้ามีกรรมการที่ push LINE ไม่สำเร็จ พร้อมสาเหตุ (กันพลาดแบบเงียบ)
+        var lineFails = (res.results||[]).filter(function(r){ return !r.lineSent && r.lineError; });
+        if(lineFails.length){
+          var failMsg = lineFails.map(function(r){ return (r.name||r.username)+': '+r.lineError; }).join(' | ');
+          showToast('LINE ส่งไม่สำเร็จ '+lineFails.length+' คน — '+failMsg, 'error');
+        }
         setQAMode('normal'); loadStaffProjects(); loadAssignments();
       } else showToast('เกิดข้อผิดพลาด: '+((res&&res.message)||''),'error');
     })
