@@ -97,6 +97,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         saveLineUserId:              function(sid,cu,tu,lid)       { return callGAS('saveLineUserId',            {sessionId:sid, callerUsername:cu, targetUsername:tu, lineUserId:lid}); },
         pushLineToUser:              function(sid,cu,tu,ti,bd,bt,att,dids){ return callGAS('pushLineToUser',           {sessionId:sid, callerUsername:cu, targetUsername:tu, title:ti, body:bd, buttonType:bt, attachments:att||[], driveFileIds:dids||[]}); },
         pushLineToAllCommittees:     function(sid,cu,ti,bd,bt,att)        { return callGAS('pushLineToAllCommittees',  {sessionId:sid, callerUsername:cu, title:ti, body:bd, buttonType:bt, attachments:att||[]}); },
+        sendLineReminderToCommittee: function(sid,cu,tu)         { return callGAS('sendLineReminderToCommittee', {sessionId:sid, callerUsername:cu, targetUsername:tu}); },
         getUserActivityLog:          function(sid,cu,filters)   { return callGAS('getUserActivityLog',        {sessionId:sid, callerUsername:cu, filters:filters||{}}); },
       };
 
@@ -6916,6 +6917,7 @@ function renderLineCommitteeTable() {
       (linked?'<i class="ti ti-pencil" aria-hidden="true"></i> แก้ไข ID':'<i class="ti ti-plus" aria-hidden="true"></i> เพิ่ม ID')+'</button>'+
       (linked?'<button class="btn btn-sm" style="background:#06c755;color:#fff;border:none;font-size:11px" onclick="openLinePushWithProject(\x27'+un+'\x27)"><i class="ti ti-device-mobile" aria-hidden="true"></i> Push</button>':
               '<button class="btn btn-sm" disabled style="background:var(--bg);color:var(--border);border:1px solid var(--border);font-size:11px;cursor:not-allowed"><i class="ti ti-device-mobile" aria-hidden="true"></i> Push</button>')+
+      (linked?'<button class="btn btn-sm" style="background:#fff8e1;color:#b58a2a;border:1px solid #f0d07a;font-size:11px" onclick="sendLineReminderToCommittee(\x27'+un+'\x27,this)" title="ส่งเตือนโครงการที่ค้างดำเนินการทั้งหมดให้กรรมการท่านนี้"><i class="ti ti-bell" aria-hidden="true"></i> เตือน</button>':'')+
       '</td></tr>';
   }).join('')+'</tbody></table>';
 }
@@ -7013,6 +7015,29 @@ function _confirmLinePushWithProject(){
   var projectCode=sel?sel.value:'';
   if(overlay) overlay.remove();
   openLinePushModal(username, projectCode);
+}
+
+// ── ส่งเตือน LINE ให้กรรมการ 1 คน: รวมโครงการที่ค้างดำเนินการ (รอตอบรับ/รอประเมิน) ทั้งหมด
+// เป็นข้อความเดียว ส่งทันทีโดยไม่ต้องพิมพ์เอง — ใช้ย้ำเตือนกรรมการให้เข้าระบบ ──
+function sendLineReminderToCommittee(username, btnEl) {
+  var u=(S.allUsers||[]).find(function(x){return x.username===username;});
+  if(!u){showToast('ไม่พบข้อมูล','error');return;}
+  if(!String(u.line_user_id||'').trim()){showToast('กรรมการคนนี้ยังไม่มี LINE User ID','error');return;}
+  if(!confirm('ส่งข้อความเตือนโครงการที่ค้างดำเนินการทั้งหมดถึง "'+(u.name||username)+'" ทาง LINE ทันที?\n\nยืนยัน?')) return;
+  var originalHtml = btnEl ? btnEl.innerHTML : '';
+  if(btnEl){ btnEl.disabled=true; btnEl.innerHTML='กำลังส่ง...'; }
+  getM().sendLineReminderToCommittee(S.user.sessionId,S.user.username,username)
+    .then(function(res){
+      if(btnEl){ btnEl.disabled=false; btnEl.innerHTML=originalHtml; }
+      if(res&&res.success){
+        showToast('<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ส่งเตือน '+res.count+' โครงการสำเร็จ','success');
+      } else {
+        showToast('ส่งไม่สำเร็จ: '+esc((res||{}).message||''),'error');
+      }
+    }).catch(function(e){
+      if(btnEl){ btnEl.disabled=false; btnEl.innerHTML=originalHtml; }
+      showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error');
+    });
 }
 
 function openLinePushModal(username, projectCode) {
