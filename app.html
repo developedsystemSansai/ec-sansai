@@ -73,8 +73,10 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         getAllAssignmentsOverview:   function(sid,cu)           { return callGAS('getAllAssignmentsOverview', {sessionId:sid, callerUsername:cu}); },
         adminSkipAcceptanceForAssignment: function(sid,cu,pc,commUser) { return callGAS('adminSkipAcceptanceForAssignment', {sessionId:sid, callerUsername:cu, projectCode:pc, committeeUsername:commUser}); },
         submitEvaluation:            function(pl)               { return callGAS('submitEvaluation',          {payload:pl}); },
+        submitAcceptance:            function(pl)               { return callGAS('submitAcceptance',          {payload:pl}); },
         getEvaluationHistory:        function(sid,cu)           { return callGAS('getEvaluationHistory',      {sessionId:sid, committeeUsername:cu}); },
         getCommitteeEvaluationHistoryAdmin: function(sid,cu,tu) { return callGAS('getCommitteeEvaluationHistoryAdmin', {sessionId:sid, callerUsername:cu, targetUsername:tu}); },
+        getAssignmentActivityHistory: function(sid,cu,kind)     { return callGAS('getAssignmentActivityHistory', {sessionId:sid, callerUsername:cu, kind:kind}); },
         getCommitteeEvalSummary:     function(pc)               { return callGAS('getCommitteeEvalSummary',   {projectCode:pc}); },
         sendResultToResearcher:      function(pl)               { return callGAS('sendResultToResearcher',    {payload:pl}); },
         getDashboardStats:           function(sid,cu)           { return callGAS('getDashboardStats',         {sessionId:sid, committeeUsername:cu}); },
@@ -87,10 +89,12 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         submitMeetingReview:         function(pl)               { return callGAS('submitMeetingReview',       {payload:pl}); },
         getMeetingMinutes:           function(u)                { return callGAS('getMeetingMinutes',         {username:u}); },
         uploadMeetingMinutes:        function(pl,au)            { return callGAS('uploadMeetingMinutes',      {payload:pl, adminUsername:au}); },
+        completeMeetingWithReport:   function(pl,au)            { return callGAS('completeMeetingWithReport', {payload:pl, adminUsername:au}); },
         deleteMeetingMinute:         function(mid,au)           { return callGAS('deleteMeetingMinute',       {minuteId:mid, adminUsername:au}); },
         submitResearchReport:        function(pl)               { return callGAS('submitResearchReport',      {payload:pl}); },
         reviewResearchReport:        function(pl,su)            { return callGAS('reviewResearchReport',      {payload:pl, staffUsername:su}); },
         getAllResearchReports:        function(cu)               { return callGAS('getAllResearchReports',     {callerUsername:cu}); },
+        getResearchProjectsOverview:  function(sid,cu)           { return callGAS('getResearchProjectsOverview', {sessionId:sid, callerUsername:cu}); },
         getApprovedProjectsForReporting: function(u)           { return callGAS('getApprovedProjectsForReporting',{username:u}); },
         getResearchReports:          function(sid,u)            { return callGAS('getResearchReports',        {sessionId:sid, username:u}); },
         recordPdpaConsent:           function(pl)               { return callGAS('recordPdpaConsent',         {payload:pl}); },
@@ -2292,9 +2296,11 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <div class="tab-bar">
               <button class="tab-btn active" onclick="switchSubTab(this,'accept-new')">โครงการใหม่</button>
               <button class="tab-btn" onclick="switchSubTab(this,'accept-cont')">โครงการต่อเนื่อง</button>
+              <button class="tab-btn" onclick="switchSubTab(this,'accept-history'); loadAssignmentHistory('accept')"><i class="ti ti-history" aria-hidden="true"></i> ประวัติการทำรายการ</button>
             </div>
             <div id="accept-new" class="tab-panel active"><div class="table-card"><div class="table-card-header"><h3>โครงการใหม่ที่รอตอบรับ</h3></div><div id="accept-new-table"></div></div></div>
             <div id="accept-cont" class="tab-panel"><div class="table-card"><div class="table-card-header"><h3>โครงการต่อเนื่องที่รอตอบรับ</h3></div><div id="accept-cont-table"></div></div></div>
+            <div id="accept-history" class="tab-panel"><div class="table-card"><div class="table-card-header"><h3><i class="ti ti-history" aria-hidden="true"></i> ประวัติการตอบรับทั้งหมด</h3></div><div style="padding:10px 16px 0;font-size:12px;color:var(--text-light)">แสดงว่าใครกดตอบรับ/ปฏิเสธ โครงการไหน วันเวลาใด (ถ้าแอดมิน/เจ้าหน้าที่กดแทนกรรมการ จะระบุ "ส่งแทนโดย" ไว้ด้วย)</div><div id="accept-history-table"></div></div></div>
             <div id="accept-committee-pending-section" style="display:none;margin-top:16px">
               <div class="table-card">
                 <div class="table-card-header"><h3><i class="ti ti-pin" aria-hidden="true"></i> ติดตามการตอบรับของกรรมการ (มอบหมายแล้ว รอกรรมการตอบรับ)</h3></div>
@@ -2311,9 +2317,11 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <div class="tab-bar">
               <button class="tab-btn active" onclick="switchSubTab(this,'eval-new')">โครงการใหม่</button>
               <button class="tab-btn" onclick="switchSubTab(this,'eval-cont')">โครงการต่อเนื่อง</button>
+              <button class="tab-btn" onclick="switchSubTab(this,'eval-history'); loadAssignmentHistory('eval')"><i class="ti ti-history" aria-hidden="true"></i> ประวัติการทำรายการ</button>
             </div>
             <div id="eval-new" class="tab-panel active"><div class="table-card"><div class="table-card-header"><h3>โครงการใหม่ที่รอประเมิน</h3></div><div id="eval-new-table"></div></div></div>
             <div id="eval-cont" class="tab-panel"><div class="table-card"><div class="table-card-header"><h3>โครงการต่อเนื่องที่รอประเมิน</h3></div><div id="eval-cont-table"></div></div></div>
+            <div id="eval-history" class="tab-panel"><div class="table-card"><div class="table-card-header"><h3><i class="ti ti-history" aria-hidden="true"></i> ประวัติการประเมินทั้งหมด</h3></div><div style="padding:10px 16px 0;font-size:12px;color:var(--text-light)">แสดงว่าใครกดส่งแบบประเมิน โครงการไหน มติอะไร วันเวลาใด (ถ้าแอดมิน/เจ้าหน้าที่กดแทนกรรมการ จะระบุ "ส่งแทนโดย" ไว้ด้วย)</div><div id="eval-history-table"></div></div></div>
           </div>
           <!-- Modal สำหรับแอดมินตรวจสอบโครงการเอง -->
 <div class="modal-overlay" id="modal-admin-direct-review">
@@ -2729,6 +2737,16 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <div class="table-card">
           <div class="table-card-header"><h3>รายงานทั้งหมด</h3><span id="rpt-count" style="font-size:12px;color:var(--text-light)"></span></div>
           <div id="rpt-all-table"></div>
+          <!-- 🆕 โครงการที่กำลังดำเนินการอยู่ พร้อมวันหมดอายุ -->
+          <div class="table-card" style="margin-top:24px">
+            <div class="table-card-header"><h3><i class="ti ti-progress" aria-hidden="true"></i> โครงการที่ยังดำเนินการวิจัยอยู่</h3><span id="rpt-ongoing-count" style="font-size:12px;color:var(--text-light)"></span></div>
+            <div id="rpt-ongoing-projects-table" style="padding:0"></div>
+          </div>
+          <!-- 🆕 โครงการที่ปิดแล้วทั้งหมด (อ่านจาก Projects sheet ตรงๆ ไม่พลาดแม้ปิดโดยไม่ผ่านการยื่นรายงาน) -->
+          <div class="table-card" style="margin-top:24px">
+            <div class="table-card-header"><h3><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> โครงการที่ปิดแล้วทั้งหมด</h3><span id="rpt-closed-count" style="font-size:12px;color:var(--text-light)"></span></div>
+            <div id="rpt-closed-projects-table" style="padding:0"></div>
+          </div>
           <!-- แสดงไฟล์ปิดโครงการ (เฉพาะรายงานประเภท closure) -->
     <div class="table-card" style="margin-top:24px">
       <div class="table-card-header">
@@ -3107,6 +3125,34 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <div class="modal-footer">
           <button class="btn btn-outline" onclick="closeModal('modal-upload-minutes')">ยกเลิก</button>
           <button class="btn btn-blue" id="min-upload-btn" onclick="doUploadMinutes()"><i class="ti ti-arrow-up" aria-hidden="true"></i> อัพโหลด</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: ยืนยันประชุมเสร็จสิ้น พร้อมแนบรายงาน (Admin/Staff) -->
+    <div class="modal-overlay" id="modal-complete-meeting">
+      <div class="modal modal-lg">
+        <div class="modal-header" style="background:#e6f4ea">
+          <h3 style="color:#1b5e3e"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ยืนยันประชุมเสร็จสิ้น</h3>
+          <button class="modal-close" onclick="closeModal('modal-complete-meeting')"><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-info">ℹ️ <div>ต้องแนบ<strong>รายงานการประชุม</strong>ก่อนถึงจะกดยืนยันเสร็จสิ้นได้ — ระบบจะบันทึกวันเวลาที่ปิดประชุมจริงและผู้ทำรายการโดยอัตโนมัติ เพื่อป้องกันการย้อนหลังแก้ไข</div></div>
+          <div id="complete-meeting-info" style="font-weight:700;margin-bottom:12px"></div>
+          <div class="field-group">
+            <label>ไฟล์รายงานการประชุม <span class="req">*</span></label>
+            <div class="minutes-upload-zone" onclick="document.getElementById('complete-mtg-file-input').click()">
+              <div style="font-size:40px;margin-bottom:8px"><i class="ti ti-file-text" aria-hidden="true"></i></div>
+              <div style="font-weight:700;color:var(--blue)">คลิกเพื่อเลือกไฟล์</div>
+              <div style="font-size:12px;color:var(--text-light);margin-top:4px">PDF, Word | ไม่เกิน 20MB</div>
+            </div>
+            <input type="file" id="complete-mtg-file-input" accept=".pdf,.docx,.doc" style="display:none" onchange="previewCompleteMeetingFile(this)">
+            <div id="complete-mtg-file-preview" style="margin-top:10px"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('modal-complete-meeting')">ยกเลิก</button>
+          <button class="btn btn-accent" id="complete-mtg-btn" onclick="doCompleteMeeting()"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ยืนยันเสร็จสิ้น</button>
         </div>
       </div>
     </div>
@@ -4190,6 +4236,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     var _notifyProjectCode = '';
 var _notifyFileIds = [];
 var _evalCode = '';
+var _evalTargetCommittee = '';     // 🆕 username กรรมการเจ้าของงานประเมิน (ใช้เมื่อ admin/staff ส่งแทน)
+var _evalTargetCommitteeName = ''; // 🆕 ชื่อแสดงผลของกรรมการเจ้าของงาน
 
     var _notifyRevisionFileId = '';
 
@@ -4598,7 +4646,7 @@ function showForgotMessage(type, text) {
       var html='<table><thead><tr><th>#</th><th>รหัส</th><th>ชื่อโครงการ</th><th>หัวหน้า</th>'+(showCommittee?'<th>กรรมการ</th>':'')+'<th>กำหนดส่ง</th><th>Actions</th></tr></thead><tbody>';
       rows.forEach(function(r,i){
         var rc=escAttr(r.project_code||''); var rt=escAttr(r.title_th||'');
-        var btn=mode==='accept'?'<button class="btn btn-sm btn-accent" onclick="openAcceptModal(\''+rc+'\',\''+rt+'\')"><i class="ti ti-download" aria-hidden="true"></i> ตอบรับ</button>':'<button class="btn btn-sm btn-primary" onclick="openEvalModal(\''+rc+'\',\''+rt+'\')"><i class="ti ti-edit" aria-hidden="true"></i> ประเมิน</button>';
+        var btn=mode==='accept'?'<button class="btn btn-sm btn-accent" onclick="openAcceptModal(\''+rc+'\',\''+rt+'\')"><i class="ti ti-download" aria-hidden="true"></i> ตอบรับ</button>':'<button class="btn btn-sm btn-primary" onclick="openEvalModal(\''+rc+'\',\''+rt+'\',\''+escAttr(r.committee_username||'')+'\',\''+escAttr(r.committee_name||r.committee_username||'')+'\')"><i class="ti ti-edit" aria-hidden="true"></i> ประเมิน</button>';
         html+='<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code||'-')+'</strong></td><td>'+esc(r.title_th||'-')+'</td><td>'+esc(r.pi_name||'-')+'</td>'+(showCommittee?'<td>'+esc(r.committee_username||'-')+'</td>':'')+'<td>'+(r.deadline?formatDate(r.deadline):'-')+'</td><td>'+btn+'</td></tr>';
       });
       el.innerHTML=html+'</tbody></table>';
@@ -4688,8 +4736,11 @@ function buildStaffDashboardList(projects) {
       actionBtn = '<span style="font-size:11px;color:var(--text-light)"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> เสร็จสิ้น</span>';
     } else if (status === 'รอแจ้งผล') {
       actionBtn = '<button class="btn btn-sm btn-primary" onclick="openNotifyModal(\'' + code + '\')"><i class="ti ti-mail" aria-hidden="true"></i> แจ้งผล</button>';
-    } else if (status === 'ผ่านตรวจเอกสาร') {
+    } else if (status === 'ผ่านตรวจเอกสาร' && !p.has_committee_assigned) {
       actionBtn = '<button class="btn btn-sm btn-blue" onclick="openQuickAssignModal(\'' + code + '\')"><i class="ti ti-clipboard-list" aria-hidden="true"></i> มอบหมาย</button>';
+    } else if (status === 'ผ่านตรวจเอกสาร' && p.has_committee_assigned) {
+      // 🆕 กันปุ่ม "มอบหมาย" ค้าง/กดซ้ำ — มีการมอบหมายกรรมการไปแล้ว แต่สถานะโครงการยังไม่อัปเดตตาม
+      actionBtn = '<span style="font-size:11px;color:var(--text-light)"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> มอบหมายแล้ว</span>';
     } else if (status === 'รอพิจารณา' || status === 'เอกสารไม่ครบ') {
       actionBtn = '<button class="btn btn-sm btn-accent" onclick="openVerifyDocsModal(\'' + code + '\',\'' + escAttr(p.title_th || '') + '\')"><i class="ti ti-search" aria-hidden="true"></i> ตรวจเอกสาร</button>';
     }
@@ -4836,11 +4887,14 @@ function renderStaffProjectsTable(projects) {
       actionBtn = '<button class="btn btn-sm btn-primary" onclick="openNotifyModal(\'' + code + '\')"><i class="ti ti-file-certificate" aria-hidden="true"></i> ส่งหนังสือรับรอง</button>';
     } else if (status === 'รอแจ้งผล') {
       actionBtn = '<button class="btn btn-sm btn-primary" onclick="openNotifyModal(\'' + code + '\')"><i class="ti ti-mail" aria-hidden="true"></i> แจ้งผล</button>';
-    } else if (status === 'ผ่านตรวจเอกสาร') {
+    } else if (status === 'ผ่านตรวจเอกสาร' && !p.has_committee_assigned) {
       actionBtn = '<div style="display:flex;gap:4px;flex-wrap:wrap">'
         + '<button class="btn btn-sm btn-blue" onclick="openQuickAssignModal(\'' + code + '\')" title="ส่งให้กรรมการพิจารณา"><i class="ti ti-clipboard-list" aria-hidden="true"></i> ส่งกรรมการ</button>'
         + '<button class="btn btn-sm btn-accent" onclick="openAdminDirectReviewModal(\'' + code + '\',\'' + title + '\')" title="แอดมินตรวจสอบเอง"><i class="ti ti-user" aria-hidden="true"></i> ตรวจเอง</button>'
         + '</div>';
+    } else if (status === 'ผ่านตรวจเอกสาร' && p.has_committee_assigned) {
+      // 🆕 กันปุ่ม "ส่งกรรมการ" ค้าง/กดซ้ำ — มีการมอบหมายกรรมการไปแล้ว แต่สถานะโครงการยังไม่อัปเดตตาม
+      actionBtn = '<span style="font-size:11px;color:var(--text-light)"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> มอบหมายกรรมการแล้ว</span>';
     } else if (status === 'รอพิจารณา' || status === 'เอกสารไม่ครบ') {
       actionBtn = '<button class="btn btn-sm btn-accent" data-code="' + esc(p.project_code) + '" data-title="' + esc(p.title_th) + '" onclick="handleVerifyClick(this)"><i class="ti ti-search" aria-hidden="true"></i> ตรวจเอกสาร</button>';
     } else if (isRevision && (status.includes('รอตรวจโดยแอดมิน') || status.includes('รอตรวจสอบ') || status === 'ส่งแก้ไขแล้ว')) {
@@ -5927,7 +5981,8 @@ function viewProjectFiles(projectCode) {
           '<td>' + pillStatus(String(r.status || '-')) + '</td>' +
           '<td style="text-align:center;white-space:nowrap">' +
             '<button class="btn btn-sm btn-primary" style="margin-right:4px" onclick="openMeetingReviewById(' + origIdx + ')"><i class="ti ti-search" aria-hidden="true"></i> ตรวจสอบมติ</button>' +
-            (isAdminOrStaff ? '<button class="btn btn-sm btn-outline" onclick="openMeetingModal(' + origIdx + ')"><i class="ti ti-pencil" aria-hidden="true"></i> แก้ไข</button>' : '') +
+            (isAdminOrStaff ? '<button class="btn btn-sm btn-outline" style="margin-right:4px" onclick="openMeetingModal(' + origIdx + ')"><i class="ti ti-pencil" aria-hidden="true"></i> แก้ไข</button>' : '') +
+            (isAdminOrStaff && String(r.status||'') !== 'เสร็จสิ้น' ? '<button class="btn btn-sm btn-accent" onclick="openCompleteMeetingModal(' + origIdx + ')" title="แนบรายงานและปิดประชุม"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ประชุมเสร็จสิ้น</button>' : '') +
           '</td>' +
         '</tr>';
       });
@@ -6365,6 +6420,8 @@ function submitAccept() {
  showToast('เกิดข้อผิดพลาด: '+ e.message, 'error');
     })
     .submitAcceptance({
+      sessionId: S.user.sessionId,       // 🆕 เดิมไม่ส่งเลย ทำให้ backend ข้ามการตรวจสอบ session ไปทั้งหมด (auth bypass)
+      callerUsername: S.user.username,   // 🆕 ผู้ที่กำลัง login อยู่จริง
       projectCode: _acceptCode,
       decision: dec.value,
       reviewerRole: role ? role.value : '1st',
@@ -6387,9 +6444,12 @@ function submitAccept() {
     // ============================================================
 //  ฟังก์ชัน openEvalModal - แก้ไขการแสดงไฟล์ในหน้าแบบประเมิน
 // ============================================================
-function openEvalModal(code, title) {
+function openEvalModal(code, title, committeeUsername, committeeName) {
   _evalCode = code;
- document.getElementById('eval-modal-info').textContent = ''+ code + (title ? '— '+ title : '');
+  // 🆕 ถ้าไม่ได้ระบุ (กรณีกรรมการประเมินของตัวเอง) ให้ใช้ผู้ที่ login อยู่เป็นค่าเริ่มต้นเสมอ
+  _evalTargetCommittee = committeeUsername || S.user.username;
+  _evalTargetCommitteeName = committeeName || S.user.name;
+ document.getElementById('eval-modal-info').textContent = ''+ code + (title ? '— '+ title : '') + (committeeUsername && committeeUsername !== S.user.username ? '  [ส่งแทนกรรมการ: ' + (committeeName||committeeUsername) + ']' : '');
   document.getElementById('eval-comment').value = '';
 
   _evalFileIds = [];
@@ -6405,7 +6465,8 @@ function openEvalModal(code, title) {
   });
 
   var proj = S.assignments.find(function (a) {
-    return (a.project_code || a.code) === code;
+    return (a.project_code || a.code) === code &&
+      (!_evalTargetCommittee || !a.committee_username || a.committee_username === _evalTargetCommittee);
   }) || {};
 
   document.getElementById('eval-researchers-content').innerHTML =
@@ -6552,14 +6613,15 @@ function doSubmitEvaluation() {
     })
     .submitEvaluation({
       sessionId: S.user.sessionId,
+      callerUsername: S.user.username,           // 🆕 ผู้ที่กำลัง login อยู่จริง (ใช้ตรวจสอบสิทธิ์)
       projectCode: _evalCode,
       projectType: 'new',
       answers: answers,
       finalDecision: fd.value,
       comment: val('eval-comment'),
       fileIds: _evalFileIds.slice(),
-      committeeUsername: S.user.username,
-      committeeName: S.user.name
+      committeeUsername: _evalTargetCommittee || S.user.username,       // 🆕 เจ้าของงานจริง (อาจต่างจากผู้ส่งถ้า admin ส่งแทน)
+      committeeName: _evalTargetCommitteeName || S.user.name
     });
 }
     // ════════════════════════════════════════
@@ -8775,6 +8837,62 @@ function removeNotifyRevisionFile() {
       reader.readAsDataURL(_minFileData);
     }
 
+    // ── ยืนยันประชุมเสร็จสิ้น พร้อมแนบรายงาน (บังคับแนบไฟล์เสมอ กันสถานะลอยๆ ไม่มีรายงานอ้างอิง) ──
+    var _completeMtgFileData = null;
+    var _completeMtgId = '';
+    function openCompleteMeetingModal(idx) {
+      var r = _allMeetingRows[idx];
+      if (!r) return;
+      _completeMtgId = r.meeting_id || '';
+      _completeMtgFileData = null;
+      document.getElementById('complete-meeting-info').textContent = (r.title || r.meeting_id || '') + (r.meeting_date ? ' — ' + formatDate(r.meeting_date) : '');
+      document.getElementById('complete-mtg-file-preview').innerHTML = '';
+      var input = document.getElementById('complete-mtg-file-input');
+      if (input) input.value = '';
+      openModal('modal-complete-meeting');
+    }
+    function previewCompleteMeetingFile(input) {
+      var file = input.files[0];
+      if (!file) return;
+      if (file.size > 20 * 1024 * 1024) { showToast('ไฟล์ใหญ่เกิน 20MB', 'error'); input.value = ''; return; }
+      _completeMtgFileData = file;
+      document.getElementById('complete-mtg-file-preview').innerHTML =
+        '<div class="file-item"><div><i class="ti ti-file-text" aria-hidden="true"></i> ' + esc(file.name) + ' <small>(' + formatFileSize(file.size) + ')</small></div>'
+        + '<span class="pill pill-green">พร้อมอัพโหลด</span></div>';
+    }
+    function doCompleteMeeting() {
+      if (!_completeMtgId) { showToast('ไม่พบรหัสการประชุม', 'error'); return; }
+      if (!_completeMtgFileData) { showToast('กรุณาแนบไฟล์รายงานการประชุมก่อน', 'error'); return; }
+      if (!confirm('ยืนยันปิดประชุมนี้เป็น "เสร็จสิ้น" พร้อมแนบรายงาน?\nหลังยืนยันแล้วจะระบุวันเวลาที่ปิดจริง ไม่สามารถย้อนแก้ไขวันที่ได้')) return;
+
+      var btn = document.getElementById('complete-mtg-btn');
+      btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังบันทึก...';
+
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var b64 = ev.target.result.split(',')[1];
+        getM().completeMeetingWithReport({
+          meetingId:  _completeMtgId,
+          fileName:   _completeMtgFileData.name,
+          mimeType:   _completeMtgFileData.type || 'application/pdf',
+          base64Data: b64
+        }, S.user.username).then(function(res) {
+          btn.disabled = false; btn.innerHTML = '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ยืนยันเสร็จสิ้น';
+          if (res && res.success) {
+            closeModal('modal-complete-meeting');
+            showToast('ปิดประชุมและบันทึกรายงานแล้ว');
+            loadMeetings();
+          } else {
+            showToast('เกิดข้อผิดพลาด: ' + esc((res && res.message) || ''), 'error');
+          }
+        }).catch(function(e) {
+          btn.disabled = false; btn.innerHTML = '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ยืนยันเสร็จสิ้น';
+          showToast('เกิดข้อผิดพลาด: ' + esc(e.message || ''), 'error');
+        });
+      };
+      reader.readAsDataURL(_completeMtgFileData);
+    }
+
     function doDeleteMinute(minuteId) {
       if (!confirm('ยืนยันการลบรายงานการประชุมนี้?')) return;
       google.script.run
@@ -8908,6 +9026,72 @@ function removeNotifyRevisionFile() {
           if (el) el.innerHTML = '<div class="empty-state"><p>โหลดไม่สำเร็จ: ' + esc(e.message) + '</p></div>';
         })
         .getAllResearchReports(S.user.username);
+      loadResearchProjectsOverview(); // 🆕 โหลดโครงการที่ปิดแล้ว + โครงการที่กำลังดำเนินการ (พร้อมวันหมดอายุ)
+    }
+
+    // 🆕 โครงการที่ "ปิดแล้ว" (อ่านจาก Projects sheet ตรงๆ กันหลุดจากหน้านี้กรณีปิดโดยไม่ผ่านการยื่นรายงาน)
+    // และโครงการที่ "ยังดำเนินการอยู่" พร้อมวันหมดอายุล่าสุด (ถ้าเคยมีการยื่นต่ออายุระบุวันไว้)
+    function loadResearchProjectsOverview() {
+      var elClosed = document.getElementById('rpt-closed-projects-table');
+      var elOngoing = document.getElementById('rpt-ongoing-projects-table');
+      if (elClosed) elClosed.innerHTML = '<div class="empty-state"><div class="spin-sm dark" style="width:28px;height:28px;margin:auto"></div></div>';
+      if (elOngoing) elOngoing.innerHTML = '<div class="empty-state"><div class="spin-sm dark" style="width:28px;height:28px;margin:auto"></div></div>';
+      getM().getResearchProjectsOverview(S.user.sessionId, S.user.username).then(function(res) {
+        if (!res || !res.success) {
+          var msg = '<div class="empty-state"><p>โหลดไม่สำเร็จ: ' + esc((res&&res.message)||'') + '</p></div>';
+          if (elClosed) elClosed.innerHTML = msg;
+          if (elOngoing) elOngoing.innerHTML = msg;
+          return;
+        }
+        renderClosedProjectsTable(res.closedProjects || []);
+        renderOngoingProjectsTable(res.ongoingProjects || []);
+      }).catch(function(e) {
+        var msg = '<div class="empty-state"><p>เกิดข้อผิดพลาด: ' + esc(e.message||'') + '</p></div>';
+        if (elClosed) elClosed.innerHTML = msg;
+        if (elOngoing) elOngoing.innerHTML = msg;
+      });
+    }
+    function renderClosedProjectsTable(rows) {
+      var el = document.getElementById('rpt-closed-projects-table');
+      var cnt = document.getElementById('rpt-closed-count');
+      if (!el) return;
+      if (cnt) cnt.textContent = rows.length + ' โครงการ';
+      if (!rows.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="ti ti-inbox" aria-hidden="true"></i></div><p>ไม่มีโครงการที่ปิดแล้ว</p></div>'; return; }
+      var html = '<table><thead><tr><th>#</th><th>รหัสโครงการ</th><th>ชื่อโครงการ</th><th>ผู้วิจัยหลัก</th><th>วันที่ปิดโครงการ</th></tr></thead><tbody>';
+      rows.forEach(function(r,i){
+        html += '<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code)+'</strong></td>'
+          + '<td>'+esc((r.title_th||'').slice(0,60))+'</td>'
+          + '<td>'+esc(r.pi_name||'-')+'</td>'
+          + '<td>'+formatDate(r.updated_date)+'</td></tr>';
+      });
+      el.innerHTML = html + '</tbody></table>';
+    }
+    function renderOngoingProjectsTable(rows) {
+      var el = document.getElementById('rpt-ongoing-projects-table');
+      var cnt = document.getElementById('rpt-ongoing-count');
+      if (!el) return;
+      if (cnt) cnt.textContent = rows.length + ' โครงการ';
+      if (!rows.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="ti ti-inbox" aria-hidden="true"></i></div><p>ไม่มีโครงการที่กำลังดำเนินการ</p></div>'; return; }
+      var today = new Date();
+      var html = '<table><thead><tr><th>#</th><th>รหัสโครงการ</th><th>ชื่อโครงการ</th><th>ผู้วิจัยหลัก</th><th>สถานะ</th><th>วันหมดอายุล่าสุด</th></tr></thead><tbody>';
+      rows.forEach(function(r,i){
+        var expiryCell = '-';
+        if (r.expiry_date) {
+          var d = new Date(r.expiry_date);
+          var isExpired = !isNaN(d.getTime()) && d < today;
+          var isSoon = !isNaN(d.getTime()) && !isExpired && (d - today) < (30*24*60*60*1000);
+          expiryCell = (isExpired ? '<span class="pill pill-red">' : isSoon ? '<span class="pill pill-orange">' : '<span class="pill pill-green">')
+            + formatDate(r.expiry_date) + (isExpired ? ' (หมดอายุแล้ว)' : isSoon ? ' (ใกล้หมดอายุ)' : '') + '</span>';
+        } else {
+          expiryCell = '<span style="color:var(--text-light);font-size:12px">ไม่มีข้อมูล (ยังไม่เคยยื่นต่ออายุระบุวันที่)</span>';
+        }
+        html += '<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code)+'</strong></td>'
+          + '<td>'+esc((r.title_th||'').slice(0,60))+'</td>'
+          + '<td>'+esc(r.pi_name||'-')+'</td>'
+          + '<td><span class="pill pill-blue">'+esc(r.status||'-')+'</span></td>'
+          + '<td>'+expiryCell+'</td></tr>';
+      });
+      el.innerHTML = html + '</tbody></table>';
     }
 
     function renderAllReportsTable(reports) {
@@ -9792,6 +9976,40 @@ function showPage(page) {
         .getClosureReportFiles();  // เรียกฟังก์ชันใหม่ใน Apps Script
     }
     function switchSubTab(btn,tabId){ var bar=btn.closest('.tab-bar'); bar.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active'); var parent=btn.closest('.tab-panel')||btn.parentElement.parentElement; parent.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); }); var target=document.getElementById(tabId); if(target) target.classList.add('active'); }
+
+    // ── ประวัติการทำรายการ "ตอบรับ"/"ประเมิน" (เฉพาะแอดมิน/เจ้าหน้าที่) ──
+    var _historyLoaded = { accept:false, eval:false };
+    function loadAssignmentHistory(kind, force){
+      if(!(S._isAdmin||S._isStaff)) return;
+      if(_historyLoaded[kind] && !force) return; // โหลดครั้งแรกที่เปิดแท็บพอ ไม่ต้องยิงซ้ำทุกครั้งที่สลับแท็บ
+      var elId = kind==='eval' ? 'eval-history-table' : 'accept-history-table';
+      var el = document.getElementById(elId);
+      if(el) el.innerHTML='<div class="empty-state"><div class="spin-sm dark" style="width:28px;height:28px;margin:auto"></div></div>';
+      getM().getAssignmentActivityHistory(S.user.sessionId, S.user.username, kind)
+        .then(function(res){
+          _historyLoaded[kind] = true;
+          var rows = (res&&res.success) ? (res.data||[]) : [];
+          renderAssignmentHistoryTable(elId, rows, kind);
+        }).catch(function(e){
+          if(el) el.innerHTML='<div class="empty-state"><p>โหลดไม่สำเร็จ: '+esc(e.message||'')+'</p></div>';
+        });
+    }
+    function renderAssignmentHistoryTable(elId, rows, kind){
+      var el=document.getElementById(elId); if(!el) return;
+      if(!rows.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon"><i class="ti ti-inbox" aria-hidden="true"></i></div><p>ยังไม่มีประวัติ</p></div>'; return; }
+      var actionLabel = kind==='eval'
+        ? {'รับรอง':'<span class="pill pill-green">รับรอง</span>','รับรองมีข้อแก้ไข':'<span class="pill pill-orange">รับรองมีข้อแก้ไข</span>','ขอให้ผู้วิจัยชี้แจง':'<span class="pill pill-blue">ขอให้ชี้แจง</span>','ไม่รับรอง':'<span class="pill pill-red">ไม่รับรอง</span>'}
+        : {'accept':'<span class="pill pill-green">ตอบรับ</span>','reject':'<span class="pill pill-red">ปฏิเสธ</span>'};
+      var html='<table><thead><tr><th>วันที่-เวลา</th><th>รหัสโครงการ</th><th>กรรมการ</th><th>การทำรายการ</th><th>ผู้กดทำรายการ</th></tr></thead><tbody>';
+      rows.forEach(function(r){
+        var label = actionLabel[r.action] || esc(r.action||'-');
+        var who = r.on_behalf
+          ? esc(r.submitted_by) + ' <span class="pill pill-orange" style="font-size:10px">ส่งแทน '+esc(r.committee_name||r.committee_username)+'</span>'
+          : esc(r.submitted_by || r.committee_username || '-');
+        html += '<tr><td style="white-space:nowrap">'+formatDateTime(r.timestamp)+'</td><td><strong>'+esc(r.project_code||'-')+'</strong></td><td>'+esc(r.committee_name||r.committee_username||'-')+'</td><td>'+label+'</td><td>'+who+'</td></tr>';
+      });
+      el.innerHTML = html+'</tbody></table>';
+    }
     function toggleDropdown(){ document.getElementById('user-dropdown').classList.toggle('open'); }
     document.addEventListener('click',function(e){ if(!e.target.closest('.dropdown')) document.querySelectorAll('.dropdown-menu').forEach(function(m){ m.classList.remove('open'); }); });
 
@@ -9928,6 +10146,7 @@ function showPage(page) {
     function hide(id){ var el=document.getElementById(id); if(el) el.style.display='none'; }
     function setBadge(id,count){ var el=document.getElementById(id); if(!el) return; if(count>0){ el.textContent=count; el.style.display='inline-flex'; } else el.style.display='none'; var bnMap={'badge-accept':'bn-badge-accept','badge-evaluate':'bn-badge-evaluate'}; if(bnMap[id]){ var bn=document.getElementById(bnMap[id]); if(bn){ bn.textContent=count; bn.style.display=count>0?'inline-block':'none'; } } }
     function formatDate(v){ if(!v) return '-'; try { return new Date(v).toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'}); } catch(e){ return String(v); } }
+    function formatDateTime(v){ if(!v) return '-'; try { return new Date(v).toLocaleString('th-TH',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); } catch(e){ return String(v); } }
     function pillStatus(s){
       var map = {
   'ผ่านตรวจเอกสาร':    'pill-green',
