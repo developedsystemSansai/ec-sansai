@@ -95,6 +95,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         reviewResearchReport:        function(pl,su)            { return callGAS('reviewResearchReport',      {payload:pl, staffUsername:su}); },
         getAllResearchReports:        function(cu)               { return callGAS('getAllResearchReports',     {callerUsername:cu}); },
         getResearchProjectsOverview:  function(sid,cu)           { return callGAS('getResearchProjectsOverview', {sessionId:sid, callerUsername:cu}); },
+        runExpiryCheckNow:            function(sid,cu)           { return callGAS('runExpiryCheckNow', {sessionId:sid, callerUsername:cu}); },
         getApprovedProjectsForReporting: function(u)           { return callGAS('getApprovedProjectsForReporting',{username:u}); },
         getResearchReports:          function(sid,u)            { return callGAS('getResearchReports',        {sessionId:sid, username:u}); },
         recordPdpaConsent:           function(pl)               { return callGAS('recordPdpaConsent',         {payload:pl}); },
@@ -2405,6 +2406,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                   <option>ตรวจสอบแล้ว_1</option>
                   <option>ตรวจสอบแล้ว_2</option>
                   <option>ตรวจสอบแล้ว_3</option>
+                  <option>รอปิดประชุม</option>
                   <option>เสร็จสิ้น</option>
                 </select>
               </div>
@@ -2470,8 +2472,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                     <label>สถานะ</label>
                     <select id="mtg-status-select" class="form-control">
                       <option value="รอตรวจสอบ">รอตรวจสอบ</option>
-                      <option value="เสร็จสิ้น">เสร็จสิ้น</option>
                     </select>
+                    <div style="font-size:11px;color:var(--text-light);margin-top:4px"><i class="ti ti-info-circle" aria-hidden="true"></i> การปิดประชุมเป็น "เสร็จสิ้น" ต้องทำผ่านปุ่ม "ประชุมเสร็จสิ้น" ในตารางเท่านั้น (บังคับแนบรายงานการประชุมยืนยันทุกครั้ง เพื่อป้องกันการลงมติย้อนหลัง)</div>
                   </div>
                   <div class="field-group">
                     <label>หมายเหตุ</label>
@@ -2750,9 +2752,17 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <div class="table-card">
           <div class="table-card-header"><h3>รายงานทั้งหมด</h3><span id="rpt-count" style="font-size:12px;color:var(--text-light)"></span></div>
           <div id="rpt-all-table"></div>
-          <!-- 🆕 โครงการที่กำลังดำเนินการอยู่ พร้อมวันหมดอายุ -->
+          <!-- 🆕 โครงการที่กำลังดำเนินการอยู่ พร้อมวันหมดอายุ / ครบกำหนดต่ออายุ -->
           <div class="table-card" style="margin-top:24px">
-            <div class="table-card-header"><h3><i class="ti ti-progress" aria-hidden="true"></i> โครงการที่ยังดำเนินการวิจัยอยู่</h3><span id="rpt-ongoing-count" style="font-size:12px;color:var(--text-light)"></span></div>
+            <div class="table-card-header" style="flex-wrap:wrap;gap:8px">
+              <h3><i class="ti ti-progress" aria-hidden="true"></i> โครงการที่ยังดำเนินการวิจัยอยู่</h3>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span id="rpt-ongoing-count" style="font-size:12px;color:var(--text-light)"></span>
+                <button class="btn btn-sm btn-outline" onclick="runExpiryCheckNow()" title="ตรวจสอบโครงการใกล้หมดอายุทันที และส่งแจ้งเตือนถ้ามี (ปกติระบบตรวจให้อัตโนมัติทุกวันอยู่แล้ว)"><i class="ti ti-bell" aria-hidden="true"></i> ตรวจสอบการแจ้งเตือนตอนนี้</button>
+              </div>
+            </div>
+            <div id="rpt-ongoing-summary" style="padding:12px 16px 0;display:none"></div>
+            <div style="padding:8px 16px 0;font-size:12px;color:var(--text-light)">วันหมดอายุคำนวณจากวันที่ได้รับการรับรอง + รอบทบทวนมาตรฐาน (ปีละครั้ง) หากยังไม่เคยยื่นต่ออายุ — ถือเป็น <strong>ค่าประมาณการ</strong> จนกว่าจะมีการยื่นต่ออายุจริงและกรรมการอนุมัติวันใหม่</div>
             <div id="rpt-ongoing-projects-table" style="padding:0"></div>
           </div>
           <!-- 🆕 โครงการที่ปิดแล้วทั้งหมด (อ่านจาก Projects sheet ตรงๆ ไม่พลาดแม้ปิดโดยไม่ผ่านการยื่นรายงาน) -->
@@ -5994,7 +6004,7 @@ function viewProjectFiles(projectCode) {
           '<td>' + pillStatus(String(r.status || '-')) + '</td>' +
           '<td style="text-align:center;white-space:nowrap">' +
             '<button class="btn btn-sm btn-primary" style="margin-right:4px" onclick="openMeetingReviewById(' + origIdx + ')"><i class="ti ti-search" aria-hidden="true"></i> ตรวจสอบมติ</button>' +
-            (isAdminOrStaff ? '<button class="btn btn-sm btn-outline" style="margin-right:4px" onclick="openMeetingModal(' + origIdx + ')"><i class="ti ti-pencil" aria-hidden="true"></i> แก้ไข</button>' : '') +
+            (isAdminOrStaff && String(r.status||'') !== 'เสร็จสิ้น' ? '<button class="btn btn-sm btn-outline" style="margin-right:4px" onclick="openMeetingModal(' + origIdx + ')"><i class="ti ti-pencil" aria-hidden="true"></i> แก้ไข</button>' : '') +
             (isAdminOrStaff && String(r.status||'') !== 'เสร็จสิ้น' ? '<button class="btn btn-sm btn-accent" onclick="openCompleteMeetingModal(' + origIdx + ')" title="แนบรายงานและปิดประชุม"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ประชุมเสร็จสิ้น</button>' : '') +
           '</td>' +
         '</tr>';
@@ -9082,30 +9092,68 @@ function removeNotifyRevisionFile() {
     function renderOngoingProjectsTable(rows) {
       var el = document.getElementById('rpt-ongoing-projects-table');
       var cnt = document.getElementById('rpt-ongoing-count');
+      var summaryEl = document.getElementById('rpt-ongoing-summary');
       if (!el) return;
       if (cnt) cnt.textContent = rows.length + ' โครงการ';
-      if (!rows.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="ti ti-inbox" aria-hidden="true"></i></div><p>ไม่มีโครงการที่กำลังดำเนินการ</p></div>'; return; }
-      var today = new Date();
-      var html = '<table><thead><tr><th>#</th><th>รหัสโครงการ</th><th>ชื่อโครงการ</th><th>ผู้วิจัยหลัก</th><th>สถานะ</th><th>วันหมดอายุล่าสุด</th></tr></thead><tbody>';
-      rows.forEach(function(r,i){
-        var expiryCell = '-';
-        if (r.expiry_date) {
-          var d = new Date(r.expiry_date);
-          var isExpired = !isNaN(d.getTime()) && d < today;
-          var isSoon = !isNaN(d.getTime()) && !isExpired && (d - today) < (30*24*60*60*1000);
-          expiryCell = (isExpired ? '<span class="pill pill-red">' : isSoon ? '<span class="pill pill-orange">' : '<span class="pill pill-green">')
-            + formatDate(r.expiry_date) + (isExpired ? ' (หมดอายุแล้ว)' : isSoon ? ' (ใกล้หมดอายุ)' : '') + '</span>';
+      if (!rows.length) {
+        el.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="ti ti-inbox" aria-hidden="true"></i></div><p>ไม่มีโครงการที่กำลังดำเนินการ</p></div>';
+        if (summaryEl) summaryEl.style.display = 'none';
+        return;
+      }
+      // สรุปจำนวนตามระดับความเร่งด่วน — ให้แอดมินกวาดตาเห็นภาพรวมได้ทันทีโดยไม่ต้องไล่อ่านทีละแถว
+      var expiredCount = rows.filter(function(r){ return r.days_until_expiry !== null && r.days_until_expiry < 0; }).length;
+      var soonCount    = rows.filter(function(r){ return r.days_until_expiry !== null && r.days_until_expiry >= 0 && r.days_until_expiry <= 60; }).length;
+      if (summaryEl) {
+        if (expiredCount > 0 || soonCount > 0) {
+          summaryEl.style.display = 'flex';
+          summaryEl.style.gap = '10px'; summaryEl.style.flexWrap = 'wrap';
+          summaryEl.innerHTML =
+            (expiredCount > 0 ? '<span class="pill pill-red"><i class="ti ti-alert-triangle" aria-hidden="true"></i> หมดอายุแล้ว '+expiredCount+' โครงการ</span>' : '') +
+            (soonCount > 0 ? '<span class="pill pill-orange"><i class="ti ti-clock" aria-hidden="true"></i> ใกล้ครบกำหนด (≤60 วัน) '+soonCount+' โครงการ</span>' : '');
         } else {
-          expiryCell = '<span style="color:var(--text-light);font-size:12px">ไม่มีข้อมูล (ยังไม่เคยยื่นต่ออายุระบุวันที่)</span>';
+          summaryEl.style.display = 'none';
         }
-        html += '<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code)+'</strong></td>'
+      }
+      var html = '<table><thead><tr><th>#</th><th>รหัสโครงการ</th><th>ชื่อโครงการ</th><th>ผู้วิจัยหลัก</th><th>วันที่รับรอง</th><th>ระยะเวลาโครงการ</th><th>ครบกำหนดทบทวน/หมดอายุ</th></tr></thead><tbody>';
+      rows.forEach(function(r,i){
+        var expiryCell;
+        if (r.expiry_date) {
+          var days = r.days_until_expiry;
+          var pillClass = days < 0 ? 'pill-red' : days <= 30 ? 'pill-red' : days <= 60 ? 'pill-orange' : 'pill-green';
+          var statusText = days < 0 ? ('หมดอายุแล้ว ' + Math.abs(days) + ' วัน')
+                          : days === 0 ? 'หมดอายุวันนี้'
+                          : 'อีก ' + days + ' วัน';
+          var sourceTag = r.expiry_source === 'renewal'
+            ? '<span title="ยืนยันจากการยื่นต่ออายุจริง" style="font-size:10px;color:var(--text-light)"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ยืนยันแล้ว</span>'
+            : '<span title="คำนวณจากวันรับรอง + รอบทบทวนมาตรฐาน ยังไม่เคยยื่นต่ออายุจริง" style="font-size:10px;color:var(--text-light)"><i class="ti ti-calculator" aria-hidden="true"></i> ประมาณการ</span>';
+          expiryCell = '<span class="pill ' + pillClass + '">' + formatDate(r.expiry_date) + '</span><br>'
+            + '<span style="font-size:11px;color:var(--text-light)">' + statusText + '</span> · ' + sourceTag;
+        } else {
+          expiryCell = '<span style="color:var(--text-light);font-size:12px">ไม่มีวันที่รับรอง — ไม่สามารถคำนวณได้</span>';
+        }
+        html += '<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code)+'</strong><br><span class="pill pill-blue" style="font-size:10px">'+esc(r.status||'-')+'</span></td>'
           + '<td>'+esc((r.title_th||'').slice(0,60))+'</td>'
           + '<td>'+esc(r.pi_name||'-')+'</td>'
-          + '<td><span class="pill pill-blue">'+esc(r.status||'-')+'</span></td>'
+          + '<td>'+(r.certified_date ? formatDate(r.certified_date) : '<span style="color:var(--text-light)">-</span>')+'</td>'
+          + '<td>'+esc(r.duration||'-')+'</td>'
           + '<td>'+expiryCell+'</td></tr>';
       });
       el.innerHTML = html + '</tbody></table>';
     }
+    function runExpiryCheckNow() {
+      showToast('กำลังตรวจสอบโครงการใกล้หมดอายุ...','success');
+      getM().runExpiryCheckNow(S.user.sessionId, S.user.username).then(function(res){
+        if (res && res.success) {
+          showToast('ตรวจสอบเสร็จสิ้น — พบโครงการที่ต้องแจ้งเตือนใหม่ ' + res.alerted + ' รายการ (จากทั้งหมด ' + res.checked + ' โครงการ)');
+          if (res.alerted > 0) loadNotifications();
+        } else {
+          showToast('ตรวจสอบไม่สำเร็จ: ' + esc((res||{}).message||''), 'error');
+        }
+      }).catch(function(e){
+        showToast('เกิดข้อผิดพลาด: ' + esc(e.message||''), 'error');
+      });
+    }
+
 
     function renderAllReportsTable(reports) {
       var el = document.getElementById('rpt-all-table');
@@ -10184,6 +10232,8 @@ function showPage(page) {
   'รับรอง':              'pill-green',
   'ไม่รับรอง':           'pill-red',
   'รอพิจารณา':           'pill-orange',
+  'รอปิดประชุม':         'pill-purple',
+  'เสร็จสิ้น':            'pill-gray',
   'active':              'pill-green',
   'inactive':            'pill-red',
   'pending':             'pill-orange'
