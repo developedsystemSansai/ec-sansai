@@ -3564,7 +3564,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     <div class="modal-overlay" id="modal-admin-manage-project">
       <div class="modal modal-lg">
         <div class="modal-header">
-          <h3><i class="ti ti-user-cog" aria-hidden="true"></i> จัดการโครงการโดยแอดมิน</h3>
+          <h3><i class="ti ti-refresh" aria-hidden="true"></i> ต่ออายุ/ปิดโครงการ</h3>
           <button class="modal-close" onclick="closeModal('modal-admin-manage-project')"><i class="ti ti-x" aria-hidden="true"></i></button>
         </div>
         <div class="modal-body">
@@ -3618,7 +3618,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <div class="modal-body">
           <div class="alert alert-info" style="margin-bottom:16px">
             <i class="ti ti-info-circle" aria-hidden="true"></i>
-            <div>ใช้สำหรับ<strong>แก้ไข/ยืนยันวันที่ให้ถูกต้อง</strong>เท่านั้น (เช่น ไม่เคยมีวันที่รับรองในระบบทำให้คำนวณวันหมดอายุไม่ได้ หรือวันประมาณการคำนวณผิดเพราะข้อมูลเดิมไม่ครบ) จะ<strong>ไม่เปลี่ยนสถานะโครงการ</strong>และไม่ถือเป็นการอนุมัติต่ออายุ — กรอกอย่างใดอย่างหนึ่งหรือทั้งสองอย่างก็ได้ หากต้องการอนุมัติต่ออายุจริงพร้อมเอกสารประกอบ ให้ใช้ปุ่ม "จัดการโดยแอดมิน" แทน</div>
+            <div>ใช้สำหรับ<strong>แก้ไข/ยืนยันวันที่ให้ถูกต้อง</strong>เท่านั้น (เช่น ไม่เคยมีวันที่รับรองในระบบทำให้คำนวณวันหมดอายุไม่ได้ หรือวันประมาณการคำนวณผิดเพราะข้อมูลเดิมไม่ครบ) จะ<strong>ไม่เปลี่ยนสถานะโครงการ</strong>และไม่ถือเป็นการอนุมัติต่ออายุ — กรอกอย่างใดอย่างหนึ่งหรือทั้งสองอย่างก็ได้ หากต้องการอนุมัติต่ออายุจริงพร้อมเอกสารประกอบ ให้ใช้ปุ่ม "ต่ออายุ/ปิดโครงการ" แทน</div>
           </div>
           <div id="eed-project-info" style="background:var(--navy-pale);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px"></div>
           <input type="hidden" id="eed-project-code">
@@ -9296,6 +9296,8 @@ function removeNotifyRevisionFile() {
       }
       var html = '<table><thead><tr><th>#</th><th>รหัสโครงการ</th><th>ชื่อโครงการ</th><th>ผู้วิจัยหลัก</th><th>วันที่รับรอง</th><th>ระยะเวลาโครงการ</th><th>ครบกำหนดทบทวน/หมดอายุ</th><th>Actions</th></tr></thead><tbody>';
       rows.forEach(function(r,i){
+        var isCertified = !!r.certified_date;
+        var isRenewed = r.expiry_source === 'renewal';
         var expiryCell;
         if (r.expiry_date) {
           var days = r.days_until_expiry;
@@ -9313,7 +9315,15 @@ function removeNotifyRevisionFile() {
         } else {
           expiryCell = '<span style="color:var(--text-light);font-size:12px">ไม่มีวันที่รับรอง — ไม่สามารถคำนวณได้</span>';
         }
-        html += '<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code)+'</strong><br><span class="pill pill-blue" style="font-size:10px">'+esc(r.status||'-')+'</span></td>'
+        // 🆕 badge แยกสถานะการรับรอง และสถานะการต่ออายุ ให้เห็นชัดเจนแยกจากกันในคอลัมน์รหัสโครงการ
+        var certifiedBadge = isCertified
+          ? ''
+          : '<br><span class="pill pill-red" style="font-size:10px" title="โครงการนี้ยังไม่ได้กำหนดวันที่รับรองในระบบ"><i class="ti ti-alert-triangle" aria-hidden="true"></i> ยังไม่ได้รับการรับรอง</span>';
+        var renewalBadge = isCertified
+          ? ('<br><span class="pill ' + (isRenewed ? 'pill-green' : 'pill-gray') + '" style="font-size:10px" title="' + (isRenewed ? 'มีการยื่นต่ออายุโครงการจริงแล้ว' : 'ยังไม่เคยยื่นต่ออายุโครงการ') + '"><i class="ti ' + (isRenewed ? 'ti-refresh' : 'ti-hourglass') + '" aria-hidden="true"></i> ' + (isRenewed ? 'ต่ออายุแล้ว' : 'ยังไม่ต่ออายุ') + '</span>')
+          : '';
+        var rowStyle = isCertified ? '' : ' style="background:#fff4e5"';
+        html += '<tr'+rowStyle+'><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code)+'</strong><br><span class="pill pill-blue" style="font-size:10px">'+esc(r.status||'-')+'</span>'+certifiedBadge+renewalBadge+'</td>'
           + '<td>'+esc((r.title_th||'').slice(0,60))+'</td>'
           + '<td>'+esc(r.pi_name||'-')+'</td>'
           + '<td>'+(r.certified_date ? formatDate(r.certified_date) : '<span style="color:var(--text-light)">-</span>')+'</td>'
@@ -9321,7 +9331,7 @@ function removeNotifyRevisionFile() {
           + '<td>'+expiryCell+'</td>'
           + '<td style="white-space:nowrap"><div style="display:flex;gap:4px;flex-wrap:wrap">'
             + '<button class="btn btn-sm btn-outline" onclick="openEditExpiryModal(\''+escAttr(r.project_code)+'\',\''+escAttr((r.title_th||'').slice(0,60))+'\',\''+escAttr(r.expiry_date||'')+'\',\''+escAttr(r.certified_date||'')+'\')" title="แก้ไข/ยืนยันวันครบกำหนดให้ถูกต้อง — ไม่เปลี่ยนสถานะโครงการ"><i class="ti ti-calendar-due" aria-hidden="true"></i> แก้ไขวันที่</button>'
-            + '<button class="btn btn-sm btn-outline" onclick="openAdminManageProjectModal(\''+escAttr(r.project_code)+'\',\''+escAttr((r.title_th||'').slice(0,60))+'\')" title="แอดมินดำเนินการแทนผู้วิจัย กรณีผู้วิจัยไม่สามารถเข้าระบบมายื่นเองได้"><i class="ti ti-user-cog" aria-hidden="true"></i> จัดการโดยแอดมิน</button>'
+            + '<button class="btn btn-sm btn-outline" onclick="openAdminManageProjectModal(\''+escAttr(r.project_code)+'\',\''+escAttr((r.title_th||'').slice(0,60))+'\')" title="บันทึกการต่ออายุ หรือปิดโครงการแทนผู้วิจัย กรณีผู้วิจัยไม่สามารถเข้าระบบมายื่นเองได้"><i class="ti ti-refresh" aria-hidden="true"></i> ต่ออายุ/ปิดโครงการ</button>'
           + '</div></td></tr>';
       });
       el.innerHTML = html + '</tbody></table>';
