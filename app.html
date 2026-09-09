@@ -4764,11 +4764,11 @@ function showForgotMessage(type, text) {
         .then(function(res){
           if(res&&res.success){
             if(res.lineSent){ showToast('ข้ามตอบรับแทนสำเร็จ (แจ้งเตือน LINE แล้ว)','success'); }
-            else { showToast('ข้ามตอบรับแทนสำเร็จ แต่ส่ง LINE ไม่สำเร็จ: '+esc(res.lineError||'ไม่ทราบสาเหตุ'),'error'); }
+            else { showToast('ข้ามตอบรับแทนสำเร็จ แต่ส่ง LINE ไม่สำเร็จ: '+(res.lineError||'ไม่ทราบสาเหตุ'),'error'); }
             loadAssignments();
           }
-          else showToast('ไม่สำเร็จ: '+esc((res||{}).message||''),'error');
-        }).catch(function(e){ showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error'); });
+          else showToast('ไม่สำเร็จ: '+((res||{}).message||''),'error');
+        }).catch(function(e){ showToast('เกิดข้อผิดพลาด: '+(e.message||''),'error'); });
     }
         function _buildVerifyTable(elId, rows){
       var el=document.getElementById(elId); if(!el) return;
@@ -7150,8 +7150,8 @@ function unlockAccount(username){
   getM().adminUnlockAccount(S.user.sessionId, S.user.username, username)
     .then(function(res){
  if(res&&res.success){ showToast('ปลดล็อคบัญชีสำเร็จ','success'); loadLockedAccounts(); }
-      else showToast('ไม่สำเร็จ: '+esc((res||{}).message||''),'error');
-    }).catch(function(e){ showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error'); });
+      else showToast('ไม่สำเร็จ: '+((res||{}).message||''),'error');
+    }).catch(function(e){ showToast('เกิดข้อผิดพลาด: '+(e.message||''),'error'); });
 }
 
 function getCommitteeUsers_() {
@@ -7213,8 +7213,8 @@ function saveLineUserIdFromModal() {
         closeModal('modal-line-edit');
         renderLineCommitteeTable();
         if(sendTest) { openLinePushModal(username); var t=document.getElementById('line-push-title'); var b=document.getElementById('line-push-body'); if(t) t.value='<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ทดสอบการเชื่อมต่อ LINE'; if(b) b.value='ระบบ EC Sansai เชื่อมต่อบัญชี LINE ของท่านสำเร็จแล้ว'; }
-      } else { showToast('บันทึกไม่สำเร็จ: '+esc((res||{}).message||''),'error'); }
- }).catch(function(e){btn.disabled=false;btn.textContent='บันทึก LINE User ID';showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error');});
+      } else { showToast('บันทึกไม่สำเร็จ: '+((res||{}).message||''),'error'); }
+ }).catch(function(e){btn.disabled=false;btn.textContent='บันทึก LINE User ID';showToast('เกิดข้อผิดพลาด: '+(e.message||''),'error');});
 }
 
 function openLinePushWithProject(username) {
@@ -7292,13 +7292,13 @@ function sendLineReminderToCommittee(username, btnEl) {
     .then(function(res){
       if(btnEl){ btnEl.disabled=false; btnEl.innerHTML=originalHtml; }
       if(res&&res.success){
-        showToast('<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ส่งเตือน '+res.count+' โครงการสำเร็จ','success');
+        showToast('ส่งเตือน '+res.count+' โครงการสำเร็จ','success');
       } else {
-        showToast('ส่งไม่สำเร็จ: '+esc((res||{}).message||''),'error');
+        showToast('ส่งไม่สำเร็จ: '+((res||{}).message||''),'error');
       }
     }).catch(function(e){
       if(btnEl){ btnEl.disabled=false; btnEl.innerHTML=originalHtml; }
-      showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error');
+      showToast('เกิดข้อผิดพลาด: '+(e.message||''),'error');
     });
 }
 
@@ -7411,8 +7411,8 @@ function doLinePushSingle() {
         var note=res.filesTotal>0&&res.filesAttached<res.filesTotal?('<i class="ti ti-alert-triangle ti-warn" aria-hidden="true"></i> ส่งสำเร็จ แต่แนบไฟล์ได้ '+res.filesAttached+'/'+res.filesTotal+' ไฟล์'):'<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ส่ง LINE สำเร็จ';
         showToast(note,res.filesTotal>0&&res.filesAttached<res.filesTotal?'error':'success');
         _linePushFiles=[]; _linePushDriveFiles=[]; closeModal('modal-line-push');
-      } else showToast('ส่งไม่สำเร็จ: '+esc((res||{}).message||''),'error');
- }).catch(function(e){btn.disabled=false;btn.textContent='ส่ง LINE';showToast('เกิดข้อผิดพลาด: '+esc(e.message||''),'error');});
+      } else showToast('ส่งไม่สำเร็จ: '+((res||{}).message||''),'error');
+ }).catch(function(e){btn.disabled=false;btn.textContent='ส่ง LINE';showToast('เกิดข้อผิดพลาด: '+(e.message||''),'error');});
 }
 
 // ── Broadcast file helpers ────────────────────────────────────
@@ -7460,7 +7460,7 @@ function doLineBroadcast() {
         var msg='<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ส่งสำเร็จ '+(res.sent||0)+' คน'+(res.filesAttached>0?' <i class="ti ti-paperclip" aria-hidden="true"></i> '+res.filesAttached+' ไฟล์':'');
         if(note) note.textContent=msg; showToast(msg,'success');
         _lineBcFiles=[]; _renderBcFileList();
- } else { if(note) note.textContent='ส่งไม่สำเร็จ'; showToast('ส่งไม่สำเร็จ: '+esc((res||{}).message||''),'error'); }
+ } else { if(note) note.textContent='ส่งไม่สำเร็จ'; showToast('ส่งไม่สำเร็จ: '+((res||{}).message||''),'error'); }
  }).catch(function(e){btn.disabled=false;btn.textContent='ส่งถึงกรรมการทุกคน';showToast('เกิดข้อผิดพลาด','error');});
 }
 
@@ -7929,7 +7929,7 @@ function doQuickAssign(){
             _uploadedByType[fileType]=r.fileId; _uploadedFileIds.push(r.fileId);
             if(statusEl){ var vb=r.fileUrl?'<a href="'+esc(r.fileUrl)+'" target="_blank" class="btn btn-sm btn-outline"><i class="ti ti-eye" aria-hidden="true"></i> ดู</a>':''; statusEl.innerHTML='<div style="display:flex;align-items:center;gap:10px;background:var(--navy-pale);border:1.5px solid var(--navy-light);border-radius:8px;padding:8px 12px;margin-top:4px"><span><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i></span><div style="flex:1"><div style="font-weight:700;font-size:13px">'+esc(file.name)+'</div><div style="font-size:11px;color:var(--text-light)">'+formatFileSize(file.size)+'</div></div>'+vb+'<button type="button" class="btn btn-sm btn-danger" onclick="removeUploadedFile(\''+escAttr(fileType)+'\',\''+escAttr(r.fileId)+'\',this)"><i class="ti ti-trash" aria-hidden="true"></i></button></div>'; }
  renderDocumentCompleteness(); showToast('อัพโหลดสำเร็จ');
- } else { if(statusEl) statusEl.innerHTML='<div style="font-size:12px;color:var(--red);padding:6px 0"> '+(r&&r.message)+'</div>'; showToast('อัพโหลดไม่สำเร็จ','error'); }
+ } else { if(statusEl) statusEl.innerHTML='<div style="font-size:12px;color:var(--red);padding:6px 0"> '+esc((r&&r.message)||'')+'</div>'; showToast('อัพโหลดไม่สำเร็จ','error'); }
         }).withFailureHandler(function(e){ if(statusEl) statusEl.innerHTML='<div style="font-size:12px;color:var(--red);padding:6px 0"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> '+esc(e.message||'')+'</div>'; })
         .uploadFileSecure(b64,file.name,file.type,_tempProjectId,S.user?S.user.username:'',fileType);
       };
@@ -9086,11 +9086,11 @@ function removeNotifyRevisionFile() {
             showToast('ปิดประชุมและบันทึกรายงานแล้ว');
             loadMeetings();
           } else {
-            showToast('เกิดข้อผิดพลาด: ' + esc((res && res.message) || ''), 'error');
+            showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
           }
         }).catch(function(e) {
           btn.disabled = false; btn.innerHTML = '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ยืนยันเสร็จสิ้น';
-          showToast('เกิดข้อผิดพลาด: ' + esc(e.message || ''), 'error');
+          showToast('เกิดข้อผิดพลาด: ' + (e.message || ''), 'error');
         });
       };
       reader.readAsDataURL(_completeMtgFileData);
@@ -9343,10 +9343,10 @@ function removeNotifyRevisionFile() {
           showToast('ตรวจสอบเสร็จสิ้น — พบโครงการที่ต้องแจ้งเตือนใหม่ ' + res.alerted + ' รายการ (จากทั้งหมด ' + res.checked + ' โครงการ)');
           if (res.alerted > 0) loadNotifications();
         } else {
-          showToast('ตรวจสอบไม่สำเร็จ: ' + esc((res||{}).message||''), 'error');
+          showToast('ตรวจสอบไม่สำเร็จ: ' + ((res||{}).message||''), 'error');
         }
       }).catch(function(e){
-        showToast('เกิดข้อผิดพลาด: ' + esc(e.message||''), 'error');
+        showToast('เกิดข้อผิดพลาด: ' + (e.message||''), 'error');
       });
     }
 
@@ -10633,7 +10633,7 @@ function showPage(page) {
       var u = (S.allUsers || []).find(function(x) { return x.username === username; });
       if (!u) { showToast('ไม่พบข้อมูลผู้ใช้', 'error'); return; }
 
- document.getElementById('send-email-title').textContent = 'ส่งอีเมลแจ้ง: '+ esc(username);
+ document.getElementById('send-email-title').textContent = 'ส่งอีเมลแจ้ง: '+ username;
       document.getElementById('send-email-target').textContent = u.name || username;
       document.getElementById('send-email-addr').textContent   = u.email ? '(' + u.email + ')' : '(ไม่มีอีเมล)';
       document.getElementById('email-message').value           = '';
