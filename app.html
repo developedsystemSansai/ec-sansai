@@ -1412,8 +1412,44 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     #line-push-file-drop:hover { border-color:#06c755!important; background:#e8faf0!important; }
     #qa-mode-normal, #qa-mode-skip { transition:all .15s; }
 
+    /* ── Project Files modal (viewProjectFiles) — inline skeleton loading + file cards ──
+       เดิมใช้ showGlobalLoading() ซึ่งเป็น overlay เต็มหน้าจอตัวเดียวกับตอนโหลดระบบครั้งแรก
+       ทำให้กดปุ่ม "ไฟล์" ทีไรดูเหมือนทั้งเว็บรีโหลดใหม่ทุกครั้ง — เปลี่ยนเป็น skeleton เฉพาะจุด
+       ภายใน modal แทน เปิด modal ได้ทันทีโดยไม่ต้องรอ ให้ความรู้สึกลื่นไหลและเป็นมืออาชีพกว่า */
+    @keyframes vfShimmer { 0% { background-position: -200px 0; } 100% { background-position: calc(200px + 100%) 0; } }
+    .vf-skel-row {
+      display:flex; align-items:center; gap:12px;
+      padding:12px 14px; border-bottom:1px solid var(--border);
+    }
+    .vf-skel-row:last-child { border-bottom:none; }
+    .vf-skel-block {
+      border-radius:4px;
+      background:linear-gradient(90deg, #eef1f4 25%, #f8f9fb 37%, #eef1f4 63%);
+      background-size:200px 100%;
+      animation: vfShimmer 1.3s ease-in-out infinite;
+    }
+    .vf-file-card {
+      display:flex; align-items:center; gap:12px;
+      padding:12px 14px; border-bottom:1px solid var(--border);
+      transition:background .12s;
+    }
+    .vf-file-card:last-child { border-bottom:none; }
+    .vf-file-card:hover { background:var(--navy-pale); }
+    .vf-file-icon {
+      flex-shrink:0; width:38px; height:38px; border-radius:8px;
+      display:flex; align-items:center; justify-content:center;
+      background:var(--navy-pale); color:var(--navy-dark); font-size:17px;
+    }
+    .vf-file-main { flex:1; min-width:0; }
+    .vf-file-name { font-weight:600; color:var(--text-dark); font-size:var(--text-sm); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .vf-file-meta { font-size:12px; color:var(--text-light); margin-top:2px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .vf-file-actions { flex-shrink:0; display:flex; gap:6px; }
+    .vf-error-state { padding:32px 16px; text-align:center; color:var(--red); }
+    .vf-error-state .vf-error-icon { font-size:40px; margin-bottom:10px; }
+
     </style>
     </head>
+
     <body>
 
     <div id="loading-overlay" style="display:none;">
@@ -2525,6 +2561,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                 <option>รอประเมิน</option>
                 <option>รอผลพิจารณา</option>
                 <option>รอแจ้งผล</option>
+                <option>แก้ไขครั้งที่</option>
                 <option>รับรอง</option>
                 <option>ไม่รับรอง</option>
               </select>
@@ -4800,12 +4837,17 @@ function buildStaffDashboardList(projects) {
     var status = String(p.status || 'รอพิจารณา');
     var code = escAttr(p.project_code || '');
 
-    var finalStatuses = ['รับรอง', 'ไม่รับรอง', 'รับรองมีข้อแก้ไข'];
+    var finalStatuses = ['รับรอง', 'ไม่รับรอง'];
     var isFinal = finalStatuses.some(function(s) { return status.indexOf(s) !== -1; });
+    // 🔧 "แก้ไขครั้งที่ N" (เดิมคือ "รับรองมีข้อแก้ไข") ไม่ใช่สถานะสุดท้าย — ผู้วิจัยยังต้องส่งแก้ไข
+    // อีกครั้งก่อนได้รับการรับรองจริง จึงไม่นับเป็น isFinal และแยกข้อความให้ชัดว่ารออะไรอยู่
+    var isAwaitingResearcherRevision = status.indexOf('แก้ไขครั้งที่') !== -1 || status.indexOf('รับรองมีข้อแก้ไข') !== -1;
 
     var actionBtn = '';
     if (isFinal) {
       actionBtn = '<span style="font-size:11px;color:var(--text-light)"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> เสร็จสิ้น</span>';
+    } else if (isAwaitingResearcherRevision) {
+      actionBtn = '<span style="font-size:11px;color:var(--text-light)"><i class="ti ti-hourglass" aria-hidden="true"></i> รอผู้วิจัยส่งแก้ไข</span>';
     } else if (status === 'รอแจ้งผล') {
       actionBtn = '<button class="btn btn-sm btn-primary" onclick="openNotifyModal(\'' + code + '\')"><i class="ti ti-mail" aria-hidden="true"></i> แจ้งผล</button>';
     } else if (status === 'ผ่านตรวจเอกสาร' && !p.has_committee_assigned) {
@@ -4951,9 +4993,12 @@ function renderStaffProjectsTable(projects) {
     var skipReeval = String(p.skip_committee_reeval || '').toLowerCase() === 'true';
 
     var actionBtn = '';
-    var isFinal = ['รับรอง', 'ไม่รับรอง', 'รับรองมีข้อแก้ไข'].some(function(s) {
+    var isFinal = ['รับรอง', 'ไม่รับรอง'].some(function(s) {
       return status.indexOf(s) !== -1;
     });
+    // 🔧 "แก้ไขครั้งที่ N" (เดิมคือ "รับรองมีข้อแก้ไข") ไม่ใช่สถานะสุดท้าย — ผู้วิจัยยังต้องส่งแก้ไข
+    // อีกครั้งก่อนได้รับการรับรองจริง จึงไม่นับเป็น isFinal และแยกข้อความให้ชัดว่ารออะไรอยู่
+    var isAwaitingResearcherRevision = !isRevision && (status.indexOf('แก้ไขครั้งที่') !== -1 || status.indexOf('รับรองมีข้อแก้ไข') !== -1);
 
     if ((status.includes('รับรอง') || finalResult === 'รับรอง') && certFileId) {
       actionBtn = '<button class="btn btn-sm btn-primary" onclick="openNotifyModal(\'' + code + '\')"><i class="ti ti-file-certificate" aria-hidden="true"></i> ส่งหนังสือรับรอง</button>';
@@ -4974,12 +5019,14 @@ function renderStaffProjectsTable(projects) {
         + '<button class="btn btn-sm btn-accent" onclick="openReviewRevisionModal(\'' + code + '\')" title="ตรวจสอบการแก้ไขที่ผู้วิจัยส่งมา"><i class="ti ti-search" aria-hidden="true"></i> ตรวจการแก้ไข</button>'
         + '<button class="btn btn-sm btn-blue" onclick="openQuickAssignModal(\'' + code + '\')" title="ส่งให้กรรมการพิจารณา"><i class="ti ti-clipboard-list" aria-hidden="true"></i> ส่งกรรมการ</button>'
         + '</div>';
+    } else if (isAwaitingResearcherRevision) {
+      actionBtn = '<span style="font-size:11px;color:var(--text-light)"><i class="ti ti-hourglass" aria-hidden="true"></i> รอผู้วิจัยส่งแก้ไข</span>';
     } else if (isFinal) {
       actionBtn = '<span style="font-size:11px;color:var(--text-light)"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> เสร็จสิ้น</span>';
     }
 
     var extraBtns = '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + code + '\')"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>';
-    if (!isFinal && !['ผ่านตรวจเอกสาร', 'รอแจ้งผล'].includes(status) && status.indexOf('รับรอง') === -1) {
+    if (!isFinal && !isAwaitingResearcherRevision && !['ผ่านตรวจเอกสาร', 'รอแจ้งผล'].includes(status) && status.indexOf('รับรอง') === -1) {
       extraBtns += ' <button class="btn btn-sm btn-accent" onclick="openUpdateStatusModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')"><i class="ti ti-chart-bar" aria-hidden="true"></i> สถานะ</button>';
     }
 
@@ -5420,7 +5467,11 @@ function _renderCommitteeCheckboxes(committees) {
     if(certFileId && (finalResult==='รับรอง'||finalResult==='รับรองมีข้อแก้ไข'||finalResult==='ไม่รับรอง')){
       actions+=' <a href="https://drive.google.com/uc?export=download&id='+certFileId+'" target="_blank" class="btn btn-sm btn-primary"><i class="ti ti-file-certificate" aria-hidden="true"></i> หนังสือรับรอง</a>';
     }
-    if(status.indexOf('รับรองมีข้อแก้ไข') !== -1 || status.indexOf('ส่งแก้ไขแล้ว') !== -1){
+    // 🔧 สถานะ "รับรองมีข้อแก้ไข" เปลี่ยนเป็น "แก้ไขครั้งที่ N" แล้ว (ดูคอมเมนต์ใน sendResultToResearcher
+    // ฝั่ง server) — เช็คทั้งรูปแบบใหม่ (prefix "แก้ไขครั้งที่") และค่าเดิมไว้ด้วย กันโครงการเก่าที่ยังค้าง
+    // อยู่ในสถานะเดิมก่อนอัปเดตหายไปจากปุ่ม "ยื่นแก้ไข"
+    var needsRevision = status.indexOf('รับรองมีข้อแก้ไข') !== -1 || status.indexOf('แก้ไขครั้งที่') !== -1 || status.indexOf('ส่งแก้ไขแล้ว') !== -1;
+    if(needsRevision){
       actions+=' <button class="btn btn-sm btn-accent" onclick="openRevisionModal(\''+code+'\')"><i class="ti ti-pencil" aria-hidden="true"></i> ยื่นแก้ไข</button>';
     }
 
@@ -5429,7 +5480,7 @@ function _renderCommitteeCheckboxes(committees) {
     if(!displayResult){
       if(status.indexOf('รับรอง') !== -1) displayResult = 'รับรอง';
       else if(status.indexOf('ไม่รับรอง') !== -1) displayResult = 'ไม่รับรอง';
-      else if(status.indexOf('รับรองมีข้อแก้ไข') !== -1) displayResult = 'รับรองมีข้อแก้ไข';
+      else if(status.indexOf('รับรองมีข้อแก้ไข') !== -1 || status.indexOf('แก้ไขครั้งที่') !== -1) displayResult = 'รับรองมีข้อแก้ไข';
     }
     var resultBadge = displayResult 
       ? pillStatus(displayResult) 
@@ -5437,7 +5488,7 @@ function _renderCommitteeCheckboxes(committees) {
 
     // คำเตือนกำหนดแก้ไข
     var deadlineWarning='';
-    if(revDeadline && (status.indexOf('รับรองมีข้อแก้ไข') !== -1 || status.indexOf('ส่งแก้ไขแล้ว') !== -1)){
+    if(revDeadline && needsRevision){
       var daysLeft=Math.ceil((new Date(revDeadline)-new Date())/86400000);
       var color=daysLeft<=3?'var(--red)':daysLeft<=7?'var(--accent)':'var(--text-light)';
       deadlineWarning='<br><small style="color:'+color+';font-size:11px"><i class="ti ti-calendar" aria-hidden="true"></i> ครบ: '+formatDate(revDeadline)+' ('+daysLeft+' วัน)</small>';
@@ -10394,6 +10445,11 @@ function showPage(page) {
     function formatDate(v){ if(!v) return '-'; try { return new Date(v).toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'}); } catch(e){ return String(v); } }
     function formatDateTime(v){ if(!v) return '-'; try { return new Date(v).toLocaleString('th-TH',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); } catch(e){ return String(v); } }
     function pillStatus(s){
+      // 🔧 สถานะ "แก้ไขครั้งที่ N" เป็นข้อความไดนามิก (N เปลี่ยนไปตามรอบ) จึงจับคู่แบบ exact-match ในตาราง
+      // ด้านล่างไม่ได้ — เช็คด้วย prefix ก่อนแยกต่างหาก ให้ขึ้นสีเดียวกับ "รับรองมีข้อแก้ไข" เดิม
+      if (String(s||'').indexOf('แก้ไขครั้งที่') === 0) {
+        return '<span class="pill pill-orange">'+esc(s)+'</span>';
+      }
       var map = {
   'ผ่านตรวจเอกสาร':    'pill-green',
   'เอกสารไม่ครบ':       'pill-red',
