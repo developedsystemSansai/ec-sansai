@@ -94,7 +94,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         submitResearchReport:        function(pl)               { return callGAS('submitResearchReport',      {payload:pl}); },
         reviewResearchReport:        function(pl,su)            { return callGAS('reviewResearchReport',      {payload:pl, staffUsername:su}); },
         adminManageProject:          function(sid,pl,au)        { return callGAS('adminManageProject',        {sessionId:sid, payload:pl, adminUsername:au}); },
-        updateProjectExpiryDate:     function(sid,pl,au)        { return callGAS('updateProjectExpiryDate',   {sessionId:sid, payload:pl, adminUsername:au}); },
+        updateProjectDates:          function(sid,pl,au)        { return callGAS('updateProjectDates',        {sessionId:sid, payload:pl, adminUsername:au}); },
         getAllResearchReports:        function(cu)               { return callGAS('getAllResearchReports',     {callerUsername:cu}); },
         getResearchProjectsOverview:  function(sid,cu)           { return callGAS('getResearchProjectsOverview', {sessionId:sid, callerUsername:cu}); },
         runExpiryCheckNow:            function(sid,cu)           { return callGAS('runExpiryCheckNow', {sessionId:sid, callerUsername:cu}); },
@@ -3605,23 +3605,29 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       </div>
     </div>
 
-    <!-- Modal: แก้ไขวันครบกำหนดทบทวน/หมดอายุ (พิมพ์วันที่ได้โดยตรง — ไม่ต้องแนบไฟล์/ไม่เปลี่ยนสถานะโครงการ) -->
+    <!-- Modal: แก้ไขวันที่รับรอง / วันครบกำหนดทบทวน-หมดอายุ (พิมพ์วันที่ได้โดยตรง — ไม่ต้องแนบไฟล์/ไม่เปลี่ยนสถานะโครงการ) -->
     <div class="modal-overlay" id="modal-edit-expiry">
       <div class="modal">
         <div class="modal-header">
-          <h3><i class="ti ti-calendar-due" aria-hidden="true"></i> แก้ไขวันครบกำหนดทบทวน/หมดอายุ</h3>
+          <h3><i class="ti ti-calendar-due" aria-hidden="true"></i> แก้ไขวันที่รับรอง / วันครบกำหนดทบทวน</h3>
           <button class="modal-close" onclick="closeModal('modal-edit-expiry')"><i class="ti ti-x" aria-hidden="true"></i></button>
         </div>
         <div class="modal-body">
           <div class="alert alert-info" style="margin-bottom:16px">
             <i class="ti ti-info-circle" aria-hidden="true"></i>
-            <div>ใช้สำหรับ<strong>แก้ไข/ยืนยันวันที่ให้ถูกต้อง</strong>เท่านั้น (เช่น วันประมาณการคำนวณผิดเพราะข้อมูลเดิมไม่ครบ) จะ<strong>ไม่เปลี่ยนสถานะโครงการ</strong>และไม่ถือเป็นการอนุมัติต่ออายุ — หากต้องการอนุมัติต่ออายุจริงพร้อมเอกสารประกอบ ให้ใช้ปุ่ม "จัดการโดยแอดมิน" แทน</div>
+            <div>ใช้สำหรับ<strong>แก้ไข/ยืนยันวันที่ให้ถูกต้อง</strong>เท่านั้น (เช่น ไม่เคยมีวันที่รับรองในระบบทำให้คำนวณวันหมดอายุไม่ได้ หรือวันประมาณการคำนวณผิดเพราะข้อมูลเดิมไม่ครบ) จะ<strong>ไม่เปลี่ยนสถานะโครงการ</strong>และไม่ถือเป็นการอนุมัติต่ออายุ — กรอกอย่างใดอย่างหนึ่งหรือทั้งสองอย่างก็ได้ หากต้องการอนุมัติต่ออายุจริงพร้อมเอกสารประกอบ ให้ใช้ปุ่ม "จัดการโดยแอดมิน" แทน</div>
           </div>
           <div id="eed-project-info" style="background:var(--navy-pale);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px"></div>
           <input type="hidden" id="eed-project-code">
 
           <div class="field-group">
-            <label><i class="ti ti-calendar" aria-hidden="true"></i> วันครบกำหนดทบทวน/หมดอายุใหม่ <span class="req">*</span></label>
+            <label><i class="ti ti-certificate" aria-hidden="true"></i> วันที่รับรอง</label>
+            <input type="date" id="eed-certified-date" class="form-control">
+            <div class="hint-text">ใช้เป็นฐานคำนวณวันครบกำหนดทบทวนแบบประมาณการ (+รอบทบทวนมาตรฐาน) หากยังไม่เคยยื่นต่ออายุจริง</div>
+          </div>
+
+          <div class="field-group">
+            <label><i class="ti ti-calendar" aria-hidden="true"></i> วันครบกำหนดทบทวน/หมดอายุใหม่</label>
             <input type="date" id="eed-new-expiry" class="form-control">
           </div>
 
@@ -3632,7 +3638,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         </div>
         <div class="modal-footer">
           <button class="btn btn-outline" onclick="closeModal('modal-edit-expiry')">ยกเลิก</button>
-          <button class="btn btn-primary" id="eed-submit-btn" onclick="doUpdateProjectExpiryDate()"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึก</button>
+          <button class="btn btn-primary" id="eed-submit-btn" onclick="doUpdateProjectDates()"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึก</button>
         </div>
       </div>
     </div>
