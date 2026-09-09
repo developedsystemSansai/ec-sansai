@@ -5025,7 +5025,7 @@ function renderStaffProjectsTable(projects) {
       actionBtn = '<span style="font-size:11px;color:var(--text-light)"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> เสร็จสิ้น</span>';
     }
 
-    var extraBtns = '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + code + '\')"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>';
+    var extraBtns = '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + code + '\', this)"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>';
     if (!isFinal && !isAwaitingResearcherRevision && !['ผ่านตรวจเอกสาร', 'รอแจ้งผล'].includes(status) && status.indexOf('รับรอง') === -1) {
       extraBtns += ' <button class="btn btn-sm btn-accent" onclick="openUpdateStatusModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')"><i class="ti ti-chart-bar" aria-hidden="true"></i> สถานะ</button>';
     }
@@ -5463,7 +5463,7 @@ function _renderCommitteeCheckboxes(committees) {
     var certFileId=String(r.cert_file_id||'');
 
     // <i class="ti ti-star" aria-hidden="true"></i> ปุ่ม Actions
-    var actions='<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\''+code+'\')"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>';
+    var actions='<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\''+code+'\', this)"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>';
     if(certFileId && (finalResult==='รับรอง'||finalResult==='รับรองมีข้อแก้ไข'||finalResult==='ไม่รับรอง')){
       actions+=' <a href="https://drive.google.com/uc?export=download&id='+certFileId+'" target="_blank" class="btn btn-sm btn-primary"><i class="ti ti-file-certificate" aria-hidden="true"></i> หนังสือรับรอง</a>';
     }
@@ -5949,111 +5949,132 @@ function openReviewRevisionModal(projectCode) {
 }
 
     // ============================================================
-//  ฟังก์ชัน viewProjectFiles ใน frontend - แก้ไขให้ทำงาน
-// ============================================================
-function viewProjectFiles(projectCode) {
-  if (!projectCode) {
-    showToast('ไม่พบรหัสโครงการ', 'error');
-    return;
-  }
-  
-  showGlobalLoading('กำลังโหลดไฟล์...');
-  
-  google.script.run
-    .withSuccessHandler(function(res) {
-      hideGlobalLoading();
-      
-      if (!res || !res.success) {
-        showToast('โหลดไฟล์ไม่สำเร็จ: ' + (res?.message || ''), 'error');
+    //  viewProjectFiles — เปิด modal ทันทีพร้อม skeleton เฉพาะจุด แทน
+    //  showGlobalLoading() (overlay เต็มหน้าจอ) เดิมที่ทำให้ดูเหมือนทั้งเว็บรีโหลดใหม่ทุกครั้งที่กด "ไฟล์"
+    // ============================================================
+    var VF_TYPE_LABEL = {
+      'proposal': 'IS.09', 'ethics_form': 'IS.01', 'self_assessment': 'IS.02',
+      'conflict_interest': 'IS.03', 'participant_info': 'IS.04', 'consent_form': 'IS.05',
+      'research_tools': 'เครื่องมือ', 'cover_letter': 'หนังสือนำส่ง', 'gcp_certificate': 'GCP',
+      'researcher_cv': 'CV', 'cert_letter': 'หนังสือรับรอง', 'revision_doc': 'เอกสารแก้ไข',
+      'revision_guideline': 'ข้อเสนอแนะ', 'rejection_reason': 'เหตุผลไม่รับรอง', 'other': 'อื่นๆ'
+    };
+    function vfFileIcon_(fileName) {
+      var ext = String(fileName || '').split('.').pop().toLowerCase();
+      var map = {
+        pdf: 'ti-file-text', doc: 'ti-file-text', docx: 'ti-file-text',
+        xls: 'ti-chart-bar', xlsx: 'ti-chart-bar',
+        jpg: 'ti-photo', jpeg: 'ti-photo', png: 'ti-photo', gif: 'ti-photo'
+      };
+      return '<i class="ti ' + (map[ext] || 'ti-file') + '" aria-hidden="true"></i>';
+    }
+    function vfSkeleton_() {
+      var row = '<div class="vf-skel-row">' +
+        '<div class="vf-skel-block" style="width:38px;height:38px;border-radius:8px;flex-shrink:0"></div>' +
+        '<div style="flex:1">' +
+          '<div class="vf-skel-block" style="width:60%;height:13px;margin-bottom:8px"></div>' +
+          '<div class="vf-skel-block" style="width:35%;height:11px"></div>' +
+        '</div>' +
+        '<div class="vf-skel-block" style="width:64px;height:28px;border-radius:6px;flex-shrink:0"></div>' +
+      '</div>';
+      return row + row + row;
+    }
+    function viewProjectFiles(projectCode, btnEl) {
+      if (!projectCode) {
+        showToast('ไม่พบรหัสโครงการ', 'error');
         return;
       }
-      
-      var files = res.data || [];
-      var modalContent = '';
-      
-      if (!files.length) {
-        modalContent = '<div class="empty-state" style="padding:32px">' +
-          '<div class="empty-icon" style="font-size:48px"><i class="ti ti-inbox" aria-hidden="true"></i></div>' +
-          '<p>ยังไม่มีไฟล์ในโครงการนี้</p>' +
-          '<small style="color:var(--text-light)">รหัสโครงการ: ' + esc(projectCode) + '</small>' +
-          '</div>';
-      } else {
-        modalContent = '<div style="padding:0 0 16px 0">' +
-          '<div style="background:var(--navy-pale);padding:12px 16px;border-radius:var(--radius);margin:0 0 16px 0;font-size:14px">' +
-          '<strong>' + esc(projectCode) + '</strong><br>' +
-          '<span style="color:var(--text-light)">พบ ' + files.length + ' ไฟล์</span>' +
-          '</div>';
-        
-        modalContent += '<table style="width:100%">' +
-          '<thead>' +
-          '<tr>' +
-          '<th style="padding:8px 12px;text-align:left">#</th>' +
-          '<th style="padding:8px 12px;text-align:left">ชื่อไฟล์</th>' +
-          '<th style="padding:8px 12px;text-align:left">ประเภท</th>' +
-          '<th style="padding:8px 12px;text-align:left">วันที่อัพโหลด</th>' +
-          '<th style="padding:8px 12px;text-align:center">ดำเนินการ</th>' +
-          '</tr>' +
-          '</thead>' +
-          '<tbody>';
-        
-        files.forEach(function(f, i) {
-          var fileType = f.file_type || 'other';
-          var typeLabel = {
-            'proposal': 'IS.09',
-            'ethics_form': 'IS.01',
-            'self_assessment': 'IS.02',
-            'conflict_interest': 'IS.03',
-            'participant_info': 'IS.04',
-            'consent_form': 'IS.05',
-            'research_tools': 'เครื่องมือ',
-            'cover_letter': 'หนังสือนำส่ง',
-            'gcp_certificate': 'GCP',
-            'researcher_cv': 'CV',
-            'cert_letter': 'หนังสือรับรอง',
-            'revision_doc': 'เอกสารแก้ไข',
-            'revision_guideline': 'ข้อเสนอแนะ',
-            'rejection_reason': 'เหตุผลไม่รับรอง',
-            'other': 'อื่นๆ'
-          }[fileType] || fileType;
-          
-          modalContent += '<tr>' +
-            '<td style="padding:8px 12px">' + (i + 1) + '</td>' +
-            '<td style="padding:8px 12px">' +
-              '<div><strong>' + esc(f.file_name || '-') + '</strong></div>' +
-              (f.file_size ? '<small style="color:var(--text-light)">' + formatFileSize(parseInt(f.file_size)) + '</small>' : '') +
-            '</td>' +
-            '<td style="padding:8px 12px"><span class="pill pill-blue">' + esc(typeLabel) + '</span></td>' +
-            '<td style="padding:8px 12px">' + formatDate(f.uploaded_date) + '</td>' +
-            '<td style="padding:8px 12px;white-space:nowrap;text-align:center">' +
-              (f.file_url ? '<a href="' + esc(f.file_url) + '" target="_blank" class="btn btn-sm btn-outline" title="ดูไฟล์"><i class="ti ti-eye" aria-hidden="true"></i></a> ' : '') +
-              (f.download_url ? '<a href="' + esc(f.download_url) + '" target="_blank" class="btn btn-sm btn-primary" title="ดาวน์โหลด"><i class="ti ti-arrow-down" aria-hidden="true"></i></a>' : '') +
-            '</td>' +
-            '</tr>';
-        });
-        
-        modalContent += '</tbody></table></div>';
-      }
-      
-      // ใช้ modal-view-files ที่ถูกต้อง
+
       var vfFileList = document.getElementById('vf-file-list');
       var vfProjInfo = document.getElementById('vf-project-info');
-      if (vfProjInfo) vfProjInfo.innerHTML = '<strong>' + esc(projectCode) + '</strong>';
-      if (vfFileList) {
-        vfFileList.innerHTML = modalContent;
-      }
-      // ซ่อน verify section (แสดงเฉพาะเมื่อต้องการตรวจสอบ)
-      var vfVerify = document.getElementById('vf-verify-section');
+      var vfVerify   = document.getElementById('vf-verify-section');
       if (vfVerify) vfVerify.style.display = 'none';
-      
-      // เปิด modal ที่ถูกต้อง
+
+      // เปิด modal ทันที พร้อม skeleton ระหว่างรอข้อมูล — ไม่บล็อกทั้งหน้าจอ
+      if (vfProjInfo) {
+        vfProjInfo.innerHTML = '<strong>' + esc(projectCode) + '</strong><br>' +
+          '<span style="color:var(--text-light)"><span class="spin-sm dark" style="width:11px;height:11px;display:inline-block;vertical-align:-1px;margin-right:5px"></span>กำลังโหลดไฟล์...</span>';
+      }
+      if (vfFileList) vfFileList.innerHTML = vfSkeleton_();
       openModal('modal-view-files');
-    })
-    .withFailureHandler(function(err) {
-      hideGlobalLoading();
-      showToast('เกิดข้อผิดพลาด: ' + err.message, 'error');
-    })
-    .getUploadedFiles(S.user.sessionId, projectCode, S.user.username);
-}
+
+      var prevBtnHtml = null;
+      if (btnEl) {
+        prevBtnHtml = btnEl.innerHTML;
+        btnEl.disabled = true;
+        btnEl.classList.add('btn-loading');
+      }
+      function restoreBtn() {
+        if (btnEl) {
+          btnEl.disabled = false;
+          btnEl.classList.remove('btn-loading');
+          if (prevBtnHtml !== null) btnEl.innerHTML = prevBtnHtml;
+        }
+      }
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          restoreBtn();
+          if (!vfFileList) return;
+
+          if (!res || !res.success) {
+            if (vfProjInfo) vfProjInfo.innerHTML = '<strong>' + esc(projectCode) + '</strong>';
+            vfFileList.innerHTML = '<div class="vf-error-state">' +
+              '<div class="vf-error-icon"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>' +
+              '<p>โหลดไฟล์ไม่สำเร็จ' + ((res && res.message) ? ': ' + esc(res.message) : '') + '</p>' +
+              '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + escAttr(projectCode) + '\')"><i class="ti ti-refresh" aria-hidden="true"></i> ลองใหม่</button>' +
+              '</div>';
+            return;
+          }
+
+          var files = res.data || [];
+          if (vfProjInfo) {
+            vfProjInfo.innerHTML = '<strong>' + esc(projectCode) + '</strong><br>' +
+              '<span style="color:var(--text-light)">พบ ' + files.length + ' ไฟล์</span>';
+          }
+
+          if (!files.length) {
+            vfFileList.innerHTML = '<div class="empty-state" style="padding:32px">' +
+              '<div class="empty-icon" style="font-size:48px"><i class="ti ti-inbox" aria-hidden="true"></i></div>' +
+              '<p>ยังไม่มีไฟล์ในโครงการนี้</p>' +
+              '</div>';
+            return;
+          }
+
+          var html = '';
+          files.forEach(function(f) {
+            var typeLabel = VF_TYPE_LABEL[f.file_type || 'other'] || (f.file_type || 'อื่นๆ');
+            html += '<div class="vf-file-card">' +
+              '<div class="vf-file-icon">' + vfFileIcon_(f.file_name) + '</div>' +
+              '<div class="vf-file-main">' +
+                '<div class="vf-file-name" title="' + escAttr(f.file_name || '-') + '">' + esc(f.file_name || '-') + '</div>' +
+                '<div class="vf-file-meta">' +
+                  '<span class="pill pill-blue">' + esc(typeLabel) + '</span>' +
+                  (f.file_size ? '<span>' + formatFileSize(parseInt(f.file_size)) + '</span>' : '') +
+                  '<span>' + formatDate(f.uploaded_date) + '</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="vf-file-actions">' +
+                (f.file_url ? '<a href="' + esc(f.file_url) + '" target="_blank" class="btn btn-sm btn-outline" title="ดูไฟล์"><i class="ti ti-eye" aria-hidden="true"></i></a>' : '') +
+                (f.download_url ? '<a href="' + esc(f.download_url) + '" target="_blank" class="btn btn-sm btn-primary" title="ดาวน์โหลด"><i class="ti ti-arrow-down" aria-hidden="true"></i></a>' : '') +
+              '</div>' +
+            '</div>';
+          });
+          vfFileList.innerHTML = html;
+        })
+        .withFailureHandler(function(err) {
+          restoreBtn();
+          if (vfProjInfo) vfProjInfo.innerHTML = '<strong>' + esc(projectCode) + '</strong>';
+          if (vfFileList) {
+            vfFileList.innerHTML = '<div class="vf-error-state">' +
+              '<div class="vf-error-icon"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>' +
+              '<p>เกิดข้อผิดพลาด: ' + esc(err.message) + '</p>' +
+              '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + escAttr(projectCode) + '\')"><i class="ti ti-refresh" aria-hidden="true"></i> ลองใหม่</button>' +
+              '</div>';
+          }
+        })
+        .getUploadedFiles(S.user.sessionId, projectCode, S.user.username);
+    }
 
     // ════════════════════════════════════════
     // MEETINGS
