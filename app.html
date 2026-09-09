@@ -93,6 +93,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         deleteMeetingMinute:         function(mid,au)           { return callGAS('deleteMeetingMinute',       {minuteId:mid, adminUsername:au}); },
         submitResearchReport:        function(pl)               { return callGAS('submitResearchReport',      {payload:pl}); },
         reviewResearchReport:        function(pl,su)            { return callGAS('reviewResearchReport',      {payload:pl, staffUsername:su}); },
+        adminManageProject:          function(sid,pl,au)        { return callGAS('adminManageProject',        {sessionId:sid, payload:pl, adminUsername:au}); },
         getAllResearchReports:        function(cu)               { return callGAS('getAllResearchReports',     {callerUsername:cu}); },
         getResearchProjectsOverview:  function(sid,cu)           { return callGAS('getResearchProjectsOverview', {sessionId:sid, callerUsername:cu}); },
         runExpiryCheckNow:            function(sid,cu)           { return callGAS('runExpiryCheckNow', {sessionId:sid, callerUsername:cu}); },
@@ -1531,7 +1532,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
 </div>
           <div class="form-row-2"><div class="form-group"><label>ชื่อ <span class="req">*</span></label><input type="text" id="reg-fname" class="form-control"></div><div class="form-group"><label>นามสกุล <span class="req">*</span></label><input type="text" id="reg-lname" class="form-control"></div></div>
           <div class="form-group"><label>ชื่อ-นามสกุล ภาษาอังกฤษ</label><input type="text" id="reg-name-en" class="form-control"></div>
-          <div class="form-group"><label>เบอร์โทรศัพท์ <span class="req">*</span></label><input type="tel" id="reg-phone" class="form-control" maxlength="10"></div>
+          <div class="form-group"><label>เบอร์โทรศัพท์ <span class="req">*</span></label><input type="tel" id="reg-phone" class="form-control" maxlength="11" placeholder="0xx-xxxxxxx" oninput="formatPhoneInput(this)"></div>
           <!-- การอบรมจริยธรรม -->
   <div class="section-divider"><i class="ti ti-books" aria-hidden="true"></i> การอบรมจริยธรรมการวิจัยในมนุษย์</div>
   
@@ -2950,7 +2951,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                 <div style="padding:20px">
                   <div class="field-group"><label>ชื่อ - นามสกุล</label><input type="text" id="prof-name" class="form-control"></div>
                   <div class="field-group"><label>อีเมล</label><input type="email" id="prof-email" class="form-control"></div>
-                  <div class="field-group"><label>เบอร์โทรศัพท์</label><input type="tel" id="prof-phone" class="form-control"></div>
+                  <div class="field-group"><label>เบอร์โทรศัพท์</label><input type="tel" id="prof-phone" class="form-control" maxlength="11" placeholder="0xx-xxxxxxx" oninput="formatPhoneInput(this)"></div>
                   <div class="field-group"><label>หน่วยงาน</label><input type="text" id="prof-faculty" class="form-control" readonly style="background:var(--bg)"></div>
                   <div class="field-group"><label>กลุ่มงาน</label><input type="text" id="prof-department" class="form-control" readonly style="background:var(--bg)"></div>
                   <div class="field-group"><label>สิทธิ์การใช้งาน</label><input type="text" id="prof-role" class="form-control" readonly style="background:var(--bg)"></div>
@@ -3367,7 +3368,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                   <td><input class="fr01-input" id="fr01-researcher" type="text" placeholder="ชื่อ-นามสกุล ผู้วิจัยหลัก"></td>
                 </tr>
                 <tr>
-                  <td><strong>เบอร์โทร</strong>&nbsp;<input class="fr01-input inline" id="fr01-phone" type="tel" placeholder="0xx-xxx-xxxx" style="width:140px"></td>
+                  <td><strong>เบอร์โทร</strong>&nbsp;<input class="fr01-input inline" id="fr01-phone" type="tel" placeholder="0xx-xxxxxxx" maxlength="11" style="width:140px" oninput="formatPhoneInput(this)"></td>
                   <td><strong>Email:</strong>&nbsp;<input class="fr01-input inline" id="fr01-email" type="email" placeholder="sansai@gmail.com" style="width:calc(100% - 65px)"></td>
                 </tr>
                 <tr>
@@ -3514,6 +3515,54 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <button class="btn btn-outline" onclick="closeModal('modal-review-report')">ยกเลิก</button>
           <button class="btn btn-danger" onclick="doReviewReport('rejected')"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ต้องแก้ไข</button>
           <button class="btn btn-primary" onclick="doReviewReport('approved')"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ผ่านการพิจารณา</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: จัดการโครงการโดยแอดมิน (ต่ออายุ/ปิดโครงการแทนผู้วิจัย) -->
+    <div class="modal-overlay" id="modal-admin-manage-project">
+      <div class="modal modal-lg">
+        <div class="modal-header">
+          <h3><i class="ti ti-user-cog" aria-hidden="true"></i> จัดการโครงการโดยแอดมิน</h3>
+          <button class="modal-close" onclick="closeModal('modal-admin-manage-project')"><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-warning" style="margin-bottom:16px">
+            <i class="ti ti-alert-triangle ti-warn" aria-hidden="true"></i>
+            <div>ใช้สำหรับกรณีผู้วิจัย<strong>ไม่สามารถเข้าสู่ระบบ</strong>เพื่อยื่นรายงานเองได้ เจ้าหน้าที่/แอดมินสามารถอัปโหลดไฟล์และดำเนินการแทนได้ที่นี่ ระบบจะถือว่ารายการนี้<strong>ผ่านการพิจารณาทันที</strong> และจะแจ้งเตือนผู้วิจัยเจ้าของโครงการโดยอัตโนมัติ</div>
+          </div>
+          <div id="amp-project-info" style="background:var(--navy-pale);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px"></div>
+          <input type="hidden" id="amp-project-code">
+
+          <div class="field-group">
+            <label><i class="ti ti-list-check" aria-hidden="true"></i> เลือกการดำเนินการ <span class="req">*</span></label>
+            <select id="amp-action" class="form-control" onchange="onAmpActionChange()">
+              <option value="">-- เลือกการดำเนินการ --</option>
+              <option value="renewal">ต่ออายุโครงการ (Continuing Review)</option>
+              <option value="closure">ปิดโครงการ (Study Closure)</option>
+            </select>
+          </div>
+
+          <div class="field-group" id="amp-expiry-row" style="display:none">
+            <label><i class="ti ti-calendar" aria-hidden="true"></i> วันหมดอายุใหม่ <span class="req">*</span></label>
+            <input type="date" id="amp-new-expiry" class="form-control">
+          </div>
+
+          <div class="field-group">
+            <label><i class="ti ti-paperclip" aria-hidden="true"></i> แนบไฟล์ประกอบการดำเนินการ <span class="req">*</span></label>
+            <input type="file" class="form-control" id="amp-file-input" accept=".pdf,.docx,.doc,.xlsx" multiple onchange="handleAmpFileUpload(this)">
+            <div class="hint-text">รองรับ PDF, Word, Excel | แนบได้หลายไฟล์ | ไม่เกิน 10MB ต่อไฟล์ (เช่น เอกสารต่ออายุ/ปิดโครงการที่ผู้วิจัยส่งมาให้ทางอื่น)</div>
+            <div id="amp-file-list" style="margin-top:10px"></div>
+          </div>
+
+          <div class="field-group">
+            <label><i class="ti ti-edit" aria-hidden="true"></i> หมายเหตุ</label>
+            <textarea id="amp-note" class="form-control" rows="3" placeholder="เหตุผล/ช่องทางที่ได้รับเอกสารจากผู้วิจัย เช่น ส่งเอกสารมาทางอีเมล/กระดาษ เนื่องจากเข้าระบบไม่ได้..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('modal-admin-manage-project')">ยกเลิก</button>
+          <button class="btn btn-primary" id="amp-submit-btn" onclick="doAdminManageProject()"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึกและดำเนินการ</button>
         </div>
       </div>
     </div>
@@ -4068,7 +4117,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div class="field-group"><label>ชื่อ - นามสกุล <span class="req">*</span></label><input type="text" class="form-control" id="uf-name"></div>
           <div class="form-row-2">
             <div class="field-group"><label>อีเมล <span class="req">*</span></label><input type="email" class="form-control" id="uf-email"></div>
-            <div class="field-group"><label>เบอร์โทรศัพท์</label><input type="tel" class="form-control" id="uf-phone"></div>
+            <div class="field-group"><label>เบอร์โทรศัพท์</label><input type="tel" class="form-control" id="uf-phone" maxlength="11" placeholder="0xx-xxxxxxx" oninput="formatPhoneInput(this)"></div>
           </div>
           <div class="form-row-2">
             <div class="field-group"><label>สิทธิ์ <span class="req">*</span></label><select class="form-control" id="uf-roles"><option value="">-- เลือก --</option><option value="admin,staff">Admin + Staff</option><option value="staff">Staff</option><option value="committee">Committee</option><option value="committee,researcher">Committee + Researcher</option><option value="researcher">Researcher</option></select></div>
@@ -5417,6 +5466,16 @@ function openNotifyModal(projectCode) {
   _notifyRevisionFileId = '';
   _notifyRejectionFileId = '';
   _notifyOtherFileIds = [];
+
+  // [BUGFIX] รีเซ็ตตัวเลือกผลการพิจารณา + ส่วนแนบไฟล์ให้ว่างเปล่าทุกครั้งที่เปิด modal สำหรับโครงการใหม่
+  // (ก่อนหน้านี้ถ้าเปิด modal นี้ซ้ำคนละโครงการ ส่วนแนบไฟล์เดิมจากโครงการก่อนหน้าจะค้างอยู่ ทำให้ผู้ใช้แนบไฟล์
+  // ผิดประเภทไปโดยไม่รู้ตัว แล้วระบบแจ้งว่ายังไม่ได้แนบไฟล์ทั้งที่แนบไปแล้ว)
+  var selElInit = document.getElementById('notify-final-result');
+  if (selElInit) selElInit.value = '';
+  var attachContainerInit = document.getElementById('notify-attachment-container');
+  if (attachContainerInit) attachContainerInit.innerHTML = '';
+  var deadlineRowInit = document.getElementById('notify-deadline-row');
+  if (deadlineRowInit) deadlineRowInit.style.display = 'none';
   
   var proj = (S._readyToNotify || []).find(function(p) { return p.project_code === projectCode; }) ||
               S.staffProjects.find(function(p) { return p.project_code === projectCode; }) ||
@@ -5460,9 +5519,13 @@ function openNotifyModal(projectCode) {
       var decisions = res.reviews.map(function(r) { return r.final_decision; });
       var recommend = _suggestFinalDecision(decisions);
       var selEl = document.getElementById('notify-final-result');
-      if (selEl && recommend) selEl.value = recommend;
-      if (recommend === 'รับรองมีข้อแก้ไข') {
-        document.getElementById('notify-deadline-row').style.display = 'block';
+      if (selEl && recommend) {
+        selEl.value = recommend;
+        // [BUGFIX] การตั้งค่า .value ด้วย JS ไม่ทำให้ event 'change' ทำงาน จึงต้องเรียก
+        // updateNotifyAttachmentSection() เองตรงนี้ เพื่อให้ส่วนแนบไฟล์ (และแถววันกำหนดส่งแก้ไข)
+        // ตรงกับผลการพิจารณาที่ระบบแนะนำไว้จริงๆ — ไม่เช่นนั้นส่วนแนบไฟล์จะยังว่างอยู่ (หรือค้างจากโครงการก่อนหน้า)
+        // ทำให้ผู้ใช้แนบไฟล์ผิดช่อง แล้วระบบแจ้งว่ายังไม่ได้แนบไฟล์ทั้งที่แนบไปแล้ว
+        updateNotifyAttachmentSection();
       }
       
       // แสดงไฟล์เดิมของโครงการ (ถ้ามี)
@@ -6650,7 +6713,7 @@ function doSubmitEvaluation() {
     // ════════════════════════════════════════
     // PROFILE
     // ════════════════════════════════════════
-    function saveProfile(){ var payload={name:val('prof-name'),email:val('prof-email'),phone:val('prof-phone')}; if(!payload.name){ showToast('กรุณากรอกชื่อ','error'); return; } google.script.run.withSuccessHandler(function(res){ if(res.success){ S.user.name=payload.name; S.user.email=payload.email; document.getElementById('user-display-name').textContent=payload.name; document.getElementById('user-avatar').textContent=payload.name.charAt(0).toUpperCase(); showToast('บันทึกข้อมูลแล้ว'); } else showToast('เกิดข้อผิดพลาด: '+(res.message||''),'error'); }).withFailureHandler(function(e){ showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }).updateProfile(S.user.sessionId, S.user.username, payload); }
+    function saveProfile(){ var payload={name:val('prof-name'),email:val('prof-email'),phone:phoneDigits('prof-phone')}; if(!payload.name){ showToast('กรุณากรอกชื่อ','error'); return; } google.script.run.withSuccessHandler(function(res){ if(res.success){ S.user.name=payload.name; S.user.email=payload.email; document.getElementById('user-display-name').textContent=payload.name; document.getElementById('user-avatar').textContent=payload.name.charAt(0).toUpperCase(); showToast('บันทึกข้อมูลแล้ว'); } else showToast('เกิดข้อผิดพลาด: '+(res.message||''),'error'); }).withFailureHandler(function(e){ showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }).updateProfile(S.user.sessionId, S.user.username, payload); }
     function changePassword(){ var o=val('pw-old'),n=val('pw-new'),c=val('pw-new2'); if(!o||!n||!c){ showToast('กรุณากรอกข้อมูลให้ครบ','error'); return; } if(n.length<6){ showToast('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัว','error'); return; } if(n!==c){ showToast('รหัสผ่านใหม่ไม่ตรงกัน','error'); return; } google.script.run.withSuccessHandler(function(res){ if(res.success){ document.getElementById('pw-old').value=''; document.getElementById('pw-new').value=''; document.getElementById('pw-new2').value=''; document.getElementById('pw-strength').style.width='0'; showToast('เปลี่ยนรหัสผ่านแล้ว'); } else showToast('เกิดข้อผิดพลาด: '+(res.message||''),'error'); }).withFailureHandler(function(e){ showToast('เกิดข้อผิดพลาด: '+e.message,'error'); }).changePassword(S.user.sessionId, S.user.username, o, n); }
 
     // ════════════════════════════════════════
@@ -7447,7 +7510,7 @@ function doQuickAssign(){
   renderUsersTable(f);
 }
  function openAddUserModal(){ document.getElementById('user-form-title').textContent='เพิ่มผู้ใช้งานใหม่'; document.getElementById('uf-edit-username').value=''; ['uf-username','uf-password','uf-name','uf-email','uf-phone','uf-faculty','uf-department','uf-position'].forEach(function(id){ document.getElementById(id).value=''; }); document.getElementById('uf-username').disabled=false; document.getElementById('uf-roles').value=''; document.getElementById('uf-status').value='active'; document.getElementById('uf-pass-req').style.display='inline'; document.getElementById('uf-pass-hint').textContent='อย่างน้อย 8 ตัว มีตัวพิมพ์เล็ก+ใหญ่+เลข เช่น Test1234'; openModal('modal-user-form'); }
- function openEditUserModal(username){ var u=S.allUsers.find(function(x){ return x.username===username; }); if(!u){ showToast('ไม่พบข้อมูล','error'); return; } document.getElementById('user-form-title').textContent='แก้ไขผู้ใช้: '+username; document.getElementById('uf-edit-username').value=username; document.getElementById('uf-username').value=username; document.getElementById('uf-username').disabled=true; document.getElementById('uf-password').value=''; document.getElementById('uf-name').value=u.name||''; document.getElementById('uf-email').value=u.email||''; document.getElementById('uf-phone').value=u.phone||''; document.getElementById('uf-faculty').value=u.faculty||''; document.getElementById('uf-department').value=u.department||''; document.getElementById('uf-position').value=u.position||''; document.getElementById('uf-roles').value=String(u.roles||'').replace('pending_',''); document.getElementById('uf-status').value=String(u.status||'active').toLowerCase(); document.getElementById('uf-pass-req').style.display='none'; document.getElementById('uf-pass-hint').textContent='เว้นว่างหากไม่เปลี่ยนรหัสผ่าน'; openModal('modal-user-form'); }
+ function openEditUserModal(username){ var u=S.allUsers.find(function(x){ return x.username===username; }); if(!u){ showToast('ไม่พบข้อมูล','error'); return; } document.getElementById('user-form-title').textContent='แก้ไขผู้ใช้: '+username; document.getElementById('uf-edit-username').value=username; document.getElementById('uf-username').value=username; document.getElementById('uf-username').disabled=true; document.getElementById('uf-password').value=''; document.getElementById('uf-name').value=u.name||''; document.getElementById('uf-email').value=u.email||''; document.getElementById('uf-phone').value=formatPhoneDisplay(u.phone||''); document.getElementById('uf-faculty').value=u.faculty||''; document.getElementById('uf-department').value=u.department||''; document.getElementById('uf-position').value=u.position||''; document.getElementById('uf-roles').value=String(u.roles||'').replace('pending_',''); document.getElementById('uf-status').value=String(u.status||'active').toLowerCase(); document.getElementById('uf-pass-req').style.display='none'; document.getElementById('uf-pass-hint').textContent='เว้นว่างหากไม่เปลี่ยนรหัสผ่าน'; openModal('modal-user-form'); }
     // Helper: ตรวจความแข็งแกร่งรหัสผ่านสำหรับ user form (admin)
     function checkPwStrength(pw) {
       var hintEl = document.getElementById('uf-pass-hint');
@@ -7471,7 +7534,7 @@ function doQuickAssign(){
   var btn=document.getElementById('uf-save-btn');
   btn.disabled=true; btn.innerHTML='<span class="spin-sm"></span> กำลังบันทึก...';
   var payload={username:isEdit?editUsername:username, password:password,
-    name:name, email:email, phone:val('uf-phone').trim(),
+    name:name, email:email, phone:phoneDigits('uf-phone'),
     faculty:val('uf-faculty').trim(), department:val('uf-department').trim(),
     position:val('uf-position').trim(), roles:roles, status:status};
   var action = isEdit ? 'updateUser' : 'createUser';
@@ -8003,9 +8066,9 @@ var ethicsCertificateFile = null;
       // Validation step 2 → 3
       if (n === 3) {
         var prefix = val('reg-prefix'), fn = val('reg-fname').trim(), ln = val('reg-lname').trim();
-        var ph = val('reg-phone').trim();
+        var ph = phoneDigits('reg-phone');
         if (!prefix || !fn || !ln) { showRegError('กรุณากรอกคำนำหน้า ชื่อ และนามสกุล'); return; }
-        if (!ph || !/^0[0-9]{8,9}$/.test(ph)) { showRegError('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก'); return; }
+        if (!ph || !/^0[0-9]{8,9}$/.test(ph)) { showRegError('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (0xx-xxxxxxx)'); return; }
         var ethicsStatus = val('reg-ethics-training');
         if (!ethicsStatus) { showRegError('กรุณาเลือกสถานะการอบรมจริยธรรม'); return; }
         if (ethicsStatus === 'completed' && !ethicsCertificateFile) {
@@ -8024,7 +8087,7 @@ var ethicsCertificateFile = null;
       hideRegError();
     }
     function regStep1Next(){ var u=val('reg-username').trim(),em=val('reg-email').trim(),p1=val('reg-pass'),p2=val('reg-pass2'); if(!u||!em||!p1||!p2){ showRegError('กรุณากรอกข้อมูลให้ครบ'); return; } if(!/^[a-zA-Z0-9_]{4,20}$/.test(u)){ showRegError('Username ต้องเป็น a-z, 0-9, _ 4-20 ตัว'); return; } if(p1.length<8){ showRegError('รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร'); return; } if(!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(p1)){ showRegError('รหัสผ่านต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลข เช่น Test1234'); return; } if(p1!==p2){ showRegError('รหัสผ่านไม่ตรงกัน'); return; } regGoStep(2); }
-    function regStep2Next(){ var prefix=val('reg-prefix'),fn=val('reg-fname').trim(),ln=val('reg-lname').trim(),ph=val('reg-phone').trim(); if(!prefix||!fn||!ln){ showRegError('กรุณากรอกคำนำหน้า ชื่อ และนามสกุล'); return; } if(!ph||!/^0[0-9]{8,9}$/.test(ph)){ showRegError('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก'); return; } var et=val('reg-ethics-training'); if(!et){ showRegError('กรุณาเลือกสถานะการอบรมจริยธรรม'); return; } if(et==='completed'&&!ethicsCertificateFile){ showRegError('กรุณาอัพโหลดใบประกาศนียบัตร'); return; } regGoStep(3); }
+    function regStep2Next(){ var prefix=val('reg-prefix'),fn=val('reg-fname').trim(),ln=val('reg-lname').trim(),ph=phoneDigits('reg-phone'); if(!prefix||!fn||!ln){ showRegError('กรุณากรอกคำนำหน้า ชื่อ และนามสกุล'); return; } if(!ph||!/^0[0-9]{8,9}$/.test(ph)){ showRegError('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (0xx-xxxxxxx)'); return; } var et=val('reg-ethics-training'); if(!et){ showRegError('กรุณาเลือกสถานะการอบรมจริยธรรม'); return; } if(et==='completed'&&!ethicsCertificateFile){ showRegError('กรุณาอัพโหลดใบประกาศนียบัตร'); return; } regGoStep(3); }
     function updateRegDept() { 
   var faculty = val('reg-faculty'); 
   var deptSel = document.getElementById('reg-department'); 
@@ -8522,12 +8585,15 @@ function submitAdminDirectReview() {
 //  updateNotifyAttachmentSection - แก้ไขให้มีส่วนแนบไฟล์ตามผล
 // ============================================================
 function updateNotifyAttachmentSection() {
-  document.getElementById('notify-deadline-row').style.display = 'none';
-  if (document.getElementById('notify-revision-deadline'))
-    document.getElementById('notify-revision-deadline').value = '';
-  
   const result = document.getElementById('notify-final-result').value;
   const container = document.getElementById('notify-attachment-container');
+
+  // [BUGFIX] เดิมโค้ดนี้ตั้งค่า display:none ให้แถว "กำหนดส่งแก้ไข" เสมอ โดยไม่มีจุดไหนตั้งกลับเป็น block
+  // เมื่อผู้ใช้เลือก "รับรองมีข้อแก้ไข" เอง (ไม่ผ่านระบบแนะนำอัตโนมัติ) ทำให้แถววันที่หายไป
+  var deadlineRow = document.getElementById('notify-deadline-row');
+  if (deadlineRow) deadlineRow.style.display = (result === 'รับรองมีข้อแก้ไข') ? 'block' : 'none';
+  if (result !== 'รับรองมีข้อแก้ไข' && document.getElementById('notify-revision-deadline'))
+    document.getElementById('notify-revision-deadline').value = '';
   
   let html = '';
   
@@ -9114,7 +9180,7 @@ function removeNotifyRevisionFile() {
           summaryEl.style.display = 'none';
         }
       }
-      var html = '<table><thead><tr><th>#</th><th>รหัสโครงการ</th><th>ชื่อโครงการ</th><th>ผู้วิจัยหลัก</th><th>วันที่รับรอง</th><th>ระยะเวลาโครงการ</th><th>ครบกำหนดทบทวน/หมดอายุ</th></tr></thead><tbody>';
+      var html = '<table><thead><tr><th>#</th><th>รหัสโครงการ</th><th>ชื่อโครงการ</th><th>ผู้วิจัยหลัก</th><th>วันที่รับรอง</th><th>ระยะเวลาโครงการ</th><th>ครบกำหนดทบทวน/หมดอายุ</th><th>Actions</th></tr></thead><tbody>';
       rows.forEach(function(r,i){
         var expiryCell;
         if (r.expiry_date) {
@@ -9136,7 +9202,8 @@ function removeNotifyRevisionFile() {
           + '<td>'+esc(r.pi_name||'-')+'</td>'
           + '<td>'+(r.certified_date ? formatDate(r.certified_date) : '<span style="color:var(--text-light)">-</span>')+'</td>'
           + '<td>'+esc(r.duration||'-')+'</td>'
-          + '<td>'+expiryCell+'</td></tr>';
+          + '<td>'+expiryCell+'</td>'
+          + '<td style="white-space:nowrap"><button class="btn btn-sm btn-outline" onclick="openAdminManageProjectModal(\''+escAttr(r.project_code)+'\',\''+escAttr((r.title_th||'').slice(0,60))+'\')" title="แอดมินดำเนินการแทนผู้วิจัย กรณีผู้วิจัยไม่สามารถเข้าระบบมายื่นเองได้"><i class="ti ti-user-cog" aria-hidden="true"></i> จัดการโดยแอดมิน</button></td></tr>';
       });
       el.innerHTML = html + '</tbody></table>';
     }
@@ -9485,6 +9552,104 @@ async function uploadToGoogleDrive(file) {
           newExpiryDate:  reportType === 'renewal' ? document.getElementById('review-new-expiry').value : ''
         }, S.user.username);
     }
+
+    // ── Modal: จัดการโครงการโดยแอดมิน (ต่ออายุ/ปิดโครงการแทนผู้วิจัย) ──
+    var _ampFileIds = [];
+    var _ampProjectCode = '';
+
+    function openAdminManageProjectModal(projectCode, titleTh) {
+      _ampFileIds = [];
+      _ampProjectCode = projectCode;
+      document.getElementById('amp-project-code').value = projectCode;
+      document.getElementById('amp-project-info').innerHTML =
+        '<div class="apc-code"><i class="ti ti-folder" aria-hidden="true"></i> ' + esc(projectCode) + '</div>' +
+        '<div class="apc-title">' + esc(titleTh || '-') + '</div>';
+      document.getElementById('amp-action').value = '';
+      document.getElementById('amp-expiry-row').style.display = 'none';
+      document.getElementById('amp-new-expiry').value = '';
+      document.getElementById('amp-note').value = '';
+      document.getElementById('amp-file-input').value = '';
+      document.getElementById('amp-file-list').innerHTML = '';
+      openModal('modal-admin-manage-project');
+    }
+
+    function onAmpActionChange() {
+      var action = document.getElementById('amp-action').value;
+      document.getElementById('amp-expiry-row').style.display = action === 'renewal' ? 'block' : 'none';
+    }
+
+    function handleAmpFileUpload(input) {
+      var listEl = document.getElementById('amp-file-list');
+      Array.from(input.files).forEach(function(file) {
+        if (file.size > 10 * 1024 * 1024) { showToast('ไฟล์ ' + file.name + ' ใหญ่เกิน 10MB', 'error'); return; }
+        var row = document.createElement('div'); row.className = 'file-item';
+        row.innerHTML = '<div style="font-size:13px"><i class="ti ti-paperclip" aria-hidden="true"></i> ' + esc(file.name) + ' <span class="spin-sm dark" style="width:14px;height:14px;display:inline-block"></span></div>';
+        listEl.appendChild(row);
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          var code = _ampProjectCode || 'RPT_TEMP';
+          var action = document.getElementById('amp-action').value || 'admin';
+          google.script.run
+            .withSuccessHandler(function(r) {
+              if (r && r.success) {
+                _ampFileIds.push(r.fileId);
+                row.innerHTML = '<div style="font-size:13px"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ' + esc(file.name) + ' <small>(' + formatFileSize(file.size) + ')</small></div>'
+                  + '<div style="display:flex;gap:6px">'
+                  + (r.fileUrl ? '<a href="' + esc(r.fileUrl) + '" target="_blank" class="btn btn-sm btn-outline"><i class="ti ti-eye" aria-hidden="true"></i></a>' : '')
+                  + '<button class="btn btn-sm btn-danger" onclick="removeAmpFile(\'' + escAttr(r.fileId) + '\',this)"><i class="ti ti-trash" aria-hidden="true"></i></button></div>';
+              } else {
+                row.innerHTML = '<div style="font-size:13px;color:var(--red)"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(file.name) + '</div>';
+              }
+            })
+            .withFailureHandler(function(e) { row.innerHTML = '<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>'; })
+            .uploadFileSecure(ev.target.result.split(',')[1], file.name, file.type, code, S.user.username, 'admin_manage_' + action);
+        };
+        reader.readAsDataURL(file);
+      });
+      input.value = '';
+    }
+
+    function removeAmpFile(fileId, btn) {
+      var idx = _ampFileIds.indexOf(fileId);
+      if (idx > -1) _ampFileIds.splice(idx, 1);
+      btn.closest('.file-item').remove();
+    }
+
+    function doAdminManageProject() {
+      var projectCode = document.getElementById('amp-project-code').value;
+      var action = document.getElementById('amp-action').value;
+      var newExpiry = document.getElementById('amp-new-expiry').value;
+      var note = document.getElementById('amp-note').value;
+      if (!projectCode) { showToast('ไม่พบรหัสโครงการ', 'error'); return; }
+      if (!action) { showToast('กรุณาเลือกการดำเนินการ', 'error'); return; }
+      if (action === 'renewal' && !newExpiry) { showToast('กรุณาระบุวันหมดอายุใหม่', 'error'); return; }
+      if (!_ampFileIds.length) { showToast('กรุณาแนบไฟล์ประกอบการดำเนินการ', 'error'); return; }
+      var label = action === 'renewal' ? 'ต่ออายุโครงการ' : 'ปิดโครงการ';
+      if (!confirm('ยืนยัน: ' + label + ' สำหรับโครงการ ' + projectCode + ' แทนผู้วิจัย?\n(รายการนี้จะถือว่าผ่านการพิจารณาทันที)')) return;
+
+      var btn = document.getElementById('amp-submit-btn');
+      btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังดำเนินการ...';
+
+      getM().adminManageProject(S.user.sessionId, {
+        projectCode:    projectCode,
+        action:         action,
+        fileIds:        _ampFileIds.slice(),
+        note:           note,
+        newExpiryDate:  newExpiry
+      }, S.user.username).then(function(res) {
+        btn.disabled = false; btn.innerHTML = '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึกและดำเนินการ';
+        if (res && res.success) {
+          closeModal('modal-admin-manage-project');
+          showToast(label + 'สำเร็จ');
+          loadAllReports();
+        } else {
+          showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
+        }
+      }).catch(function(e) {
+        btn.disabled = false; btn.innerHTML = '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึกและดำเนินการ';
+        showToast('เกิดข้อผิดพลาด: ' + (e.message || ''), 'error');
+      });
+    }
     // ============================================================
     // GLOBAL LOADING FUNCTIONS
     // ============================================================
@@ -9620,7 +9785,7 @@ async function uploadToGoogleDrive(file) {
         S.user.department = profile.department || '';
         S.user.position   = profile.position   || '';
         document.getElementById('prof-email').value      = S.user.email;
-        document.getElementById('prof-phone').value      = S.user.phone;
+        document.getElementById('prof-phone').value      = formatPhoneDisplay(S.user.phone);
         document.getElementById('prof-faculty').value    = S.user.faculty;
         document.getElementById('prof-department').value = S.user.department;
         // อัปเดต form สมัครโครงการ ถ้ามีการเปิดค้างไว้
@@ -9786,7 +9951,7 @@ async function uploadToGoogleDrive(file) {
     password: document.getElementById('reg-pass').value,
     name: (prefix + ' ' + fname + ' ' + lname).trim(),
     nameEn: document.getElementById('reg-name-en').value.trim(),
-    phone: document.getElementById('reg-phone').value.trim(),
+    phone: phoneDigits('reg-phone'),
     faculty: faculty,
     department: department,
     position: position,
@@ -10202,6 +10367,26 @@ function showPage(page) {
     function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'\x22').replace(/'/g,'&#39;'); }
     function escAttr(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
     function val(id){ var el=document.getElementById(id); return el?el.value:''; }
+    // ── จัดรูปแบบเบอร์โทรศัพท์ให้เป็นมาตรฐาน 0xx-xxxxxxx ขณะพิมพ์ ──
+    // ใช้กับทุกช่องกรอกเบอร์โทรในระบบ (reg-phone, prof-phone, uf-phone, fr01-phone)
+    function formatPhoneInput(el){
+      if (!el) return;
+      var caretFromEnd = el.value.length - (el.selectionEnd || el.value.length);
+      var digits = String(el.value||'').replace(/\D/g,'').slice(0,10);
+      var formatted = digits.length > 3 ? (digits.slice(0,3) + '-' + digits.slice(3)) : digits;
+      el.value = formatted;
+      try {
+        var pos = Math.max(0, formatted.length - caretFromEnd);
+        el.setSelectionRange(pos, pos);
+      } catch(e) {}
+    }
+    // แปลงเลขดิบ (ที่เก็บไว้ในฐานข้อมูล) ให้แสดงผลเป็น 0xx-xxxxxxx
+    function formatPhoneDisplay(v){
+      var digits = String(v||'').replace(/\D/g,'').slice(0,10);
+      return digits.length > 3 ? (digits.slice(0,3) + '-' + digits.slice(3)) : digits;
+    }
+    // ดึงเฉพาะตัวเลขจากช่องกรอกเบอร์โทร (ตัดขีดออก) สำหรับส่งไปเก็บที่ฐานข้อมูล
+    function phoneDigits(id){ return (val(id)||'').replace(/\D/g,''); }
     function setText(id,v){ var el=document.getElementById(id); if(el) el.textContent=v; }
     function show(id,d){ var el=document.getElementById(id); if(el) el.style.display=d||'block'; }
     function hide(id){ var el=document.getElementById(id); if(el) el.style.display='none'; }
@@ -10477,7 +10662,7 @@ function showPage(page) {
       if (S && S.user) {
         document.getElementById('fr01-researcher').value = S.user.name    || '';
         document.getElementById('fr01-email').value      = S.user.email   || '';
-        document.getElementById('fr01-phone').value      = S.user.phone   || '';
+        document.getElementById('fr01-phone').value      = formatPhoneDisplay(S.user.phone || '');
         document.getElementById('fr01-address').value    = S.user.faculty || '';
       }
       var round = 1;
@@ -10596,7 +10781,7 @@ function showPage(page) {
         titleTh:       document.getElementById('fr01-title-th').value,
         titleEn:       document.getElementById('fr01-title-en').value,
         researcher:    document.getElementById('fr01-researcher').value,
-        phone:         document.getElementById('fr01-phone').value,
+        phone:         phoneDigits('fr01-phone'),
         email:         document.getElementById('fr01-email').value,
         address:       document.getElementById('fr01-address').value,
         sponsor:       document.getElementById('fr01-sponsor').value,
