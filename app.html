@@ -2789,10 +2789,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         </div>
 
         <div class="table-card">
-          <div class="table-card-header"><h3>รายงานทั้งหมด</h3><span id="rpt-count" style="font-size:12px;color:var(--text-light)"></span></div>
-          <div id="rpt-all-table"></div>
-          <!-- 🆕 โครงการที่กำลังดำเนินการอยู่ พร้อมวันหมดอายุ / ครบกำหนดต่ออายุ -->
-          <div class="table-card" style="margin-top:24px">
+          <!-- 🆕 โครงการที่กำลังดำเนินการอยู่ พร้อมวันหมดอายุ / ครบกำหนดต่ออายุ (ย้ายมาไว้ลำดับแรก) -->
+          <div class="table-card">
             <div class="table-card-header" style="flex-wrap:wrap;gap:8px">
               <h3><i class="ti ti-progress" aria-hidden="true"></i> โครงการที่ยังดำเนินการวิจัยอยู่</h3>
               <div style="display:flex;align-items:center;gap:10px">
@@ -2819,6 +2817,11 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <div class="empty-state"><p>กำลังโหลด...</p></div>
       </div>
     </div>
+          <!-- รายงานทั้งหมด (ย้ายมาไว้ท้ายสุดของหน้า) -->
+          <div class="table-card" style="margin-top:24px">
+            <div class="table-card-header"><h3>รายงานทั้งหมด</h3><span id="rpt-count" style="font-size:12px;color:var(--text-light)"></span></div>
+            <div id="rpt-all-table"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -3638,7 +3641,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         </div>
         <div class="modal-footer">
           <button class="btn btn-outline" onclick="closeModal('modal-edit-expiry')">ยกเลิก</button>
-          <button class="btn btn-primary" id="eed-submit-btn" onclick="doUpdateProjectDates()"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึก</button>
+          <button class="btn btn-primary" id="eed-submit-btn" onclick="doUpdateProjectExpiryDate()"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึก</button>
         </div>
       </div>
     </div>
@@ -9317,7 +9320,7 @@ function removeNotifyRevisionFile() {
           + '<td>'+esc(r.duration||'-')+'</td>'
           + '<td>'+expiryCell+'</td>'
           + '<td style="white-space:nowrap"><div style="display:flex;gap:4px;flex-wrap:wrap">'
-            + '<button class="btn btn-sm btn-outline" onclick="openEditExpiryModal(\''+escAttr(r.project_code)+'\',\''+escAttr((r.title_th||'').slice(0,60))+'\',\''+escAttr(r.expiry_date||'')+'\')" title="แก้ไข/ยืนยันวันครบกำหนดให้ถูกต้อง — ไม่เปลี่ยนสถานะโครงการ"><i class="ti ti-calendar-due" aria-hidden="true"></i> แก้ไขวันที่</button>'
+            + '<button class="btn btn-sm btn-outline" onclick="openEditExpiryModal(\''+escAttr(r.project_code)+'\',\''+escAttr((r.title_th||'').slice(0,60))+'\',\''+escAttr(r.expiry_date||'')+'\',\''+escAttr(r.certified_date||'')+'\')" title="แก้ไข/ยืนยันวันครบกำหนดให้ถูกต้อง — ไม่เปลี่ยนสถานะโครงการ"><i class="ti ti-calendar-due" aria-hidden="true"></i> แก้ไขวันที่</button>'
             + '<button class="btn btn-sm btn-outline" onclick="openAdminManageProjectModal(\''+escAttr(r.project_code)+'\',\''+escAttr((r.title_th||'').slice(0,60))+'\')" title="แอดมินดำเนินการแทนผู้วิจัย กรณีผู้วิจัยไม่สามารถเข้าระบบมายื่นเองได้"><i class="ti ti-user-cog" aria-hidden="true"></i> จัดการโดยแอดมิน</button>'
           + '</div></td></tr>';
       });
@@ -9771,7 +9774,7 @@ async function uploadToGoogleDrive(file) {
     // 🆕 บันทึกผ่าน updateProjectExpiryDate เท่านั้น (ดูคอมเมนต์ฝั่ง Code.gs) เพื่อให้ค่าที่แก้ไปสอดคล้องกับ
     // ทุกหน้า/ทุกฟังก์ชันที่อ่านวันหมดอายุผ่านจุดกลางเดียวกัน (_computeResearchProjectsOverview_) เสมอ
     var _eedProjectCode = '';
-    function openEditExpiryModal(projectCode, titleTh, currentExpiryDate) {
+    function openEditExpiryModal(projectCode, titleTh, currentExpiryDate, currentCertifiedDate) {
       _eedProjectCode = projectCode;
       document.getElementById('eed-project-code').value = projectCode;
       document.getElementById('eed-project-info').innerHTML =
@@ -9780,6 +9783,7 @@ async function uploadToGoogleDrive(file) {
         (currentExpiryDate
           ? '<div style="margin-top:6px;font-size:12px;color:var(--text-light)">วันที่ปัจจุบัน: ' + formatDate(currentExpiryDate) + '</div>'
           : '<div style="margin-top:6px;font-size:12px;color:var(--text-light)">ยังไม่มีวันครบกำหนดในระบบ</div>');
+      document.getElementById('eed-certified-date').value = currentCertifiedDate || '';
       document.getElementById('eed-new-expiry').value = currentExpiryDate || '';
       document.getElementById('eed-note').value = '';
       openModal('modal-edit-expiry');
@@ -9787,17 +9791,23 @@ async function uploadToGoogleDrive(file) {
 
     function doUpdateProjectExpiryDate() {
       var projectCode = document.getElementById('eed-project-code').value;
+      var certifiedDate = document.getElementById('eed-certified-date').value;
       var newExpiry = document.getElementById('eed-new-expiry').value;
       var note = document.getElementById('eed-note').value;
       if (!projectCode) { showToast('ไม่พบรหัสโครงการ', 'error'); return; }
-      if (!newExpiry) { showToast('กรุณาระบุวันครบกำหนด', 'error'); return; }
-      if (!confirm('ยืนยัน: แก้ไขวันครบกำหนดทบทวน/หมดอายุของโครงการ ' + projectCode + ' เป็น ' + formatDate(newExpiry) + '?\n(จะไม่เปลี่ยนสถานะโครงการ)')) return;
+      if (!certifiedDate && !newExpiry) { showToast('กรุณาระบุวันที่รับรอง และ/หรือวันครบกำหนด อย่างน้อย 1 รายการ', 'error'); return; }
+      var confirmMsg = 'ยืนยัน: แก้ไขข้อมูลวันที่ของโครงการ ' + projectCode + '\n'
+        + (certifiedDate ? ('วันที่รับรอง → ' + formatDate(certifiedDate) + '\n') : '')
+        + (newExpiry ? ('วันครบกำหนดทบทวน/หมดอายุ → ' + formatDate(newExpiry) + '\n') : '')
+        + '(จะไม่เปลี่ยนสถานะโครงการ)';
+      if (!confirm(confirmMsg)) return;
 
       var btn = document.getElementById('eed-submit-btn');
       btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังบันทึก...';
 
-      getM().updateProjectExpiryDate(S.user.sessionId, {
+      getM().updateProjectDates(S.user.sessionId, {
         projectCode: projectCode,
+        certifiedDate: certifiedDate,
         newExpiryDate: newExpiry,
         note: note
       }, S.user.username).then(function(res) {
