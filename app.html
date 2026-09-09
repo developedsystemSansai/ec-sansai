@@ -94,6 +94,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         submitResearchReport:        function(pl)               { return callGAS('submitResearchReport',      {payload:pl}); },
         reviewResearchReport:        function(pl,su)            { return callGAS('reviewResearchReport',      {payload:pl, staffUsername:su}); },
         adminManageProject:          function(sid,pl,au)        { return callGAS('adminManageProject',        {sessionId:sid, payload:pl, adminUsername:au}); },
+        updateProjectExpiryDate:     function(sid,pl,au)        { return callGAS('updateProjectExpiryDate',   {sessionId:sid, payload:pl, adminUsername:au}); },
         getAllResearchReports:        function(cu)               { return callGAS('getAllResearchReports',     {callerUsername:cu}); },
         getResearchProjectsOverview:  function(sid,cu)           { return callGAS('getResearchProjectsOverview', {sessionId:sid, callerUsername:cu}); },
         runExpiryCheckNow:            function(sid,cu)           { return callGAS('runExpiryCheckNow', {sessionId:sid, callerUsername:cu}); },
@@ -2800,7 +2801,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
               </div>
             </div>
             <div id="rpt-ongoing-summary" style="padding:12px 16px 0;display:none"></div>
-            <div style="padding:8px 16px 0;font-size:12px;color:var(--text-light)">วันหมดอายุคำนวณจากวันที่ได้รับการรับรอง + รอบทบทวนมาตรฐาน (ปีละครั้ง) หากยังไม่เคยยื่นต่ออายุ — ถือเป็น <strong>ค่าประมาณการ</strong> จนกว่าจะมีการยื่นต่ออายุจริงและกรรมการอนุมัติวันใหม่</div>
+            <div style="padding:8px 16px 0;font-size:12px;color:var(--text-light)">วันหมดอายุคำนวณจากวันที่ได้รับการรับรอง + รอบทบทวนมาตรฐาน (ปีละครั้ง) หากยังไม่เคยยื่นต่ออายุ — ถือเป็น <strong>ค่าประมาณการ</strong> จนกว่าจะมีการยื่นต่ออายุจริงและกรรมการอนุมัติวันใหม่ หากวันที่คลาดเคลื่อน ใช้ปุ่ม <strong><i class="ti ti-calendar-due" aria-hidden="true"></i> แก้ไขวันที่</strong> ในแต่ละแถวเพื่อแก้ไขให้ถูกต้อง — ห้ามแก้ในชีต Google Sheets โดยตรง เพราะระบบไม่ได้อ่านวันหมดอายุจากชีต Projects แต่คำนวณจากจุดกลางนี้เท่านั้น การแก้ในชีตจะทำให้หน้าอื่นๆ (การแจ้งเตือนอัตโนมัติ ฯลฯ) ไม่สอดคล้องกัน</div>
             <div id="rpt-ongoing-projects-table" style="padding:0"></div>
           </div>
           <!-- 🆕 โครงการที่ปิดแล้วทั้งหมด (อ่านจาก Projects sheet ตรงๆ ไม่พลาดแม้ปิดโดยไม่ผ่านการยื่นรายงาน) -->
@@ -3600,6 +3601,38 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <div class="modal-footer">
           <button class="btn btn-outline" onclick="closeModal('modal-admin-manage-project')">ยกเลิก</button>
           <button class="btn btn-primary" id="amp-submit-btn" onclick="doAdminManageProject()"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึกและดำเนินการ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: แก้ไขวันครบกำหนดทบทวน/หมดอายุ (พิมพ์วันที่ได้โดยตรง — ไม่ต้องแนบไฟล์/ไม่เปลี่ยนสถานะโครงการ) -->
+    <div class="modal-overlay" id="modal-edit-expiry">
+      <div class="modal">
+        <div class="modal-header">
+          <h3><i class="ti ti-calendar-due" aria-hidden="true"></i> แก้ไขวันครบกำหนดทบทวน/หมดอายุ</h3>
+          <button class="modal-close" onclick="closeModal('modal-edit-expiry')"><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-info" style="margin-bottom:16px">
+            <i class="ti ti-info-circle" aria-hidden="true"></i>
+            <div>ใช้สำหรับ<strong>แก้ไข/ยืนยันวันที่ให้ถูกต้อง</strong>เท่านั้น (เช่น วันประมาณการคำนวณผิดเพราะข้อมูลเดิมไม่ครบ) จะ<strong>ไม่เปลี่ยนสถานะโครงการ</strong>และไม่ถือเป็นการอนุมัติต่ออายุ — หากต้องการอนุมัติต่ออายุจริงพร้อมเอกสารประกอบ ให้ใช้ปุ่ม "จัดการโดยแอดมิน" แทน</div>
+          </div>
+          <div id="eed-project-info" style="background:var(--navy-pale);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px"></div>
+          <input type="hidden" id="eed-project-code">
+
+          <div class="field-group">
+            <label><i class="ti ti-calendar" aria-hidden="true"></i> วันครบกำหนดทบทวน/หมดอายุใหม่ <span class="req">*</span></label>
+            <input type="date" id="eed-new-expiry" class="form-control">
+          </div>
+
+          <div class="field-group">
+            <label><i class="ti ti-edit" aria-hidden="true"></i> หมายเหตุ (เหตุผลที่แก้ไข)</label>
+            <textarea id="eed-note" class="form-control" rows="3" placeholder="เช่น: มีหนังสือยืนยันวันหมดอายุจากคณะกรรมการชุดเดิมทางอีเมล, แก้ไขวันที่ประมาณการที่คำนวณผิดพลาด..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('modal-edit-expiry')">ยกเลิก</button>
+          <button class="btn btn-primary" id="eed-submit-btn" onclick="doUpdateProjectExpiryDate()"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึก</button>
         </div>
       </div>
     </div>
@@ -9263,6 +9296,8 @@ function removeNotifyRevisionFile() {
                           : 'อีก ' + days + ' วัน';
           var sourceTag = r.expiry_source === 'renewal'
             ? '<span title="ยืนยันจากการยื่นต่ออายุจริง" style="font-size:10px;color:var(--text-light)"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ยืนยันแล้ว</span>'
+            : r.expiry_source === 'admin_override'
+            ? '<span title="แก้ไขโดยแอดมินโดยตรงจากหน้านี้" style="font-size:10px;color:var(--text-light)"><i class="ti ti-edit" aria-hidden="true"></i> แก้ไขโดยแอดมิน</span>'
             : '<span title="คำนวณจากวันรับรอง + รอบทบทวนมาตรฐาน ยังไม่เคยยื่นต่ออายุจริง" style="font-size:10px;color:var(--text-light)"><i class="ti ti-calculator" aria-hidden="true"></i> ประมาณการ</span>';
           expiryCell = '<span class="pill ' + pillClass + '">' + formatDate(r.expiry_date) + '</span><br>'
             + '<span style="font-size:11px;color:var(--text-light)">' + statusText + '</span> · ' + sourceTag;
@@ -9275,7 +9310,10 @@ function removeNotifyRevisionFile() {
           + '<td>'+(r.certified_date ? formatDate(r.certified_date) : '<span style="color:var(--text-light)">-</span>')+'</td>'
           + '<td>'+esc(r.duration||'-')+'</td>'
           + '<td>'+expiryCell+'</td>'
-          + '<td style="white-space:nowrap"><button class="btn btn-sm btn-outline" onclick="openAdminManageProjectModal(\''+escAttr(r.project_code)+'\',\''+escAttr((r.title_th||'').slice(0,60))+'\')" title="แอดมินดำเนินการแทนผู้วิจัย กรณีผู้วิจัยไม่สามารถเข้าระบบมายื่นเองได้"><i class="ti ti-user-cog" aria-hidden="true"></i> จัดการโดยแอดมิน</button></td></tr>';
+          + '<td style="white-space:nowrap"><div style="display:flex;gap:4px;flex-wrap:wrap">'
+            + '<button class="btn btn-sm btn-outline" onclick="openEditExpiryModal(\''+escAttr(r.project_code)+'\',\''+escAttr((r.title_th||'').slice(0,60))+'\',\''+escAttr(r.expiry_date||'')+'\')" title="แก้ไข/ยืนยันวันครบกำหนดให้ถูกต้อง — ไม่เปลี่ยนสถานะโครงการ"><i class="ti ti-calendar-due" aria-hidden="true"></i> แก้ไขวันที่</button>'
+            + '<button class="btn btn-sm btn-outline" onclick="openAdminManageProjectModal(\''+escAttr(r.project_code)+'\',\''+escAttr((r.title_th||'').slice(0,60))+'\')" title="แอดมินดำเนินการแทนผู้วิจัย กรณีผู้วิจัยไม่สามารถเข้าระบบมายื่นเองได้"><i class="ti ti-user-cog" aria-hidden="true"></i> จัดการโดยแอดมิน</button>'
+          + '</div></td></tr>';
       });
       el.innerHTML = html + '</tbody></table>';
     }
@@ -9719,6 +9757,54 @@ async function uploadToGoogleDrive(file) {
         }
       }).catch(function(e) {
         btn.disabled = false; btn.innerHTML = '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึกและดำเนินการ';
+        showToast('เกิดข้อผิดพลาด: ' + (e.message || ''), 'error');
+      });
+    }
+
+    // ── Modal: แก้ไขวันครบกำหนดทบทวน/หมดอายุ (พิมพ์วันที่ได้ตรงๆ จากหน้านี้ — ไม่ต้องแก้ในชีตเอง) ──
+    // 🆕 บันทึกผ่าน updateProjectExpiryDate เท่านั้น (ดูคอมเมนต์ฝั่ง Code.gs) เพื่อให้ค่าที่แก้ไปสอดคล้องกับ
+    // ทุกหน้า/ทุกฟังก์ชันที่อ่านวันหมดอายุผ่านจุดกลางเดียวกัน (_computeResearchProjectsOverview_) เสมอ
+    var _eedProjectCode = '';
+    function openEditExpiryModal(projectCode, titleTh, currentExpiryDate) {
+      _eedProjectCode = projectCode;
+      document.getElementById('eed-project-code').value = projectCode;
+      document.getElementById('eed-project-info').innerHTML =
+        '<div class="apc-code"><i class="ti ti-folder" aria-hidden="true"></i> ' + esc(projectCode) + '</div>' +
+        '<div class="apc-title">' + esc(titleTh || '-') + '</div>' +
+        (currentExpiryDate
+          ? '<div style="margin-top:6px;font-size:12px;color:var(--text-light)">วันที่ปัจจุบัน: ' + formatDate(currentExpiryDate) + '</div>'
+          : '<div style="margin-top:6px;font-size:12px;color:var(--text-light)">ยังไม่มีวันครบกำหนดในระบบ</div>');
+      document.getElementById('eed-new-expiry').value = currentExpiryDate || '';
+      document.getElementById('eed-note').value = '';
+      openModal('modal-edit-expiry');
+    }
+
+    function doUpdateProjectExpiryDate() {
+      var projectCode = document.getElementById('eed-project-code').value;
+      var newExpiry = document.getElementById('eed-new-expiry').value;
+      var note = document.getElementById('eed-note').value;
+      if (!projectCode) { showToast('ไม่พบรหัสโครงการ', 'error'); return; }
+      if (!newExpiry) { showToast('กรุณาระบุวันครบกำหนด', 'error'); return; }
+      if (!confirm('ยืนยัน: แก้ไขวันครบกำหนดทบทวน/หมดอายุของโครงการ ' + projectCode + ' เป็น ' + formatDate(newExpiry) + '?\n(จะไม่เปลี่ยนสถานะโครงการ)')) return;
+
+      var btn = document.getElementById('eed-submit-btn');
+      btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังบันทึก...';
+
+      getM().updateProjectExpiryDate(S.user.sessionId, {
+        projectCode: projectCode,
+        newExpiryDate: newExpiry,
+        note: note
+      }, S.user.username).then(function(res) {
+        btn.disabled = false; btn.innerHTML = '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึก';
+        if (res && res.success) {
+          closeModal('modal-edit-expiry');
+          showToast('บันทึกวันครบกำหนดใหม่สำเร็จ');
+          loadAllReports();
+        } else {
+          showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
+        }
+      }).catch(function(e) {
+        btn.disabled = false; btn.innerHTML = '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึก';
         showToast('เกิดข้อผิดพลาด: ' + (e.message || ''), 'error');
       });
     }
