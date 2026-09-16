@@ -36,7 +36,6 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         login:                       function(u,p,captcha)     { return callGAS('login',                       {username:u, password:p, captchaToken:captcha}); },
         logoutSecure:                function(sid,u)            { return callGAS('logoutSecure',                {sessionId:sid, username:u}); },
         validateSession:             function(sid,u)            { return callGAS('validateSession',             {sessionId:sid, username:u}); },
-        getCsrfToken:                function(sid)              { return callGAS('getCsrfToken',                {sessionId:sid}); },
         registerUserSecure:          function(pl)               { return callGAS('registerUserSecure',          {payload:pl}); },
         requestPasswordResetSecure:  function(email)            { return callGAS('requestPasswordResetSecure',  {email:email}); },
         resetPasswordSecure:         function(tok,np,cp)        { return callGAS('resetPasswordSecure',         {token:tok, newPassword:np, confirmPassword:cp}); },
@@ -51,11 +50,11 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         updateUser:                  function(sid,pl,au)       { return callGAS('updateUser',                 {sessionId:sid, payload:pl, adminUsername:au}); },
         deleteUser:                  function(sid,tu,au)        { return callGAS('deleteUser',                 {sessionId:sid, targetUsername:tu, adminUsername:au}); },
         approveUser:                 function(sid,tu,au)        { return callGAS('approveUser',                {sessionId:sid, targetUsername:tu, adminUsername:au}); },
-        sendWelcomeEmailsToAllUsers: function()                 { return callGAS('sendWelcomeEmailsToAllUsers', {}); },
+        sendWelcomeEmailsToAllUsers: function(sid,cu)            { return callGAS('sendWelcomeEmailsToAllUsers', {sessionId:sid, callerUsername:cu}); },
         sendWelcomeEmailToUser:      function(sid,tu,cu)        { return callGAS('sendWelcomeEmailToUser',     {sessionId:sid, targetUsername:tu, callerUsername:cu}); },
         sendUserNotificationEmail:   function(pl,au)            { return callGAS('sendUserNotificationEmail',  {payload:pl, adminUsername:au}); },
-        getAllProjectsRaw:            function(cu)               { return callGAS('getAllProjectsRaw',          {callerUsername:cu}); },
-        getAllProjectsWithType:       function(cu)               { return callGAS('getAllProjectsWithType',     {callerUsername:cu}); },
+        getAllProjectsRaw:            function(sid,cu)           { return callGAS('getAllProjectsRaw',          {sessionId:sid, callerUsername:cu}); },
+        getAllProjectsWithType:       function(sid,cu)           { return callGAS('getAllProjectsWithType',     {sessionId:sid, callerUsername:cu}); },
         getMyProjectsWithRevision:   function(sid,u)            { return callGAS('getMyProjectsWithRevision',  {sessionId:sid, username:u}); },
         saveOrUpdateProjectSecure:   function(sid,pd,isUp)      { return callGAS('saveOrUpdateProjectSecure',  {sessionId:sid, projectData:pd, isUpdate:isUp}); },
         updateProjectStatus:         function(sid,pc,ns,su,note){ return callGAS('updateProjectStatus',        {sessionId:sid, projectCode:pc, newStatus:ns, staffUsername:su, note:note}); },
@@ -63,12 +62,12 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         setProjectType:              function(sid,pc,nt,cu)     { return callGAS('setProjectType',             {sessionId:sid, projectCode:pc, newType:nt, callerUsername:cu}); },
         reviewRevisionByAdmin:       function(sid,pl,su)       { return callGAS('reviewRevisionByAdmin',      {sessionId:sid, payload:pl, staffUsername:su}); },
         submitRevision:              function(pl)               { return callGAS('submitRevision',             {payload:pl}); },
-        uploadFileSecure:            function(b64,fn,mime,pc,u,ft){ return callGAS('uploadFileSecure',        {base64Data:b64, fileName:fn, mimeType:mime, projectCode:pc, username:u, fileType:ft}); },
+        uploadFileSecure:            function(sid,b64,fn,mime,pc,u,ft){ return callGAS('uploadFileSecure',        {sessionId:sid, base64Data:b64, fileName:fn, mimeType:mime, projectCode:pc, username:u, fileType:ft}); },
         getUploadedFiles:            function(sid,pc,cu)        { return callGAS('getUploadedFiles',          {sessionId:sid, projectCode:pc, callerUsername:cu}); },
         deleteUploadedFile:          function(sid,fid,u,del)    { return callGAS('deleteUploadedFile',        {sessionId:sid, fileId:fid, username:u, deleteDriveFile:del}); },
-        getClosureReportFiles:       function()                 { return callGAS('getClosureReportFiles',     {}); },
-        getCommitteeUsers:           function(cu)               { return callGAS('getCommitteeUsers',         {callerUsername:cu}); },
-        assignProjectMultiCommittee: function(pl,su)            { return callGAS('assignProjectMultiCommittee',{payload:pl, staffUsername:su}); },
+        getClosureReportFiles:       function(sid,cu)           { return callGAS('getClosureReportFiles',     {sessionId:sid, callerUsername:cu}); },
+        getCommitteeUsers:           function(sid,cu)           { return callGAS('getCommitteeUsers',         {sessionId:sid, callerUsername:cu}); },
+        assignProjectMultiCommittee: function(sid,pl,su)         { return callGAS('assignProjectMultiCommittee',{sessionId:sid, payload:pl, staffUsername:su}); },
         getAssignedProjects:         function(sid,cu)           { return callGAS('getAssignedProjects',       {sessionId:sid, committeeUsername:cu}); },
         getAllAssignmentsOverview:   function(sid,cu)           { return callGAS('getAllAssignmentsOverview', {sessionId:sid, callerUsername:cu}); },
         adminSkipAcceptanceForAssignment: function(sid,cu,pc,commUser) { return callGAS('adminSkipAcceptanceForAssignment', {sessionId:sid, callerUsername:cu, projectCode:pc, committeeUsername:commUser}); },
@@ -77,28 +76,28 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         getEvaluationHistory:        function(sid,cu)           { return callGAS('getEvaluationHistory',      {sessionId:sid, committeeUsername:cu}); },
         getCommitteeEvaluationHistoryAdmin: function(sid,cu,tu) { return callGAS('getCommitteeEvaluationHistoryAdmin', {sessionId:sid, callerUsername:cu, targetUsername:tu}); },
         getAssignmentActivityHistory: function(sid,cu,kind)     { return callGAS('getAssignmentActivityHistory', {sessionId:sid, callerUsername:cu, kind:kind}); },
-        getCommitteeEvalSummary:     function(pc)               { return callGAS('getCommitteeEvalSummary',   {projectCode:pc}); },
-        sendResultToResearcher:      function(pl)               { return callGAS('sendResultToResearcher',    {payload:pl}); },
+        getCommitteeEvalSummary:     function(sid,cu,pc)        { return callGAS('getCommitteeEvalSummary',   {sessionId:sid, callerUsername:cu, projectCode:pc}); },
+        sendResultToResearcher:      function(sid,pl)           { return callGAS('sendResultToResearcher',    {sessionId:sid, payload:pl}); },
         getDashboardStats:           function(sid,cu)           { return callGAS('getDashboardStats',         {sessionId:sid, committeeUsername:cu}); },
         getStaffDashboardStats:      function(sid,cu)           { return callGAS('getStaffDashboardStats',    {sessionId:sid, callerUsername:cu}); },
         getNotificationsForUser:         function(sid,u,r)          { return callGAS('getNotificationsForUser',   {sessionId:sid, username:u, roles:r}); },
         markNotificationsRead:           function(rows)             { return callGAS('markNotificationsRead',       {rowNumbers:rows}); },
         markAllNotificationsRead:        function(sid,u)            { return callGAS('markAllNotificationsRead',    {sessionId:sid, username:u}); },
         getMeetings:                 function(sid,cu)           { return callGAS('getMeetings',               {sessionId:sid, callerUsername:cu}); },
-        saveMeeting:                 function(pl,su)            { return callGAS('saveMeeting',               {payload:pl, staffUsername:su}); },
-        submitMeetingReview:         function(pl)               { return callGAS('submitMeetingReview',       {payload:pl}); },
-        getMeetingMinutes:           function(u)                { return callGAS('getMeetingMinutes',         {username:u}); },
-        uploadMeetingMinutes:        function(pl,au)            { return callGAS('uploadMeetingMinutes',      {payload:pl, adminUsername:au}); },
-        completeMeetingWithReport:   function(pl,au)            { return callGAS('completeMeetingWithReport', {payload:pl, adminUsername:au}); },
-        deleteMeetingMinute:         function(mid,au)           { return callGAS('deleteMeetingMinute',       {minuteId:mid, adminUsername:au}); },
-        submitResearchReport:        function(pl)               { return callGAS('submitResearchReport',      {payload:pl}); },
-        reviewResearchReport:        function(pl,su)            { return callGAS('reviewResearchReport',      {payload:pl, staffUsername:su}); },
+        saveMeeting:                 function(sid,pl,su)        { return callGAS('saveMeeting',               {sessionId:sid, payload:pl, staffUsername:su}); },
+        submitMeetingReview:         function(sid,pl)           { return callGAS('submitMeetingReview',       {sessionId:sid, payload:pl}); },
+        getMeetingMinutes:           function(sid,u)            { return callGAS('getMeetingMinutes',         {sessionId:sid, username:u}); },
+        uploadMeetingMinutes:        function(sid,pl,au)        { return callGAS('uploadMeetingMinutes',      {sessionId:sid, payload:pl, adminUsername:au}); },
+        completeMeetingWithReport:   function(sid,pl,au)        { return callGAS('completeMeetingWithReport', {sessionId:sid, payload:pl, adminUsername:au}); },
+        deleteMeetingMinute:         function(sid,mid,au)       { return callGAS('deleteMeetingMinute',       {sessionId:sid, minuteId:mid, adminUsername:au}); },
+        submitResearchReport:        function(sid,pl)           { return callGAS('submitResearchReport',      {sessionId:sid, payload:pl}); },
+        reviewResearchReport:        function(sid,pl,su)        { return callGAS('reviewResearchReport',      {sessionId:sid, payload:pl, staffUsername:su}); },
         adminManageProject:          function(sid,pl,au)        { return callGAS('adminManageProject',        {sessionId:sid, payload:pl, adminUsername:au}); },
         updateProjectDates:          function(sid,pl,au)        { return callGAS('updateProjectDates',        {sessionId:sid, payload:pl, adminUsername:au}); },
-        getAllResearchReports:        function(cu)               { return callGAS('getAllResearchReports',     {callerUsername:cu}); },
+        getAllResearchReports:        function(sid,cu)           { return callGAS('getAllResearchReports',     {sessionId:sid, callerUsername:cu}); },
         getResearchProjectsOverview:  function(sid,cu)           { return callGAS('getResearchProjectsOverview', {sessionId:sid, callerUsername:cu}); },
         runExpiryCheckNow:            function(sid,cu)           { return callGAS('runExpiryCheckNow', {sessionId:sid, callerUsername:cu}); },
-        getApprovedProjectsForReporting: function(u)           { return callGAS('getApprovedProjectsForReporting',{username:u}); },
+        getApprovedProjectsForReporting: function(sid,u)       { return callGAS('getApprovedProjectsForReporting',{sessionId:sid, username:u}); },
         getResearchReports:          function(sid,u)            { return callGAS('getResearchReports',        {sessionId:sid, username:u}); },
         recordPdpaConsent:           function(pl)               { return callGAS('recordPdpaConsent',         {payload:pl}); },
         saveLineUserId:              function(sid,cu,tu,lid)       { return callGAS('saveLineUserId',            {sessionId:sid, callerUsername:cu, targetUsername:tu, lineUserId:lid}); },
@@ -1320,13 +1319,11 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     .fr01-wrap {
       font-family: 'Sarabun','TH Sarabun New',sans-serif;
       font-size: 15px; color: #111; padding: 24px 28px 16px;
+      position: relative;
     }
-    .fr01-header-box {
-      display: flex; justify-content: space-between;
-      align-items: flex-start; margin-bottom: 12px; gap: 16px;
-    }
+    .fr01-corner-label { position: absolute; top: 6px; right: 10px; font-size: 15px; font-weight: 800; color: #1a3a6b; }
     .fr01-form-code { font-size: 22px; font-weight: 800; color: #1a3a6b; letter-spacing: 1px; white-space: nowrap; }
-    .fr01-title-center { text-align: center; flex: 1; }
+    .fr01-title-center { text-align: center; margin: 4px 0 14px; }
     .fr01-title-center .t1 { font-size: 18px; font-weight: 800; color: #1a3a6b; }
     .fr01-title-center .t2 { font-size: 13px; color: #555; font-style: italic; }
     .fr01-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
@@ -1338,13 +1335,20 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       background: #eef2f9; font-weight: 600; color: #1a3a6b;
       white-space: nowrap; width: 1%;
     }
+    .fr01-table td.contact-bar {
+      background: #eef2f9; font-weight: 600; color: #1a3a6b;
+    }
     .fr01-table td.header-row {
       background: #1a3a6b; color: #fff; font-weight: 700;
-      font-size: 14px; text-align: center; padding: 8px;
+      font-size: 14px; text-align: left; padding: 8px 10px;
+    }
+    .fr01-table td.plain-header {
+      font-weight: 700; color: #1a3a6b; font-size: 14px; text-align: left;
     }
     .fr01-table td.sub-header {
       background: #d6e4f7; font-weight: 700; color: #1a3a6b; font-size: 13px;
     }
+    .fr01-underline-label { text-decoration: underline; }
     .fr01-input {
       border: none; border-bottom: 1.5px solid #2c4a8a; outline: none;
       font-family: 'Sarabun',sans-serif; font-size: 14px; color: #111;
@@ -1370,9 +1374,9 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     .fr01-radio-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; }
     .fr01-radio-row input[type="radio"],
     .fr01-radio-row input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: #1a3a6b; }
-    .fr01-sign-zone { display: flex; justify-content: flex-end; margin-top: 16px; padding: 0 8px; }
+    /* ลายเซ็น: ในแบบฟอร์มจริงบล็อกลงนามอยู่ค่อนไปทางซ้าย ไม่ใช่ชิดขวา */
+    .fr01-sign-zone { display: flex; justify-content: flex-start; margin-top: 16px; padding: 0 8px 0 15%; }
     .fr01-sign-box { text-align: center; min-width: 280px; }
-    .fr01-sign-line { border-bottom: 1.5px solid #111; height: 40px; margin-bottom: 6px; }
     .fr01-date-row {
       display: flex; gap: 8px; align-items: center;
       justify-content: center; margin-top: 10px; font-size: 14px;
@@ -1383,14 +1387,61 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       padding: 16px 28px; border-top: 1px solid var(--border); background: var(--bg);
       flex-shrink: 0;
     }
+    /* หัว/ท้ายกระดาษที่วนซ้ำทุกหน้าเวลาพิมพ์ (เหมือนไฟล์ Word ต้นฉบับที่มี "FR.01"
+       มุมขวาบนและ "ฉบับที่ / วันที่" ท้ายกระดาษทุกหน้า) — ซ่อนบนหน้าจอปกติ */
+    .fr01-print-running { display: none; }
     @media print {
-      body > * { display: none !important; }
-      #fr01-print-area { display: block !important; }
-      #fr01-print-area * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      #fr01-print-area {
-        position: fixed; inset: 0; background: #fff; z-index: 99999;
-        padding: 15mm 18mm 12mm; box-sizing: border-box;
+      /* เดิม: "body > * { display:none }" ซ่อนทุก element ระดับบนสุดของ body
+         รวมถึง #modal-fr01 เอง (เพราะ modal-overlay เป็นลูกโดยตรงของ body)
+         แล้วพยายามโชว์เฉพาะ #fr01-print-area ซึ่งเป็น "หลานๆ" ที่อยู่ลึกเข้าไปอีก
+         3 ชั้น (.modal > .modal-body > #fr01-print-area) — แต่ element ลูกจะไม่มีวัน
+         แสดงผลได้เลยถ้า parent ระดับใดระดับหนึ่งเป็น display:none อยู่ ผลคือพิมพ์ออกมา
+         เป็นหน้าเปล่าเสมอ ไม่ว่าจะตั้ง #fr01-print-area เป็น display:block ก็ตาม
+         แก้ใหม่: ซ่อนทุกอย่างยกเว้น #modal-fr01 แล้วบังคับให้ทุกชั้นของ ancestor
+         (#modal-fr01 → .modal → .modal-body → #fr01-print-area) เป็น display:block
+         และคืนค่าการไหลของเอกสารให้เป็นปกติ (ไม่ใช้ position:fixed ซึ่งพิมพ์ได้แค่หน้าแรก
+         หน้าเดียวในหลายเบราว์เซอร์เมื่อเนื้อหายาวเกิน 1 หน้ากระดาษ) */
+      body > *:not(#modal-fr01) { display: none !important; }
+
+      #modal-fr01 {
+        display: block !important;
+        position: static !important;
+        inset: auto !important;
+        background: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        z-index: auto !important;
+        overflow: visible !important;
       }
+      #modal-fr01 .modal {
+        display: block !important;
+        max-width: none !important;
+        width: 100% !important;
+        max-height: none !important;
+        overflow: visible !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        animation: none !important;
+      }
+      #modal-fr01 .modal-header { display: none !important; }
+      #modal-fr01 .modal-body {
+        display: block !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        flex: none !important;
+        max-height: none !important;
+      }
+      #fr01-print-area {
+        display: block !important;
+        position: static !important;
+        inset: auto !important;
+        background: #fff; z-index: auto;
+        padding: 10mm 12mm 8mm; box-sizing: border-box;
+      }
+      #fr01-print-area * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .fr01-wrap { padding: 0 !important; }
       .fr01-input { border: none !important; }
       .fr01-textarea { border: 1px solid #999 !important; }
       .fr01-count-input { border: none !important; border-bottom: 1px solid #999 !important; }
@@ -1398,7 +1449,72 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       .fr01-no-print { display: none !important; }
       #modal-fr01 .modal-header .modal-close { display: none !important; }
       .fr01-table td.header-row { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .fr01-table { page-break-inside: avoid; }
+      .fr01-sign-zone { page-break-inside: avoid; }
+      /* หัว/ท้ายกระดาษวนซ้ำทุกหน้า (ตามไฟล์ Word ต้นฉบับ): "FR.01" มุมขวาบน
+         และ "ฉบับที่/วันที่" กึ่งกลางล่าง — position:fixed ใช้ได้ปลอดภัยตรงนี้เพราะ
+         เป็นแถบเล็กๆ ที่ตั้งใจให้ซ้ำทุกหน้า ไม่ใช่เนื้อหาหลักทั้งก้อนแบบบั๊กเดิม */
+      .fr01-corner-label { display: none !important; } /* ใช้ตัวที่ position:fixed แทน จะได้ขึ้นทุกหน้า ไม่ใช่แค่หน้าแรก */
+      .fr01-print-running {
+        display: block !important;
+        position: fixed;
+        font-size: 12px;
+        color: #111;
+      }
+      #fr01-print-running-header { top: 6mm; right: 10mm; font-weight: 700; font-size: 15px; color: #1a3a6b; }
+      #fr01-print-running-footer { bottom: 6mm; left: 0; right: 0; text-align: center; }
+      .fr01-count-input::-webkit-outer-spin-button,
+      .fr01-count-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+      .fr01-count-input { -moz-appearance: textfield; }
     }
+
+    /* ── FR.01 e-signature (เซ็นชื่ออิเล็กทรอนิกส์) ─────────────── */
+    .fr01-sign-line {
+      border-bottom: 1.5px solid #111; min-height: 56px; margin-bottom: 6px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; cursor: pointer; border-radius: 4px 4px 0 0;
+      transition: background .15s;
+    }
+    .fr01-sign-line:hover { background: #f4f8ff; }
+    .fr01-sign-line img {
+      max-height: 56px; max-width: 100%; object-fit: contain; padding: 2px 0;
+    }
+    .fr01-sign-placeholder {
+      font-size: 12.5px; color: #6b7c9c; display: flex; align-items: center; gap: 5px;
+      padding: 6px 4px;
+    }
+    .fr01-sign-remove-btn {
+      position: absolute; top: 2px; right: 2px; display: none;
+      background: #fff; border: 1px solid var(--border, #ccc); border-radius: 50%;
+      width: 22px; height: 22px; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--red, #c0392b); cursor: pointer; line-height: 1;
+    }
+    .fr01-sign-remove-btn:hover { background: #fdecea; }
+    .fr01-sign-name-input {
+      border: none; border-bottom: 1px dotted #888; text-align: center;
+      font-family: inherit; font-size: 13px; color: #333; background: transparent;
+      width: 260px; max-width: 100%; padding: 1px 2px;
+    }
+    .fr01-sign-name-input:focus { outline: none; border-bottom-color: #e67e22; }
+    #modal-fr01-sign .modal { max-width: 480px; }
+    .fr01-sign-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+    .fr01-sign-tab {
+      flex: 1; padding: 8px; text-align: center; border: 1.5px solid var(--border, #ccc);
+      border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; color: #456;
+      background: #fff; user-select: none;
+    }
+    .fr01-sign-tab.active { border-color: #1a3a6b; background: #eef2f9; color: #1a3a6b; }
+    .fr01-sign-canvas-wrap {
+      border: 1.5px dashed #8aa; border-radius: 8px; background: #fff; overflow: hidden;
+    }
+    #fr01-sign-canvas { width: 100%; height: 220px; display: block; cursor: crosshair; touch-action: none; }
+    .fr01-sign-pad-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+    .fr01-sign-upload-drop {
+      border: 1.5px dashed #8aa; border-radius: 8px; padding: 18px; text-align: center;
+      background: #fafcff;
+    }
+    .fr01-sign-upload-preview { margin-top: 10px; text-align: center; min-height: 0; }
+    .fr01-sign-hint { font-size: 12px; color: #777; margin-top: 8px; text-align: center; }
 
 
     /* ── LINE Management & Assign Modal ─────────────────────── */
@@ -3377,20 +3493,19 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <div class="modal-body" style="overflow-y:auto;flex:1;">
           <div id="fr01-print-area">
             <div class="fr01-wrap">
+              <div class="fr01-corner-label">FR.01</div>
+              <div id="fr01-print-running-header" class="fr01-print-running">FR.01</div>
+              <div id="fr01-print-running-footer" class="fr01-print-running"></div>
 
-              <div class="fr01-header-box">
-                <div class="fr01-form-code">FR.01</div>
-                <div class="fr01-title-center">
-                  <div class="t1">แบบรายงานสรุปผลการวิจัย</div>
-                  <div class="t2">(Final Report Form)</div>
-                </div>
-                <div style="min-width:60px"></div>
+              <div class="fr01-title-center">
+                <div class="t1">แบบรายงานสรุปผลการวิจัย</div>
+                <div class="t2">(Final Report Form)</div>
               </div>
 
               <table class="fr01-table">
                 <tr>
-                  <td style="width:50%"><strong>หมายเลขโครงการ</strong>&nbsp;
-                    <input class="fr01-input inline" id="fr01-project-code" type="text" placeholder="เช่น EC-001/2567" style="width:calc(100% - 120px)">
+                  <td style="width:50%"><strong>หมายเลขโครงการ</strong><br>
+                    <input class="fr01-input inline" id="fr01-project-code" type="text" placeholder="เช่น EC-001/2567" style="width:calc(100% - 10px)">
                   </td>
                   <td style="width:50%"><strong>วันที่รับรอง</strong>&nbsp;
                     <input class="fr01-input inline" id="fr01-approved-date" type="date" style="width:calc(100% - 90px)">
@@ -3398,35 +3513,38 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                 </tr>
                 <tr>
                   <td colspan="2">
-                    <strong>ชื่อโครงการ</strong>&nbsp;(ไทย)
-                    <input class="fr01-input" id="fr01-title-th" type="text" placeholder="ชื่อโครงการภาษาไทย" style="margin-top:4px">
+                    <strong class="fr01-underline-label">ชื่อโครงการ</strong>
+                    <div style="margin-top:6px">(ไทย)
+                    <input class="fr01-input" id="fr01-title-th" type="text" placeholder="ชื่อโครงการภาษาไทย" style="margin-top:4px"></div>
                     <div style="margin-top:8px">(English)
                     <input class="fr01-input" id="fr01-title-en" type="text" placeholder="Research Project Title (English)" style="margin-top:4px"></div>
                   </td>
                 </tr>
                 <tr>
-                  <td class="label-cell">ผู้วิจัยหลัก</td>
-                  <td><input class="fr01-input" id="fr01-researcher" type="text" placeholder="ชื่อ-นามสกุล ผู้วิจัยหลัก"></td>
+                  <td style="width:34%"><strong>ผู้วิจัยหลัก</strong><br>
+                    <input class="fr01-input" id="fr01-researcher" type="text" placeholder="ชื่อ-นามสกุล ผู้วิจัยหลัก"></td>
+                  <td style="width:33%"><strong>เบอร์โทร</strong><br>
+                    <input class="fr01-input" id="fr01-phone" type="tel" placeholder="0xx-xxx-xxxx"></td>
                 </tr>
                 <tr>
-                  <td><strong>เบอร์โทร</strong>&nbsp;<input class="fr01-input inline" id="fr01-phone" type="tel" placeholder="0xx-xxxxxxx" maxlength="11" style="width:140px" oninput="formatPhoneInput(this)"></td>
-                  <td><strong>Email:</strong>&nbsp;<input class="fr01-input inline" id="fr01-email" type="email" placeholder="sansai@gmail.com" style="width:calc(100% - 65px)"></td>
+                  <td colspan="2"><strong>Email:</strong>&nbsp;
+                    <input class="fr01-input inline" id="fr01-email" type="email" placeholder="sansai@gmail.com" style="width:calc(100% - 60px)"></td>
                 </tr>
                 <tr>
-                  <td class="label-cell">สถานที่ติดต่อ</td>
-                  <td><input class="fr01-input" id="fr01-address" type="text" placeholder="หน่วยงาน / ที่อยู่"></td>
+                  <td class="contact-bar" colspan="2">สถานที่ติดต่อ&nbsp;
+                    <input class="fr01-input inline" id="fr01-address" type="text" placeholder="หน่วยงาน / ที่อยู่" style="width:calc(100% - 110px)"></td>
                 </tr>
                 <tr>
-                  <td class="label-cell">ผู้ให้ทุนวิจัย (Sponsor)</td>
-                  <td><input class="fr01-input" id="fr01-sponsor" type="text" placeholder="ชื่อแหล่งทุน / ผู้ให้ทุน"></td>
+                  <td class="contact-bar" colspan="2">ผู้ให้ทุนวิจัย (Sponsor)&nbsp;
+                    <input class="fr01-input inline" id="fr01-sponsor" type="text" placeholder="ชื่อแหล่งทุน / ผู้ให้ทุน (ถ้ามี)" style="width:calc(100% - 170px)"></td>
                 </tr>
               </table>
 
               <table class="fr01-table">
-                <tr><td class="header-row" colspan="2">การดำเนินการวิจัย ณ สถานที่วิจัย</td></tr>
+                <tr><td class="header-row" colspan="2">1. การดำเนินการวิจัย ณ สถานที่วิจัย</td></tr>
                 <tr>
                   <td colspan="2">
-                    ได้ดำเนินการวิจัยแล้วหรือไม่
+                    <strong>1.1</strong> ได้ดำเนินการวิจัยแล้วหรือไม่
                     <div class="fr01-radio-row" style="margin-top:6px">
                       <label><input type="radio" name="fr01-conducted" value="yes" id="fr01-cond-yes" onchange="fr01ToggleConducted()"> ดำเนินการแล้ว *</label>
                       <label><input type="radio" name="fr01-conducted" value="no" id="fr01-cond-no" onchange="fr01ToggleConducted()"> ไม่ได้ดำเนินการ (ตอบข้อ 1.2 แล้วข้ามไปตอบข้อ 5)</label>
@@ -3437,25 +3555,24 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
 
               <div id="fr01-conducted-section">
                 <table class="fr01-table">
-                  <tr><td class="sub-header" colspan="2">1.1 จำนวนผู้เข้ารับการวิจัย</td></tr>
-                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่ต้องการ (Number of required participants)</td><td><input class="fr01-count-input" id="fr01-required" type="number" min="0" placeholder="0"> ราย</td></tr>
-                  <tr class="fr01-count-row"><td>จำนวนผู้ที่ให้ความยินยอมเข้ารับการวิจัย (Number of consented participants)</td><td><input class="fr01-count-input" id="fr01-consented" type="number" min="0" placeholder="0"> ราย</td></tr>
-                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่ไม่ผ่านการคัดกรอง (Number of screen-fail participants)</td><td><input class="fr01-count-input" id="fr01-screenfail" type="number" min="0" placeholder="0"> ราย</td></tr>
-                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่ถอนตัวออกจากโครงการ (Number of withdrew participants)</td><td><input class="fr01-count-input" id="fr01-withdrew" type="number" min="0" placeholder="0"> ราย</td></tr>
-                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่เสียชีวิต (Number of dead participants)</td><td><input class="fr01-count-input" id="fr01-dead" type="number" min="0" placeholder="0"> ราย</td></tr>
-                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่อยู่ในระหว่างการรักษา (Number of active participants)</td><td><input class="fr01-count-input" id="fr01-active" type="number" min="0" placeholder="0"> ราย</td></tr>
-                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่อยู่ในระหว่างการติดตาม (Number of follow-up participants)</td><td><input class="fr01-count-input" id="fr01-followup" type="number" min="0" placeholder="0"> ราย</td></tr>
-                  <tr class="fr01-count-row"><td>จำนวนผู้เข้ารับการวิจัยที่เสร็จสิ้นการวิจัย (Number of completed or inactive participants)</td><td><input class="fr01-count-input" id="fr01-completed" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td><strong>1.2</strong> จำนวนผู้เข้ารับการวิจัยที่ต้องการ (Number of required participants)</td><td><input class="fr01-count-input" id="fr01-required" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td><strong>1.3</strong> จำนวนผู้ที่ให้ความยินยอมเข้ารับการวิจัย (Number of consented participants)</td><td><input class="fr01-count-input" id="fr01-consented" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td><strong>1.4</strong> จำนวนผู้เข้ารับการวิจัยที่ไม่ผ่านการคัดกรอง (Number of screen-fail participants)</td><td><input class="fr01-count-input" id="fr01-screenfail" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td><strong>1.5</strong> จำนวนผู้เข้ารับการวิจัยที่ถอนตัวออกจากโครงการ (Number of withdrew participants)</td><td><input class="fr01-count-input" id="fr01-withdrew" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td><strong>1.6</strong> จำนวนผู้เข้ารับการวิจัยที่เสียชีวิต (Number of dead participants)</td><td><input class="fr01-count-input" id="fr01-dead" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td><strong>1.7</strong> จำนวนผู้เข้ารับการวิจัยที่อยู่ในระหว่างการรักษา (Number of active participants)</td><td><input class="fr01-count-input" id="fr01-active" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td><strong>1.8</strong> จำนวนผู้เข้ารับการวิจัยที่อยู่ในระหว่างการติดตาม (Number of follow-up participants)</td><td><input class="fr01-count-input" id="fr01-followup" type="number" min="0" placeholder="0"> ราย</td></tr>
+                  <tr class="fr01-count-row"><td><strong>1.9</strong> จำนวนผู้เข้ารับการวิจัยที่เสร็จสิ้นการวิจัย (Number of completed or inactive participants)</td><td><input class="fr01-count-input" id="fr01-completed" type="number" min="0" placeholder="0"> ราย</td></tr>
                 </table>
 
                 <table class="fr01-table">
-                  <tr><td class="sub-header" colspan="2">1.2 ข้อมูลเกี่ยวกับเหตุการณ์ไม่พึงประสงค์ชนิดร้ายแรง (SAE/SUSARs) และเหตุการณ์ไม่พึงประสงค์ (unanticipated problems) ณ สถานที่วิจัย</td></tr>
+                  <tr><td class="header-row" colspan="2">2. ข้อมูลเกี่ยวกับเหตุการณ์ไม่พึงประสงค์ชนิดร้ายแรง (Serious adverse events) หรือเหตุการณ์ที่สงสัยว่าจะเป็นเหตุการณ์ไม่พึงประสงค์ชนิดร้ายแรงและไม่คาดคิด (Suspected Unexpected Serious Adverse Reactions, SUSARs) และเหตุการณ์ไม่พึงประสงค์ (unanticipated problems) ที่เกิดขึ้น ณ สถานที่วิจัยของท่าน</td></tr>
                   <tr>
-                    <td style="width:72%">มีเหตุการณ์ไม่พึงประสงค์ชนิดร้ายแรง (SAE) หรือ SUSARs ซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td>
+                    <td style="width:72%"><strong>2.1</strong> มีเหตุการณ์ไม่พึงประสงค์ชนิดร้ายแรง (SAE) หรือ SUSARs ซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td>
                     <td><div class="fr01-radio-row"><label><input type="radio" name="fr01-sae" value="no"> ไม่มี</label><label><input type="radio" name="fr01-sae" value="yes"> มี โปรดแนบรายงาน</label></div></td>
                   </tr>
                   <tr>
-                    <td>มีเหตุการณ์ไม่คาดคิดซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td>
+                    <td><strong>2.2</strong> มีเหตุการณ์ไม่คาดคิดซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td>
                     <td><div class="fr01-radio-row"><label><input type="radio" name="fr01-unanticipated" value="no"> ไม่มี</label><label><input type="radio" name="fr01-unanticipated" value="yes"> มี โปรดแนบรายงาน</label></div></td>
                   </tr>
                 </table>
@@ -3463,23 +3580,23 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
               </div>
 
               <table class="fr01-table">
-                <tr><td class="header-row" colspan="2">ข้อมูลเกี่ยวกับการดำเนินการวิจัย</td></tr>
-                <tr><td style="width:72%">มีการเปลี่ยนแปลงวิธีวิจัย (Protocol Violation) ซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-violation" value="no"> ไม่มี</label><label><input type="radio" name="fr01-violation" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
-                <tr><td>มีการดำเนินการวิจัยที่แตกต่างจากที่ระบุไว้ในโครงร่างการวิจัย (Protocol deviation) ซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-deviation" value="no"> ไม่มี</label><label><input type="radio" name="fr01-deviation" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
-                <tr><td>มีการเปลี่ยนแปลงผู้รับผิดชอบโครงการวิจัยซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-pi-change" value="no"> ไม่มี</label><label><input type="radio" name="fr01-pi-change" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
-                <tr><td>มีการเปลี่ยนแปลงเอกสารเกี่ยวกับโครงการวิจัยซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-doc-change" value="no"> ไม่มี</label><label><input type="radio" name="fr01-doc-change" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
-                <tr><td>มีอาสาสมัครร้องเรียนเกี่ยวกับโครงการวิจัยของท่านในช่วงเวลาของรายงานนี้หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-complaint-r" value="no"> ไม่มี</label><label><input type="radio" name="fr01-complaint-r" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
+                <tr><td class="header-row" colspan="2">3. ข้อมูลเกี่ยวกับการดำเนินการวิจัย</td></tr>
+                <tr><td style="width:72%"><strong>3.1</strong> มีการเปลี่ยนแปลงวิธีวิจัย (Protocol Violation) ซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-violation" value="no"> ไม่มี</label><label><input type="radio" name="fr01-violation" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
+                <tr><td><strong>3.2</strong> มีการดำเนินการวิจัยที่แตกต่างจากที่ระบุไว้ในโครงร่างการวิจัย (Protocol deviation) ซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-deviation" value="no"> ไม่มี</label><label><input type="radio" name="fr01-deviation" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
+                <tr><td><strong>3.3</strong> มีการเปลี่ยนแปลงผู้รับผิดชอบโครงการวิจัยซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-pi-change" value="no"> ไม่มี</label><label><input type="radio" name="fr01-pi-change" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
+                <tr><td><strong>3.4</strong> มีการเปลี่ยนแปลงเอกสารเกี่ยวกับโครงการวิจัยซึ่งท่านยังไม่ได้รายงานแก่คณะกรรมการฯ หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-doc-change" value="no"> ไม่มี</label><label><input type="radio" name="fr01-doc-change" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
+                <tr><td><strong>3.5</strong> มีอาสาสมัครร้องเรียนเกี่ยวกับโครงการวิจัยของท่านในช่วงเวลาของรายงานนี้หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-complaint-r" value="no"> ไม่มี</label><label><input type="radio" name="fr01-complaint-r" value="yes"> มี โปรดแนบรายงาน</label></div></td></tr>
               </table>
 
               <table class="fr01-table">
-                <tr><td class="header-row" colspan="2">ข้อมูลเกี่ยวกับหัวข้อการวิจัย</td></tr>
-                <tr><td style="width:72%">มีการเปลี่ยนแปลงความรู้ใหม่ที่เกี่ยวข้องกับการดำเนินการวิจัยนี้หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-new-knowledge" value="no"> ไม่มี</label><label><input type="radio" name="fr01-new-knowledge" value="yes"> มี โปรดแนบข้อมูล</label></div></td></tr>
-                <tr><td>มีข้อมูลเพิ่มเติมที่เกี่ยวข้องกับความเสี่ยงหรือประโยชน์ของโครงการวิจัยหรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-risk-benefit" value="no"> ไม่มี</label><label><input type="radio" name="fr01-risk-benefit" value="yes"> มี โปรดแนบข้อมูล</label></div></td></tr>
-                <tr><td>ในช่วงเวลาที่รายงาน มีข่าวที่เกี่ยวข้องกับการวิจัยและอาจส่งผลต่อทัศนคติของประชาชนหรือการตัดสินใจเข้าร่วมโครงการวิจัยของอาสาสมัครในโครงการของท่านหรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-media" value="no"> ไม่มี</label><label><input type="radio" name="fr01-media" value="yes"> มี โปรดแนบข้อมูล</label></div></td></tr>
+                <tr><td class="header-row" colspan="2">4. ข้อมูลเกี่ยวกับหัวข้อการวิจัย</td></tr>
+                <tr><td style="width:72%"><strong>4.1</strong> มีการเปลี่ยนแปลงความรู้ใหม่ที่เกี่ยวข้องกับการดำเนินการวิจัยนี้หรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-new-knowledge" value="no"> ไม่มี</label><label><input type="radio" name="fr01-new-knowledge" value="yes"> มี โปรดแนบข้อมูล</label></div></td></tr>
+                <tr><td><strong>4.2</strong> มีข้อมูลเพิ่มเติมที่เกี่ยวข้องกับความเสี่ยงหรือประโยชน์ของโครงการวิจัยหรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-risk-benefit" value="no"> ไม่มี</label><label><input type="radio" name="fr01-risk-benefit" value="yes"> มี โปรดแนบข้อมูล</label></div></td></tr>
+                <tr><td><strong>4.3</strong> ในช่วงเวลาที่รายงาน มีข่าวที่เกี่ยวข้องกับการวิจัยและอาจส่งผลต่อทัศนคติของประชาชนหรือการตัดสินใจเข้าร่วมโครงการวิจัยของอาสาสมัครในโครงการของท่านหรือไม่</td><td><div class="fr01-radio-row"><label><input type="radio" name="fr01-media" value="no"> ไม่มี</label><label><input type="radio" name="fr01-media" value="yes"> มี โปรดแนบข้อมูล</label></div></td></tr>
               </table>
 
               <table class="fr01-table">
-                <tr><td class="header-row">สรุปผลการวิจัยเบื้องต้นตามวัตถุประสงค์ของการวิจัย<span style="font-weight:400;font-size:12px;display:block;margin-top:2px">หากไม่ได้ดำเนินการวิจัยให้ชี้แจงเหตุผล</span></td></tr>
+                <tr><td class="plain-header">5. สรุปผลการวิจัยเบื้องต้นตามวัตถุประสงค์ของการวิจัย หากไม่ได้ดำเนินการวิจัยให้ชี้แจงเหตุผล</td></tr>
                 <tr><td style="padding:8px"><textarea class="fr01-textarea" id="fr01-summary" rows="6" placeholder="กรอกสรุปผลการวิจัยเบื้องต้นตามวัตถุประสงค์ / เหตุผลที่ไม่ได้ดำเนินการวิจัย..."></textarea></td></tr>
               </table>
 
@@ -3490,9 +3607,13 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
               </div>
               <div class="fr01-sign-zone">
                 <div class="fr01-sign-box">
-                  <div class="fr01-sign-line"></div>
+                  <div class="fr01-sign-line" id="fr01-sign-line" onclick="openFr01SignatureModal()" title="คลิกเพื่อเซ็นชื่อ หรือแนบไฟล์ลายเซ็น">
+                    <img id="fr01-sign-img" style="display:none" alt="ลายเซ็นผู้วิจัย">
+                    <div class="fr01-sign-placeholder fr01-no-print" id="fr01-sign-placeholder">🖊️ คลิกเพื่อเซ็นชื่อ / แนบไฟล์ลายเซ็น</div>
+                    <div class="fr01-sign-remove-btn fr01-no-print" id="fr01-sign-remove-btn" onclick="fr01RemoveSignature(event)" title="ลบลายเซ็น">✕</div>
+                  </div>
                   <div style="font-size:14px">ลงนามผู้วิจัย .........................................................</div>
-                  <div style="font-size:13px;color:#555;margin-top:4px">(.........................................................)</div>
+                  <div style="font-size:13px;color:#555;margin-top:4px">(<input class="fr01-sign-name-input" id="fr01-sign-name" type="text" placeholder="ชื่อ-นามสกุลผู้วิจัย">)</div>
                   <div class="fr01-date-row">
                     วันที่
                     <input class="fr01-input inline" id="fr01-sign-day"   type="text" placeholder="วว"     style="width:34px;text-align:center">
@@ -3527,6 +3648,46 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <button class="btn btn-outline" onclick="closeFr01Modal()">ยกเลิก</button>
           <button class="btn btn-outline" onclick="printFr01()" style="background:#f0f4ff">พิมพ์ / บันทึก PDF</button>
           <button class="btn btn-primary" id="fr01-submit-btn" onclick="doSubmitFr01()">ยื่นรายงานปิดโครงการ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         Modal: เซ็นชื่ออิเล็กทรอนิกส์ (สำหรับ FR.01)
+    ================================================================ -->
+    <div class="modal-overlay" id="modal-fr01-sign">
+      <div class="modal">
+        <div class="modal-header">
+          <h3><i class="ti ti-signature" aria-hidden="true"></i> เซ็นชื่อผู้วิจัย</h3>
+          <button class="modal-close" onclick="closeModal('modal-fr01-sign')">X</button>
+        </div>
+        <div class="modal-body">
+          <div class="fr01-sign-tabs">
+            <div class="fr01-sign-tab active" id="fr01-sign-tab-draw" onclick="fr01SignSwitchTab('draw')">✍️ เซ็นด้วยนิ้ว/ปากกา</div>
+            <div class="fr01-sign-tab" id="fr01-sign-tab-upload" onclick="fr01SignSwitchTab('upload')">📎 แนบไฟล์ลายเซ็น</div>
+          </div>
+
+          <div id="fr01-sign-draw-panel">
+            <div class="fr01-sign-canvas-wrap">
+              <canvas id="fr01-sign-canvas"></canvas>
+            </div>
+            <div class="fr01-sign-pad-actions">
+              <button type="button" class="btn btn-sm btn-outline" onclick="fr01ClearSignatureCanvas()">🧹 ล้างลายเซ็น</button>
+            </div>
+            <div class="fr01-sign-hint">รองรับการเซ็นด้วยนิ้ว, ปากกา (Apple Pencil ฯลฯ) หรือเมาส์</div>
+          </div>
+
+          <div id="fr01-sign-upload-panel" style="display:none">
+            <div class="fr01-sign-upload-drop">
+              <input type="file" id="fr01-sign-upload-input" accept="image/png,image/jpeg" onchange="fr01HandleSignatureUpload(this)">
+              <div class="fr01-sign-hint" style="margin-top:6px">รองรับไฟล์รูปภาพ JPG/PNG ไม่เกิน 5MB (เช่น รูปถ่ายลายเซ็นบนกระดาษ)</div>
+              <div class="fr01-sign-upload-preview" id="fr01-sign-upload-preview"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('modal-fr01-sign')">ยกเลิก</button>
+          <button class="btn btn-primary" onclick="fr01ConfirmSignature()">✅ ใช้ลายเซ็นนี้</button>
         </div>
       </div>
     </div>
@@ -3869,7 +4030,73 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
               โครงการไม่ผ่านการพิจารณา (สถานะสุดท้าย)
             </div>
           </div>
-          
+
+          <!-- 10. รอตรวจสอบ (ส่งแก้ไขแล้ว) -->
+          <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #ffe0b2;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="background: #ff9800; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">10</span>
+              <span style="font-weight: 700; color: #e65100;">รอตรวจสอบ</span>
+            </div>
+            <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
+              ผู้วิจัยส่งแก้ไขแล้ว (หลัง "รับรองมีข้อแก้ไข") รอกรรมการพิจารณาแก้ไข
+            </div>
+          </div>
+
+          <!-- 11. รอตรวจโดยแอดมิน -->
+          <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #d1c4e9;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="background: #673ab7; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">11</span>
+              <span style="font-weight: 700; color: #4527a0;">รอตรวจโดยแอดมิน</span>
+            </div>
+            <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
+              ผู้วิจัยส่งแก้ไขแล้ว กรณีข้ามกรรมการ (แอดมินตรวจเองโดยตรง)
+            </div>
+          </div>
+
+          <!-- 12. รอต่ออายุ -->
+          <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #ffe0b2;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="background: #ff9800; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">12</span>
+              <span style="font-weight: 700; color: #e65100;">รอต่ออายุ</span>
+            </div>
+            <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
+              โครงการรับรองแล้วใกล้/ถึงกำหนดทบทวน รอผู้วิจัยยื่นขอต่ออายุ
+            </div>
+          </div>
+
+          <!-- 13. ต่ออายุแล้ว -->
+          <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #c8e6c9;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="background: #4caf50; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">13</span>
+              <span style="font-weight: 700; color: #2e7d32;"><i class="ti ti-refresh" aria-hidden="true"></i> ต่ออายุแล้ว</span>
+            </div>
+            <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
+              อนุมัติต่ออายุโครงการเรียบร้อย กำหนดวันหมดอายุใหม่แล้ว
+            </div>
+          </div>
+
+          <!-- 14. รอปิดโครงการ -->
+          <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #d1c4e9;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="background: #673ab7; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">14</span>
+              <span style="font-weight: 700; color: #4527a0;">รอปิดโครงการ</span>
+            </div>
+            <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
+              ผู้วิจัยยื่นรายงานปิดโครงการ (FR.01) แล้ว รอเจ้าหน้าที่/แอดมินตรวจอนุมัติ
+            </div>
+          </div>
+
+          <!-- 15. ปิดโครงการแล้ว -->
+          <div style="background: white; border-radius: 10px; padding: 12px; border: 1px solid #e0e0e0;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="background: #9e9e9e; color: white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">15</span>
+              <span style="font-weight: 700; color: #555;"><i class="ti ti-lock" aria-hidden="true"></i> ปิดโครงการแล้ว</span>
+            </div>
+            <div style="color: #555; line-height: 1.5; padding-left: 30px; font-size: 12.5px;">
+              โครงการสิ้นสุดสมบูรณ์ (สถานะสุดท้าย) ไม่มีขั้นตอนต่อจากนี้
+            </div>
+          </div>
+
         </div>
         
         <!-- หมายเหตุสำคัญ -->
@@ -3913,16 +4140,36 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           สถานะใหม่ <span style="color: #d93025;">*</span>
         </label>
         <select id="us-status" class="form-control" style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--navy-light); border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 15px; background: white;">
-          <option value="รอพิจารณา">รอพิจารณา</option>
-          <option value="ผ่านตรวจเอกสาร">ผ่านตรวจเอกสาร</option>
-          <option value="เอกสารไม่ครบ">เอกสารไม่ครบ</option>
-          <option value="รอตอบรับ">รอตอบรับ</option>
-          <option value="รอประเมิน">รอประเมิน</option>
-          <option value="รอผลพิจารณา">รอผลพิจารณา</option>
-          <option value="รอแจ้งผล">รอแจ้งผล</option>
-          <option value="รับรอง">รับรอง</option>
-          <option value="ไม่รับรอง">ไม่รับรอง</option>
+          <option value="" disabled>-- เลือกสถานะใหม่ --</option>
+          <optgroup label="ขั้นตอนตรวจเอกสาร">
+            <option value="รอพิจารณา">รอพิจารณา</option>
+            <option value="เอกสารไม่ครบ">เอกสารไม่ครบ</option>
+            <option value="ผ่านตรวจเอกสาร">ผ่านตรวจเอกสาร</option>
+          </optgroup>
+          <optgroup label="ขั้นตอนพิจารณาโดยกรรมการ">
+            <option value="รอตอบรับ">รอตอบรับ</option>
+            <option value="รอประเมิน">รอประเมิน</option>
+            <option value="รอผลพิจารณา">รอผลพิจารณา</option>
+            <option value="รอแจ้งผล">รอแจ้งผล</option>
+          </optgroup>
+          <optgroup label="ขั้นตอนส่งแก้ไข (หลังแจ้งผลว่ารับรองมีข้อแก้ไข)">
+            <option value="รอตรวจสอบ">รอตรวจสอบ (ส่งแก้ไขแล้ว รอกรรมการ)</option>
+            <option value="รอตรวจโดยแอดมิน">รอตรวจโดยแอดมิน (ส่งแก้ไขแล้ว)</option>
+          </optgroup>
+          <optgroup label="ผลการพิจารณา (สุดท้าย)">
+            <option value="รับรอง">รับรอง</option>
+            <option value="ไม่รับรอง">ไม่รับรอง</option>
+          </optgroup>
+          <optgroup label="หลังรับรอง / ปิดโครงการ">
+            <option value="รอต่ออายุ">รอต่ออายุ</option>
+            <option value="ต่ออายุแล้ว">ต่ออายุแล้ว</option>
+            <option value="รอปิดโครงการ">รอปิดโครงการ</option>
+            <option value="ปิดโครงการแล้ว">ปิดโครงการแล้ว</option>
+          </optgroup>
         </select>
+        <div style="font-size:12px;color:#777;margin-top:6px">
+          หมายเหตุ: หากสถานะปัจจุบันเป็น "แก้ไขครั้งที่ N" (ระบบสร้างอัตโนมัติตอนผู้วิจัยส่งแก้ไข) ให้เลือกสถานะที่ต้องการดันต่อจากรายการด้านบนแทน เช่น กลับไป "รอตอบรับ" เพื่อส่งกรรมการใหม่ หรือ "รับรอง"/"ไม่รับรอง" เพื่อสรุปผล
+        </div>
       </div>
       
       <!-- หมายเหตุ (optional) -->
@@ -4511,16 +4758,6 @@ function loadAllData(){
   if(S._isAdmin) { loadUsersData(); loadMeetingMinutes(); }
   if(S._isCommittee) loadMeetingMinutes();
 }
-// เพิ่มฟังก์ชันนี้ในส่วน JavaScript ของหน้า
-function openUpdateStatusModal(code, title, currentStatus) {
-  document.getElementById('us-project-code').value = code;
-  document.getElementById('us-project-info').innerHTML = 
-    '<strong>' + esc(code) + '</strong> — ' + esc(title);
-  document.getElementById('us-status').value = currentStatus || 'รอพิจารณา';
-  document.getElementById('us-note').value = '';
-  openModal('modal-update-status');
-}
-
 function openForgotPasswordModal() {
   document.getElementById('forgot-email').value = '';
   document.getElementById('forgot-message').innerHTML = '';
@@ -4867,7 +5104,7 @@ function loadStaffProjects() {
       if (el) el.innerHTML = err;
       if (dashEl && S._isStaff) dashEl.innerHTML = err;
     })
-    .getAllProjectsRaw(S.user.username);
+    .getAllProjectsRaw(S.user.sessionId, S.user.username);
 }
 // ════════════════════════════════════════
 // buildStaffDashboardList - สร้างรายการโครงการใน Dashboard
@@ -4980,36 +5217,25 @@ function buildStaffDashboardList(projects) {
     }
 
 
-    function loadStats(){
-      if(S._isStaff){
-        google.script.run.withSuccessHandler(function(r){
-          if(!r||!r.success) return;
-          setText('sd-total',r.total||0); setText('sd-pending',r.pending||0);
-          setText('sd-total', r.total||0);
-          setText('sd-inreview',r.inReview||0); setText('sd-waiting',r.waitingResult||0);
-          setText('sd-approved',r.approved||0); setText('sd-meetings',r.pendingMeetings||0);
-        }).withFailureHandler(function(){}).getStaffDashboardStats(S.user.sessionId, S.user.username);
+    function loadStats() {
+      if (S._isStaff) {
+        google.script.run
+          .withSuccessHandler(function(r) {
+            if (!r || !r.success) return;
+            setText('sd-total', r.total || 0);
+            setText('sd-pending', r.pending || 0);
+            setText('sd-inreview', r.inReview || 0);
+            setText('sd-waiting', r.waitingResult || 0);
+            setText('sd-approved', r.approved || 0);
+            setText('sd-meetings', r.pendingMeetings || 0);
+          })
+          .withFailureHandler(function() {})
+          .getStaffDashboardStats(S.user.sessionId, S.user.username);
       }
     }
     // ════════════════════════════════════════
-// loadStats - โหลดสถิติสำหรับ Dashboard
-// ════════════════════════════════════════
-function loadStats() {
-  if (S._isStaff) {
-    google.script.run
-      .withSuccessHandler(function(r) {
-        if (!r || !r.success) return;
-        setText('sd-total', r.total || 0);
-        setText('sd-pending', r.pending || 0);
-        setText('sd-inreview', r.inReview || 0);
-        setText('sd-waiting', r.waitingResult || 0);
-        setText('sd-approved', r.approved || 0);
-        setText('sd-meetings', r.pendingMeetings || 0);
-      })
-      .withFailureHandler(function() {})
-      .getStaffDashboardStats(S.user.sessionId, S.user.username);
-  }
-}
+    // renderStaffProjectsTable
+    // ════════════════════════════════════════
 <!-- แทนที่ฟังก์ชัน renderStaffProjectsTable ทั้งหมดด้วยโค้ดนี้ -->
 function renderStaffProjectsTable(projects) {
   var el = document.getElementById('staff-projects-table');
@@ -5067,10 +5293,14 @@ function renderStaffProjectsTable(projects) {
       actionBtn = '<span style="font-size:11px;color:var(--text-light)"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> เสร็จสิ้น</span>';
     }
 
-    var extraBtns = '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + code + '\', this)"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>';
-    if (!isFinal && !isAwaitingResearcherRevision && !['ผ่านตรวจเอกสาร', 'รอแจ้งผล'].includes(status) && status.indexOf('รับรอง') === -1) {
-      extraBtns += ' <button class="btn btn-sm btn-accent" onclick="openUpdateStatusModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')"><i class="ti ti-chart-bar" aria-hidden="true"></i> สถานะ</button>';
-    }
+    // [FIX] ปุ่ม "เปลี่ยนสถานะ" (manual override) ต้องมีให้ทุกแถวเสมอ ไม่ว่าสถานะปัจจุบันจะเป็นอะไร
+    // เดิมซ่อนปุ่มนี้ไปเมื่อสถานะเป็น isFinal / isAwaitingResearcherRevision / ผ่านตรวจเอกสาร / รอแจ้งผล /
+    // มีคำว่า "รับรอง" อยู่ในสถานะ — ทำให้โครงการที่ค้างอยู่ในสถานะเหล่านี้ (เช่น "รับรองมีข้อแก้ไข" หรือ
+    // "แก้ไขครั้งที่ N" ที่ผู้วิจัยไม่กลับมาส่งแก้ไข) ไม่มีทางเปลี่ยนสถานะเองได้เลยจากหน้านี้ ต้องเข้าไปแก้ที่
+    // ชีตโดยตรง — จัดกลุ่มปุ่มนี้เป็น secondary action (btn-outline) คู่กับปุ่ม "ไฟล์" เพื่อไม่ให้แย่งความ
+    // สำคัญกับปุ่ม action หลักของแต่ละสถานะ (ส่งกรรมการ/ตรวจเอกสาร/แจ้งผล ฯลฯ) แต่ยังกดถึงได้เสมอ
+    var extraBtns = '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + code + '\', this)"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>'
+      + ' <button class="btn btn-sm btn-outline" onclick="openUpdateStatusModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="เปลี่ยนสถานะโครงการด้วยตนเอง (ใช้เมื่อจำเป็น)"><i class="ti ti-chart-bar" aria-hidden="true"></i> เปลี่ยนสถานะ</button>';
 
     // badge ประเภทการพิจารณา + ปุ่มตั้งค่า (เฉพาะ admin)
     var pType = String(p.project_type || '').trim().toLowerCase();
@@ -5163,7 +5393,7 @@ function filterStaffProjects() {
         console.error('getAllProjectsRaw error:', err);
         sel.innerHTML = '<option value="">-- โหลดโครงการไม่สำเร็จ --</option>';
       })
-      .getAllProjectsRaw(S.user.username);
+      .getAllProjectsRaw(S.user.sessionId, S.user.username);
   } else {
     _populateProjectDropdown(preselectedCode);
   }
@@ -5370,7 +5600,7 @@ function openVerifyDocsModal(code, title) {
         '<button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="_loadCommitteesForModal()"><i class="ti ti-refresh" aria-hidden="true"></i> ลองอีกครั้ง</button>' +
         '</div>';
     })
-    .getCommitteeUsers(S.user.username);
+    .getCommitteeUsers(S.user.sessionId, S.user.username);
 }
 
     // ============================================================
@@ -5442,8 +5672,14 @@ function _renderCommitteeCheckboxes(committees) {
     // ════════════════════════════════════════
     function openUpdateStatusModal(code,title,currentStatus){
       document.getElementById('us-project-code').value=code;
-      document.getElementById('us-project-info').innerHTML='<strong>'+esc(code)+'</strong> — '+esc(title);
-      document.getElementById('us-status').value=currentStatus||'รอพิจารณา';
+      document.getElementById('us-project-info').innerHTML='<strong>'+esc(code)+'</strong> — '+esc(title)
+        + '<div style="margin-top:6px">สถานะปัจจุบัน: '+pillStatus(currentStatus||'-')+'</div>';
+      var sel = document.getElementById('us-status');
+      var matched = false;
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === currentStatus) { matched = true; break; }
+      }
+      sel.value = matched ? currentStatus : '';
       document.getElementById('us-note').value='';
       openModal('modal-update-status');
     }
@@ -5650,7 +5886,7 @@ function openNotifyModal(projectCode) {
         summaryEl.innerHTML = '<div class="empty-state"><p>โหลดผลประเมินไม่สำเร็จ</p></div>';
       }
     })
-    .getCommitteeEvalSummary(projectCode);
+    .getCommitteeEvalSummary(S.user.sessionId, S.user.username, projectCode);
   
   document.getElementById('notify-result-note').value = '';
   document.getElementById('notify-revision-deadline').value = '';
@@ -5745,7 +5981,7 @@ function handleNotifyCertUpload(input) {
       .withFailureHandler(function(e) {
         listEl.innerHTML = '<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>';
       })
-      .uploadFileSecure(b64, file.name, file.type, _notifyProjectCode, S.user.username, 'cert_letter');
+      .uploadFileSecure(S.user.sessionId, b64, file.name, file.type, _notifyProjectCode, S.user.username, 'cert_letter');
   };
   reader.readAsDataURL(file);
 }
@@ -5948,7 +6184,7 @@ function openReviewRevisionModal(projectCode) {
  showToast('อัพโหลดสำเร็จ');
           } else { row.innerHTML='<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> '+esc(file.name)+' — '+esc((r&&r.message)||'')+'</div>'; }
         }).withFailureHandler(function(e){ row.innerHTML='<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> '+esc(e.message)+'</div>'; })
-        .uploadFileSecure(b64, file.name, file.type, _revisionProjectCode, S.user?S.user.username:'', 'revision_doc');
+        .uploadFileSecure(S.user?S.user.sessionId:'', b64, file.name, file.type, _revisionProjectCode, S.user?S.user.username:'', 'revision_doc');
       };
       reader.readAsDataURL(file);
     }
@@ -6243,7 +6479,7 @@ function openReviewRevisionModal(projectCode) {
           }
         })
         .withFailureHandler(function(e) { showToast('เกิดข้อผิดพลาด: ' + e.message, 'error'); })
-        .saveMeeting(payload, S.user.username);
+        .saveMeeting(S.user.sessionId, payload, S.user.username);
     }
 
     // ── Review view ──────────────────────────────────────────────
@@ -6319,7 +6555,7 @@ function openReviewRevisionModal(projectCode) {
           else showToast('เกิดข้อผิดพลาด', 'error');
         })
         .withFailureHandler(function(e) { showToast('เกิดข้อผิดพลาด: ' + e.message, 'error'); })
-        .submitMeetingReview({
+        .submitMeetingReview(S.user.sessionId, {
           meetingId:         _currentMeeting.meeting_id || 'unknown',
           agendaItems:       agendaItems,
           committeeUsername: S.user.username,
@@ -6740,7 +6976,7 @@ function openEvalModal(code, title, committeeUsername, committeeName) {
               }
             })
             .withFailureHandler(function (e) { row.innerHTML = '<div style="font-size:13px;color:var(--red)"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>'; })
-            .uploadFileSecure(b64, file.name, file.type, _evalCode, S.user ? S.user.username : '', 'eval_form');
+            .uploadFileSecure(S.user ? S.user.sessionId : '', b64, file.name, file.type, _evalCode, S.user ? S.user.username : '', 'eval_form');
         };
         reader.readAsDataURL(file);
       });
@@ -7587,7 +7823,7 @@ function doQuickAssign(){
       } else showToast('เกิดข้อผิดพลาด: '+((res&&res.message)||''),'error');
     })
     .withFailureHandler(function(e){btn.disabled=false;if(lbl)lbl.textContent=origLabel;showToast('เกิดข้อผิดพลาด: '+e.message,'error');})
-    .assignProjectMultiCommittee({projectCode:code,projectTitle:projectTitle,committeeList:committeeList,deadline:val('qa-deadline'),note:val('qa-note'),skipAcceptance:skipAcceptance,selectedFiles:selectedFiles},S.user.username);
+    .assignProjectMultiCommittee(S.user.sessionId, {projectCode:code,projectTitle:projectTitle,committeeList:committeeList,deadline:val('qa-deadline'),note:val('qa-note'),skipAcceptance:skipAcceptance,selectedFiles:selectedFiles},S.user.username);
 }
     function rolesPill(roles){ var map={admin:'pill-red',staff:'pill-blue',committee:'pill-green',researcher:'pill-gray'}; return roles.split(',').map(function(r){ r=r.trim().replace('pending_',''); return '<span class="pill '+(map[r]||'pill-gray')+'" style="margin-right:2px">'+esc(r)+'</span>'; }).join(''); }
 
@@ -7753,7 +7989,7 @@ function doQuickAssign(){
       var btn = document.getElementById('btn-confirm-welcome-all');
       if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังส่ง...'; }
 
-      getM().sendWelcomeEmailsToAllUsers()
+      getM().sendWelcomeEmailsToAllUsers(S.user.sessionId, S.user.username)
         .then(function(result) {
           if (btn) { btn.disabled = true; btn.innerHTML = 'ส่งเรียบร้อยแล้ว'; }
           closeModal('modal-welcome-all');
@@ -7931,7 +8167,7 @@ function doQuickAssign(){
  renderDocumentCompleteness(); showToast('อัพโหลดสำเร็จ');
  } else { if(statusEl) statusEl.innerHTML='<div style="font-size:12px;color:var(--red);padding:6px 0"> '+esc((r&&r.message)||'')+'</div>'; showToast('อัพโหลดไม่สำเร็จ','error'); }
         }).withFailureHandler(function(e){ if(statusEl) statusEl.innerHTML='<div style="font-size:12px;color:var(--red);padding:6px 0"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> '+esc(e.message||'')+'</div>'; })
-        .uploadFileSecure(b64,file.name,file.type,_tempProjectId,S.user?S.user.username:'',fileType);
+        .uploadFileSecure(S.user?S.user.sessionId:'', b64,file.name,file.type,_tempProjectId,S.user?S.user.username:'',fileType);
       };
       reader.readAsDataURL(file);
     }
@@ -8039,7 +8275,7 @@ function sendNotifyResult() {
       btn.innerHTML = originalText;
  showToast('เกิดข้อผิดพลาด: '+ e.message, 'error');
     })
-    .sendResultToResearcher(payload);
+    .sendResultToResearcher(S.user.sessionId, payload);
 }
     // ════════════════════════════════════════
     // DOCUMENT PAGE
@@ -8329,7 +8565,7 @@ function toggleOtherPosition() {
         .withFailureHandler(function(e) {
           if (el) el.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i></div><p>' + esc(e.message) + '</p></div>';
         })
-        .getMeetingMinutes(S.user.username);
+        .getMeetingMinutes(S.user.sessionId, S.user.username);
     }
     // ============================================================
 //  ตัวแปรเก็บข้อมูลไฟล์สำหรับแอดมินตรวจสอบเอง
@@ -8474,7 +8710,7 @@ function handleAdminDirectCertUpload(input) {
       .withFailureHandler(function(e) {
         listEl.innerHTML = '<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>';
       })
-      .uploadFileSecure(b64, file.name, file.type, projectCode, S.user.username, 'cert_letter');
+      .uploadFileSecure(S.user.sessionId, b64, file.name, file.type, projectCode, S.user.username, 'cert_letter');
   };
   reader.readAsDataURL(file);
 }
@@ -8512,7 +8748,7 @@ function handleAdminDirectRevisionUpload(input) {
       .withFailureHandler(function(e) {
         listEl.innerHTML = '<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>';
       })
-      .uploadFileSecure(b64, file.name, file.type, projectCode, S.user.username, 'revision_guideline');
+      .uploadFileSecure(S.user.sessionId, b64, file.name, file.type, projectCode, S.user.username, 'revision_guideline');
   };
   reader.readAsDataURL(file);
 }
@@ -8550,7 +8786,7 @@ function handleAdminDirectRejectionUpload(input) {
       .withFailureHandler(function(e) {
         listEl.innerHTML = '<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>';
       })
-      .uploadFileSecure(b64, file.name, file.type, projectCode, S.user.username, 'rejection_reason');
+      .uploadFileSecure(S.user.sessionId, b64, file.name, file.type, projectCode, S.user.username, 'rejection_reason');
   };
   reader.readAsDataURL(file);
 }
@@ -8588,7 +8824,7 @@ function handleAdminDirectOtherUpload(input) {
         .withFailureHandler(function(e) { 
           row.innerHTML = '<div style="color:var(--red)"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>'; 
         })
-        .uploadFileSecure(b64, file.name, file.type, projectCode, S.user.username, 'notify_attachment');
+        .uploadFileSecure(S.user.sessionId, b64, file.name, file.type, projectCode, S.user.username, 'notify_attachment');
     };
     reader.readAsDataURL(file);
   });
@@ -8693,7 +8929,7 @@ function submitAdminDirectReview() {
       btn.innerHTML = '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ยืนยันและแจ้งผล';
  showToast('เกิดข้อผิดพลาด: '+ e.message, 'error');
     })
-    .sendResultToResearcher(payload);
+    .sendResultToResearcher(S.user.sessionId, payload);
 }
   // ============================================================
 //  updateNotifyAttachmentSection - แก้ไขให้มีส่วนแนบไฟล์ตามผล
@@ -8824,7 +9060,7 @@ function handleNotifyOtherUpload(input) {
         .withFailureHandler(function(e) { 
           row.innerHTML = '<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>'; 
         })
-        .uploadFileSecure(b64, file.name, file.type, _notifyProjectCode, S.user.username, 'notify_attachment');
+        .uploadFileSecure(S.user.sessionId, b64, file.name, file.type, _notifyProjectCode, S.user.username, 'notify_attachment');
     };
     reader.readAsDataURL(file);
   });
@@ -8869,7 +9105,7 @@ function handleNotifyRejectionUpload(input) {
       .withFailureHandler(function(e) {
         list.innerHTML = '<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>';
       })
-      .uploadFileSecure(b64, file.name, file.type, _notifyProjectCode, S.user.username, 'rejection_reason');
+      .uploadFileSecure(S.user.sessionId, b64, file.name, file.type, _notifyProjectCode, S.user.username, 'rejection_reason');
   };
   reader.readAsDataURL(file);
 }
@@ -8922,7 +9158,7 @@ function handleNotifyRevisionUpload(input) {
       .withFailureHandler(function(e) {
         list.innerHTML = '<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>';
       })
-      .uploadFileSecure(b64, file.name, file.type, _notifyProjectCode, S.user.username, 'revision_guideline');
+      .uploadFileSecure(S.user.sessionId, b64, file.name, file.type, _notifyProjectCode, S.user.username, 'revision_guideline');
   };
   reader.readAsDataURL(file);
 }
@@ -9028,7 +9264,7 @@ function removeNotifyRevisionFile() {
  btn.disabled = false; btn.textContent = 'อัพโหลด';
             showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
           })
-          .uploadMeetingMinutes({
+          .uploadMeetingMinutes(S.user.sessionId, {
             title:       title,
             meetingDate: meetingDate,
             meetingId:   document.getElementById('min-meeting-id').value.trim(),
@@ -9074,7 +9310,7 @@ function removeNotifyRevisionFile() {
       var reader = new FileReader();
       reader.onload = function(ev) {
         var b64 = ev.target.result.split(',')[1];
-        getM().completeMeetingWithReport({
+        getM().completeMeetingWithReport(S.user.sessionId, {
           meetingId:  _completeMtgId,
           fileName:   _completeMtgFileData.name,
           mimeType:   _completeMtgFileData.type || 'application/pdf',
@@ -9104,7 +9340,7 @@ function removeNotifyRevisionFile() {
           else showToast('เกิดข้อผิดพลาด', 'error');
         })
         .withFailureHandler(function(e) { showToast(e.message, 'error'); })
-        .deleteMeetingMinute(minuteId, S.user.username);
+        .deleteMeetingMinute(S.user.sessionId, minuteId, S.user.username);
     }
 
 
@@ -9181,7 +9417,7 @@ function removeNotifyRevisionFile() {
         .withFailureHandler(function() {
           if (el) el.innerHTML = '<div class="empty-state"><p>โหลดไม่สำเร็จ</p></div>';
         })
-        .getApprovedProjectsForReporting(S.user.username);
+        .getApprovedProjectsForReporting(S.user.sessionId, S.user.username);
     }
 
     function loadMyReports() {
@@ -9228,7 +9464,7 @@ function removeNotifyRevisionFile() {
         .withFailureHandler(function(e) {
           if (el) el.innerHTML = '<div class="empty-state"><p>โหลดไม่สำเร็จ: ' + esc(e.message) + '</p></div>';
         })
-        .getAllResearchReports(S.user.username);
+        .getAllResearchReports(S.user.sessionId, S.user.username);
       loadResearchProjectsOverview(); // 🆕 โหลดโครงการที่ปิดแล้ว + โครงการที่กำลังดำเนินการ (พร้อมวันหมดอายุ)
     }
 
@@ -9437,7 +9673,7 @@ function removeNotifyRevisionFile() {
           if (preselectedCode) { sel.value = preselectedCode; onRptProjectChange(); }
         })
         .withFailureHandler(function() {})
-        .getApprovedProjectsForReporting(S.user.username);
+        .getApprovedProjectsForReporting(S.user.sessionId, S.user.username);
 
       openModal('modal-submit-report');
     }
@@ -9505,7 +9741,7 @@ function removeNotifyRevisionFile() {
               }
             })
             .withFailureHandler(function(e) { row.innerHTML = '<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>'; })
-            .uploadFileSecure(ev.target.result.split(',')[1], file.name, file.type, code, S.user.username, 'research_report_' + (_selectedReportType || 'other'));
+            .uploadFileSecure(S.user.sessionId, ev.target.result.split(',')[1], file.name, file.type, code, S.user.username, 'research_report_' + (_selectedReportType || 'other'));
         };
         reader.readAsDataURL(file);
       });
@@ -9606,7 +9842,7 @@ async function uploadToGoogleDrive(file) {
  btn.disabled = false; btn.textContent = 'ยื่นรายงาน';
           showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
         })
-        .submitResearchReport({
+        .submitResearchReport(S.user.sessionId, {
           projectCode:  projectCode,
           reportType:   reportType,
           callerUsername: S.user.username,
@@ -9674,7 +9910,7 @@ async function uploadToGoogleDrive(file) {
           btns.forEach(function(b) { b.disabled = false; });
           showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
         })
-        .reviewResearchReport({
+        .reviewResearchReport(S.user.sessionId, {
           reportId:       reportId,
           decision:       decision,
           note:           note,
@@ -9731,7 +9967,7 @@ async function uploadToGoogleDrive(file) {
               }
             })
             .withFailureHandler(function(e) { row.innerHTML = '<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>'; })
-            .uploadFileSecure(ev.target.result.split(',')[1], file.name, file.type, code, S.user.username, 'admin_manage_' + action);
+            .uploadFileSecure(S.user.sessionId, ev.target.result.split(',')[1], file.name, file.type, code, S.user.username, 'admin_manage_' + action);
         };
         reader.readAsDataURL(file);
       });
@@ -10189,7 +10425,7 @@ async function uploadToGoogleDrive(file) {
           showRegError('แวง: เชื่อมต่อกับระบบไม่สำเร็จ กำลังลงทะเบียนโดยไม่แนบไฟล์ (สามารถส่งภายหลังได้)');
           submitRegisterWithPayload(payload, btn);
         })
-        .uploadFileSecure(base64, ethicsCertificateFile.name, ethicsCertificateFile.type,
+        .uploadFileSecure('', base64, ethicsCertificateFile.name, ethicsCertificateFile.type,
                           'REG_' + payload.username, payload.username, 'ethics_certificate');
     };
     reader.readAsDataURL(ethicsCertificateFile);
@@ -10383,7 +10619,7 @@ function showPage(page) {
         .withFailureHandler(function(err) {
           el.innerHTML = '<div class="empty-state"><p style="color:var(--red)">โหลดไม่สำเร็จ: ' + esc(err.message) + '</p></div>';
         })
-        .getClosureReportFiles();  // เรียกฟังก์ชันใหม่ใน Apps Script
+        .getClosureReportFiles(S.user.sessionId, S.user.username);  // เรียกฟังก์ชันใหม่ใน Apps Script
     }
     function switchSubTab(btn,tabId){ var bar=btn.closest('.tab-bar'); bar.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active'); var parent=btn.closest('.tab-panel')||btn.parentElement.parentElement; parent.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); }); var target=document.getElementById(tabId); if(target) target.classList.add('active'); }
 
@@ -10591,6 +10827,8 @@ function showPage(page) {
   'รอตรวจโดยแอดมิน':    'pill-purple',
   'ปิดโครงการแล้ว':     'pill-gray',
   'ต่ออายุแล้ว':         'pill-green',
+  'รอต่ออายุ':           'pill-orange',
+  'รอปิดโครงการ':        'pill-purple',
   'ผ่านการพิจารณา':     'pill-green',
   'ต้องแก้ไข':           'pill-red',
   'ส่งแก้ไขแล้ว':        'pill-orange',
@@ -10838,13 +11076,15 @@ function showPage(page) {
        'fr01-researcher','fr01-phone','fr01-email','fr01-address','fr01-sponsor',
        'fr01-required','fr01-consented','fr01-screenfail','fr01-withdrew',
        'fr01-dead','fr01-active','fr01-followup','fr01-completed',
-       'fr01-summary','fr01-ec-note',
+       'fr01-summary','fr01-ec-note','fr01-sign-name',
        'fr01-sign-day','fr01-sign-month','fr01-sign-year','fr01-round-no','fr01-sign-date2'
       ].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
       document.querySelectorAll('[name^="fr01-"]').forEach(function(r) { r.checked = false; });
       document.getElementById('fr01-file-list').innerHTML = '';
       document.getElementById('fr01-conducted-section').style.display = 'block';
       document.getElementById('fr01-project-code').value = projectCode;
+      fr01RemoveSignature();
+      _fr01SignatureFileId = null;
       var sel = document.getElementById('rpt-project-select');
       var opt = sel ? sel.options[sel.selectedIndex] : null;
       if (opt) { document.getElementById('fr01-title-th').value = opt.getAttribute('data-title') || ''; }
@@ -10853,6 +11093,7 @@ function showPage(page) {
         document.getElementById('fr01-email').value      = S.user.email   || '';
         document.getElementById('fr01-phone').value      = formatPhoneDisplay(S.user.phone || '');
         document.getElementById('fr01-address').value    = S.user.faculty || '';
+        document.getElementById('fr01-sign-name').value  = S.user.name    || '';
       }
       var round = 1;
       if (typeof _allReports !== 'undefined' && Array.isArray(_allReports)) {
@@ -10902,7 +11143,7 @@ function showPage(page) {
             .withFailureHandler(function(e) {
               row.innerHTML = '<div style="color:var(--red);font-size:13px">&#10060; ' + esc(e.message||'\u0e2d\u0e31\u0e1b\u0e42\u0e2b\u0e25\u0e14\u0e25\u0e49\u0e21\u0e40\u0e2b\u0e25\u0e27') + '</div>';
             })
-            .uploadFileSecure(ev.target.result.split(',')[1], file.name, file.type, _fr01ProjectCode, S.user.username, 'research_report_closure');
+            .uploadFileSecure(S.user.sessionId, ev.target.result.split(',')[1], file.name, file.type, _fr01ProjectCode, S.user.username, 'research_report_closure');
         };
         reader.readAsDataURL(file);
       });
@@ -10915,7 +11156,186 @@ function showPage(page) {
       btn.closest('.file-item').remove();
     }
 
+    // ------------------------------------------------------------
+    //  FR.01 e-signature (เซ็นชื่ออิเล็กทรอนิกส์ / แนบไฟล์ลายเซ็น)
+    // ------------------------------------------------------------
+    var _fr01SignCtx           = null;
+    var _fr01SignDrawing       = false;
+    var _fr01SignHasStroke     = false;
+    var _fr01SignLastPoint     = null;
+    var _fr01SignUploadedDataUrl = null;
+    var _fr01SignActiveTab     = 'draw';
+    var _fr01SignatureFileId   = null; // fileId ที่อัปโหลดขึ้น Drive แล้ว (แนบไปกับรายงาน)
+
+    function openFr01SignatureModal() {
+      _fr01SignUploadedDataUrl = null;
+      _fr01SignActiveTab = 'draw';
+      fr01SignSwitchTab('draw');
+      var preview = document.getElementById('fr01-sign-upload-preview');
+      if (preview) preview.innerHTML = '';
+      var uploadInput = document.getElementById('fr01-sign-upload-input');
+      if (uploadInput) uploadInput.value = '';
+      openModal('modal-fr01-sign');
+      setTimeout(fr01SignInitCanvas, 60); // รอ modal เล่น animation เสร็จก่อนอ่านขนาดจริง
+    }
+
+    function fr01SignInitCanvas() {
+      var canvas = document.getElementById('fr01-sign-canvas');
+      if (!canvas) return;
+      var rect = canvas.getBoundingClientRect();
+      var ratio = window.devicePixelRatio || 1;
+      canvas.width  = Math.max(1, Math.round(rect.width  * ratio));
+      canvas.height = Math.max(1, Math.round(rect.height * ratio));
+      var ctx = canvas.getContext('2d');
+      ctx.scale(ratio, ratio);
+      ctx.lineWidth = 2.4;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#111';
+      _fr01SignCtx = ctx;
+      _fr01SignHasStroke = false;
+
+      if (!canvas._fr01Bound) {
+        canvas._fr01Bound = true;
+        canvas.addEventListener('pointerdown', fr01SignPointerDown);
+        canvas.addEventListener('pointermove', fr01SignPointerMove);
+        canvas.addEventListener('pointerup',   fr01SignPointerUp);
+        canvas.addEventListener('pointerleave', fr01SignPointerUp);
+        canvas.addEventListener('pointercancel', fr01SignPointerUp);
+      }
+    }
+
+    function fr01SignGetPos(e, canvas) {
+      var rect = canvas.getBoundingClientRect();
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    }
+
+    function fr01SignPointerDown(e) {
+      e.preventDefault();
+      var canvas = e.currentTarget;
+      if (canvas.setPointerCapture) { try { canvas.setPointerCapture(e.pointerId); } catch (err) {} }
+      _fr01SignDrawing = true;
+      _fr01SignLastPoint = fr01SignGetPos(e, canvas);
+    }
+
+    function fr01SignPointerMove(e) {
+      if (!_fr01SignDrawing || !_fr01SignCtx) return;
+      e.preventDefault();
+      var canvas = e.currentTarget;
+      var pos = fr01SignGetPos(e, canvas);
+      _fr01SignCtx.beginPath();
+      _fr01SignCtx.moveTo(_fr01SignLastPoint.x, _fr01SignLastPoint.y);
+      _fr01SignCtx.lineTo(pos.x, pos.y);
+      _fr01SignCtx.stroke();
+      _fr01SignLastPoint = pos;
+      _fr01SignHasStroke = true;
+    }
+
+    function fr01SignPointerUp() {
+      _fr01SignDrawing = false;
+    }
+
+    function fr01ClearSignatureCanvas() {
+      var canvas = document.getElementById('fr01-sign-canvas');
+      if (canvas && _fr01SignCtx) _fr01SignCtx.clearRect(0, 0, canvas.width, canvas.height);
+      _fr01SignHasStroke = false;
+    }
+
+    function fr01SignSwitchTab(tab) {
+      _fr01SignActiveTab = tab;
+      var tabDraw   = document.getElementById('fr01-sign-tab-draw');
+      var tabUpload = document.getElementById('fr01-sign-tab-upload');
+      var panelDraw   = document.getElementById('fr01-sign-draw-panel');
+      var panelUpload = document.getElementById('fr01-sign-upload-panel');
+      if (tabDraw)   tabDraw.classList.toggle('active', tab === 'draw');
+      if (tabUpload) tabUpload.classList.toggle('active', tab === 'upload');
+      if (panelDraw)   panelDraw.style.display   = (tab === 'draw')   ? 'block' : 'none';
+      if (panelUpload) panelUpload.style.display = (tab === 'upload') ? 'block' : 'none';
+      if (tab === 'draw') setTimeout(fr01SignInitCanvas, 30);
+    }
+
+    function fr01HandleSignatureUpload(input) {
+      var file = input.files && input.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { showToast('ไฟล์ใหญ่เกิน 5MB', 'error'); input.value = ''; return; }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        _fr01SignUploadedDataUrl = ev.target.result;
+        var preview = document.getElementById('fr01-sign-upload-preview');
+        if (preview) {
+          preview.innerHTML = '<img src="' + _fr01SignUploadedDataUrl + '" style="max-height:120px;max-width:100%;border:1px solid #ccc;border-radius:6px;background:#fff">';
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function fr01ConfirmSignature() {
+      var dataUrl = null;
+      var mimeType = 'image/png';
+      var ext = 'png';
+      if (_fr01SignActiveTab === 'upload') {
+        if (!_fr01SignUploadedDataUrl) { showToast('กรุณาเลือกไฟล์ลายเซ็นก่อน', 'error'); return; }
+        dataUrl = _fr01SignUploadedDataUrl;
+        if (dataUrl.indexOf('image/jpeg') !== -1) { mimeType = 'image/jpeg'; ext = 'jpg'; }
+      } else {
+        if (!_fr01SignHasStroke) { showToast('กรุณาเซ็นชื่อก่อนบันทึก', 'error'); return; }
+        var canvas = document.getElementById('fr01-sign-canvas');
+        dataUrl = canvas.toDataURL('image/png');
+      }
+
+      var img = document.getElementById('fr01-sign-img');
+      img.src = dataUrl;
+      img.style.display = 'inline-block';
+      document.getElementById('fr01-sign-placeholder').style.display = 'none';
+      document.getElementById('fr01-sign-remove-btn').style.display = 'flex';
+      closeModal('modal-fr01-sign');
+
+      // อัปโหลดลายเซ็นขึ้น Drive แนบไปกับรายงาน (เหมือนไฟล์แนบอื่นๆ) แบบไม่บล็อก UI
+      var base64Payload = dataUrl.split(',')[1];
+      var fileName = 'signature_' + (_fr01ProjectCode || 'fr01') + '_' + Date.now() + '.' + ext;
+      google.script.run
+        .withSuccessHandler(function(r) {
+          if (r && r.success) {
+            if (_fr01SignatureFileId) {
+              var oldIdx = _fr01FileIds.indexOf(_fr01SignatureFileId);
+              if (oldIdx > -1) _fr01FileIds.splice(oldIdx, 1);
+            }
+            _fr01SignatureFileId = r.fileId;
+            _fr01FileIds.push(r.fileId);
+          } else {
+            showToast('บันทึกลายเซ็นในเอกสารไม่สำเร็จ แต่ยังพิมพ์/บันทึก PDF ได้ตามปกติ', 'error');
+          }
+        })
+        .withFailureHandler(function() {
+          showToast('บันทึกลายเซ็นในเอกสารไม่สำเร็จ แต่ยังพิมพ์/บันทึก PDF ได้ตามปกติ', 'error');
+        })
+        .uploadFileSecure(S.user.sessionId, base64Payload, fileName, mimeType, _fr01ProjectCode, (S && S.user ? S.user.username : ''), 'research_report_signature');
+    }
+
+    function fr01RemoveSignature(e) {
+      if (e) e.stopPropagation();
+      var img = document.getElementById('fr01-sign-img');
+      if (img) { img.src = ''; img.style.display = 'none'; }
+      var placeholder = document.getElementById('fr01-sign-placeholder');
+      if (placeholder) placeholder.style.display = '';
+      var removeBtn = document.getElementById('fr01-sign-remove-btn');
+      if (removeBtn) removeBtn.style.display = 'none';
+      if (_fr01SignatureFileId) {
+        var idx = _fr01FileIds.indexOf(_fr01SignatureFileId);
+        if (idx > -1) _fr01FileIds.splice(idx, 1);
+        _fr01SignatureFileId = null;
+      }
+    }
+
     function printFr01() {
+      var round = (document.getElementById('fr01-round-no').value || '1').trim();
+      var d = (document.getElementById('fr01-sign-day').value || '').trim();
+      var m = (document.getElementById('fr01-sign-month').value || '').trim();
+      var y = (document.getElementById('fr01-sign-year').value || '').trim();
+      var footer = document.getElementById('fr01-print-running-footer');
+      if (footer) {
+        footer.textContent = 'ฉบับที่...' + round + '.... วันที่......' + (d || '.....') + '/........' + (m || '.....') + '................/.....' + (y || '.....') + '.........';
+      }
       document.querySelectorAll('.fr01-no-print').forEach(function(el) {
         el.setAttribute('data-pd', el.style.display || '');
         el.style.display = 'none';
@@ -10975,7 +11395,9 @@ function showPage(page) {
         address:       document.getElementById('fr01-address').value,
         sponsor:       document.getElementById('fr01-sponsor').value,
         roundNo:       document.getElementById('fr01-round-no').value,
-        signDate:      document.getElementById('fr01-sign-date2').value
+        signDate:      document.getElementById('fr01-sign-date2').value,
+        signName:      document.getElementById('fr01-sign-name').value,
+        hasSignature:  !!_fr01SignatureFileId
       };
       var ecNote = document.getElementById('fr01-ec-note').value;
       var noteText = '[FR.01]\n' + (ecNote ? ecNote + '\n' : '') + '---\n' + JSON.stringify(formData, null, 2);
@@ -11001,7 +11423,7 @@ function showPage(page) {
           btn.textContent = '\u0e22\u0e37\u0e48\u0e19\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19\u0e1b\u0e34\u0e14\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23';
           showToast('\u0e40\u0e01\u0e34\u0e14\u0e02\u0e49\u0e2d\u0e1c\u0e34\u0e14\u0e1e\u0e25\u0e32\u0e14: ' + (e.message || ''), 'error');
         })
-        .submitResearchReport({
+        .submitResearchReport(S.user.sessionId, {
           projectCode:    projectCode,
           reportType:     'closure',
           callerUsername: S.user.username,
