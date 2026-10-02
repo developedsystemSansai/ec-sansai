@@ -5401,8 +5401,7 @@ function renderStaffProjectsTable(projects) {
     var isAwaitingResearcherRevision = !isRevision && (status.indexOf('แก้ไขครั้งที่') !== -1 || status.indexOf('รับรองมีข้อแก้ไข') !== -1);
     // ปุ่ม "คืนสถานะแก้ไข": โครงการหลัก (ไม่ใช่ _fix) ที่เคยแจ้งผล "รับรองมีข้อแก้ไข"/มีรอบแก้ไข แต่สถานะไม่ใช่ "แก้ไขครั้งที่ N" แล้ว
     // หรือค้างที่ รอพิจารณา/เอกสารไม่ครบ (ตั้งผิด) — ผู้วิจัยจึงยื่นแก้ไขไม่ได้
-    var canRestoreRevision = !isRevision && !isAwaitingResearcherRevision && status.indexOf('ส่งแก้ไขแล้ว') === -1 &&
-      (finalResult === 'รับรองมีข้อแก้ไข' || parseInt(p.revision_round || '0', 10) > 0 || status === 'รอพิจารณา' || status === 'เอกสารไม่ครบ');
+    var canRestoreRevision = !isRevision && !isAwaitingResearcherRevision && status.indexOf('ส่งแก้ไขแล้ว') === -1 && status !== 'ไม่รับรอง';
 
     if ((status.includes('รับรอง') || finalResult === 'รับรอง') && certFileId) {
       actionBtn = '<button class="btn btn-sm btn-primary" onclick="openNotifyModal(\'' + code + '\')"><i class="ti ti-file-certificate" aria-hidden="true"></i> ส่งหนังสือรับรอง</button>';
@@ -5438,7 +5437,7 @@ function renderStaffProjectsTable(projects) {
     var extraBtns = '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + code + '\', this)"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>'
       + ' <button class="btn btn-sm btn-outline" onclick="openUpdateStatusModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="เปลี่ยนสถานะโครงการด้วยตนเอง (ใช้เมื่อจำเป็น)"><i class="ti ti-chart-bar" aria-hidden="true"></i> เปลี่ยนสถานะ</button>'
       + ' <button class="btn btn-sm ' + (p.extra_upload_open ? 'btn-accent' : 'btn-outline') + '" onclick="openExtraUploadAdminModal(\'' + code + '\',\'' + title + '\',' + (p.extra_upload_open ? 'true' : 'false') + ',\'' + escAttr(p.extra_upload_until || '') + '\')" title="เปิดให้ผู้วิจัยแนบไฟล์เพิ่ม (ไม่เปลี่ยนสถานะ)"><i class="ti ti-' + (p.extra_upload_open ? 'lock-open' : 'paperclip') + '" aria-hidden="true"></i> ' + (p.extra_upload_open ? 'เปิดรับอยู่' : 'เปิดรับไฟล์') + '</button>'
-      + (canRestoreRevision ? ' <button class="btn btn-sm btn-accent" onclick="openRestoreRevisionModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="สถานะถูกเปลี่ยนผิด — คืนเป็น แก้ไขครั้งที่ N เพื่อให้ผู้วิจัยยื่นไฟล์แก้ไขได้"><i class="ti ti-rotate-clockwise-2" aria-hidden="true"></i> คืนสถานะแก้ไข</button>' : '')
+      + (canRestoreRevision ? ' <button class="btn btn-sm btn-accent" onclick="openRestoreRevisionModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="สถานะถูกเปลี่ยนผิด — คืนเป็น แก้ไขครั้งที่ N เพื่อให้ผู้วิจัยยื่นไฟล์แก้ไขได้"><i class="ti ti-rotate-clockwise-2" aria-hidden="true"></i> ตั้งเป็นแก้ไข</button>' : '')
       + (isAwaitingResearcherRevision ? ' <button class="btn btn-sm btn-outline" onclick="openUndoRevisionModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="ยกเลิกสถานะแก้ไขที่ตั้งผิด แล้วย้อนกลับสถานะเดิม"><i class="ti ti-arrow-back-up" aria-hidden="true"></i> ยกเลิกแก้ไข</button>' : '');
 
     // badge ประเภทการพิจารณา + ปุ่มตั้งค่า (เฉพาะ admin)
