@@ -4158,6 +4158,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <option value="รอแจ้งผล">รอแจ้งผล</option>
           </optgroup>
           <optgroup label="ขั้นตอนส่งแก้ไข (หลังแจ้งผลว่ารับรองมีข้อแก้ไข)">
+            <option value="รับรองมีข้อแก้ไข">รับรองมีข้อแก้ไข (เปิดให้ผู้วิจัยยื่นแก้ไข)</option>
             <option value="รอตรวจสอบ">รอตรวจสอบ (ส่งแก้ไขแล้ว รอกรรมการ)</option>
             <option value="รอตรวจโดยแอดมิน">รอตรวจโดยแอดมิน (ส่งแก้ไขแล้ว)</option>
           </optgroup>
@@ -4383,6 +4384,14 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <span id="rr-newstatus" style="font-size:12px;color:var(--text-light)"></span>
           </div>
           <div class="hint-text">ระบบเลือกรอบให้อัตโนมัติจากประวัติการแจ้งผล แก้เป็นรอบอื่นได้ถ้าจำเป็น (รหัสโครงการแก้ไขที่จะเกิด: <span id="rr-future">-</span>)</div>
+        </div>
+        <div class="field-group">
+          <label>ชื่อสถานะที่แสดง</label>
+          <select id="rr-label" class="form-control" onchange="refreshRestoreRevisionInfo()">
+            <option value="รับรองมีข้อแก้ไข">รับรองมีข้อแก้ไข</option>
+            <option value="แก้ไขครั้งที่">แก้ไขครั้งที่ N</option>
+          </select>
+          <div class="hint-text">ทั้งสองแบบทำให้ผู้วิจัยเห็นปุ่ม "ยื่นแก้ไข" เหมือนกัน (เลขรอบเก็บแยกไว้ในระบบ)</div>
         </div>
         <div class="field-group"><label>กำหนดส่งแก้ไข <span style="font-size:11px;font-weight:400;color:var(--text-light)">(เว้นว่าง = ใช้ค่าเดิมถ้ามี)</span></label><input type="date" id="rr-deadline" class="form-control"></div>
         <div class="field-group"><label>ข้อความถึงผู้วิจัย <span style="font-size:11px;font-weight:400;color:var(--text-light)">(ไม่บังคับ)</span></label><textarea id="rr-note" class="form-control" rows="2" placeholder="เช่น: ขออภัย สถานะถูกเปลี่ยนผิดพลาด ขณะนี้ยื่นไฟล์แก้ไขได้แล้ว"></textarea></div>
@@ -5826,6 +5835,14 @@ function _renderCommitteeCheckboxes(committees) {
   var status = val('us-status');
   var note = val('us-note');
   if (!code || !status) { showToast('ข้อมูลไม่ครบ', 'error'); return; }
+  // "รับรองมีข้อแก้ไข" ต้องตั้งเลขรอบ/ผลพิจารณา/แจ้งผู้วิจัยด้วย — ส่งต่อไปหน้าต่างเฉพาะ แทนการเปลี่ยนแค่ข้อความสถานะ
+  if (status === 'รับรองมีข้อแก้ไข') {
+    var infoEl = document.getElementById('us-project-info');
+    var curTitle = infoEl ? (infoEl.textContent || '').replace(/^\s*\S+\s*—\s*/, '').replace(/สถานะปัจจุบัน:.*$/, '').trim() : '';
+    closeModal('modal-update-status');
+    openRestoreRevisionModal(code, curTitle, '');
+    return;
+  }
 
   const statusBtn = document.querySelector('#modal-update-status .btn-primary');
   statusBtn.classList.add('btn-loading');
@@ -6410,6 +6427,7 @@ function openReviewRevisionModal(projectCode) {
       document.getElementById('rr-info').innerHTML = '<strong>' + esc(code) + '</strong> — ' + esc(title || '') +
         '<div style="margin-top:6px">สถานะปัจจุบัน: ' + pillStatus(status || '-') + '</div>';
       document.getElementById('rr-round').value = '';
+      document.getElementById('rr-label').value = 'รับรองมีข้อแก้ไข';
       document.getElementById('rr-deadline').value = '';
       document.getElementById('rr-note').value = '';
       document.getElementById('rr-notify').checked = true;
@@ -6425,7 +6443,7 @@ function openReviewRevisionModal(projectCode) {
       var btn = document.getElementById('rr-submit-btn');
       btn.disabled = true;
       diag.className = 'alert alert-info'; diag.innerHTML = 'กำลังตรวจสอบข้อมูลโครงการ...';
-      getM().getRestoreRevisionInfo(S.user.sessionId, { projectCode: code, round: val('rr-round') || '' }, S.user.username).then(function (r) {
+      getM().getRestoreRevisionInfo(S.user.sessionId, { projectCode: code, round: val('rr-round') || '', statusLabel: val('rr-label') }, S.user.username).then(function (r) {
         if (!r || !r.success) { diag.className = 'alert alert-error'; diag.innerHTML = esc((r && r.message) || 'ตรวจสอบไม่สำเร็จ'); return; }
         _rrInfo = r;
         if (first || !val('rr-round')) document.getElementById('rr-round').value = r.round;
@@ -6457,7 +6475,7 @@ function openReviewRevisionModal(projectCode) {
       var btn = document.getElementById('rr-submit-btn'); btn.disabled = true;
       showGlobalLoading('กำลังคืนสถานะ...');
       getM().restoreRevisionStatus(S.user.sessionId, {
-        projectCode: code, round: round, revisionDeadline: val('rr-deadline'), note: val('rr-note'),
+        projectCode: code, round: round, statusLabel: val('rr-label'), revisionDeadline: val('rr-deadline'), note: val('rr-note'),
         notifyResearcher: document.getElementById('rr-notify').checked,
         confirmCertified: document.getElementById('rr-cert-confirm').checked
       }, S.user.username).then(function (res) {
