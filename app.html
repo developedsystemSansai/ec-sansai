@@ -64,6 +64,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         submitRevision:              function(pl)               { return callGAS('submitRevision',             {payload:pl}); },
         setExtraUploadAccess:        function(sid,pl,au)        { return callGAS('setExtraUploadAccess',      {sessionId:sid, payload:pl, adminUsername:au}); },
         submitExtraFiles:            function(pl)               { return callGAS('submitExtraFiles',          {payload:pl}); },
+        undoRevisionStatus:          function(sid,pl,au)        { return callGAS('undoRevisionStatus',        {sessionId:sid, payload:pl, adminUsername:au}); },
         uploadFileSecure:            function(sid,b64,fn,mime,pc,u,ft){ return callGAS('uploadFileSecure',        {sessionId:sid, base64Data:b64, fileName:fn, mimeType:mime, projectCode:pc, username:u, fileType:ft}); },
         getUploadedFiles:            function(sid,pc,cu)        { return callGAS('getUploadedFiles',          {sessionId:sid, projectCode:pc, callerUsername:cu}); },
         deleteUploadedFile:          function(sid,fid,u,del)    { return callGAS('deleteUploadedFile',        {sessionId:sid, fileId:fid, username:u, deleteDriveFile:del}); },
@@ -4323,6 +4324,46 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
   </div>
 </div>
 
+<!-- Modal: ยกเลิกสถานะ "แก้ไขครั้งที่ N" (แอดมิน) -->
+<div class="modal-overlay" id="modal-undo-rev">
+  <div class="modal">
+    <div class="modal-header"><h3><i class="ti ti-arrow-back-up" aria-hidden="true"></i> ยกเลิกสถานะ "แก้ไขครั้งที่ N"</h3><button class="modal-close" onclick="closeModal('modal-undo-rev')"><i class="ti ti-x" aria-hidden="true"></i></button></div>
+    <div class="modal-body">
+      <input type="hidden" id="ur-code">
+      <div id="ur-info" style="background:var(--accent-light);border:1.5px solid #f5c26b;border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;"></div>
+      <div class="alert alert-info">ℹ️ ใช้เมื่อตั้ง "รับรองมีข้อแก้ไข" ไปโดยไม่ได้ตั้งใจ (เช่น เพื่อให้ผู้วิจัยแนบไฟล์) ระบบจะคืนสถานะ ผลพิจารณา วันที่รับรอง และหนังสือรับรองจากประวัติการแจ้งผลครั้งก่อน ย้อนได้เฉพาะกรณีที่ผู้วิจัยยังไม่ได้ส่งแก้ไข</div>
+      <div class="field-group">
+        <label>สถานะที่จะย้อนกลับไป</label>
+        <select id="ur-status" class="form-control">
+          <option value="">อัตโนมัติ (ตามผลแจ้งครั้งก่อน)</option>
+          <option value="รับรอง">รับรอง</option>
+          <option value="ต่ออายุแล้ว">ต่ออายุแล้ว</option>
+          <option value="รอปิดโครงการ">รอปิดโครงการ</option>
+          <option value="ไม่รับรอง">ไม่รับรอง</option>
+          <option value="รอแจ้งผล">รอแจ้งผล</option>
+          <option value="ผ่านตรวจเอกสาร">ผ่านตรวจเอกสาร</option>
+        </select>
+        <div class="hint-text">ถ้าก่อนหน้านี้เป็น "ต่ออายุแล้ว" หรือสถานะอื่น ให้เลือกเอง</div>
+      </div>
+      <div class="field-group">
+        <label style="display:flex;gap:8px;align-items:center;font-weight:700">
+          <input type="checkbox" id="ur-open-extra" checked onchange="document.getElementById('ur-extra-box').style.display=this.checked?'':'none'"> เปิดรับไฟล์เพิ่มเติมให้ผู้วิจัยต่อทันที (ไม่เปลี่ยนสถานะ)
+        </label>
+      </div>
+      <div id="ur-extra-box">
+        <div class="field-group"><label>กำหนดหมดเขต <span style="font-size:11px;font-weight:400;color:var(--text-light)">(เว้นว่าง = ไม่จำกัด)</span></label><input type="date" id="ur-until" class="form-control"></div>
+        <div class="field-group"><label>ข้อความถึงผู้วิจัย (ระบุเอกสารที่ต้องการ)</label><textarea id="ur-note" class="form-control" rows="3" placeholder="เช่น: กรุณาแนบ IS.05 ฉบับแก้ไข"></textarea></div>
+        <div class="field-group"><label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" id="ur-autoclose"> ปิดรับอัตโนมัติหลังผู้วิจัยส่งครั้งแรก</label></div>
+      </div>
+      <div class="hint-text">ระบบจะแจ้งผู้วิจัยว่าสถานะ "แก้ไขครั้งที่ N" เป็นการตั้งค่าผิดพลาด ไม่ต้องยื่นแก้ไข</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-undo-rev')">ยกเลิก</button>
+      <button class="btn btn-accent" id="ur-submit-btn" onclick="doUndoRevision()"><i class="ti ti-arrow-back-up" aria-hidden="true"></i> ยืนยันย้อนสถานะ</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: แจ้งผลการพิจารณา (Staff) -->
 <div class="modal-overlay" id="modal-notify-result">
   <div class="modal modal-lg">
@@ -5358,7 +5399,8 @@ function renderStaffProjectsTable(projects) {
     // สำคัญกับปุ่ม action หลักของแต่ละสถานะ (ส่งกรรมการ/ตรวจเอกสาร/แจ้งผล ฯลฯ) แต่ยังกดถึงได้เสมอ
     var extraBtns = '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + code + '\', this)"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>'
       + ' <button class="btn btn-sm btn-outline" onclick="openUpdateStatusModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="เปลี่ยนสถานะโครงการด้วยตนเอง (ใช้เมื่อจำเป็น)"><i class="ti ti-chart-bar" aria-hidden="true"></i> เปลี่ยนสถานะ</button>'
-      + ' <button class="btn btn-sm ' + (p.extra_upload_open ? 'btn-accent' : 'btn-outline') + '" onclick="openExtraUploadAdminModal(\'' + code + '\',\'' + title + '\',' + (p.extra_upload_open ? 'true' : 'false') + ',\'' + escAttr(p.extra_upload_until || '') + '\')" title="เปิดให้ผู้วิจัยแนบไฟล์เพิ่ม (ไม่เปลี่ยนสถานะ)"><i class="ti ti-' + (p.extra_upload_open ? 'lock-open' : 'paperclip') + '" aria-hidden="true"></i> ' + (p.extra_upload_open ? 'เปิดรับอยู่' : 'เปิดรับไฟล์') + '</button>';
+      + ' <button class="btn btn-sm ' + (p.extra_upload_open ? 'btn-accent' : 'btn-outline') + '" onclick="openExtraUploadAdminModal(\'' + code + '\',\'' + title + '\',' + (p.extra_upload_open ? 'true' : 'false') + ',\'' + escAttr(p.extra_upload_until || '') + '\')" title="เปิดให้ผู้วิจัยแนบไฟล์เพิ่ม (ไม่เปลี่ยนสถานะ)"><i class="ti ti-' + (p.extra_upload_open ? 'lock-open' : 'paperclip') + '" aria-hidden="true"></i> ' + (p.extra_upload_open ? 'เปิดรับอยู่' : 'เปิดรับไฟล์') + '</button>'
+      + (isAwaitingResearcherRevision ? ' <button class="btn btn-sm btn-outline" onclick="openUndoRevisionModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="ยกเลิกสถานะแก้ไขที่ตั้งผิด แล้วย้อนกลับสถานะเดิม"><i class="ti ti-arrow-back-up" aria-hidden="true"></i> ยกเลิกแก้ไข</button>' : '');
 
     // badge ประเภทการพิจารณา + ปุ่มตั้งค่า (เฉพาะ admin)
     var pType = String(p.project_type || '').trim().toLowerCase();
@@ -6286,6 +6328,42 @@ function openReviewRevisionModal(projectCode) {
       // <i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ไม่ต้องส่ง skipCommitteeReeval เพราะจะถูกกำหนดใน backend
     });
 }
+
+    // ===== ยกเลิกสถานะ "แก้ไขครั้งที่ N" =====
+    function openUndoRevisionModal(code, title, status) {
+      document.getElementById('ur-code').value = code;
+      document.getElementById('ur-info').innerHTML = '<strong>' + esc(code) + '</strong> — ' + esc(title || '') +
+        '<div style="margin-top:6px">สถานะปัจจุบัน: ' + pillStatus(status || '-') + '</div>';
+      document.getElementById('ur-status').value = '';
+      document.getElementById('ur-open-extra').checked = true;
+      document.getElementById('ur-extra-box').style.display = '';
+      document.getElementById('ur-until').value = '';
+      document.getElementById('ur-note').value = '';
+      document.getElementById('ur-autoclose').checked = false;
+      openModal('modal-undo-rev');
+    }
+    function doUndoRevision() {
+      var code = val('ur-code');
+      if (!code) return;
+      var openExtra = document.getElementById('ur-open-extra').checked;
+      if (!confirm('ยืนยันย้อนสถานะโครงการ ' + code + ' ?')) return;
+      var btn = document.getElementById('ur-submit-btn');
+      btn.disabled = true;
+      showGlobalLoading('กำลังย้อนสถานะ...');
+      getM().undoRevisionStatus(S.user.sessionId, {
+        projectCode: code,
+        restoreStatus: val('ur-status'),
+        notifyResearcher: !openExtra,
+        openExtra: openExtra ? { until: val('ur-until'), note: val('ur-note'), autoClose: document.getElementById('ur-autoclose').checked } : null
+      }, S.user.username).then(function (res) {
+        hideGlobalLoading(); btn.disabled = false;
+        if (res && res.success) {
+          closeModal('modal-undo-rev');
+          showToast('ย้อนสถานะกลับเป็น "' + res.restoredStatus + '" แล้ว' + (res.extraUpload && res.extraUpload.success ? ' และเปิดรับไฟล์เพิ่มเติมแล้ว' : ''));
+          if (typeof loadStaffProjects === 'function') loadStaffProjects();
+        } else showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
+      }).catch(function (e) { hideGlobalLoading(); btn.disabled = false; showToast('เกิดข้อผิดพลาด: ' + e.message, 'error'); });
+    }
 
     // ===== EXTRA UPLOAD (เปิดรับไฟล์เพิ่มเติม) =====
 // ===== แอดมิน: เปิด/ปิดรับไฟล์เพิ่มเติม =====
