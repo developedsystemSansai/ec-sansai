@@ -65,6 +65,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         setExtraUploadAccess:        function(sid,pl,au)        { return callGAS('setExtraUploadAccess',      {sessionId:sid, payload:pl, adminUsername:au}); },
         submitExtraFiles:            function(pl)               { return callGAS('submitExtraFiles',          {payload:pl}); },
         undoRevisionStatus:          function(sid,pl,au)        { return callGAS('undoRevisionStatus',        {sessionId:sid, payload:pl, adminUsername:au}); },
+        restoreRevisionStatus:       function(sid,pl,au)        { return callGAS('restoreRevisionStatus',     {sessionId:sid, payload:pl, adminUsername:au}); },
+        getRestoreRevisionInfo:      function(sid,pl,au)        { return callGAS('getRestoreRevisionInfo',    {sessionId:sid, payload:pl, adminUsername:au}); },
         uploadFileSecure:            function(sid,b64,fn,mime,pc,u,ft){ return callGAS('uploadFileSecure',        {sessionId:sid, base64Data:b64, fileName:fn, mimeType:mime, projectCode:pc, username:u, fileType:ft}); },
         getUploadedFiles:            function(sid,pc,cu)        { return callGAS('getUploadedFiles',          {sessionId:sid, projectCode:pc, callerUsername:cu}); },
         deleteUploadedFile:          function(sid,fid,u,del)    { return callGAS('deleteUploadedFile',        {sessionId:sid, fileId:fid, username:u, deleteDriveFile:del}); },
@@ -4364,6 +4366,38 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
   </div>
 </div>
 
+<!-- Modal: คืนสถานะ "แก้ไขครั้งที่ N" (แอดมิน) — กรณีสถานะถูกเปลี่ยนเป็น รอพิจารณา ผิดพลาด -->
+<div class="modal-overlay" id="modal-restore-rev">
+  <div class="modal">
+    <div class="modal-header"><h3><i class="ti ti-rotate-clockwise-2" aria-hidden="true"></i> คืนสถานะ "แก้ไขครั้งที่ N" ให้ผู้วิจัยยื่นแก้ไข</h3><button class="modal-close" onclick="closeModal('modal-restore-rev')"><i class="ti ti-x" aria-hidden="true"></i></button></div>
+    <div class="modal-body">
+      <input type="hidden" id="rr-code">
+      <div id="rr-info" style="background:var(--accent-light);border:1.5px solid #f5c26b;border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;"></div>
+      <div id="rr-diag" class="alert alert-info" style="margin-bottom:12px">กำลังตรวจสอบข้อมูลโครงการ...</div>
+      <div id="rr-form">
+        <div class="field-group">
+          <label>เปลี่ยนเป็นสถานะ</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span>แก้ไขครั้งที่</span>
+            <input type="number" id="rr-round" class="form-control" min="1" max="9" style="width:90px" onchange="refreshRestoreRevisionInfo()">
+            <span id="rr-newstatus" style="font-size:12px;color:var(--text-light)"></span>
+          </div>
+          <div class="hint-text">ระบบเลือกรอบให้อัตโนมัติจากประวัติการแจ้งผล แก้เป็นรอบอื่นได้ถ้าจำเป็น (รหัสโครงการแก้ไขที่จะเกิด: <span id="rr-future">-</span>)</div>
+        </div>
+        <div class="field-group"><label>กำหนดส่งแก้ไข <span style="font-size:11px;font-weight:400;color:var(--text-light)">(เว้นว่าง = ใช้ค่าเดิมถ้ามี)</span></label><input type="date" id="rr-deadline" class="form-control"></div>
+        <div class="field-group"><label>ข้อความถึงผู้วิจัย <span style="font-size:11px;font-weight:400;color:var(--text-light)">(ไม่บังคับ)</span></label><textarea id="rr-note" class="form-control" rows="2" placeholder="เช่น: ขออภัย สถานะถูกเปลี่ยนผิดพลาด ขณะนี้ยื่นไฟล์แก้ไขได้แล้ว"></textarea></div>
+        <div class="field-group"><label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" id="rr-notify" checked> แจ้งผู้วิจัยทางระบบ / อีเมล / LINE</label></div>
+        <div class="field-group" id="rr-cert-box" style="display:none"><label style="display:flex;gap:8px;align-items:flex-start;font-weight:700;color:#b42318"><input type="checkbox" id="rr-cert-confirm"> <span>โครงการนี้อยู่ในสถานะรับรองแล้ว/ปิดโครงการ — ยืนยันว่าต้องการให้ผู้วิจัยยื่นแก้ไขใหม่จริง</span></label></div>
+      </div>
+      <div class="hint-text">ไม่ลบ/ไม่แก้ไฟล์ กรรมการ หนังสือรับรอง หรือวันที่รับรองเดิม — เปลี่ยนเฉพาะสถานะ รอบแก้ไข และข้อมูลที่เกี่ยวข้อง พร้อมบันทึก Log</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-restore-rev')">ยกเลิก</button>
+      <button class="btn btn-accent" id="rr-submit-btn" onclick="doRestoreRevision()" disabled><i class="ti ti-rotate-clockwise-2" aria-hidden="true"></i> ยืนยันคืนสถานะ</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: แจ้งผลการพิจารณา (Staff) -->
 <div class="modal-overlay" id="modal-notify-result">
   <div class="modal modal-lg">
@@ -5365,6 +5399,10 @@ function renderStaffProjectsTable(projects) {
     // 🔧 "แก้ไขครั้งที่ N" (เดิมคือ "รับรองมีข้อแก้ไข") ไม่ใช่สถานะสุดท้าย — ผู้วิจัยยังต้องส่งแก้ไข
     // อีกครั้งก่อนได้รับการรับรองจริง จึงไม่นับเป็น isFinal และแยกข้อความให้ชัดว่ารออะไรอยู่
     var isAwaitingResearcherRevision = !isRevision && (status.indexOf('แก้ไขครั้งที่') !== -1 || status.indexOf('รับรองมีข้อแก้ไข') !== -1);
+    // ปุ่ม "คืนสถานะแก้ไข": โครงการหลัก (ไม่ใช่ _fix) ที่เคยแจ้งผล "รับรองมีข้อแก้ไข"/มีรอบแก้ไข แต่สถานะไม่ใช่ "แก้ไขครั้งที่ N" แล้ว
+    // หรือค้างที่ รอพิจารณา/เอกสารไม่ครบ (ตั้งผิด) — ผู้วิจัยจึงยื่นแก้ไขไม่ได้
+    var canRestoreRevision = !isRevision && !isAwaitingResearcherRevision && status.indexOf('ส่งแก้ไขแล้ว') === -1 &&
+      (finalResult === 'รับรองมีข้อแก้ไข' || parseInt(p.revision_round || '0', 10) > 0 || status === 'รอพิจารณา' || status === 'เอกสารไม่ครบ');
 
     if ((status.includes('รับรอง') || finalResult === 'รับรอง') && certFileId) {
       actionBtn = '<button class="btn btn-sm btn-primary" onclick="openNotifyModal(\'' + code + '\')"><i class="ti ti-file-certificate" aria-hidden="true"></i> ส่งหนังสือรับรอง</button>';
@@ -5400,6 +5438,7 @@ function renderStaffProjectsTable(projects) {
     var extraBtns = '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + code + '\', this)"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>'
       + ' <button class="btn btn-sm btn-outline" onclick="openUpdateStatusModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="เปลี่ยนสถานะโครงการด้วยตนเอง (ใช้เมื่อจำเป็น)"><i class="ti ti-chart-bar" aria-hidden="true"></i> เปลี่ยนสถานะ</button>'
       + ' <button class="btn btn-sm ' + (p.extra_upload_open ? 'btn-accent' : 'btn-outline') + '" onclick="openExtraUploadAdminModal(\'' + code + '\',\'' + title + '\',' + (p.extra_upload_open ? 'true' : 'false') + ',\'' + escAttr(p.extra_upload_until || '') + '\')" title="เปิดให้ผู้วิจัยแนบไฟล์เพิ่ม (ไม่เปลี่ยนสถานะ)"><i class="ti ti-' + (p.extra_upload_open ? 'lock-open' : 'paperclip') + '" aria-hidden="true"></i> ' + (p.extra_upload_open ? 'เปิดรับอยู่' : 'เปิดรับไฟล์') + '</button>'
+      + (canRestoreRevision ? ' <button class="btn btn-sm btn-accent" onclick="openRestoreRevisionModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="สถานะถูกเปลี่ยนผิด — คืนเป็น แก้ไขครั้งที่ N เพื่อให้ผู้วิจัยยื่นไฟล์แก้ไขได้"><i class="ti ti-rotate-clockwise-2" aria-hidden="true"></i> คืนสถานะแก้ไข</button>' : '')
       + (isAwaitingResearcherRevision ? ' <button class="btn btn-sm btn-outline" onclick="openUndoRevisionModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="ยกเลิกสถานะแก้ไขที่ตั้งผิด แล้วย้อนกลับสถานะเดิม"><i class="ti ti-arrow-back-up" aria-hidden="true"></i> ยกเลิกแก้ไข</button>' : '');
 
     // badge ประเภทการพิจารณา + ปุ่มตั้งค่า (เฉพาะ admin)
@@ -6360,6 +6399,74 @@ function openReviewRevisionModal(projectCode) {
         if (res && res.success) {
           closeModal('modal-undo-rev');
           showToast('ย้อนสถานะกลับเป็น "' + res.restoredStatus + '" แล้ว' + (res.extraUpload && res.extraUpload.success ? ' และเปิดรับไฟล์เพิ่มเติมแล้ว' : ''));
+          if (typeof loadStaffProjects === 'function') loadStaffProjects();
+        } else showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
+      }).catch(function (e) { hideGlobalLoading(); btn.disabled = false; showToast('เกิดข้อผิดพลาด: ' + e.message, 'error'); });
+    }
+
+    // ===== คืนสถานะ "แก้ไขครั้งที่ N" (กรณีถูกเปลี่ยนเป็น รอพิจารณา ผิดพลาด) =====
+    var _rrInfo = null;
+    function openRestoreRevisionModal(code, title, status) {
+      document.getElementById('rr-code').value = code;
+      document.getElementById('rr-info').innerHTML = '<strong>' + esc(code) + '</strong> — ' + esc(title || '') +
+        '<div style="margin-top:6px">สถานะปัจจุบัน: ' + pillStatus(status || '-') + '</div>';
+      document.getElementById('rr-round').value = '';
+      document.getElementById('rr-deadline').value = '';
+      document.getElementById('rr-note').value = '';
+      document.getElementById('rr-notify').checked = true;
+      document.getElementById('rr-cert-confirm').checked = false;
+      document.getElementById('rr-cert-box').style.display = 'none';
+      _rrInfo = null;
+      openModal('modal-restore-rev');
+      refreshRestoreRevisionInfo(true);
+    }
+    function refreshRestoreRevisionInfo(first) {
+      var code = val('rr-code'); if (!code) return;
+      var diag = document.getElementById('rr-diag');
+      var btn = document.getElementById('rr-submit-btn');
+      btn.disabled = true;
+      diag.className = 'alert alert-info'; diag.innerHTML = 'กำลังตรวจสอบข้อมูลโครงการ...';
+      getM().getRestoreRevisionInfo(S.user.sessionId, { projectCode: code, round: val('rr-round') || '' }, S.user.username).then(function (r) {
+        if (!r || !r.success) { diag.className = 'alert alert-error'; diag.innerHTML = esc((r && r.message) || 'ตรวจสอบไม่สำเร็จ'); return; }
+        _rrInfo = r;
+        if (first || !val('rr-round')) document.getElementById('rr-round').value = r.round;
+        document.getElementById('rr-newstatus').textContent = '→ ' + r.newStatus;
+        document.getElementById('rr-future').textContent = r.futureCode || '-';
+        document.getElementById('rr-cert-box').style.display = r.certified ? '' : 'none';
+        if (!val('rr-deadline') && (r.lastRevisionDeadline || r.currentDeadline)) {
+          var dl = String(r.currentDeadline || r.lastRevisionDeadline).substring(0, 10);
+          if (/^\d{4}-\d{2}-\d{2}$/.test(dl)) document.getElementById('rr-deadline').value = dl;
+        }
+        var src = { revision_round: 'จากเลขรอบเดิมของโครงการ', history: 'จากประวัติการแจ้งผล', manual: 'ที่ท่านกำหนด', 'default': 'ค่าเริ่มต้น' }[r.roundSource] || '';
+        if (r.canRestore) {
+          diag.className = 'alert alert-success';
+          diag.innerHTML = '✅ พร้อมคืนสถานะ: <strong>' + esc(r.status) + '</strong> → <strong>' + esc(r.newStatus) + '</strong>' +
+            (src ? ' <span style="font-size:11px">(เลขรอบ ' + src + ')</span>' : '') +
+            (r.hasRevHistory ? '' : '<div style="font-size:12px;margin-top:4px">⚠️ ไม่พบประวัติแจ้งผล "รับรองมีข้อแก้ไข" ในระบบ ตรวจสอบเลขรอบก่อนยืนยัน</div>') +
+            (r.lastRevisionNote ? '<div style="font-size:12px;margin-top:4px">ข้อเสนอแนะเดิม: ' + esc(String(r.lastRevisionNote).substring(0, 200)) + '</div>' : '');
+          btn.disabled = false;
+        } else {
+          diag.className = 'alert alert-error'; diag.innerHTML = '⛔ ' + esc(r.message || 'ไม่สามารถคืนสถานะได้');
+        }
+      }).catch(function (e) { diag.className = 'alert alert-error'; diag.innerHTML = esc(e.message); });
+    }
+    function doRestoreRevision() {
+      var code = val('rr-code'); if (!code || !_rrInfo || !_rrInfo.canRestore) return;
+      var round = parseInt(val('rr-round') || _rrInfo.round, 10) || 1;
+      if (_rrInfo.certified && !document.getElementById('rr-cert-confirm').checked) { showToast('กรุณาติ๊กยืนยันก่อน เพราะโครงการอยู่ในสถานะรับรองแล้ว/ปิดโครงการ', 'error'); return; }
+      if (!confirm('ยืนยันคืนสถานะโครงการ ' + code + ' เป็น "แก้ไขครั้งที่ ' + round + '" ?')) return;
+      var btn = document.getElementById('rr-submit-btn'); btn.disabled = true;
+      showGlobalLoading('กำลังคืนสถานะ...');
+      getM().restoreRevisionStatus(S.user.sessionId, {
+        projectCode: code, round: round, revisionDeadline: val('rr-deadline'), note: val('rr-note'),
+        notifyResearcher: document.getElementById('rr-notify').checked,
+        confirmCertified: document.getElementById('rr-cert-confirm').checked
+      }, S.user.username).then(function (res) {
+        hideGlobalLoading(); btn.disabled = false;
+        if (res && res.success) {
+          closeModal('modal-restore-rev');
+          var n = res.notified || {};
+          showToast('คืนสถานะเป็น "' + res.restoredStatus + '" แล้ว ผู้วิจัยยื่นแก้ไขได้' + (n.email ? ' (ส่งอีเมลแล้ว)' : '') + (n.line ? ' (ส่ง LINE แล้ว)' : ''));
           if (typeof loadStaffProjects === 'function') loadStaffProjects();
         } else showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
       }).catch(function (e) { hideGlobalLoading(); btn.disabled = false; showToast('เกิดข้อผิดพลาด: ' + e.message, 'error'); });
