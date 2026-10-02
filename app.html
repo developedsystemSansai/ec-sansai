@@ -62,6 +62,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         setProjectType:              function(sid,pc,nt,cu)     { return callGAS('setProjectType',             {sessionId:sid, projectCode:pc, newType:nt, callerUsername:cu}); },
         reviewRevisionByAdmin:       function(sid,pl,su)       { return callGAS('reviewRevisionByAdmin',      {sessionId:sid, payload:pl, staffUsername:su}); },
         submitRevision:              function(pl)               { return callGAS('submitRevision',             {payload:pl}); },
+        setExtraUploadAccess:        function(sid,pl,au)        { return callGAS('setExtraUploadAccess',      {sessionId:sid, payload:pl, adminUsername:au}); },
+        submitExtraFiles:            function(pl)               { return callGAS('submitExtraFiles',          {payload:pl}); },
         uploadFileSecure:            function(sid,b64,fn,mime,pc,u,ft){ return callGAS('uploadFileSecure',        {sessionId:sid, base64Data:b64, fileName:fn, mimeType:mime, projectCode:pc, username:u, fileType:ft}); },
         getUploadedFiles:            function(sid,pc,cu)        { return callGAS('getUploadedFiles',          {sessionId:sid, projectCode:pc, callerUsername:cu}); },
         deleteUploadedFile:          function(sid,fid,u,del)    { return callGAS('deleteUploadedFile',        {sessionId:sid, fileId:fid, username:u, deleteDriveFile:del}); },
@@ -4266,6 +4268,61 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     </div>
   </div>
 </div>
+<!-- Modal: แอดมินเปิด/ปิดรับไฟล์เพิ่มเติม -->
+<div class="modal-overlay" id="modal-extra-admin">
+  <div class="modal">
+    <div class="modal-header"><h3><i class="ti ti-paperclip" aria-hidden="true"></i> เปิดรับเอกสารเพิ่มเติมจากผู้วิจัย</h3><button class="modal-close" onclick="closeModal('modal-extra-admin')"><i class="ti ti-x" aria-hidden="true"></i></button></div>
+    <div class="modal-body">
+      <input type="hidden" id="xa-code">
+      <div id="xa-info" style="background:var(--accent-light);border:1.5px solid #f5c26b;border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;"></div>
+      <div class="alert alert-info">ℹ️ การเปิดรับนี้ <strong>ไม่เปลี่ยนสถานะโครงการ</strong> ผู้วิจัยจะเห็นปุ่ม "แนบไฟล์เพิ่มเติม" ในหน้า "โครงการของฉัน" และได้รับแจ้งทาง bell / อีเมล / LINE</div>
+      <div class="field-group">
+        <label>กำหนดหมดเขต <span style="font-size:11px;font-weight:400;color:var(--text-light)">(เว้นว่าง = ไม่จำกัด จนกว่าแอดมินจะปิด)</span></label>
+        <input type="date" id="xa-until" class="form-control">
+      </div>
+      <div class="field-group">
+        <label>ข้อความถึงผู้วิจัย (ระบุเอกสารที่ต้องการ)</label>
+        <textarea id="xa-note" class="form-control" rows="3" placeholder="เช่น: กรุณาแนบ IS.05 ฉบับแก้ไข และหนังสือรับรอง GCP"></textarea>
+      </div>
+      <div class="field-group">
+        <label style="display:flex;gap:8px;align-items:center;font-weight:600">
+          <input type="checkbox" id="xa-autoclose"> ปิดรับอัตโนมัติหลังผู้วิจัยส่งครั้งแรก
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-extra-admin')">ยกเลิก</button>
+      <button class="btn btn-danger" id="xa-close-btn" style="display:none" onclick="doSetExtraUpload(false)"><i class="ti ti-lock" aria-hidden="true"></i> ปิดรับ</button>
+      <button class="btn btn-accent" id="xa-open-btn" onclick="doSetExtraUpload(true)"><i class="ti ti-lock-open" aria-hidden="true"></i> เปิดรับ / อัปเดต</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: ผู้วิจัยแนบไฟล์เพิ่มเติม -->
+<div class="modal-overlay" id="modal-extra-files">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3><i class="ti ti-paperclip" aria-hidden="true"></i> แนบเอกสารเพิ่มเติม</h3><button class="modal-close" onclick="closeModal('modal-extra-files')"><i class="ti ti-x" aria-hidden="true"></i></button></div>
+    <div class="modal-body">
+      <div id="xf-proj-info" style="background:var(--accent-light);border:1.5px solid #f5c26b;border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;"></div>
+      <div id="xf-admin-note"></div>
+      <div class="field-group">
+        <label><i class="ti ti-paperclip" aria-hidden="true"></i> เลือกไฟล์ <span class="req">*</span></label>
+        <input type="file" class="form-control" accept=".pdf,.docx,.doc,.xls,.xlsx,.jpg,.jpeg,.png" multiple onchange="handleExtraFileUpload(this)">
+        <div class="hint-text">แนบได้สูงสุด 10 ไฟล์ | ไม่เกิน 10MB/ไฟล์</div>
+        <div id="xf-file-list" style="margin-top:10px"></div>
+      </div>
+      <div class="field-group">
+        <label><i class="ti ti-edit" aria-hidden="true"></i> หมายเหตุถึงเจ้าหน้าที่</label>
+        <textarea id="xf-note" class="form-control" rows="2" placeholder="อธิบายเอกสารที่แนบ (ถ้ามี)"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-extra-files')">ยกเลิก</button>
+      <button class="btn btn-accent" id="xf-submit-btn" onclick="doSubmitExtraFiles()"><i class="ti ti-upload" aria-hidden="true"></i> ส่งเอกสารเพิ่มเติม</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: แจ้งผลการพิจารณา (Staff) -->
 <div class="modal-overlay" id="modal-notify-result">
   <div class="modal modal-lg">
@@ -5300,7 +5357,8 @@ function renderStaffProjectsTable(projects) {
     // ชีตโดยตรง — จัดกลุ่มปุ่มนี้เป็น secondary action (btn-outline) คู่กับปุ่ม "ไฟล์" เพื่อไม่ให้แย่งความ
     // สำคัญกับปุ่ม action หลักของแต่ละสถานะ (ส่งกรรมการ/ตรวจเอกสาร/แจ้งผล ฯลฯ) แต่ยังกดถึงได้เสมอ
     var extraBtns = '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + code + '\', this)"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>'
-      + ' <button class="btn btn-sm btn-outline" onclick="openUpdateStatusModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="เปลี่ยนสถานะโครงการด้วยตนเอง (ใช้เมื่อจำเป็น)"><i class="ti ti-chart-bar" aria-hidden="true"></i> เปลี่ยนสถานะ</button>';
+      + ' <button class="btn btn-sm btn-outline" onclick="openUpdateStatusModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="เปลี่ยนสถานะโครงการด้วยตนเอง (ใช้เมื่อจำเป็น)"><i class="ti ti-chart-bar" aria-hidden="true"></i> เปลี่ยนสถานะ</button>'
+      + ' <button class="btn btn-sm ' + (p.extra_upload_open ? 'btn-accent' : 'btn-outline') + '" onclick="openExtraUploadAdminModal(\'' + code + '\',\'' + title + '\',' + (p.extra_upload_open ? 'true' : 'false') + ',\'' + escAttr(p.extra_upload_until || '') + '\')" title="เปิดให้ผู้วิจัยแนบไฟล์เพิ่ม (ไม่เปลี่ยนสถานะ)"><i class="ti ti-' + (p.extra_upload_open ? 'lock-open' : 'paperclip') + '" aria-hidden="true"></i> ' + (p.extra_upload_open ? 'เปิดรับอยู่' : 'เปิดรับไฟล์') + '</button>';
 
     // badge ประเภทการพิจารณา + ปุ่มตั้งค่า (เฉพาะ admin)
     var pType = String(p.project_type || '').trim().toLowerCase();
@@ -5751,6 +5809,9 @@ function _renderCommitteeCheckboxes(committees) {
     var needsRevision = status.indexOf('รับรองมีข้อแก้ไข') !== -1 || status.indexOf('แก้ไขครั้งที่') !== -1 || status.indexOf('ส่งแก้ไขแล้ว') !== -1;
     if(needsRevision){
       actions+=' <button class="btn btn-sm btn-accent" onclick="openRevisionModal(\''+code+'\')"><i class="ti ti-pencil" aria-hidden="true"></i> ยื่นแก้ไข</button>';
+    }
+    if(r.extra_upload_active){
+      actions+=' <button class="btn btn-sm btn-accent" onclick="openExtraFilesModal(\''+code+'\')"><i class="ti ti-paperclip" aria-hidden="true"></i> แนบไฟล์เพิ่มเติม</button>';
     }
 
     // <i class="ti ti-star" aria-hidden="true"></i><i class="ti ti-star" aria-hidden="true"></i> แก้ไขหลัก: แสดงผลพิจารณาให้ถูกต้องสำหรับโครงการแก้ไข (_fix)
@@ -6224,6 +6285,113 @@ function openReviewRevisionModal(projectCode) {
       callerUsername: S.user.username
       // <i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ไม่ต้องส่ง skipCommitteeReeval เพราะจะถูกกำหนดใน backend
     });
+}
+
+    // ===== EXTRA UPLOAD (เปิดรับไฟล์เพิ่มเติม) =====
+// ===== แอดมิน: เปิด/ปิดรับไฟล์เพิ่มเติม =====
+function openExtraUploadAdminModal(code, title, isOpen, until) {
+  document.getElementById('xa-code').value = code;
+  document.getElementById('xa-info').innerHTML = '<strong>' + esc(code) + '</strong> — ' + esc(title || '') +
+    (isOpen ? '<div style="margin-top:6px;color:var(--green,#2d8a52);font-weight:700"><i class="ti ti-lock-open" aria-hidden="true"></i> ขณะนี้เปิดรับอยู่' + (until ? ' (หมดเขต ' + esc(until) + ')' : '') + '</div>' : '');
+  document.getElementById('xa-until').value = until || '';
+  document.getElementById('xa-note').value = '';
+  document.getElementById('xa-autoclose').checked = false;
+  document.getElementById('xa-close-btn').style.display = isOpen ? '' : 'none';
+  openModal('modal-extra-admin');
+}
+
+function doSetExtraUpload(open) {
+  var code = val('xa-code');
+  if (!code) return;
+  if (open && !val('xa-note').trim() && !confirm('ยังไม่ได้ระบุข้อความถึงผู้วิจัย — ยืนยันเปิดรับโดยไม่มีข้อความ?')) return;
+  showGlobalLoading(open ? 'กำลังเปิดรับเอกสาร...' : 'กำลังปิดรับเอกสาร...');
+  getM().setExtraUploadAccess(S.user.sessionId, {
+    projectCode: code,
+    open: open,
+    until: val('xa-until'),
+    note: val('xa-note'),
+    autoClose: document.getElementById('xa-autoclose').checked
+  }, S.user.username).then(function (res) {
+    hideGlobalLoading();
+    if (res && res.success) {
+      closeModal('modal-extra-admin');
+      showToast(open ? 'เปิดรับเอกสารเพิ่มเติมแล้ว' + (res.emailSent ? ' (ส่งอีเมลแล้ว)' : '') + (res.lineSent ? ' (ส่ง LINE แล้ว)' : '') : 'ปิดรับเอกสารเพิ่มเติมแล้ว');
+      if (typeof loadStaffProjects === 'function') loadStaffProjects();
+    } else showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
+  }).catch(function (e) { hideGlobalLoading(); showToast('เกิดข้อผิดพลาด: ' + e.message, 'error'); });
+}
+
+// ===== ผู้วิจัย: แนบไฟล์เพิ่มเติม =====
+var _extraProjectCode = '';
+var _extraFileIds = [];
+
+function openExtraFilesModal(projectCode) {
+  _extraProjectCode = projectCode;
+  _extraFileIds = [];
+  var proj = (S._myProjects || []).find(function (p) { return p.project_code === projectCode; }) || {};
+  document.getElementById('xf-proj-info').innerHTML = '<strong>' + esc(projectCode) + '</strong> — ' + esc(proj.title_th || '');
+  document.getElementById('xf-admin-note').innerHTML =
+    (proj.extra_upload_note ? '<div class="alert alert-info" style="margin-bottom:12px">📝 <strong>ข้อความจากเจ้าหน้าที่:</strong><br>' + esc(proj.extra_upload_note).replace(/\n/g, '<br>') + '</div>' : '') +
+    (proj.extra_upload_until ? '<div style="font-size:12px;color:var(--text-light);margin-bottom:10px"><i class="ti ti-calendar" aria-hidden="true"></i> หมดเขตแนบเอกสาร: ' + esc(proj.extra_upload_until) + '</div>' : '');
+  document.getElementById('xf-file-list').innerHTML = '';
+  document.getElementById('xf-note').value = '';
+  openModal('modal-extra-files');
+}
+
+function handleExtraFileUpload(input) {
+  Array.prototype.forEach.call(input.files, function (file) {
+    if (_extraFileIds.length >= 10) { showToast('แนบได้สูงสุด 10 ไฟล์', 'error'); return; }
+    if (file.size > 10 * 1024 * 1024) { showToast(file.name + ' ใหญ่เกิน 10MB', 'error'); return; }
+    var listEl = document.getElementById('xf-file-list');
+    var row = document.createElement('div'); row.className = 'file-item';
+    row.innerHTML = '<div style="font-size:13px"><i class="ti ti-paperclip" aria-hidden="true"></i> ' + esc(file.name) + ' <span class="spin-sm dark" style="width:14px;height:14px"></span></div>';
+    listEl.appendChild(row);
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      var b64 = ev.target.result.split(',')[1];
+      // projectCode เว้นว่างไว้ — ระบบจะผูกกับโครงการตอนกด "ส่ง" หลังตรวจสิทธิ์/หมดเขตแล้วเท่านั้น
+      google.script.run.withSuccessHandler(function (r) {
+        if (r && r.success) {
+          _extraFileIds.push(r.fileId);
+          row.innerHTML = '<div style="font-size:13px"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ' + esc(file.name) + '</div>' +
+            '<div><button class="btn btn-sm btn-danger" onclick="this.closest(\'.file-item\').remove();_extraFileIds.splice(_extraFileIds.indexOf(\'' + escAttr(r.fileId) + '\'),1)"><i class="ti ti-trash" aria-hidden="true"></i></button></div>';
+        } else {
+          row.innerHTML = '<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(file.name) + ' — ' + esc((r && r.message) || '') + '</div>';
+        }
+      }).withFailureHandler(function (e) {
+        row.innerHTML = '<div style="color:var(--red);font-size:13px"><i class="ti ti-circle-x ti-err" aria-hidden="true"></i> ' + esc(e.message) + '</div>';
+      }).uploadFileSecure(S.user.sessionId, b64, file.name, file.type, '', S.user.username, 'extra_doc');
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+function doSubmitExtraFiles() {
+  if (!_extraProjectCode) { showToast('ไม่พบรหัสโครงการ', 'error'); return; }
+  if (!_extraFileIds.length) { showToast('กรุณาแนบไฟล์อย่างน้อย 1 ไฟล์', 'error'); return; }
+  var btn = document.getElementById('xf-submit-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังส่ง...';
+  showGlobalLoading('กำลังส่งเอกสารเพิ่มเติม...');
+  getM().submitExtraFiles({
+    sessionId: S.user.sessionId,
+    projectCode: _extraProjectCode,
+    callerUsername: S.user.username,
+    fileIds: _extraFileIds.slice(),
+    note: val('xf-note')
+  }).then(function (res) {
+    hideGlobalLoading();
+    btn.disabled = false; btn.innerHTML = '<i class="ti ti-upload" aria-hidden="true"></i> ส่งเอกสารเพิ่มเติม';
+    if (res && res.success) {
+      closeModal('modal-extra-files');
+      showToast('ส่งเอกสารเพิ่มเติม ' + res.linked + ' ไฟล์เรียบร้อย' + (res.autoClosed ? ' (ปิดรับแล้ว)' : ''));
+      loadMyProjects();
+    } else showToast('เกิดข้อผิดพลาด: ' + ((res && res.message) || ''), 'error');
+  }).catch(function (e) {
+    hideGlobalLoading();
+    btn.disabled = false; btn.innerHTML = '<i class="ti ti-upload" aria-hidden="true"></i> ส่งเอกสารเพิ่มเติม';
+    showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+  });
 }
 
     // ============================================================
