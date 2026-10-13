@@ -1570,7 +1570,13 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     .vf-error-state .vf-error-icon { font-size:40px; margin-bottom:10px; }
 
     </style>
-    <script defer src="https://sandtools.vercel.app/t.js" data-site="ppucg5v4xb"></script>
+    <script defer src="https://sandtools.vercel.app/t.js" data-site="ppucg5v4xb" data-manual></script>
+    <script>
+    /* SAND stats: single-file app -> report each screen as a virtual page + role word only (admin|staff). Safe if t.js is blocked. */
+    function sandRoleOf(r){ return r === 'staff' ? 'officer' : (r === 'admin' || r === 'committee' || r === 'researcher') ? r : ''; }
+    function sandSafeView(n, r){ try{ if(window.sandView) window.sandView(n, r); else (window.__sandQ = window.__sandQ || []).push([n, r]); }catch(e){} }
+    window.addEventListener("load", function(){ var q = window.__sandQ || []; window.__sandQ = []; setTimeout(function(){ q.forEach(function(a){ sandSafeView(a[0], a[1]); }); }, 800); });
+    </script>
 </head>
 
     <body>
@@ -4782,6 +4788,7 @@ var _evalTargetCommitteeName = ''; // 🆕 ชื่อแสดงผลขอ�
     var _notifyRevisionFileId = '';
 
     function showLoginPage(){
+      sandSafeView('login', '');
       hide('register-page'); hide('role-page'); hide('main-app');
       show('login-page','flex');
     }
@@ -10914,6 +10921,7 @@ function showPage(page) {
   }
   
   S.currentPage = page;
+  sandSafeView(page, sandRoleOf(S.role)); // SAND stats: role word only (the role the user entered as; never a name/username)
   
   // ซ่อนทุกหน้า
   document.querySelectorAll('[id^="page-"]').forEach(function(el) { 
