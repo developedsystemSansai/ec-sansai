@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <style>
 /* ══════════════════════════════════════════════════════════════
    DESIGN TOKENS — Navy + Gold  (unified with index.html theme)
@@ -906,6 +905,144 @@ html,body{max-width:100%;overflow-x:clip}
 
 </style>
 <script defer src="https://sandtools.vercel.app/t.js" data-site="ppucg5v4xb"></script>
+<style id="lp-refresh">
+/* LANDING-REFRESH v1 — presentation layer. Delete this <style id="lp-refresh"> to revert. */
+@media screen {
+  :root { --lp-shadow: 0 1px 2px rgba(11,31,53,.06), 0 6px 20px rgba(11,31,53,.07); --lp-shadow-hi: 0 2px 4px rgba(11,31,53,.08), 0 14px 34px rgba(11,31,53,.13); }
+  body { letter-spacing: .005em; text-rendering: optimizeLegibility; }
+  :where(a,button,input,select,textarea,[tabindex]):focus-visible { outline: 2px solid var(--g500); outline-offset: 3px; border-radius: 6px; }
+
+  /* align page content with header/nav (1440 max) instead of stretching edge to edge */
+  .container { max-width: 1440px; margin-inline: auto; padding-inline: 2rem; }
+
+  /* ── Hero ── */
+  .hero-bg-overlay { background: linear-gradient(100deg, rgba(11,31,53,.97) 0%, rgba(11,31,53,.88) 42%, rgba(11,31,53,.55) 100%); }
+  .hero-in { grid-template-columns: minmax(0,1fr) 340px; gap: 3.5rem; padding-block: 72px 80px; }
+  .eyebrow { font-size: .75rem; letter-spacing: .14em; padding: .35rem .85rem; border: 1px solid rgba(201,160,55,.45); border-radius: 999px; background: rgba(201,160,55,.10); margin-bottom: 1.4rem; }
+  .eyebrow::before, .eyebrow::after { display: none; }
+  .hero-title { font-size: clamp(2rem, 3.8vw, 3rem); line-height: 1.38; letter-spacing: -.005em; margin-bottom: 1.25rem; text-wrap: balance; }
+  .hero-desc { font-size: 1.06rem; line-height: 1.85; color: rgba(255,255,255,.80); max-width: 56ch; margin-bottom: 2.25rem; }
+  .hero-cta { gap: .7rem; }
+  .btn { border-radius: 8px; min-height: 40px; justify-content: center; }
+  .btn-gold-lg, .hero-cta .btn-wht { min-height: 48px; padding: .65rem 1.35rem; font-size: .98rem; }
+  .btn-gold { box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+  .btn-gold:hover { background: var(--g400); border-color: var(--g400); box-shadow: 0 6px 18px rgba(201,160,55,.35); }
+  .hero-cta .btn-gold-lg { box-shadow: 0 8px 22px rgba(181,138,42,.38); }
+  .btn-wht { color: rgba(255,255,255,.92); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.30); }
+  .btn-wht:hover { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.55); color: #fff; }
+  .hero-cta [onclick="annOpen()"] { opacity: 1 !important; }
+
+  .hero-quick { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16); border-radius: 16px; padding: 1.1rem; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 18px 40px rgba(0,0,0,.28); }
+  .hq-ttl { font-size: .78rem; font-weight: 700; letter-spacing: .08em; color: var(--g400); padding: .15rem .5rem .6rem; }
+  .hq-item { display: flex; align-items: center; gap: .85rem; padding: .8rem .6rem; border-radius: 10px; color: #fff; transition: background .18s var(--ease), transform .18s var(--ease); }
+  .hq-item + .hq-item { border-top: 1px solid rgba(255,255,255,.09); }
+  .hq-item:hover { background: rgba(255,255,255,.10); transform: translateX(2px); }
+  .hq-ico { width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px; display: grid; place-items: center; background: rgba(181,138,42,.22); color: var(--g400); }
+  .hq-tx { display: flex; flex-direction: column; min-width: 0; line-height: 1.35; }
+  .hq-tx b { font-size: .95rem; font-weight: 600; }
+  .hq-tx small { font-size: .78rem; color: rgba(255,255,255,.62); }
+  .hq-go { margin-left: auto; opacity: .5; flex-shrink: 0; transition: opacity .18s, transform .18s; }
+  .hq-item:hover .hq-go { opacity: 1; transform: translateX(3px); }
+  .hq-note { margin-top: .5rem; padding: .7rem .7rem .2rem; border-top: 1px solid rgba(255,255,255,.12); font-size: .8rem; line-height: 1.55; color: rgba(255,255,255,.72); display: flex; gap: .55rem; align-items: flex-start; }
+  .hq-note svg { flex-shrink: 0; margin-top: 3px; color: var(--g400); }
+
+  /* ── Section rhythm & headings ── */
+  .sec { padding-block: 4rem; }
+  #tracking, #news { background: var(--u50); }
+  .sec-head { margin-bottom: 2rem; }
+  .sec-eye { font-size: .74rem; letter-spacing: .1em; color: var(--g700); }
+  .sec-ttl { font-size: clamp(1.4rem, 2.4vw, 1.85rem); letter-spacing: -.005em; color: var(--n900); text-wrap: balance; }
+  .sec-dsc { font-size: .98rem; color: var(--u500); max-width: 64ch; }
+
+  /* ── Review stats + type cards ── */
+  .rs-card { border-radius: 12px; background: #fff; box-shadow: var(--lp-shadow); }
+  .rs-card:hover { box-shadow: var(--lp-shadow-hi); }
+  .rs-val, .stat-val { font-variant-numeric: tabular-nums; }
+  .cards3 { gap: 1.5rem; }
+  .tc { border-radius: 14px; border-top-width: 4px; padding: 2rem 1.75rem; box-shadow: var(--lp-shadow); }
+  .tc:hover { box-shadow: var(--lp-shadow-hi); transform: translateY(-3px); }
+  .tc { transition: box-shadow .25s var(--ease), transform .25s var(--ease), border-color .25s var(--ease); }
+  .tc-tag { font-size: .76rem; }
+  .tc li { font-size: .92rem; }
+
+  /* ── Tracking CTA ── */
+  .trk-cta { border-radius: 16px; box-shadow: var(--lp-shadow); }
+  .trk-cta:hover { box-shadow: var(--lp-shadow-hi); border-color: var(--g500); }
+
+  /* ── Calendar: close the dead gap between calendar and meeting list ── */
+  .cal-layout { grid-template-columns: minmax(0,700px) minmax(300px,400px); gap: 2rem; justify-content: start; }
+  .cal-widget, .meeting-list-box { border-radius: 14px; box-shadow: var(--lp-shadow); max-width: 100%; }
+  .cal-day { font-size: .88rem; border-radius: 8px; font-variant-numeric: tabular-nums; }
+  .meeting-list-box { position: sticky; top: 130px; }
+
+  /* ── News ── */
+  .news-item { padding-inline: .5rem; border-radius: 10px; transition: background .18s; }
+  .news-item:hover { background: #fff; }
+  .news-date { border-radius: 8px; }
+
+  /* ── Footer ── */
+  .ftr { padding-block: 3.5rem 2rem; }
+
+  @media (max-width: 1080px) { .cal-layout { grid-template-columns: 1fr; } .meeting-list-box { position: static; } }
+  @media (max-width: 960px) {
+    .hero-in { grid-template-columns: 1fr; gap: 2rem; padding-block: 44px 52px; }
+    .hero-quick { max-width: 560px; }
+  }
+  @media (max-width: 600px) {
+    .container { padding-inline: 1.1rem; }
+    .sec { padding-block: 2.75rem; }
+    .hero-in { padding-block: 32px 40px; }
+    .hero-title { font-size: 1.75rem; }
+    .hero-desc { font-size: .95rem; margin-bottom: 1.6rem; }
+    .hero-cta { display: grid; grid-template-columns: 1fr 1fr; }
+    .hero-cta .btn-gold-lg { grid-column: 1 / -1; }
+    .hero-cta .btn-wht { padding-inline: .8rem; font-size: .9rem; }
+    .hero-cta .btn-wht:last-child { grid-column: 1 / -1; }
+    .tc { padding: 1.5rem 1.25rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tc:hover, .hq-item:hover { transform: none; } }
+}
+</style>
+<style id="icons-local">
+.ti{display:inline-block;width:1em;height:1em;flex:none;vertical-align:-.125em;background-color:currentColor;-webkit-mask:var(--ti) center/contain no-repeat;mask:var(--ti) center/contain no-repeat;font-style:normal;line-height:1}
+.ti-ok{color:#1b5e3e}.ti-warn{color:#b7791f}.ti-err{color:#b91c1c}
+.ti-arrow-right{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M5 12l14 0' /%3E %3Cpath d='M13 18l6 -6' /%3E %3Cpath d='M13 6l6 6' /%3E %3C/svg%3E")}
+.ti-book-2{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12z' /%3E %3Cpath d='M19 16h-12a2 2 0 0 0 -2 2' /%3E %3Cpath d='M9 8h6' /%3E %3C/svg%3E")}
+.ti-chart-bar{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z' /%3E %3Cpath d='M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z' /%3E %3Cpath d='M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z' /%3E %3Cpath d='M4 20h14' /%3E %3C/svg%3E")}
+.ti-check{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M5 12l5 5l10 -10' /%3E %3C/svg%3E")}
+.ti-chevron-right{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M9 6l6 6l-6 6' /%3E %3C/svg%3E")}
+.ti-circle-check{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0' /%3E %3Cpath d='M9 12l2 2l4 -4' /%3E %3C/svg%3E")}
+.ti-clipboard-list{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2' /%3E %3Cpath d='M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z' /%3E %3Cpath d='M9 12l.01 0' /%3E %3Cpath d='M13 12l2 0' /%3E %3Cpath d='M9 16l.01 0' /%3E %3Cpath d='M13 16l2 0' /%3E %3C/svg%3E")}
+.ti-cookie{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath stroke='none' d='M0 0h24v24H0z' /%3E %3Cpath d='M8 13v.01' /%3E %3Cpath d='M12 17v.01' /%3E %3Cpath d='M12 12v.01' /%3E %3Cpath d='M16 14v.01' /%3E %3Cpath d='M11 8v.01' /%3E %3Cpath d='M13.148 3.476l2.667 1.104a4 4 0 0 0 4.656 6.14l.053 .132a3 3 0 0 1 0 2.296q -.745 1.18 -1.024 1.852q -.283 .684 -.66 2.216a3 3 0 0 1 -1.624 1.623q -1.572 .394 -2.216 .661q -.712 .295 -1.852 1.024a3 3 0 0 1 -2.296 0q -1.203 -.754 -1.852 -1.024q -.707 -.292 -2.216 -.66a3 3 0 0 1 -1.623 -1.624q -.397 -1.577 -.661 -2.216q -.298 -.718 -1.024 -1.852a3 3 0 0 1 0 -2.296q .719 -1.116 1.024 -1.852q .257 -.62 .66 -2.216a3 3 0 0 1 1.624 -1.623q 1.547 -.384 2.216 -.661q .687 -.285 1.852 -1.024a3 3 0 0 1 2.296 0' /%3E %3C/svg%3E")}
+.ti-file-description{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M14 3v4a1 1 0 0 0 1 1h4' /%3E %3Cpath d='M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z' /%3E %3Cpath d='M9 17h6' /%3E %3Cpath d='M9 13h6' /%3E %3C/svg%3E")}
+.ti-info-circle{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0' /%3E %3Cpath d='M12 9h.01' /%3E %3Cpath d='M11 12h1v4h1' /%3E %3C/svg%3E")}
+.ti-point-filled{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000' %3E %3Cpath d='M12 7a5 5 0 1 1 -4.995 5.217l-.005 -.217l.005 -.217a5 5 0 0 1 4.995 -4.783z' /%3E %3C/svg%3E")}
+.ti-x{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M18 6l-12 12' /%3E %3Cpath d='M6 6l12 12' /%3E %3C/svg%3E")}
+</style>
+<style id="ann-refresh">
+/* popup / cookie banner polish (index) */
+@media screen {
+  .ann-card { border-radius: 14px; max-width: 500px; }
+  .ann-header { padding: 1.2rem 1.5rem; }
+  .ann-icon-wrap { width: 42px; height: 42px; border-radius: 10px; font-size: 1.3rem; display: grid; place-items: center; }
+  .ann-badge { font-size: .74rem; display: inline-flex; align-items: center; gap: .25rem; }
+  .ann-title { font-size: .98rem; line-height: 1.45; }
+  .ann-close-btn { width: 36px; height: 36px; min-width: 36px; border-radius: 50%; display: grid; place-items: center; font-size: 1.15rem; transition: background .15s; }
+  .ann-close-btn:hover { background: rgba(255,255,255,.14); }
+  .ann-body { padding: 1.35rem 1.5rem 1.1rem; }
+  .ann-desc { font-size: .95rem; line-height: 1.75; }
+  .ann-action-btn { border-radius: 10px; transition: box-shadow .18s, transform .18s; }
+  .ann-action-btn:hover { box-shadow: 0 8px 22px rgba(11,31,53,.28); transform: translateY(-1px); }
+  .ann-action-ico { font-size: 1.35rem; display: grid; place-items: center; }
+  .ann-action-arr { font-size: 1.15rem; transition: transform .18s; }
+  .ann-action-btn:hover .ann-action-arr { transform: translateX(3px); }
+  .ann-info { font-size: .86rem; line-height: 1.65; }
+  .ann-info > .ti { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+  .ann-footer { padding: .9rem 1.5rem 1.15rem; gap: .6rem; }
+  .ann-btn-ok, .ann-btn-later { min-height: 42px; border-radius: 8px; padding-inline: 1.25rem; font-size: .92rem; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; }
+  #ck-banner button { border-radius: 8px; min-height: 40px; }
+}
+</style>
 </head>
 <body>
 
@@ -1030,6 +1167,25 @@ html,body{max-width:100%;overflow-x:clip}
           </button>
         </div>
       </div>
+      <aside class="hero-quick" aria-label="ทางลัด">
+        <p class="hq-ttl" data-en="QUICK ACCESS">ทางลัด</p>
+          <a class="hq-item" href="tracking.html">
+            <span class="hq-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <span class="hq-tx"><b data-en="Track project status">ติดตามสถานะโครงการ</b><small data-en="Search by your submission email">ค้นหาด้วยอีเมลที่ใช้ยื่น</small></span>
+            <svg class="hq-go" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+          <a class="hq-item" href="process.html">
+            <span class="hq-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg></span>
+            <span class="hq-tx"><b data-en="Application process">ขั้นตอนการยื่นขอ</b><small data-en="From submission to decision">ดูตั้งแต่เริ่มต้นจนรับผล</small></span>
+            <svg class="hq-go" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+          <a class="hq-item" href="documents.html">
+            <span class="hq-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+            <span class="hq-tx"><b data-en="Required documents">เตรียมเอกสาร</b><small data-en="Checklist of what to prepare">รายการเอกสารที่ต้องใช้</small></span>
+            <svg class="hq-go" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        <p class="hq-note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span data-en="Please submit at least 15 working days before the meeting date.">ควรยื่นล่วงหน้าอย่างน้อย 15 วันทำการก่อนวันประชุม</span></p>
+      </aside>
     </div>
   </div>
 </section>
