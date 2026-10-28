@@ -2980,7 +2980,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <option value="published">เผยแพร่แล้ว</option>
             <option value="hidden">ซ่อน</option>
           </select>
-          <a class="btn btn-outline" href="poster-template.html"><i class="ti ti-photo-edit" aria-hidden="true"></i> สร้างโปสเตอร์ (เทมเพลต)</a>
+          <button type="button" class="btn btn-outline" onclick="openPosterGuide()"><i class="ti ti-wand" aria-hidden="true"></i> คู่มือสร้างโปสเตอร์ (ChatGPT)</button>
           <a class="btn btn-outline" href="showcase.html" target="_blank" rel="noopener"><i class="ti ti-external-link" aria-hidden="true"></i> ดูหน้าสาธารณะ</a>
         </div>
       </div>
@@ -2989,6 +2989,147 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <div>เมื่อผู้วิจัย<strong>ปิดโครงการ</strong> ระบบสร้างร่างให้อัตโนมัติ — เขียนสรุปไม่เกิน 4 ประเด็น แนบรูป Infographic (PNG/JPG) แล้วเปลี่ยนสถานะเป็น <strong>เผยแพร่แล้ว</strong>
           เผยแพร่ได้เมื่อมีหลักฐานความยินยอมของผู้วิจัยเท่านั้น ชื่อผู้วิจัยแสดงเมื่อได้รับความยินยอมแยกต่างหาก</div>
       </div>
+      <!-- ═══ คู่มือสร้างโปสเตอร์ด้วย ChatGPT (สำหรับแอดมิน) ═══ -->
+      <details id="sca-poster-guide" style="margin-bottom:16px;border:1px solid var(--border,#d0dae6);border-radius:10px;background:#fff">
+        <summary style="cursor:pointer;padding:12px 16px;font-weight:700;color:var(--navy-main,#173454)"><i class="ti ti-wand" aria-hidden="true"></i> วิธีจัดทำโปสเตอร์ผลงานเผยแพร่ด้วย ChatGPT (สำหรับแอดมิน)</summary>
+        <div style="padding:4px 18px 18px;font-size:14px;line-height:1.75">
+          <p style="margin:6px 0 10px">ระบบนี้<strong>ไม่ได้สร้างภาพโปสเตอร์เอง</strong> ให้แอดมินสร้างภาพใน ChatGPT แล้วนำไฟล์ภาพมาอัปโหลดในหน้าแก้ไขผลงาน เพื่อให้ทุกชิ้นมีรูปแบบและอัตลักษณ์เดียวกัน</p>
+          <ol style="margin:0 0 12px 1.2em;padding:0">
+            <li>เปิด <strong>ChatGPT</strong> (เลือกรุ่นที่สร้างภาพได้) แล้วเริ่มแชตใหม่ — 1 โครงการ ต่อ 1 แชต</li>
+            <li>แนบไฟล์ 2 อย่าง: <strong>เอกสารต้นฉบับของงานวิจัย</strong> (ฉบับที่ผู้วิจัยส่งปิดโครงการ) และ <strong>ไฟล์โลโก้โรงพยาบาลสันทราย</strong> ต้นฉบับ
+              <span style="color:#5a6e85">(ถ้ามีภาพแม่แบบพื้นหลังของโรงพยาบาล ให้แนบเพิ่มและสั่งให้ใช้เป็นแบบเดียวกันทุกชิ้น)</span></li>
+            <li>กดปุ่ม <strong>คัดลอกพรอมต์</strong> ด้านล่าง แล้ววางในช่องแชต แล้วส่ง</li>
+            <li><strong>ตรวจทานภาพก่อนใช้งานทุกครั้ง</strong> — ตัวเลข ค่าสถิติ ชื่อเรื่อง การสะกดคำไทย โลโก้ และเครดิตท้ายต้องตรงกับเอกสารต้นฉบับ หากข้อความไทยเพี้ยน ให้สั่งแก้ในแชตเดิมจนถูกต้อง</li>
+            <li>ดาวน์โหลดภาพ (PNG/JPG ไม่เกิน 10MB) → กด <strong>จัดทำ/แก้ไข</strong> ที่โครงการนั้น → อัปโหลดในช่อง "รูป Infographic" → ตั้งสถานะ <strong>เผยแพร่แล้ว</strong></li>
+          </ol>
+          <div class="alert alert-warning" style="margin:0 0 12px">
+            <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+            <div>ก่อนอัปโหลดต้องมี<strong>หลักฐานความยินยอมของผู้วิจัย</strong> และไม่มีข้อมูลที่ระบุตัวอาสาสมัคร ชื่อผู้วิจัยใส่ในภาพได้เมื่อได้รับความยินยอมแยกต่างหากเท่านั้น</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+            <label for="sca-poster-prompt" style="font-weight:700">พรอมต์สำหรับ ChatGPT</label>
+            <button type="button" class="btn btn-outline" id="sca-copy-btn" onclick="copyPosterPrompt()"><i class="ti ti-copy" aria-hidden="true"></i> คัดลอกพรอมต์</button>
+          </div>
+          <textarea id="sca-poster-prompt" class="form-control" readonly rows="12" style="font-size:13px;line-height:1.6;width:100%">**บทบาทและความเชี่ยวชาญ**
+
+คุณเป็นผู้เชี่ยวชาญด้านการออกแบบนิเทศศิลป์สำหรับหน่วยงานสาธารณสุข การสื่อสารผลงานวิจัย การออกแบบโปสเตอร์วิชาการ และการจัดทำอินโฟกราฟิกสำหรับโรงพยาบาลภาครัฐ
+
+**ภารกิจ**
+
+สร้างภาพโปสเตอร์นำเสนอผลการวิจัยจากเอกสารต้นฉบับที่แนบมา สำหรับเผยแพร่บนเว็บไซต์โรงพยาบาลสันทราย โดยให้มีรูปแบบการออกแบบที่เป็นเอกลักษณ์เดียวกันทุกชิ้นงาน สอดคล้องกับภาพลักษณ์ของโรงพยาบาล และมีความน่าเชื่อถือทางวิชาการ
+
+### 1. การใช้ข้อมูลจากเอกสารต้นฉบับ
+
+- อ่านและวิเคราะห์เอกสารวิจัยที่แนบมาให้ครบถ้วนก่อนออกแบบ
+- ใช้ชื่อเรื่อง วัตถุประสงค์ วิธีการศึกษา ผลการศึกษา สถิติ และข้อเสนอแนะตามเอกสารต้นฉบับ
+- ห้ามแต่งตัวเลข ผลการศึกษา ค่า p-value ค่า OR ช่วงความเชื่อมั่น หรือข้อค้นพบเพิ่มเติมเอง
+- ห้ามเปลี่ยนแปลงความหมายของผลการวิจัย
+- เลือกนำเสนอเฉพาะสาระสำคัญที่จำเป็นต่อการทำความเข้าใจผลงาน โดยไม่ทำให้ข้อสรุปคลาดเคลื่อน
+- หากข้อมูลส่วนใดไม่มีในเอกสาร ให้ละเว้นส่วนนั้น ไม่สร้างข้อมูลขึ้นเอง
+
+### 2. รูปแบบและอัตลักษณ์ของโปสเตอร์
+
+- รูปแบบแนวตั้ง อัตราส่วนประมาณ 2:3 หรือขนาดใกล้เคียง A4 แนวตั้ง
+- ใช้โทนสีฟ้า ขาว และเขียวอ่อน สอดคล้องกับอัตลักษณ์โรงพยาบาลสันทราย
+- ใช้สีน้ำเงินเป็นสีหลักสำหรับหัวข้อและข้อความสำคัญ
+- ใช้พื้นหลังสีขาวหรือฟ้าอ่อน ให้พื้นที่ว่างเพียงพอ ไม่อัดแน่น
+- ออกแบบให้เป็นโปสเตอร์วิชาการสมัยใหม่ มีความเป็นทางการ สะอาดตา และเหมาะกับเว็บไซต์โรงพยาบาล
+- ใช้กราฟิกเส้นโค้งหรือคลื่นสีฟ้าอย่างเรียบง่ายบริเวณส่วนบนและส่วนท้าย
+- ใช้ภาพประกอบบุคลากรทางการแพทย์หรืออาคารโรงพยาบาลเท่าที่จำเป็น
+- หลีกเลี่ยงการตกแต่งมากเกินไป ภาพสามมิติที่ฉูดฉาด ลวดลายรก และองค์ประกอบที่เบี่ยงเบนจากเนื้อหาวิจัย
+
+### 3. โลโก้และส่วนหัว
+
+ใช้ไฟล์โลโก้โรงพยาบาลสันทรายที่แนบมาเป็นต้นฉบับจริง โดยวางไว้บริเวณมุมบนซ้าย
+
+- รักษารูปทรง สัดส่วน สี และข้อความภายในโลโก้ให้เหมือนต้นฉบับ
+- ห้ามวาดโลโก้ใหม่ ห้ามดัดแปลงสัญลักษณ์ และห้ามสร้างโลโก้เลียนแบบ
+- แสดงชื่อ “โรงพยาบาลสันทราย”
+- แสดงข้อความ “อำเภอสันทราย จังหวัดเชียงใหม่” ตามความเหมาะสม
+- จัดวางส่วนหัวให้เรียบร้อยและเป็นมาตรฐานเดียวกันทุกโปสเตอร์
+
+### 4. การจัดวางเนื้อหา
+
+จัดลำดับเนื้อหาตามข้อมูลที่มีอยู่จริงในเอกสาร โดยเลือกใช้หัวข้อที่เหมาะสม เช่น
+
+1. ชื่อเรื่องวิจัย
+2. ชื่อผู้วิจัยและหน่วยงาน
+3. บทคัดย่อหรือสาระสำคัญ
+4. วัตถุประสงค์
+5. วิธีการศึกษา
+6. ผลการศึกษา
+7. ตาราง กราฟ หรือค่าสถิติสำคัญ
+8. อภิปรายผลหรือข้อเสนอแนะ
+9. สรุปผลการศึกษา
+
+ไม่จำเป็นต้องแสดงทุกหัวข้อ หากเอกสารไม่มีข้อมูลหรือพื้นที่ไม่เพียงพอ ให้จัดลำดับความสำคัญโดยเน้นผลการศึกษาที่สำคัญที่สุด
+
+ใช้พื้นที่ส่วนผลการศึกษาให้โดดเด่นกว่าส่วนอื่น สามารถใช้การ์ดข้อมูล กราฟ หรือตารางแบบเรียบง่ายได้เมื่อช่วยให้เข้าใจผลการวิจัยได้ดีขึ้น
+
+### 5. หลักการใช้ภาษาไทย
+
+- ใช้ภาษาไทยตามหลักการสะกดคำและการใช้ภาษาของราชบัณฑิตยสภา
+- ตรวจสอบการสะกดคำ คำศัพท์วิชาการ วรรคตอน และการเว้นวรรคอย่างละเอียด
+- ใช้ภาษาทางวิชาการที่กระชับ เข้าใจง่าย และไม่กล่าวเกินกว่าข้อมูลที่มี
+- รักษาชื่อเรื่อง ชื่อบุคคล ชื่อหน่วยงาน และศัพท์เฉพาะตามเอกสารต้นฉบับ
+- ไม่สร้างข้อความภาษาไทยที่อ่านไม่รู้เรื่อง ไม่ใช้ตัวอักษรมั่ว และไม่ใช้ข้อความตกแต่งที่ไม่มีความหมาย
+- หากระบบสร้างภาพไม่สามารถสร้างข้อความยาวได้ถูกต้อง ให้จัดพื้นที่สำหรับนำข้อความจริงไปวางภายหลัง แทนการสร้างข้อความผิด
+
+### 6. การนำเสนอข้อมูลเชิงสถิติ
+
+- แสดงตัวเลขตามเอกสารต้นฉบับอย่างเคร่งครัด
+- ระบุหน่วยและคำอธิบายของตัวเลขให้ชัดเจน
+- หากใช้กราฟ ต้องสอดคล้องกับค่าข้อมูลจริง
+- หากใช้ OR, 95% CI หรือ p-value ต้องถ่ายทอดค่าให้ตรงต้นฉบับ
+- ห้ามสร้างกราฟที่สื่อถึงความแตกต่างหรือความสัมพันธ์ที่เอกสารไม่ได้รายงาน
+- ใช้ขนาดตัวอักษรที่อ่านได้จริงเมื่อดูบนหน้าจอเว็บไซต์
+
+### 7. เครดิตส่วนท้าย
+
+บริเวณด้านล่างของโปสเตอร์ ให้ใส่ข้อความดังนี้ โดยรักษาถ้อยคำตามที่กำหนด
+
+“© พ.ศ. 2569 โรงพยาบาลสันทราย”
+
+“สำนักงานคณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย”
+
+จัดวางด้วยตัวอักษรขนาดเล็กที่ยังอ่านได้ ใช้สีน้ำเงิน และไม่รบกวนเนื้อหาหลัก
+
+### 8. ข้อกำหนดด้านคุณภาพ
+
+- ภาพคมชัด สัดส่วนสมดุล และพร้อมใช้เผยแพร่บนเว็บไซต์
+- มีลำดับสายตาชัดเจน อ่านจากชื่อเรื่องไปยังผลการศึกษาและข้อสรุปได้ง่าย
+- ใช้ฟอนต์ไทยที่อ่านง่าย มีความเป็นทางการ และมีความแตกต่างของขนาดหัวข้อกับเนื้อหาอย่างเหมาะสม
+- คงอัตลักษณ์ สี โลโก้ ส่วนหัว และส่วนท้ายให้เหมือนกันทุกครั้ง เพื่อสร้างมาตรฐานโปสเตอร์ของโรงพยาบาล
+- ให้ความสำคัญกับความถูกต้องของข้อมูลมากกว่าความสวยงาม
+- ห้ามใส่ข้อมูลวิจัยที่ไม่มีหลักฐานในเอกสาร
+- ห้ามใส่โลโก้หรือชื่อหน่วยงานอื่นที่ไม่ได้รับอนุญาต
+
+**ผลลัพธ์ที่ต้องการ:** โปสเตอร์นำเสนอผลการวิจัยของโรงพยาบาลสันทรายที่มีความเป็นมืออาชีพ สะอาดตา อ่านง่าย มีอัตลักษณ์เดียวกันทุกชิ้น และสามารถนำไปเผยแพร่บนเว็บไซต์ได้</textarea>
+        </div>
+      </details>
+      <script>
+      function openPosterGuide() {
+        var d = document.getElementById('sca-poster-guide');
+        if (!d) return;
+        d.open = true;
+        d.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      function copyPosterPrompt() {
+        var ta = document.getElementById('sca-poster-prompt'), btn = document.getElementById('sca-copy-btn');
+        function ok() {
+          if (typeof showToast === 'function') showToast('คัดลอกพรอมต์แล้ว นำไปวางใน ChatGPT ได้เลย');
+          if (btn) { var t = btn.innerHTML; btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> คัดลอกแล้ว'; setTimeout(function(){ btn.innerHTML = t; }, 2000); }
+        }
+        function fallback() {
+          ta.focus(); ta.select();
+          try { if (document.execCommand('copy')) { ok(); return; } } catch (e) {}
+          if (typeof showToast === 'function') showToast('คัดลอกอัตโนมัติไม่ได้ กรุณาเลือกข้อความแล้วกด Ctrl+C');
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(ta.value).then(ok, fallback);
+        } else { fallback(); }
+      }
+      </script>
       <div id="sca-closed-wrap" style="display:none"></div>
       <div id="sca-list"><div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div></div>
     </div>
@@ -3041,7 +3182,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <label>รูป Infographic (PNG/JPG ไม่เกิน 10MB)</label>
             <input type="file" id="sce-file" class="form-control" accept="image/png,image/jpeg" onchange="uploadShowcaseImage(this)">
             <div id="sce-img-state" class="hint-text" style="margin-top:8px"></div>
-            <div class="hint-text" style="margin-top:4px">ยังไม่มีรูป? <a href="poster-template.html">สร้างโปสเตอร์จากเทมเพลต</a> แล้วดาวน์โหลด PNG มาอัปโหลดที่นี่</div>
+            <div class="hint-text" style="margin-top:4px">ยังไม่มีรูป? สร้างโปสเตอร์ด้วย ChatGPT ตามคู่มือในหน้า "ผลงานเผยแพร่" (ปุ่ม "คู่มือสร้างโปสเตอร์") แล้วนำไฟล์ภาพมาอัปโหลดที่นี่</div>
             <img id="sce-img-prev" alt="ตัวอย่าง Infographic" style="display:none;max-width:100%;max-height:260px;margin-top:8px;border:1px solid var(--border,#d0dae6);border-radius:8px">
             <input type="hidden" id="sce-img-id">
           </div>
@@ -10775,15 +10916,6 @@ async function uploadToGoogleDrive(file) {
   showPage('dashboard');
   loadAllData();
   showToast('ยินดีต้อนรับ ' + S.user.name);
-  // กลับจาก poster-template.html → เปิดหน้า "ผลงานเผยแพร่ (Infographic)" ต่อ
-  try {
-    var _ret = sessionStorage.getItem('ec_return');
-    sessionStorage.removeItem('ec_return');
-    if (_ret === 'showcase-admin') {
-      var _nav = document.getElementById('nav-showcase-admin');
-      if (_nav && _nav.style.display !== 'none') showPage('showcase-admin');
-    }
-  } catch(e) {}
   // เริ่ม auto-poll notifications ทุก 90 วินาที
   _startNotifPolling();
   
