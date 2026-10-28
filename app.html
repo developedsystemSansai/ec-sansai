@@ -2,6 +2,7 @@
     <html lang="th">
     <head>
         <script src="config.js"></script>
+<script src="consent-gate.js" data-analytics-manual="true"></script>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <!--
       GAS API Bridge — วาง Deployment URL ตรงนี้
@@ -103,7 +104,10 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         getResearchProjectsOverview:  function(sid,cu)           { return callGAS('getResearchProjectsOverview', {sessionId:sid, callerUsername:cu}); },
         runExpiryCheckNow:            function(sid,cu)           { return callGAS('runExpiryCheckNow', {sessionId:sid, callerUsername:cu}); },
         getApprovedProjectsForReporting: function(sid,u)       { return callGAS('getApprovedProjectsForReporting',{sessionId:sid, username:u}); },
-        getResearchReports:          function(sid,u)            { return callGAS('getResearchReports',        {sessionId:sid, username:u}); },
+        getResearchReports:          function(sid,u,pc)         { return callGAS('getResearchReports',        {sessionId:sid, username:u, projectCode:pc||''}); },
+        getShowcaseAdmin:            function(sid,cu)           { return callGAS('getShowcaseAdmin',          {sessionId:sid, callerUsername:cu}); },
+        createShowcaseFromProject:   function(sid,pc,cu)        { return callGAS('createShowcaseFromProject', {sessionId:sid, projectCode:pc, callerUsername:cu}); },
+        saveShowcaseItem:            function(sid,pl,cu)        { return callGAS('saveShowcaseItem',          {sessionId:sid, payload:pl, callerUsername:cu}); },
         recordPdpaConsent:           function(pl)               { return callGAS('recordPdpaConsent',         {payload:pl}); },
         saveLineUserId:              function(sid,cu,tu,lid)       { return callGAS('saveLineUserId',            {sessionId:sid, callerUsername:cu, targetUsername:tu, lineUserId:lid}); },
         pushLineToUser:              function(sid,cu,tu,ti,bd,bt,att,dids){ return callGAS('pushLineToUser',           {sessionId:sid, callerUsername:cu, targetUsername:tu, title:ti, body:bd, buttonType:bt, attachments:att||[], driveFileIds:dids||[]}); },
@@ -1569,7 +1573,6 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     .vf-error-state .vf-error-icon { font-size:40px; margin-bottom:10px; }
 
     </style>
-    <script defer src="https://sandtools.vercel.app/t.js" data-site="ppucg5v4xb" data-manual></script>
     <script>
     /* SAND stats: single-file app -> report each screen as a virtual page + role word only (admin|staff). Safe if t.js is blocked. */
     function sandRoleOf(r){ return r === 'staff' ? 'officer' : (r === 'admin' || r === 'committee' || r === 'researcher') ? r : ''; }
@@ -1921,6 +1924,13 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     </select>
     <div class="hint-text"><i class="ti ti-alert-triangle ti-warn" aria-hidden="true"></i> สิทธิ์จะมีผลหลังผู้ดูแลระบบอนุมัติ</div>
   </div>
+
+  <label style="display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:13.5px;line-height:1.7;cursor:pointer">
+    <input type="checkbox" id="reg-accept-terms" style="margin-top:4px;width:18px;height:18px;flex:0 0 auto">
+    <span>ข้าพเจ้ายอมรับ <a href="privacy-policy.html" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว (PDPA)</a> และเงื่อนไขการใช้งาน
+      รวมถึง <a href="privacy-policy.html#publication" target="_blank" rel="noopener">เงื่อนไขการเผยแพร่ผลงานวิจัยหลังปิดโครงการ</a>
+      (สรุปผลฉบับย่อเป็น Infographic เผยแพร่บนเว็บไซต์ โดยไม่ระบุตัวตนอาสาสมัคร) <span class="req">*</span></span>
+  </label>
 
   <div style="display:flex; gap:10px; margin-top:20px">
     <button class="btn-back-login" style="flex:1" onclick="regGoStep(2)"><i class="ti ti-arrow-left" aria-hidden="true"></i> ย้อนกลับ</button>
@@ -2529,6 +2539,10 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <div class="sidebar-divider"></div>
     <a onclick="showPage('minutes')" id="nav-minutes" style="display:none">
       <span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>รายงานการประชุม</a>
+    <a onclick="showPage('showcase-admin')" id="nav-showcase-admin" style="display:none">
+      <span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/><path d="M7 13l3-3 3 3 4-5"/></svg></span>
+      ผลงานเผยแพร่ (Infographic)
+      <span class="badge-count orange" id="badge-showcase" style="display:none">0</span></a>
     <a onclick="showPage('research-reports')" id="nav-research-reports" style="display:none">
       <span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>รายงานผลการวิจัย
       <span class="badge-count orange" id="badge-rpt" style="display:none">0</span></a>
@@ -2953,6 +2967,115 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     </div>
 
     <!-- ── ระบบรายงานผลการวิจัย ── -->
+    <!-- ═══ ผลงานเผยแพร่ (Infographic) — เจ้าหน้าที่/แอดมิน ═══ -->
+    <div id="page-showcase-admin" class="tab-panel">
+      <div class="breadcrumb"><a onclick="showPage('dashboard')">หน้าหลัก</a> / ผลงานเผยแพร่ (Infographic)</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px">
+        <div class="page-title" style="margin-bottom:0"><i class="ti ti-presentation" aria-hidden="true"></i> ผลงานเผยแพร่ (Infographic)</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select id="sca-filter" class="form-control" style="max-width:200px" onchange="renderShowcaseAdmin()">
+            <option value="">ทุกสถานะ</option>
+            <option value="draft">ร่าง</option>
+            <option value="ready">พร้อมเผยแพร่</option>
+            <option value="published">เผยแพร่แล้ว</option>
+            <option value="hidden">ซ่อน</option>
+          </select>
+          <a class="btn btn-outline" href="showcase.html" target="_blank" rel="noopener"><i class="ti ti-external-link" aria-hidden="true"></i> ดูหน้าสาธารณะ</a>
+        </div>
+      </div>
+      <div class="alert alert-info" style="margin-bottom:16px">
+        <i class="ti ti-info-circle" aria-hidden="true"></i>
+        <div>เมื่อผู้วิจัย<strong>ปิดโครงการ</strong> ระบบสร้างร่างให้อัตโนมัติ — เขียนสรุปไม่เกิน 4 ประเด็น แนบรูป Infographic (PNG/JPG) แล้วเปลี่ยนสถานะเป็น <strong>เผยแพร่แล้ว</strong>
+          เผยแพร่ได้เมื่อมีหลักฐานความยินยอมของผู้วิจัยเท่านั้น ชื่อผู้วิจัยแสดงเมื่อได้รับความยินยอมแยกต่างหาก</div>
+      </div>
+      <div id="sca-closed-wrap" style="display:none"></div>
+      <div id="sca-list"><div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div></div>
+    </div>
+
+    <!-- Modal: แก้ไขผลงานเผยแพร่ -->
+    <div class="modal-overlay" id="modal-showcase-edit">
+      <div class="modal modal-lg">
+        <div class="modal-header">
+          <h3><i class="ti ti-presentation" aria-hidden="true"></i> จัดทำผลงานเผยแพร่</h3>
+          <button class="modal-close" onclick="closeModal('modal-showcase-edit')" aria-label="ปิด"><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+          <div id="sce-info" style="background:var(--navy-pale);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;font-size:13.5px;line-height:1.7"></div>
+          <input type="hidden" id="sce-id">
+
+          <div class="field-group" id="sce-consent-wrap" style="display:none">
+            <div class="alert alert-warning" style="margin-bottom:0">
+              <i class="ti ti-alert-triangle ti-warn" aria-hidden="true"></i>
+              <div>
+                <strong>ยังไม่มีหลักฐานความยินยอมของผู้วิจัยในการเผยแพร่</strong> (แอดมินปิดโครงการแทนผู้วิจัย)
+                <label style="display:flex;gap:8px;align-items:flex-start;margin-top:8px;cursor:pointer;font-weight:500">
+                  <input type="checkbox" id="sce-confirm-consent" style="margin-top:4px">
+                  <span>ข้าพเจ้าได้ติดต่อผู้วิจัยและได้รับความยินยอมให้เผยแพร่สรุปผลฉบับย่อแล้ว</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>สรุปผลการวิจัยโดยย่อ <span class="hint-text" id="sce-sum-count" style="font-weight:400"></span></label>
+            <textarea id="sce-summary" class="form-control" rows="4" maxlength="400" placeholder="2–3 ประโยค เข้าใจง่าย ไม่มีข้อมูลระบุตัวตนอาสาสมัคร"></textarea>
+          </div>
+          <div class="field-group">
+            <label>ประเด็นสำคัญ (ไม่เกิน 4 ข้อ)</label>
+            <input type="text" class="form-control sce-kf" maxlength="140" placeholder="ข้อ 1" style="margin-bottom:6px">
+            <input type="text" class="form-control sce-kf" maxlength="140" placeholder="ข้อ 2" style="margin-bottom:6px">
+            <input type="text" class="form-control sce-kf" maxlength="140" placeholder="ข้อ 3" style="margin-bottom:6px">
+            <input type="text" class="form-control sce-kf" maxlength="140" placeholder="ข้อ 4">
+          </div>
+          <div class="field-group">
+            <label>ผลลัพธ์/ประโยชน์ต่อโรงพยาบาลและผู้ป่วย</label>
+            <input type="text" id="sce-impact" class="form-control" maxlength="300" placeholder="เช่น ลดระยะเวลารอคอยลง 20%">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="field-group"><label>สาขา/หมวดงานวิจัย</label><input type="text" id="sce-field" class="form-control" maxlength="80" placeholder="เช่น การพยาบาล"></div>
+            <div class="field-group"><label>คำสำคัญ (คั่นด้วย ,)</label><input type="text" id="sce-tags" class="form-control" maxlength="120" placeholder="เช่น เบาหวาน, ชุมชน"></div>
+          </div>
+
+          <div class="field-group">
+            <label>รูป Infographic (PNG/JPG ไม่เกิน 10MB)</label>
+            <input type="file" id="sce-file" class="form-control" accept="image/png,image/jpeg" onchange="uploadShowcaseImage(this)">
+            <div id="sce-img-state" class="hint-text" style="margin-top:8px"></div>
+            <img id="sce-img-prev" alt="ตัวอย่าง Infographic" style="display:none;max-width:100%;max-height:260px;margin-top:8px;border:1px solid var(--border,#d0dae6);border-radius:8px">
+            <input type="hidden" id="sce-img-id">
+          </div>
+
+          <div class="field-group" id="sce-name-wrap">
+            <label>ชื่อผู้วิจัยที่แสดง</label>
+            <input type="text" id="sce-pi-name" class="form-control" maxlength="120">
+            <label id="sce-name-consent-row" style="display:none;gap:8px;align-items:flex-start;margin-top:8px;cursor:pointer;font-weight:500">
+              <input type="checkbox" id="sce-confirm-name" style="margin-top:4px">
+              <span>ผู้วิจัยยินยอมให้แสดงชื่อ (ยืนยันแล้วกับผู้วิจัย)</span>
+            </label>
+            <label id="sce-show-name-row" style="display:none;gap:8px;align-items:flex-start;margin-top:8px;cursor:pointer;font-weight:500">
+              <input type="checkbox" id="sce-show-name" style="margin-top:4px">
+              <span>แสดงชื่อผู้วิจัยบนหน้าสาธารณะ</span>
+            </label>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="field-group"><label>สถานะ</label>
+              <select id="sce-status" class="form-control">
+                <option value="draft">ร่าง</option>
+                <option value="ready">พร้อมเผยแพร่</option>
+                <option value="published">เผยแพร่แล้ว</option>
+                <option value="hidden">ซ่อน</option>
+              </select></div>
+            <div class="field-group"><label>ลำดับแสดง (มาก = ขึ้นก่อน)</label><input type="number" id="sce-sort" class="form-control" min="-999" max="999" value="0"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('modal-showcase-edit')">ยกเลิก</button>
+          <button class="btn btn-primary" id="sce-save-btn" onclick="saveShowcaseEdit()"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึก</button>
+        </div>
+      </div>
+    </div>
+
+
     <div id="page-research-reports" class="tab-panel">
       <div class="breadcrumb"><a onclick="showPage('dashboard')">หน้าหลัก</a> / รายงานผลการวิจัย</div>
 
@@ -3746,6 +3869,17 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           </div>
         </div>
 
+        <div class="fr01-no-print" style="padding:12px 20px;border-top:1px solid #e0e6ef;background:#fffbf0">
+          <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.7;cursor:pointer">
+            <input type="checkbox" id="fr01-showcase-ack" style="margin-top:4px;width:18px;height:18px;flex:0 0 auto">
+            <span><strong>รับทราบการเผยแพร่ผลงาน <span style="color:#b91c1c">*</span></strong> — สำนักงานวิจัยในมนุษย์ รพ.สันทราย ขออนุญาตนำผลการวิจัยฉบับย่อไปจัดทำเป็น Infographic เผยแพร่บนเว็บไซต์เป็นผลงานของโรงพยาบาล โดยไม่ระบุตัวตนอาสาสมัคร ลิขสิทธิ์ยังเป็นของผู้วิจัย และขอถอดผลงานได้ทุกเมื่อ
+              (<a href="privacy-policy.html#publication" target="_blank" rel="noopener">เงื่อนไขฉบับเต็ม</a>)</span>
+          </label>
+          <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.7;cursor:pointer;margin-top:8px">
+            <input type="checkbox" id="fr01-showcase-name" style="margin-top:4px;width:18px;height:18px;flex:0 0 auto">
+            <span>(ไม่บังคับ) ยินยอมให้แสดง<strong>ชื่อผู้วิจัย</strong>ในผลงานที่เผยแพร่</span>
+          </label>
+        </div>
         <div class="fr01-btn-bar fr01-no-print">
           <button class="btn btn-outline" onclick="closeFr01Modal()">ยกเลิก</button>
           <button class="btn btn-outline" onclick="printFr01()" style="background:#f0f4ff">พิมพ์ / บันทึก PDF</button>
@@ -4930,6 +5064,7 @@ function applyRoleUI(role){
   showEl('nav-users',          isAdmin);
   showEl('nav-minutes',        isAdmin || S._isCommittee);
   showEl('nav-research-reports', S._isResearcher || isStaff || isAdmin);
+  showEl('nav-showcase-admin', isStaff || isAdmin);
   showEl('minutes-admin-upload-btn', isAdmin);
   
   // Bottom nav
@@ -9917,7 +10052,7 @@ function removeNotifyRevisionFile() {
           }).join('') + '</div>';
         })
         .withFailureHandler(function() {})
-        .getResearchReports('', S.user.username);
+        .getResearchReports(S.user.sessionId, S.user.username);
     }
 
     function loadAllReports() {
@@ -10458,7 +10593,7 @@ async function uploadToGoogleDrive(file) {
       if (action === 'renewal' && !newExpiry) { showToast('กรุณาระบุวันหมดอายุใหม่', 'error'); return; }
       if (!_ampFileIds.length) { showToast('กรุณาแนบไฟล์ประกอบการดำเนินการ', 'error'); return; }
       var label = action === 'renewal' ? 'ต่ออายุโครงการ' : 'ปิดโครงการ';
-      if (!confirm('ยืนยัน: ' + label + ' สำหรับโครงการ ' + projectCode + ' แทนผู้วิจัย?\n(รายการนี้จะถือว่าผ่านการพิจารณาทันที)')) return;
+      if (!confirm((action === 'closure' ? 'หมายเหตุ: ระบบจะสร้างร่างผลงานเผยแพร่ (Infographic) ซึ่งต้องยืนยันความยินยอมกับผู้วิจัยก่อนเผยแพร่\n\n' : '') + 'ยืนยัน: ' + label + ' สำหรับโครงการ ' + projectCode + ' แทนผู้วิจัย?\n(รายการนี้จะถือว่าผ่านการพิจารณาทันที)')) return;
 
       var btn = document.getElementById('amp-submit-btn');
       btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังดำเนินการ...';
@@ -10832,8 +10967,15 @@ async function uploadToGoogleDrive(file) {
   var lname = document.getElementById('reg-lname').value.trim();
   
   var ethicsStatus = document.getElementById('reg-ethics-training').value;
-  
+  var termsBox = document.getElementById('reg-accept-terms');
+  if (!termsBox || !termsBox.checked) {
+    showRegError('กรุณายอมรับนโยบายความเป็นส่วนตัวและเงื่อนไขการใช้งานก่อนลงทะเบียน');
+    return;
+  }
+  hideRegError();
+
   var payload = {
+    acceptTerms: true,
     username: document.getElementById('reg-username').value.trim(),
     email: document.getElementById('reg-email').value.trim(),
     password: document.getElementById('reg-pass').value,
@@ -11069,6 +11211,7 @@ function showPage(page) {
   if (page === 'meeting') loadMeetings();
   if (page === 'minutes') loadMeetingMinutes();
   if (page === 'research-reports') initResearchReportsPage();
+  if (page === 'showcase-admin' && typeof loadShowcaseAdmin === 'function') loadShowcaseAdmin();
   
   // เลื่อนขึ้นบนสุด
   window.scrollTo(0, 0);
@@ -11560,6 +11703,7 @@ function showPage(page) {
     var _fr01ProjectCode = '';
 
     function openFr01Modal(projectCode) {
+      ['fr01-showcase-ack','fr01-showcase-name'].forEach(function(id){ var c=document.getElementById(id); if (c) c.checked = false; });
       _fr01FileIds = [];
       _fr01ProjectCode = projectCode;
       ['fr01-project-code','fr01-approved-date','fr01-title-th','fr01-title-en',
@@ -11850,6 +11994,8 @@ function showPage(page) {
       if (!projectCode) { showToast('\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e23\u0e2b\u0e31\u0e2a\u0e42\u0e04\u0e23\u0e07\u0e01\u0e32\u0e23', 'error'); return; }
       var conducted = document.querySelector('input[name="fr01-conducted"]:checked');
       if (!conducted) { showToast('\u0e01\u0e23\u0e38\u0e13\u0e32\u0e23\u0e30\u0e1a\u0e38\u0e27\u0e48\u0e32\u0e44\u0e14\u0e49\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23\u0e27\u0e34\u0e08\u0e31\u0e22\u0e41\u0e25\u0e49\u0e27\u0e2b\u0e23\u0e37\u0e2d\u0e44\u0e21\u0e48', 'error'); return; }
+      var scAck = document.getElementById('fr01-showcase-ack');
+      if (!scAck || !scAck.checked) { showToast('กรุณารับทราบเงื่อนไขการเผยแพร่ผลงาน (ช่องท้ายแบบฟอร์ม) ก่อนยื่นรายงาน', 'error'); if (scAck) scAck.focus(); return; }
       var summary = document.getElementById('fr01-summary').value.trim();
       if (!summary) { showToast('\u0e01\u0e23\u0e38\u0e13\u0e32\u0e01\u0e23\u0e2d\u0e01\u0e2a\u0e23\u0e38\u0e1b\u0e1c\u0e25\u0e01\u0e32\u0e23\u0e27\u0e34\u0e08\u0e31\u0e22 (\u0e02\u0e49\u0e2d 5)', 'error'); return; }
       function rVal(name) { var el = document.querySelector('input[name="'+name+'"]:checked'); return el ? el.value : ''; }
@@ -11916,6 +12062,8 @@ function showPage(page) {
         .submitResearchReport(S.user.sessionId, {
           projectCode:    projectCode,
           reportType:     'closure',
+          showcaseAck:     true,
+          showcaseNameAck: !!(document.getElementById('fr01-showcase-name') && document.getElementById('fr01-showcase-name').checked),
           callerUsername: S.user.username,
           fileIds:        _fr01FileIds.slice(),
           note:           noteText,
@@ -11924,10 +12072,191 @@ function showPage(page) {
     }
   </script>
 
+<script>
+// ═══════════════════════════════════════════════════════════
+//  ผลงานเผยแพร่ (Infographic) — หน้าเจ้าหน้าที่/แอดมิน  (เรียก backend: Consent.gs)
+// ═══════════════════════════════════════════════════════════
+var _scaRows = [], _scaClosed = [];
+var SCA_STATUS = { draft: 'ร่าง', ready: 'พร้อมเผยแพร่', published: 'เผยแพร่แล้ว', hidden: 'ซ่อน' };
+var SCA_CONSENT = {
+  closure_form: ['ผู้วิจัยยินยอมแล้ว (ฟอร์มปิดโครงการ)', '#1b5e3e', '#d6ede3'],
+  staff_confirmed: ['เจ้าหน้าที่ยืนยันแล้ว', '#1b5e3e', '#d6ede3'],
+  registration_terms: ['ยังไม่ยืนยันความยินยอม', '#b7791f', '#fdf3dc']
+};
+
+function loadShowcaseAdmin() {
+  var box = document.getElementById('sca-list');
+  box.innerHTML = '<div class="empty-state"><div class="spin-sm dark" style="width:32px;height:32px;margin:auto"></div></div>';
+  getM().getShowcaseAdmin(S.user.sessionId, S.user.username).then(function (res) {
+    if (!res || !res.success) {
+      box.innerHTML = '<div class="empty-state">' + esc((res && res.message) || 'โหลดข้อมูลไม่สำเร็จ') + '</div>';
+      return;
+    }
+    _scaRows = res.data || []; _scaClosed = res.closedWithout || [];
+    renderShowcaseAdmin();
+    var pending = _scaRows.filter(function (r) { return r.status === 'draft'; }).length + _scaClosed.length;
+    var b = document.getElementById('badge-showcase');
+    if (b) { b.textContent = pending; b.style.display = pending ? '' : 'none'; }
+  }).catch(function (e) {
+    box.innerHTML = '<div class="empty-state">เกิดข้อผิดพลาด: ' + esc(e.message || '') + '</div>';
+  });
+}
+
+function renderShowcaseAdmin() {
+  var wrap = document.getElementById('sca-closed-wrap');
+  if (_scaClosed.length) {
+    wrap.style.display = 'block';
+    wrap.innerHTML = '<div class="alert alert-warning" style="margin-bottom:16px"><i class="ti ti-alert-triangle ti-warn" aria-hidden="true"></i><div>' +
+      '<strong>โครงการที่ปิดแล้วแต่ยังไม่มีรายการผลงาน (' + _scaClosed.length + ')</strong>' +
+      _scaClosed.map(function (p) {
+        return '<div style="display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:8px;flex-wrap:wrap">' +
+          '<span><b>' + esc(p.project_code) + '</b> ' + esc(p.title_th) + '</span>' +
+          '<button class="btn btn-sm btn-outline" data-code="' + esc(p.project_code) + '" onclick="createShowcaseDraft(this.getAttribute(\'data-code\'))">สร้างร่าง</button></div>';
+      }).join('') + '</div></div>';
+  } else { wrap.style.display = 'none'; wrap.innerHTML = ''; }
+
+  var f = document.getElementById('sca-filter').value;
+  var rows = _scaRows.filter(function (r) { return !f || r.status === f; });
+  var box = document.getElementById('sca-list');
+  if (!rows.length) {
+    box.innerHTML = '<div class="empty-state">' + (_scaRows.length ? 'ไม่มีรายการในสถานะนี้' : 'ยังไม่มีรายการ — ระบบจะสร้างร่างอัตโนมัติเมื่อโครงการปิด') + '</div>';
+    return;
+  }
+  box.innerHTML = rows.map(function (r) {
+    var c = SCA_CONSENT[r.consent_ack] || SCA_CONSENT.registration_terms;
+    var stColor = r.status === 'published' ? ['#1b5e3e', '#d6ede3'] : r.status === 'hidden' ? ['#5a6e85', '#e8edf5'] : r.status === 'ready' ? ['#173454', '#dce7f3'] : ['#b7791f', '#fdf3dc'];
+    return '<div class="card" style="margin-bottom:12px"><div class="card-body" style="display:flex;gap:14px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap">' +
+      '<div style="flex:1 1 320px;min-width:0">' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">' +
+          '<span style="font-size:12px;font-weight:700;border-radius:99px;padding:2px 10px;background:' + stColor[1] + ';color:' + stColor[0] + '">' + esc(SCA_STATUS[r.status] || r.status) + '</span>' +
+          '<span style="font-size:12px;font-weight:700;border-radius:99px;padding:2px 10px;background:' + c[2] + ';color:' + c[1] + '">' + esc(c[0]) + '</span>' +
+          (r.infographic_file_id ? '<span style="font-size:12px;border-radius:99px;padding:2px 10px;background:#eef3f9;color:#173454">มีรูป Infographic</span>' : '') +
+        '</div>' +
+        '<div style="font-weight:700">' + esc(r.project_code) + ' · ' + esc(r.title_th) + '</div>' +
+        '<div style="font-size:13px;color:#5a6e85;margin-top:4px">' + esc(r.review_type || '–') + ' · พ.ศ. ' + esc(r.year || '–') + ' · ' + esc(r.dept || '–') +
+          (r.published_date ? ' · เผยแพร่ ' + esc(r.published_date) : '') + '</div>' +
+      '</div>' +
+      '<button class="btn btn-sm btn-primary" data-id="' + esc(r.showcase_id) + '" onclick="openShowcaseEdit(this.getAttribute(\'data-id\'))"><i class="ti ti-edit" aria-hidden="true"></i> จัดทำ/แก้ไข</button>' +
+      '</div></div>';
+  }).join('');
+}
+
+function createShowcaseDraft(code) {
+  getM().createShowcaseFromProject(S.user.sessionId, code, S.user.username).then(function (res) {
+    if (res && res.success) { showToast('สร้างร่างสำเร็จ'); loadShowcaseAdmin(); }
+    else showToast((res && res.message) || 'สร้างร่างไม่สำเร็จ', 'error');
+  }).catch(function (e) { showToast('เกิดข้อผิดพลาด: ' + (e.message || ''), 'error'); });
+}
+
+function openShowcaseEdit(id) {
+  var r = _scaRows.filter(function (x) { return x.showcase_id === id; })[0];
+  if (!r) return;
+  var el = function (i) { return document.getElementById(i); };
+  el('sce-id').value = r.showcase_id;
+  el('sce-info').innerHTML = '<b>' + esc(r.project_code) + '</b> ' + esc(r.title_th) + '<br><span style="color:#5a6e85">' + esc(r.review_type || '–') + ' · พ.ศ. ' + esc(r.year || '–') + '</span>';
+  el('sce-summary').value = r.summary_th || '';
+  var kf = document.querySelectorAll('.sce-kf');
+  for (var i = 0; i < kf.length; i++) kf[i].value = (r.key_findings && r.key_findings[i]) || '';
+  el('sce-impact').value = r.impact || '';
+  el('sce-field').value = r.research_field || '';
+  el('sce-tags').value = r.tags || '';
+  el('sce-status').value = r.status || 'draft';
+  el('sce-sort').value = r.sort_order || 0;
+  el('sce-img-id').value = r.infographic_file_id || '';
+  el('sce-file').value = '';
+  setShowcaseImgPreview(r.infographic_file_id || '');
+  el('sce-img-state').textContent = r.infographic_file_id ? 'มีรูปอยู่แล้ว — เลือกไฟล์ใหม่เพื่อแทนที่' : 'ยังไม่มีรูป';
+
+  var needConsent = r.consent_ack === 'registration_terms';
+  el('sce-consent-wrap').style.display = needConsent ? 'block' : 'none';
+  el('sce-confirm-consent').checked = false;
+
+  // ชื่อผู้วิจัย: แสดงได้เมื่อมีความยินยอมเรื่องชื่อแยกต่างหากเท่านั้น
+  el('sce-pi-name').value = r.pi_display_name || '';
+  el('sce-confirm-name').checked = false;
+  el('sce-show-name').checked = r.show_pi_name === 'yes';
+  el('sce-name-consent-row').style.display = (needConsent && r.name_consent !== 'yes') ? 'flex' : 'none';
+  el('sce-show-name-row').style.display = 'flex';
+  updateShowcaseCount();
+  openModal('modal-showcase-edit');
+}
+
+function updateShowcaseCount() {
+  var v = document.getElementById('sce-summary').value.length;
+  document.getElementById('sce-sum-count').textContent = '(' + v + '/400)';
+}
+document.addEventListener('input', function (e) { if (e.target && e.target.id === 'sce-summary') updateShowcaseCount(); });
+
+function setShowcaseImgPreview(fid) {
+  var img = document.getElementById('sce-img-prev');
+  if (fid && /^[A-Za-z0-9_\-]{10,80}$/.test(fid)) { img.src = 'https://drive.google.com/thumbnail?id=' + fid + '&sz=w800'; img.style.display = 'block'; }
+  else { img.removeAttribute('src'); img.style.display = 'none'; }
+}
+
+function uploadShowcaseImage(input) {
+  var file = input.files && input.files[0];
+  if (!file) return;
+  var st = document.getElementById('sce-img-state');
+  if (['image/png', 'image/jpeg'].indexOf(file.type) === -1) { st.textContent = 'รองรับเฉพาะ PNG/JPG'; input.value = ''; return; }
+  if (file.size > 10 * 1024 * 1024) { st.textContent = 'ไฟล์ใหญ่เกิน 10MB'; input.value = ''; return; }
+  var code = (_scaRows.filter(function (x) { return x.showcase_id === document.getElementById('sce-id').value; })[0] || {}).project_code || 'SHOWCASE';
+  st.textContent = 'กำลังอัปโหลด…';
+  var reader = new FileReader();
+  reader.onload = function (ev) {
+    getM().uploadFileSecure(S.user.sessionId, String(ev.target.result).split(',')[1], file.name, file.type, code + '_showcase', S.user.username, 'showcase_infographic')
+      .then(function (r) {
+        if (r && r.success) {
+          document.getElementById('sce-img-id').value = r.fileId;
+          setShowcaseImgPreview(r.fileId);
+          st.textContent = 'อัปโหลดแล้ว: ' + file.name + ' (กดบันทึกเพื่อยืนยัน)';
+        } else st.textContent = 'อัปโหลดไม่สำเร็จ: ' + ((r && r.message) || '');
+      }).catch(function (e) { st.textContent = 'อัปโหลดไม่สำเร็จ: ' + (e.message || ''); });
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveShowcaseEdit() {
+  var el = function (i) { return document.getElementById(i); };
+  var btn = el('sce-save-btn');
+  var status = el('sce-status').value;
+  var rowId = el('sce-id').value;
+  var row = _scaRows.filter(function (x) { return x.showcase_id === rowId; })[0] || {};
+  var needConsent = row.consent_ack === 'registration_terms';
+  if (status === 'published' && needConsent && !el('sce-confirm-consent').checked) {
+    showToast('ต้องยืนยันว่าได้รับความยินยอมจากผู้วิจัยก่อนเผยแพร่', 'error'); return;
+  }
+  var kf = Array.prototype.map.call(document.querySelectorAll('.sce-kf'), function (i) { return i.value.trim(); }).filter(Boolean);
+  var payload = {
+    showcaseId: rowId,
+    summary_th: el('sce-summary').value.trim(),
+    key_findings: kf,
+    impact: el('sce-impact').value.trim(),
+    research_field: el('sce-field').value.trim(),
+    tags: el('sce-tags').value.trim(),
+    sort_order: parseInt(el('sce-sort').value, 10) || 0,
+    infographic_file_id: el('sce-img-id').value,
+    pi_display_name: el('sce-pi-name').value.trim(),
+    show_pi_name: el('sce-show-name').checked,
+    status: status
+  };
+  if (needConsent && el('sce-confirm-consent').checked) payload.confirmConsent = true;
+  if (needConsent && el('sce-confirm-name').checked) payload.confirmNameConsent = true;
+  btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังบันทึก...';
+  var done = function () { btn.disabled = false; btn.innerHTML = '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> บันทึก'; };
+  getM().saveShowcaseItem(S.user.sessionId, payload, S.user.username).then(function (res) {
+    done();
+    if (res && res.success) { closeModal('modal-showcase-edit'); showToast(res.status === 'published' ? 'เผยแพร่เรียบร้อย' : 'บันทึกแล้ว'); loadShowcaseAdmin(); }
+    else showToast((res && res.message) || 'บันทึกไม่สำเร็จ', 'error');
+  }).catch(function (e) { done(); showToast('เกิดข้อผิดพลาด: ' + (e.message || ''), 'error'); });
+}
+
+</script>
+
     <!-- ============================================================ -->
     <!--  PRIVACY CONSENT BANNER (PDPA)                               -->
     <!-- ============================================================ -->
     <style>
+    #privacy-banner,#privacy-modal-overlay { display: none !important; } /* แทนที่ด้วย consent-gate.js */
     #privacy-banner {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
       background: #fff; border-top: 3px solid var(--gold);

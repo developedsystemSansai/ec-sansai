@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
    <script src="config.js"></script>
+<script src="consent-gate.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="ค้นหาและติดตามสถานะโครงการวิจัย คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย">
 <title>ติดตามสถานะโครงการวิจัย — คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</title>
@@ -270,7 +271,6 @@ button{font-family:inherit;cursor:pointer;background:none;border:none}
 .pdpa{display:inline-flex;align-items:center;gap:.5rem;color:rgba(255,255,255,.55)!important}
 @media(max-width:760px){.ftr-g{grid-template-columns:1fr}}
 </style>
-<script defer src="https://sandtools.vercel.app/t.js" data-site="ppucg5v4xb"></script>
 <style id="pg-refresh">
 /* PAGES-REFRESH v1 — shared presentation layer for sub-pages. Delete this <style id="pg-refresh"> to revert. */
 @media screen {
@@ -460,6 +460,9 @@ button{font-family:inherit;cursor:pointer;background:none;border:none}
       </li>
       <li class="nb-item" role="none">
         <a class="nb-link is-active" role="menuitem" href="tracking.html">ติดตามสถานะโครงการ</a>
+      </li>
+      <li class="nb-item" role="none">
+        <a class="nb-link" role="menuitem" href="showcase.html" data-en="Ethics Showcase">ผลงานจริยธรรมการวิจัย</a>
       </li>
       <li class="nb-item" role="none">
         <a class="nb-link" role="menuitem" href="contact.html">ติดต่อเรา</a>
@@ -652,8 +655,11 @@ function switchTab(name) {
 var reviewTypeClass = { 'Exempt': 'badge-exempt', 'Expedited': 'badge-expedited', 'Full Board': 'badge-fullboard' };
 var statusBucketOf = function (status) {
   var s = String(status || '');
-  if (s.indexOf('รับรอง') !== -1 || s.toLowerCase().indexOf('approved') !== -1) return 'approved';
-  if (s.indexOf('ปิดโครงการ') !== -1 || s.indexOf('ยกเลิก') !== -1 || s.indexOf('ไม่ผ่าน') !== -1) return 'closed';
+  s = s.trim();
+  if (s === 'ไม่รับรอง' || s.indexOf('ปิดโครงการแล้ว') !== -1 || s.indexOf('ยกเลิก') !== -1 || s.indexOf('ไม่ผ่าน') !== -1) return 'closed';
+  if (s === 'รับรอง' || s.indexOf('รับรอง (') === 0 || s.indexOf('รับรองแล้ว') === 0 || s === 'รับรองมีข้อแก้ไขแล้ว' ||
+      s === 'ต่ออายุแล้ว' || s === 'รอต่ออายุ' || s === 'รอปิดโครงการ' || s === 'รายงานความก้าวหน้า' ||
+      s.toLowerCase().indexOf('approved') !== -1) return 'approved';
   return 'active';
 };
 var statusBucketLbl = { active: 'อยู่ระหว่างพิจารณา', approved: 'ผ่านการพิจารณา', closed: 'ปิด/ยกเลิก' };
