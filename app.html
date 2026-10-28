@@ -2980,6 +2980,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <option value="published">เผยแพร่แล้ว</option>
             <option value="hidden">ซ่อน</option>
           </select>
+          <a class="btn btn-outline" href="poster-template.html" target="_blank" rel="noopener"><i class="ti ti-photo-edit" aria-hidden="true"></i> สร้างโปสเตอร์ (เทมเพลต)</a>
           <a class="btn btn-outline" href="showcase.html" target="_blank" rel="noopener"><i class="ti ti-external-link" aria-hidden="true"></i> ดูหน้าสาธารณะ</a>
         </div>
       </div>
@@ -3040,6 +3041,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <label>รูป Infographic (PNG/JPG ไม่เกิน 10MB)</label>
             <input type="file" id="sce-file" class="form-control" accept="image/png,image/jpeg" onchange="uploadShowcaseImage(this)">
             <div id="sce-img-state" class="hint-text" style="margin-top:8px"></div>
+            <div class="hint-text" style="margin-top:4px">ยังไม่มีรูป? <a href="poster-template.html" target="_blank" rel="noopener">สร้างโปสเตอร์จากเทมเพลต</a> แล้วดาวน์โหลด PNG มาอัปโหลดที่นี่</div>
             <img id="sce-img-prev" alt="ตัวอย่าง Infographic" style="display:none;max-width:100%;max-height:260px;margin-top:8px;border:1px solid var(--border,#d0dae6);border-radius:8px">
             <input type="hidden" id="sce-img-id">
           </div>
