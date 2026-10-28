@@ -423,6 +423,64 @@ button{font-family:inherit;cursor:pointer}
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 }
 </style>
+<style id="modern">
+/* MODERN v1 — public pages. Delete this block (id=modern) to revert. */
+@media screen {
+  :root {
+    --ffs: var(--ff);
+    --canvas: #f6f8fc;
+    --radius-md: 12px; --radius-lg: 16px; --radius-xl: 24px; --radius-2xl: 32px;
+    --shadow-sm: 0 1px 2px rgba(11,31,53,.06), 0 6px 20px rgba(11,31,53,.07);
+    --shadow-md: 0 2px 4px rgba(11,31,53,.08), 0 14px 34px rgba(11,31,53,.13);
+    --shadow-lg: 0 4px 12px rgba(11,31,53,.10), 0 24px 56px rgba(11,31,53,.22);
+    --card-ring: 0 0 0 1px rgba(11,31,53,.06);
+  }
+  body { background: var(--canvas); }
+  h1, h2, h3, h4, .hero-title, .pg-title, .pg-ttl, .sec-ttl, .ann-title { font-family: var(--ff); letter-spacing: -.012em; font-weight: 700; }
+  .hdr { background: rgba(11,31,53,.96); -webkit-backdrop-filter: saturate(1.5) blur(16px); backdrop-filter: saturate(1.5) blur(16px); box-shadow: 0 6px 24px -12px rgba(11,31,53,.5); border-bottom: 1px solid rgba(255,255,255,.08); }
+  .nb { background: rgba(17,40,68,.97); -webkit-backdrop-filter: saturate(1.5) blur(16px); backdrop-filter: saturate(1.5) blur(16px); border-top: 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .nb-link { border-radius: 999px; padding: .5rem .95rem; margin: .38rem .08rem; font-size: .86rem; transition: background .16s, color .16s; }
+  .nb-link:hover { background: rgba(255,255,255,.09); color: #fff; }
+  .nb-link.is-active { background: rgba(201,160,55,.20); color: #fff; box-shadow: inset 0 0 0 1px rgba(201,160,55,.45); }
+  .nb-panel { border-radius: 16px; border: 1px solid rgba(11,31,53,.08); box-shadow: var(--shadow-lg); padding: .5rem; top: calc(100% + 4px); }
+  .nb-panel a { border-radius: 10px; }
+  .lang-switch { border-radius: 999px; overflow: hidden; }
+  .hero, .pg-hero, .pg-head { border-radius: 0 0 var(--radius-2xl) var(--radius-2xl); }
+  .eyebrow { backdrop-filter: blur(6px); }
+  .btn { border-radius: 999px; padding-inline: 1.25rem; }
+  .btn-gold-lg, .hero-cta .btn-wht { padding-inline: 1.6rem; }
+  .doc-btn, .line-btn, .btn-dm-open, .trk-search-btn, .ann-btn-ok, .ann-btn-later, #ck-banner button { border-radius: 999px; }
+  .hero-quick { border-radius: 24px; background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.20); }
+  .hq-item { border-radius: 14px; }
+  .hq-ico { border-radius: 12px; }
+  .sec { background: transparent; }
+  .sec-alt, #tracking, #news { background: #fff; }
+  .sec-eye { display: inline-flex; padding: .28rem .8rem; border-radius: 999px; background: var(--g50); border: 1px solid var(--g100); color: var(--g700); font-size: .74rem; letter-spacing: .06em; margin-bottom: 1rem; gap: 0; }
+  .sec-eye::after, .sec-eye::before { display: none; }
+  .sec-ttl { font-size: clamp(1.55rem, 2.8vw, 2.2rem); line-height: 1.3; }
+  .sec-head { margin-bottom: 2.25rem; }
+  .tc, .dc, .trn-card, .stp, .an-box, .map-box, .trk-card, .pp-toc, .doc-item, .pt-cta, .req-panel, .dl-panel, .trk-cta, .cal-widget, .meeting-list-box { border-radius: 20px; }
+  .stf-card, .dm-item, .news-item, .dm-panel { border-radius: 14px; }
+  .tc, .dc, .trn-card, .stp, .an-box, .map-box, .trk-card, .doc-item, .trk-cta, .cal-widget, .meeting-list-box, .stf-card { border-color: rgba(11,31,53,.06); box-shadow: var(--card-ring), var(--shadow-sm); }
+  .tc:hover, .dc:hover, .trn-card:hover, .doc-item:hover, .trk-cta:hover { box-shadow: var(--card-ring), var(--shadow-md); transform: translateY(-4px); }
+  .rs-card, .rs-summary-card { background: #fff; border-radius: 16px; box-shadow: var(--card-ring), var(--shadow-sm); border-color: rgba(11,31,53,.06); }
+  .tc { border-top-width: 3px; }
+  .cal-day { border-radius: 10px; }
+  .news-date { border-radius: 12px; }
+  .trk-inp { border-radius: 14px; }
+  .trk-tab { border-radius: 12px 12px 0 0; }
+  .ftr { border-radius: var(--radius-2xl) var(--radius-2xl) 0 0; margin-top: 2rem; }
+  .ann-card { border-radius: 24px; }
+  .ann-header { border-bottom: 0; }
+  .ann-action-btn, .ann-info { border-radius: 14px; }
+  .ann-icon-wrap { border-radius: 12px; }
+  @media (max-width: 600px) {
+    .hero, .pg-hero, .pg-head { border-radius: 0 0 24px 24px; }
+    .ftr { border-radius: 24px 24px 0 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tc:hover, .dc:hover, .trn-card:hover, .doc-item:hover, .trk-cta:hover { transform: none; } }
+}
+</style>
 </head>
 <body>
 
