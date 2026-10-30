@@ -474,6 +474,19 @@ button{font-family:inherit;cursor:pointer}
   }
   @media (prefers-reduced-motion: reduce) { .tc:hover, .dc:hover, .trn-card:hover, .doc-item:hover, .trk-cta:hover { transform: none; } }
 }
+
+/* ── QA fixes (axe-core): contrast + mobile tab overflow ── */
+@media screen {
+  .hdr-id > p, p[data-en="Sansai Hospital"] { color: rgba(255,255,255,.74); }
+  .rs-eyebrow, .pt-num, .dc-seq, .pp-toc-ttl, #ck-link-policy, .rs-expedited > .rs-type-lbl, .rs-expedited .rs-type-lbl { color: #7c5c18; }
+  .line-btn { background: #067a37; color: #fff; }
+  .line-btn:hover { background: #05652d; }
+  [role="tablist"], .trk-tabs { overflow-x: auto; scrollbar-width: none; }
+  [role="tablist"]::-webkit-scrollbar { display: none; }
+  @media (max-width: 600px) { .trk-tab, .dm-tab { padding-inline: .85rem; font-size: .84rem; white-space: nowrap; } }
+}
+
+@media screen { .rs-expedited > .rs-type-lbl, .rs-expedited .rs-type-lbl { color: #7c5c18 !important; } }
 </style>
 </head>
 <body>
