@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
    <script src="config.js"></script>
-<script src="consent-gate.js" data-consent="soft"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="นโยบายความเป็นส่วนตัวและการคุ้มครองข้อมูลส่วนบุคคล (PDPA) ของระบบ EC Online Submission โรงพยาบาลสันทราย">
 <title>นโยบายความเป็นส่วนตัว (PDPA) — คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย</title>
@@ -375,6 +374,7 @@ button{font-family:inherit;cursor:pointer}
 .pp-note p:last-child{margin-bottom:0}
 @media(max-width:640px){.pp-body{padding-left:0;margin-top:.9rem}}
 </style>
+<script defer src="https://sandtools.vercel.app/t.js" data-site="ppucg5v4xb"></script>
 <style id="icons-local">
 .ti{display:inline-block;width:1em;height:1em;flex:none;vertical-align:-.125em;background-color:currentColor;-webkit-mask:var(--ti) center/contain no-repeat;mask:var(--ti) center/contain no-repeat;font-style:normal;line-height:1}
 .ti-ok{color:#1b5e3e}.ti-warn{color:#b7791f}.ti-err{color:#b91c1c}
@@ -461,10 +461,11 @@ button{font-family:inherit;cursor:pointer}
 }
 </style>
 <style id="modern">
-/* MODERN v1 — public pages. Delete this block (id=modern) to revert. */
+/* MODERN v1 — public pages. Tokens mirror the Figma file (Color / Radius / Spacing / Shadow).
+   Delete this <style id="modern"> block to return to the previous look. */
 @media screen {
   :root {
-    --ffs: var(--ff);
+    --ffs: var(--ff);                       /* sans headings (Sarabun) instead of serif */
     --canvas: #f6f8fc;
     --radius-md: 12px; --radius-lg: 16px; --radius-xl: 24px; --radius-2xl: 32px;
     --shadow-sm: 0 1px 2px rgba(11,31,53,.06), 0 6px 20px rgba(11,31,53,.07);
@@ -474,6 +475,8 @@ button{font-family:inherit;cursor:pointer}
   }
   body { background: var(--canvas); }
   h1, h2, h3, h4, .hero-title, .pg-title, .pg-ttl, .sec-ttl, .ann-title { font-family: var(--ff); letter-spacing: -.012em; font-weight: 700; }
+
+  /* ── Glass header + pill navigation ── */
   .hdr { background: rgba(11,31,53,.96); -webkit-backdrop-filter: saturate(1.5) blur(16px); backdrop-filter: saturate(1.5) blur(16px); box-shadow: 0 6px 24px -12px rgba(11,31,53,.5); border-bottom: 1px solid rgba(255,255,255,.08); }
   .nb { background: rgba(17,40,68,.97); -webkit-backdrop-filter: saturate(1.5) blur(16px); backdrop-filter: saturate(1.5) blur(16px); border-top: 0; border-bottom: 1px solid rgba(255,255,255,.08); }
   .nb-link { border-radius: 999px; padding: .5rem .95rem; margin: .38rem .08rem; font-size: .86rem; transition: background .16s, color .16s; }
@@ -482,6 +485,8 @@ button{font-family:inherit;cursor:pointer}
   .nb-panel { border-radius: 16px; border: 1px solid rgba(11,31,53,.08); box-shadow: var(--shadow-lg); padding: .5rem; top: calc(100% + 4px); }
   .nb-panel a { border-radius: 10px; }
   .lang-switch { border-radius: 999px; overflow: hidden; }
+
+  /* ── Heroes: soft rounded base, pill CTAs ── */
   .hero, .pg-hero, .pg-head { border-radius: 0 0 var(--radius-2xl) var(--radius-2xl); }
   .eyebrow { backdrop-filter: blur(6px); }
   .btn { border-radius: 999px; padding-inline: 1.25rem; }
@@ -490,27 +495,38 @@ button{font-family:inherit;cursor:pointer}
   .hero-quick { border-radius: 24px; background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.20); }
   .hq-item { border-radius: 14px; }
   .hq-ico { border-radius: 12px; }
+
+  /* ── Sections on a soft canvas; white bands for rhythm ── */
   .sec { background: transparent; }
   .sec-alt, #tracking, #news { background: #fff; }
   .sec-eye { display: inline-flex; padding: .28rem .8rem; border-radius: 999px; background: var(--g50); border: 1px solid var(--g100); color: var(--g700); font-size: .74rem; letter-spacing: .06em; margin-bottom: 1rem; gap: 0; }
   .sec-eye::after, .sec-eye::before { display: none; }
   .sec-ttl { font-size: clamp(1.55rem, 2.8vw, 2.2rem); line-height: 1.3; }
   .sec-head { margin-bottom: 2.25rem; }
-  .tc, .dc, .trn-card, .stp, .an-box, .map-box, .trk-card, .pp-toc, .doc-item, .pt-cta, .req-panel, .dl-panel, .trk-cta, .cal-widget, .meeting-list-box { border-radius: 20px; }
+
+  /* ── Cards: bigger radius, ring + soft elevation, lift on hover ── */
+  .tc, .dc, .trn-card, .stp, .an-box, .map-box, .trk-card, .pp-toc, .doc-item, .pt-cta, .req-panel, .dl-panel, .rs-card, .trk-cta, .cal-widget, .meeting-list-box { border-radius: 20px; }
   .stf-card, .dm-item, .news-item, .dm-panel { border-radius: 14px; }
-  .tc, .dc, .trn-card, .stp, .an-box, .map-box, .trk-card, .doc-item, .trk-cta, .cal-widget, .meeting-list-box, .stf-card { border-color: rgba(11,31,53,.06); box-shadow: var(--card-ring), var(--shadow-sm); }
+  .tc, .dc, .trn-card, .stp, .an-box, .map-box, .trk-card, .doc-item, .rs-card, .trk-cta, .cal-widget, .meeting-list-box, .stf-card { border-color: rgba(11,31,53,.06); box-shadow: var(--card-ring), var(--shadow-sm); }
   .tc:hover, .dc:hover, .trn-card:hover, .doc-item:hover, .trk-cta:hover { box-shadow: var(--card-ring), var(--shadow-md); transform: translateY(-4px); }
   .rs-card, .rs-summary-card { background: #fff; border-radius: 16px; box-shadow: var(--card-ring), var(--shadow-sm); border-color: rgba(11,31,53,.06); }
   .tc { border-top-width: 3px; }
   .cal-day { border-radius: 10px; }
   .news-date { border-radius: 12px; }
+
+  /* ── Forms ── */
   .trk-inp { border-radius: 14px; }
   .trk-tab { border-radius: 12px 12px 0 0; }
+
+  /* ── Footer ── */
   .ftr { border-radius: var(--radius-2xl) var(--radius-2xl) 0 0; margin-top: 2rem; }
+
+  /* ── Announcement popup ── */
   .ann-card { border-radius: 24px; }
   .ann-header { border-bottom: 0; }
   .ann-action-btn, .ann-info { border-radius: 14px; }
   .ann-icon-wrap { border-radius: 12px; }
+
   @media (max-width: 600px) {
     .hero, .pg-hero, .pg-head { border-radius: 0 0 24px 24px; }
     .ftr { border-radius: 24px 24px 0 0; }
@@ -576,9 +592,6 @@ button{font-family:inherit;cursor:pointer}
       </li>
       <li class="nb-item" role="none">
         <a class="nb-link" role="menuitem" href="tracking.html">ติดตามสถานะโครงการ</a>
-      </li>
-      <li class="nb-item" role="none">
-        <a class="nb-link" role="menuitem" href="showcase.html" data-en="Ethics Showcase">ผลงานจริยธรรมการวิจัย</a>
       </li>
       <li class="nb-item" role="none">
         <a class="nb-link" role="menuitem" href="contact.html">ติดต่อเรา</a>
@@ -762,21 +775,6 @@ button{font-family:inherit;cursor:pointer}
           <p><i class="ti ti-mail" aria-hidden="true"></i> อีเมล: <a href="mailto:sireetorn.wa@sansaihospital.go.th" style="color:var(--n700);text-decoration:underline">sireetorn.wa@sansaihospital.go.th</a></p>
           <p><i class="ti ti-clock-hour-4" aria-hidden="true"></i> วันเวลาทำการ: จันทร์–ศุกร์ 08:30–16:30 น.</p>
         </div>
-      </div>
-    </article>
-
-    <article class="pp-sec rev" id="publication">
-      <div class="pp-sec-hd"><div class="pp-num">12</div><h2>เงื่อนไขการเผยแพร่ผลงานวิจัยหลังปิดโครงการ</h2></div>
-      <div class="pp-body">
-        <p>เมื่อผู้วิจัยดำเนินการ<strong>ปิดโครงการ</strong>เรียบร้อยแล้ว สำนักงานวิจัยในมนุษย์ โรงพยาบาลสันทราย ขออนุญาตนำผลการวิจัยฉบับย่อมาจัดทำเป็น <strong>Infographic สั้น กระชับ</strong> เพื่อเผยแพร่บนเว็บไซต์ เป็นผลงานของโรงพยาบาล ภายใต้เงื่อนไขดังนี้</p>
-        <ul>
-          <li>เผยแพร่เฉพาะสรุปผลโดยย่อ ไม่เผยแพร่ข้อมูลที่ระบุตัวตนของอาสาสมัครหรือผู้เข้าร่วมวิจัย</li>
-          <li>ชื่อผู้วิจัยจะแสดงต่อเมื่อผู้วิจัยให้ความยินยอมเพิ่มเติมแยกต่างหากเท่านั้น</li>
-          <li>ลิขสิทธิ์และความเป็นเจ้าของผลงานวิจัยยังเป็นของผู้วิจัยตามเดิม</li>
-          <li>เจ้าหน้าที่จะเผยแพร่ต่อเมื่อมีหลักฐานการยินยอมของผู้วิจัยแล้ว (ยืนยันตอนยื่นรายงานปิดโครงการ หรือยืนยันโดยเจ้าหน้าที่กรณีดำเนินการปิดโครงการแทน)</li>
-          <li>ผู้วิจัยขอแก้ไขหรือถอดผลงานออกจากเว็บไซต์ได้ทุกเมื่อ โดยติดต่อตามช่องทางในหัวข้อที่ 11</li>
-        </ul>
-        <p><a href="showcase.html" style="color:var(--n700);text-decoration:underline">ไปยังหน้าผลงานจริยธรรมการวิจัย</a></p>
       </div>
     </article>
 
