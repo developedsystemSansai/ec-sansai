@@ -70,6 +70,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         uploadFileSecure:            function(sid,b64,fn,mime,pc,u,ft){ return callGAS('uploadFileSecure',        {sessionId:sid, base64Data:b64, fileName:fn, mimeType:mime, projectCode:pc, username:u, fileType:ft}); },
         getUploadedFiles:            function(sid,pc,cu)        { return callGAS('getUploadedFiles',          {sessionId:sid, projectCode:pc, callerUsername:cu}); },
         deleteUploadedFile:          function(sid,fid,u,del)    { return callGAS('deleteUploadedFile',        {sessionId:sid, fileId:fid, username:u, deleteDriveFile:del}); },
+        adminAttachResultFile:       function(sid,b64,fn,mime,pc,u,note,nt){ return callGAS('adminAttachResultFile', {sessionId:sid, base64Data:b64, fileName:fn, mimeType:mime, projectCode:pc, username:u, note:note, notifyResearcher:nt}); },
+        adminDeleteResultFile:       function(sid,fid,u)        { return callGAS('adminDeleteResultFile',     {sessionId:sid, fileId:fid, username:u}); },
         getClosureReportFiles:       function(sid,cu)           { return callGAS('getClosureReportFiles',     {sessionId:sid, callerUsername:cu}); },
         getCommitteeUsers:           function(sid,cu)           { return callGAS('getCommitteeUsers',         {sessionId:sid, callerUsername:cu}); },
         assignProjectMultiCommittee: function(sid,pl,su)         { return callGAS('assignProjectMultiCommittee',{sessionId:sid, payload:pl, staffUsername:su}); },
@@ -1565,6 +1567,15 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     .vf-file-name { font-weight:600; color:var(--text-dark); font-size:var(--text-sm); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .vf-file-meta { font-size:12px; color:var(--text-light); margin-top:2px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
     .vf-file-actions { flex-shrink:0; display:flex; gap:6px; }
+    .vf-upload-box { margin-top:20px; border-top:2px solid var(--border); padding-top:16px; }
+    .vf-upload-title { font-family:'Noto Serif Thai','Sarabun',serif; font-weight:700; color:var(--navy-dark); margin-bottom:4px; }
+    .vf-upload-hint { font-size:12px; color:var(--text-light); margin-bottom:12px; }
+    .vf-drop { border:2px dashed var(--border); border-radius:var(--radius); padding:18px 12px; text-align:center; cursor:pointer; color:var(--text-light); font-size:13px; transition:background .12s,border-color .12s; }
+    .vf-drop:hover, .vf-drop.drag { background:var(--navy-pale); border-color:var(--navy-dark); }
+    .vf-drop i { font-size:22px; display:block; margin-bottom:4px; color:var(--navy-dark); }
+    .vf-upload-row { display:flex; align-items:center; gap:10px; padding:8px 12px; margin-top:8px; background:var(--navy-pale); border-radius:var(--radius); font-size:13px; }
+    .vf-upload-row .vf-up-name { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .vf-notice-pill { background:#fdf3d7; color:#8a6a00; }
     .vf-error-state { padding:32px 16px; text-align:center; color:var(--red); }
     .vf-error-state .vf-error-icon { font-size:40px; margin-bottom:10px; }
 
@@ -3271,6 +3282,16 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <div class="modal-body">
           <div id="vf-project-info" style="background:var(--navy-pale); padding:12px 16px; border-radius:var(--radius); margin-bottom:16px; font-size:14px;"></div>
           <div id="vf-file-list"></div>
+          <!-- [ADMIN-RESULT-FILE] แอดมิน/เจ้าหน้าที่แนบไฟล์แจ้งผล (ไม่เปลี่ยนสถานะโครงการ) -->
+          <div id="vf-upload-section" class="vf-upload-box" style="display:none">
+            <div class="vf-upload-title"><i class="ti ti-upload" aria-hidden="true"></i> แนบไฟล์แจ้งผล</div>
+            <div class="vf-upload-hint">ใช้แนบหนังสือ/ไฟล์แจ้งผลการพิจารณา (เช่น ให้แก้ไข) — การแนบไฟล์ไม่เปลี่ยนสถานะ โครงการยังอยู่ในขั้นตอน Full Board ตามเดิม · PDF, DOCX, JPG, PNG ไม่เกิน 10 MB</div>
+            <div class="field-group"><label>หมายเหตุถึงผู้วิจัย (ถ้ามี)</label><input type="text" id="vf-upload-note" class="form-control" maxlength="200" placeholder="เช่น: ผลการพิจารณา Full Board รอบที่ 1 ให้แก้ไขตามไฟล์แนบ"></div>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:10px;cursor:pointer"><input type="checkbox" id="vf-upload-notify" checked> แจ้งเตือนผู้วิจัยในระบบ</label>
+            <div class="vf-drop" id="vf-drop" onclick="document.getElementById('vf-upload-input').click()"><i class="ti ti-cloud-upload" aria-hidden="true"></i>คลิกหรือลากไฟล์มาวางที่นี่ (เลือกได้หลายไฟล์)</div>
+            <input type="file" id="vf-upload-input" accept=".pdf,.docx,.doc,.jpg,.jpeg,.png" multiple style="display:none" onchange="vfHandleUpload(this.files); this.value='';">
+            <div id="vf-upload-queue"></div>
+          </div>
           <!-- [FIX #1] ปุ่มตรวจสอบเอกสาร -->
           <div id="vf-verify-section" style="margin-top:20px; border-top:2px solid var(--border); padding-top:16px">
             <div style="font-family:'Noto Serif Thai','Sarabun',serif; font-weight:700; color:var(--navy-dark); margin-bottom:12px"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ผลการตรวจสอบเอกสาร</div>
@@ -6703,7 +6724,7 @@ function doSubmitExtraFiles() {
       'conflict_interest': 'IS.03', 'participant_info': 'IS.04', 'consent_form': 'IS.05',
       'research_tools': 'เครื่องมือ', 'cover_letter': 'หนังสือนำส่ง', 'gcp_certificate': 'GCP',
       'researcher_cv': 'CV', 'cert_letter': 'หนังสือรับรอง', 'revision_doc': 'เอกสารแก้ไข',
-      'revision_guideline': 'ข้อเสนอแนะ', 'rejection_reason': 'เหตุผลไม่รับรอง', 'other': 'อื่นๆ'
+      'revision_guideline': 'ข้อเสนอแนะ', 'rejection_reason': 'เหตุผลไม่รับรอง', 'result_notice': 'ไฟล์แจ้งผล', 'notify_attachment': 'ไฟล์แนบแจ้งผล', 'other': 'อื่นๆ'
     };
     function vfFileIcon_(fileName) {
       var ext = String(fileName || '').split('.').pop().toLowerCase();
@@ -6725,6 +6746,7 @@ function doSubmitExtraFiles() {
       '</div>';
       return row + row + row;
     }
+    var _vfCurrentProject = '';
     function viewProjectFiles(projectCode, btnEl) {
       if (!projectCode) {
         showToast('ไม่พบรหัสโครงการ', 'error');
@@ -6735,6 +6757,9 @@ function doSubmitExtraFiles() {
       var vfProjInfo = document.getElementById('vf-project-info');
       var vfVerify   = document.getElementById('vf-verify-section');
       if (vfVerify) vfVerify.style.display = 'none';
+      _vfCurrentProject = projectCode;
+      var vfUp = document.getElementById('vf-upload-section');
+      if (vfUp) vfUp.style.display = (S._isAdmin || S._isStaff) ? 'block' : 'none';
 
       // เปิด modal ทันที พร้อม skeleton ระหว่างรอข้อมูล — ไม่บล็อกทั้งหน้าจอ
       if (vfProjInfo) {
@@ -6795,7 +6820,7 @@ function doSubmitExtraFiles() {
               '<div class="vf-file-main">' +
                 '<div class="vf-file-name" title="' + escAttr(f.file_name || '-') + '">' + esc(f.file_name || '-') + '</div>' +
                 '<div class="vf-file-meta">' +
-                  '<span class="pill pill-blue">' + esc(typeLabel) + '</span>' +
+                  '<span class="pill ' + (f.file_type === 'result_notice' ? 'vf-notice-pill' : 'pill-blue') + '">' + esc(typeLabel) + '</span>' +
                   (f.file_size ? '<span>' + formatFileSize(parseInt(f.file_size)) + '</span>' : '') +
                   '<span>' + formatDate(f.uploaded_date) + '</span>' +
                 '</div>' +
@@ -6803,6 +6828,7 @@ function doSubmitExtraFiles() {
               '<div class="vf-file-actions">' +
                 (f.file_url ? '<a href="' + esc(f.file_url) + '" target="_blank" class="btn btn-sm btn-outline" title="ดูไฟล์"><i class="ti ti-eye" aria-hidden="true"></i></a>' : '') +
                 (f.download_url ? '<a href="' + esc(f.download_url) + '" target="_blank" class="btn btn-sm btn-primary" title="ดาวน์โหลด"><i class="ti ti-arrow-down" aria-hidden="true"></i></a>' : '') +
+                ((f.file_type === 'result_notice' && (S._isAdmin || S._isStaff) && f.file_id) ? '<button class="btn btn-sm btn-danger" title="ลบไฟล์แจ้งผล" onclick="vfDeleteResultFile(\'' + escAttr(f.file_id) + '\',\'' + escAttr(f.file_name || '') + '\')"><i class="ti ti-trash" aria-hidden="true"></i></button>' : '') +
               '</div>' +
             '</div>';
           });
@@ -6821,6 +6847,84 @@ function doSubmitExtraFiles() {
         })
         .getUploadedFiles(S.user.sessionId, projectCode, S.user.username);
     }
+
+    // ============================================================
+    //  [ADMIN-RESULT-FILE] แอดมิน/เจ้าหน้าที่แนบไฟล์แจ้งผลเข้าโครงการ
+    // ============================================================
+    var VF_UPLOAD_EXT = ['pdf', 'docx', 'doc', 'jpg', 'jpeg', 'png'];
+    var VF_UPLOAD_MAX = 10 * 1024 * 1024;
+    var VF_UPLOAD_MIME = { pdf: 'application/pdf', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png' };
+    var _vfUploading = 0;
+
+    function vfHandleUpload(fileList) {
+      if (!(S._isAdmin || S._isStaff)) { showToast('เฉพาะแอดมิน/เจ้าหน้าที่เท่านั้น', 'error'); return; }
+      var code = _vfCurrentProject;
+      if (!code) { showToast('ไม่พบรหัสโครงการ', 'error'); return; }
+      var queue = document.getElementById('vf-upload-queue');
+      var note = (document.getElementById('vf-upload-note') || {}).value || '';
+      var notifyEl = document.getElementById('vf-upload-notify');
+      var notify = notifyEl ? notifyEl.checked : true;
+
+      Array.from(fileList || []).forEach(function(file) {
+        var ext = String(file.name).split('.').pop().toLowerCase();
+        var row = document.createElement('div');
+        row.className = 'vf-upload-row';
+        queue.appendChild(row);
+        function fail(msg) {
+          row.style.background = '#fdecea';
+          row.innerHTML = '<i class="ti ti-circle-x ti-err" aria-hidden="true"></i><span class="vf-up-name">' + esc(file.name) + ' — ' + esc(msg) + '</span>';
+        }
+        if (VF_UPLOAD_EXT.indexOf(ext) === -1) return fail('รองรับเฉพาะ PDF, DOCX, JPG, PNG');
+        if (file.size > VF_UPLOAD_MAX) return fail('ไฟล์ใหญ่เกิน 10 MB');
+
+        row.innerHTML = '<span class="spin-sm dark"></span><span class="vf-up-name">' + esc(file.name) + ' <small>(' + formatFileSize(file.size) + ')</small></span>';
+        _vfUploading++;
+        var reader = new FileReader();
+        reader.onerror = function() { _vfUploading--; fail('อ่านไฟล์ไม่สำเร็จ'); };
+        reader.onload = function(ev) {
+          var b64 = String(ev.target.result).split(',')[1];
+          var mime = file.type || VF_UPLOAD_MIME[ext] || '';
+          google.script.run
+            .withSuccessHandler(function(r) {
+              _vfUploading--;
+              if (r && r.success) {
+                row.innerHTML = '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i><span class="vf-up-name">' + esc(file.name) + ' — แนบสำเร็จ</span>';
+                if (_vfUploading === 0) {
+                  showToast('แนบไฟล์แจ้งผลสำเร็จ');
+                  // รีโหลดรายการไฟล์ (คงช่องอัปโหลดและข้อความหมายเหตุไว้)
+                  setTimeout(function() { var q = document.getElementById('vf-upload-queue'); if (q) q.innerHTML = ''; viewProjectFiles(code); }, 700);
+                }
+              } else {
+                fail((r && r.message) || 'อัปโหลดไม่สำเร็จ');
+              }
+            })
+            .withFailureHandler(function(e) { _vfUploading--; fail(e && e.message ? e.message : 'เกิดข้อผิดพลาด'); })
+            .adminAttachResultFile(S.user.sessionId, b64, file.name, mime, code, S.user.username, note, notify);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function vfDeleteResultFile(fileId, fileName) {
+      if (!confirm('ลบไฟล์แจ้งผล "' + fileName + '" ออกจากโครงการนี้ใช่หรือไม่?')) return;
+      var code = _vfCurrentProject;
+      google.script.run
+        .withSuccessHandler(function(r) {
+          if (r && r.success) { showToast('ลบไฟล์แล้ว'); viewProjectFiles(code); }
+          else showToast((r && r.message) || 'ลบไฟล์ไม่สำเร็จ', 'error');
+        })
+        .withFailureHandler(function(e) { showToast('เกิดข้อผิดพลาด: ' + (e && e.message ? e.message : ''), 'error'); })
+        .adminDeleteResultFile(S.user.sessionId, fileId, S.user.username);
+    }
+
+    // drag & drop
+    document.addEventListener('DOMContentLoaded', function() {
+      var dz = document.getElementById('vf-drop');
+      if (!dz) return;
+      ['dragenter', 'dragover'].forEach(function(ev) { dz.addEventListener(ev, function(e) { e.preventDefault(); dz.classList.add('drag'); }); });
+      ['dragleave', 'drop'].forEach(function(ev) { dz.addEventListener(ev, function(e) { e.preventDefault(); dz.classList.remove('drag'); }); });
+      dz.addEventListener('drop', function(e) { vfHandleUpload(e.dataTransfer.files); });
+    });
 
     // ════════════════════════════════════════
     // MEETINGS
