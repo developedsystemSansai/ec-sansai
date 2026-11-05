@@ -70,7 +70,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         uploadFileSecure:            function(sid,b64,fn,mime,pc,u,ft){ return callGAS('uploadFileSecure',        {sessionId:sid, base64Data:b64, fileName:fn, mimeType:mime, projectCode:pc, username:u, fileType:ft}); },
         getUploadedFiles:            function(sid,pc,cu)        { return callGAS('getUploadedFiles',          {sessionId:sid, projectCode:pc, callerUsername:cu}); },
         deleteUploadedFile:          function(sid,fid,u,del)    { return callGAS('deleteUploadedFile',        {sessionId:sid, fileId:fid, username:u, deleteDriveFile:del}); },
-        adminAttachResultFile:       function(sid,b64,fn,mime,pc,u,note,nt){ return callGAS('adminAttachResultFile', {sessionId:sid, base64Data:b64, fileName:fn, mimeType:mime, projectCode:pc, username:u, note:note, notifyResearcher:nt}); },
+        adminAttachResultFile:       function(sid,b64,fn,mime,pc,u){ return callGAS('adminAttachResultFile', {sessionId:sid, base64Data:b64, fileName:fn, mimeType:mime, projectCode:pc, username:u}); },
+        adminNotifyResultFiles:      function(sid,pc,fids,note,na,ne,u){ return callGAS('adminNotifyResultFiles', {sessionId:sid, projectCode:pc, fileIds:fids, note:note, notifyApp:na, notifyEmail:ne, username:u}); },
         adminDeleteResultFile:       function(sid,fid,u)        { return callGAS('adminDeleteResultFile',     {sessionId:sid, fileId:fid, username:u}); },
         getClosureReportFiles:       function(sid,cu)           { return callGAS('getClosureReportFiles',     {sessionId:sid, callerUsername:cu}); },
         getCommitteeUsers:           function(sid,cu)           { return callGAS('getCommitteeUsers',         {sessionId:sid, callerUsername:cu}); },
@@ -1567,14 +1568,35 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     .vf-file-name { font-weight:600; color:var(--text-dark); font-size:var(--text-sm); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .vf-file-meta { font-size:12px; color:var(--text-light); margin-top:2px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
     .vf-file-actions { flex-shrink:0; display:flex; gap:6px; }
-    .vf-upload-box { margin-top:20px; border-top:2px solid var(--border); padding-top:16px; }
-    .vf-upload-title { font-family:'Noto Serif Thai','Sarabun',serif; font-weight:700; color:var(--navy-dark); margin-bottom:4px; }
-    .vf-upload-hint { font-size:12px; color:var(--text-light); margin-bottom:12px; }
-    .vf-drop { border:2px dashed var(--border); border-radius:var(--radius); padding:18px 12px; text-align:center; cursor:pointer; color:var(--text-light); font-size:13px; transition:background .12s,border-color .12s; }
+    .vf-upload-box { margin-top:22px; border:1px solid var(--border); border-radius:12px; background:#fff; overflow:hidden; }
+    .vf-up-head { display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--navy-pale); border-bottom:1px solid var(--border); }
+    .vf-up-head .vf-up-ico { width:32px; height:32px; border-radius:8px; background:var(--navy-dark); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .vf-upload-title { font-family:'Noto Serif Thai','Sarabun',serif; font-weight:700; color:var(--navy-dark); font-size:15px; line-height:1.2; }
+    .vf-upload-hint { font-size:12px; color:var(--text-light); margin-top:2px; }
+    .vf-up-body { padding:16px; }
+    .vf-drop { border:2px dashed #c4cddb; border-radius:10px; padding:20px 12px; text-align:center; cursor:pointer; color:var(--text-light); font-size:13px; transition:background .12s,border-color .12s; }
     .vf-drop:hover, .vf-drop.drag { background:var(--navy-pale); border-color:var(--navy-dark); }
-    .vf-drop i { font-size:22px; display:block; margin-bottom:4px; color:var(--navy-dark); }
-    .vf-upload-row { display:flex; align-items:center; gap:10px; padding:8px 12px; margin-top:8px; background:var(--navy-pale); border-radius:var(--radius); font-size:13px; }
-    .vf-upload-row .vf-up-name { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .vf-drop .ti { display:block; margin:0 auto 6px; font-size:26px; color:var(--navy-dark); }
+    .vf-drop b { color:var(--navy-dark); }
+    .vf-drop small { display:block; margin-top:3px; font-size:11px; opacity:.85; }
+    .vf-stage { margin-top:10px; display:flex; flex-direction:column; gap:6px; }
+    .vf-stage-row { display:flex; align-items:center; gap:10px; padding:8px 10px; background:var(--navy-pale); border-radius:8px; font-size:13px; }
+    .vf-stage-row .vf-st-name { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; color:var(--text-dark); }
+    .vf-stage-row .vf-st-size { color:var(--text-light); font-size:12px; flex-shrink:0; }
+    .vf-stage-row.err { background:#fdecea; }
+    .vf-stage-row.ok { background:#e8f5ee; }
+    .vf-st-x { border:none; background:transparent; cursor:pointer; color:var(--text-light); font-size:15px; padding:2px 4px; border-radius:4px; }
+    .vf-st-x:hover { color:var(--red); background:#fff; }
+    .vf-opt-title { font-weight:600; color:var(--navy-dark); font-size:13px; margin:16px 0 8px; }
+    .vf-opt { display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; cursor:pointer; transition:border-color .12s, background .12s; }
+    .vf-opt:hover { border-color:var(--navy-dark); }
+    .vf-opt.on { border-color:var(--navy-dark); background:var(--navy-pale); }
+    .vf-opt input { margin-top:3px; width:16px; height:16px; accent-color:var(--navy-dark); flex-shrink:0; }
+    .vf-opt .vf-opt-t { font-size:13px; font-weight:600; color:var(--text-dark); display:flex; align-items:center; gap:6px; }
+    .vf-opt .vf-opt-d { font-size:12px; color:var(--text-light); margin-top:1px; }
+    .vf-up-result { margin-top:12px; padding:10px 12px; border-radius:8px; font-size:13px; line-height:1.6; }
+    .vf-up-result.ok { background:#e8f5ee; color:#1b5e3e; }
+    .vf-up-result.warn { background:#fdf3d7; color:#7a5c00; }
     .vf-notice-pill { background:#fdf3d7; color:#8a6a00; }
     .vf-error-state { padding:32px 16px; text-align:center; color:var(--red); }
     .vf-error-state .vf-error-icon { font-size:40px; margin-bottom:10px; }
@@ -3284,13 +3306,37 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <div id="vf-file-list"></div>
           <!-- [ADMIN-RESULT-FILE] แอดมิน/เจ้าหน้าที่แนบไฟล์แจ้งผล (ไม่เปลี่ยนสถานะโครงการ) -->
           <div id="vf-upload-section" class="vf-upload-box" style="display:none">
-            <div class="vf-upload-title"><i class="ti ti-upload" aria-hidden="true"></i> แนบไฟล์แจ้งผล</div>
-            <div class="vf-upload-hint">ใช้แนบหนังสือ/ไฟล์แจ้งผลการพิจารณา (เช่น ให้แก้ไข) — การแนบไฟล์ไม่เปลี่ยนสถานะ โครงการยังอยู่ในขั้นตอน Full Board ตามเดิม · PDF, DOCX, JPG, PNG ไม่เกิน 10 MB</div>
-            <div class="field-group"><label>หมายเหตุถึงผู้วิจัย (ถ้ามี)</label><input type="text" id="vf-upload-note" class="form-control" maxlength="200" placeholder="เช่น: ผลการพิจารณา Full Board รอบที่ 1 ให้แก้ไขตามไฟล์แนบ"></div>
-            <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:10px;cursor:pointer"><input type="checkbox" id="vf-upload-notify" checked> แจ้งเตือนผู้วิจัยในระบบ</label>
-            <div class="vf-drop" id="vf-drop" onclick="document.getElementById('vf-upload-input').click()"><i class="ti ti-cloud-upload" aria-hidden="true"></i>คลิกหรือลากไฟล์มาวางที่นี่ (เลือกได้หลายไฟล์)</div>
-            <input type="file" id="vf-upload-input" accept=".pdf,.docx,.doc,.jpg,.jpeg,.png" multiple style="display:none" onchange="vfHandleUpload(this.files); this.value='';">
-            <div id="vf-upload-queue"></div>
+            <div class="vf-up-head">
+              <div class="vf-up-ico"><i class="ti ti-upload" aria-hidden="true"></i></div>
+              <div>
+                <div class="vf-upload-title">แนบไฟล์แจ้งผล</div>
+                <div class="vf-upload-hint">ไม่เปลี่ยนสถานะโครงการ — ยังอยู่ในขั้นตอน Full Board ตามเดิม</div>
+              </div>
+            </div>
+            <div class="vf-up-body">
+              <div class="vf-drop" id="vf-drop" onclick="document.getElementById('vf-upload-input').click()">
+                <i class="ti ti-upload" aria-hidden="true"></i>
+                <b>คลิกเพื่อเลือกไฟล์</b> หรือลากไฟล์มาวางที่นี่
+                <small>PDF, DOCX, JPG, PNG · ไม่เกิน 10 MB ต่อไฟล์ · เลือกได้หลายไฟล์</small>
+              </div>
+              <input type="file" id="vf-upload-input" accept=".pdf,.docx,.doc,.jpg,.jpeg,.png" multiple style="display:none" onchange="vfStageFiles(this.files); this.value='';">
+              <div class="vf-stage" id="vf-upload-queue"></div>
+
+              <div class="field-group" style="margin-top:16px;margin-bottom:0"><label>หมายเหตุถึงผู้วิจัย (ถ้ามี)</label><input type="text" id="vf-upload-note" class="form-control" maxlength="200" placeholder="เช่น: ผลการพิจารณา Full Board รอบที่ 1 — ให้แก้ไขตามไฟล์แนบ"></div>
+
+              <div class="vf-opt-title">การแจ้งผู้วิจัย</div>
+              <label class="vf-opt on" id="vf-opt-app">
+                <input type="checkbox" id="vf-upload-notify-app" checked onchange="vfUpdateUploadUi()">
+                <div><div class="vf-opt-t"><i class="ti ti-bell" aria-hidden="true"></i> แจ้งเตือนในระบบ</div><div class="vf-opt-d">ผู้วิจัยจะเห็นที่กระดิ่งแจ้งเตือนเมื่อเข้าสู่ระบบ</div></div>
+              </label>
+              <label class="vf-opt on" id="vf-opt-email">
+                <input type="checkbox" id="vf-upload-notify-email" checked onchange="vfUpdateUploadUi()">
+                <div><div class="vf-opt-t"><i class="ti ti-mail" aria-hidden="true"></i> ส่งอีเมลถึงผู้วิจัย</div><div class="vf-opt-d">แนบไฟล์ที่อัปโหลดไปกับอีเมลด้วย (รวมไม่เกิน 20 MB)</div></div>
+              </label>
+
+              <button class="btn btn-primary" id="vf-upload-btn" style="width:100%;margin-top:6px" onclick="vfDoUpload()" disabled><i class="ti ti-upload" aria-hidden="true"></i> <span id="vf-upload-btn-label">อัปโหลดไฟล์</span></button>
+              <div id="vf-upload-result"></div>
+            </div>
           </div>
           <!-- [FIX #1] ปุ่มตรวจสอบเอกสาร -->
           <div id="vf-verify-section" style="margin-top:20px; border-top:2px solid var(--border); padding-top:16px">
@@ -6747,7 +6793,7 @@ function doSubmitExtraFiles() {
       return row + row + row;
     }
     var _vfCurrentProject = '';
-    function viewProjectFiles(projectCode, btnEl) {
+    function viewProjectFiles(projectCode, btnEl, keepUpload) {
       if (!projectCode) {
         showToast('ไม่พบรหัสโครงการ', 'error');
         return;
@@ -6757,6 +6803,8 @@ function doSubmitExtraFiles() {
       var vfProjInfo = document.getElementById('vf-project-info');
       var vfVerify   = document.getElementById('vf-verify-section');
       if (vfVerify) vfVerify.style.display = 'none';
+      if (!keepUpload && _vfStagedFor !== projectCode) vfResetUpload();
+      _vfStagedFor = projectCode;
       _vfCurrentProject = projectCode;
       var vfUp = document.getElementById('vf-upload-section');
       if (vfUp) vfUp.style.display = (S._isAdmin || S._isStaff) ? 'block' : 'none';
@@ -6854,55 +6902,143 @@ function doSubmitExtraFiles() {
     var VF_UPLOAD_EXT = ['pdf', 'docx', 'doc', 'jpg', 'jpeg', 'png'];
     var VF_UPLOAD_MAX = 10 * 1024 * 1024;
     var VF_UPLOAD_MIME = { pdf: 'application/pdf', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png' };
-    var _vfUploading = 0;
+    var _vfStaged = [];        // [{file, status:'ready'|'busy'|'ok'|'err', msg}]
+    var _vfBusy = false;
+    var _vfStagedFor = '';
 
-    function vfHandleUpload(fileList) {
+    function vfResetUpload() {
+      _vfStaged = []; _vfBusy = false;
+      var q = document.getElementById('vf-upload-queue'); if (q) q.innerHTML = '';
+      var r = document.getElementById('vf-upload-result'); if (r) r.innerHTML = '';
+      var n = document.getElementById('vf-upload-note'); if (n) n.value = '';
+      vfUpdateUploadUi();
+    }
+
+    function vfStageFiles(fileList) {
       if (!(S._isAdmin || S._isStaff)) { showToast('เฉพาะแอดมิน/เจ้าหน้าที่เท่านั้น', 'error'); return; }
-      var code = _vfCurrentProject;
-      if (!code) { showToast('ไม่พบรหัสโครงการ', 'error'); return; }
-      var queue = document.getElementById('vf-upload-queue');
-      var note = (document.getElementById('vf-upload-note') || {}).value || '';
-      var notifyEl = document.getElementById('vf-upload-notify');
-      var notify = notifyEl ? notifyEl.checked : true;
-
+      if (_vfBusy) return;
+      var r = document.getElementById('vf-upload-result'); if (r) r.innerHTML = '';
+      // เริ่มรอบใหม่ถ้ารอบก่อนอัปโหลดเสร็จแล้ว
+      if (_vfStaged.length && _vfStaged.every(function(x) { return x.status === 'ok'; })) _vfStaged = [];
       Array.from(fileList || []).forEach(function(file) {
         var ext = String(file.name).split('.').pop().toLowerCase();
-        var row = document.createElement('div');
-        row.className = 'vf-upload-row';
-        queue.appendChild(row);
-        function fail(msg) {
-          row.style.background = '#fdecea';
-          row.innerHTML = '<i class="ti ti-circle-x ti-err" aria-hidden="true"></i><span class="vf-up-name">' + esc(file.name) + ' — ' + esc(msg) + '</span>';
-        }
-        if (VF_UPLOAD_EXT.indexOf(ext) === -1) return fail('รองรับเฉพาะ PDF, DOCX, JPG, PNG');
-        if (file.size > VF_UPLOAD_MAX) return fail('ไฟล์ใหญ่เกิน 10 MB');
+        var item = { file: file, status: 'ready', msg: '' };
+        if (VF_UPLOAD_EXT.indexOf(ext) === -1) { item.status = 'err'; item.msg = 'รองรับเฉพาะ PDF, DOCX, JPG, PNG'; }
+        else if (file.size > VF_UPLOAD_MAX) { item.status = 'err'; item.msg = 'ไฟล์ใหญ่เกิน 10 MB'; }
+        else if (_vfStaged.some(function(x) { return x.file.name === file.name && x.file.size === file.size && x.status !== 'err'; })) return;
+        _vfStaged.push(item);
+      });
+      vfRenderStage();
+    }
 
-        row.innerHTML = '<span class="spin-sm dark"></span><span class="vf-up-name">' + esc(file.name) + ' <small>(' + formatFileSize(file.size) + ')</small></span>';
-        _vfUploading++;
+    function vfRemoveStaged(i) {
+      if (_vfBusy) return;
+      _vfStaged.splice(i, 1);
+      vfRenderStage();
+    }
+
+    function vfRenderStage() {
+      var q = document.getElementById('vf-upload-queue');
+      if (q) {
+        q.innerHTML = _vfStaged.map(function(it, i) {
+          var icon = it.status === 'ok' ? '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i>'
+                   : it.status === 'err' ? '<i class="ti ti-circle-x ti-err" aria-hidden="true"></i>'
+                   : it.status === 'busy' ? '<span class="spin-sm dark"></span>'
+                   : vfFileIcon_(it.file.name);
+          var right = it.status === 'ready' || it.status === 'err'
+            ? '<button class="vf-st-x" title="เอาออก" onclick="vfRemoveStaged(' + i + ')"><i class="ti ti-x" aria-hidden="true"></i></button>' : '';
+          return '<div class="vf-stage-row ' + (it.status === 'err' ? 'err' : it.status === 'ok' ? 'ok' : '') + '">' + icon +
+            '<span class="vf-st-name" title="' + escAttr(it.file.name) + '">' + esc(it.file.name) + (it.msg ? ' <span style="font-weight:400;color:var(--red)">— ' + esc(it.msg) + '</span>' : '') + '</span>' +
+            '<span class="vf-st-size">' + formatFileSize(it.file.size) + '</span>' + right + '</div>';
+        }).join('');
+      }
+      vfUpdateUploadUi();
+    }
+
+    function vfUpdateUploadUi() {
+      var app = document.getElementById('vf-upload-notify-app'), em = document.getElementById('vf-upload-notify-email');
+      var oa = document.getElementById('vf-opt-app'), oe = document.getElementById('vf-opt-email');
+      if (oa && app) oa.classList.toggle('on', app.checked);
+      if (oe && em) oe.classList.toggle('on', em.checked);
+      var ready = _vfStaged.filter(function(x) { return x.status === 'ready'; }).length;
+      var btn = document.getElementById('vf-upload-btn'), lb = document.getElementById('vf-upload-btn-label');
+      if (btn) btn.disabled = _vfBusy || ready === 0;
+      if (lb) {
+        var notify = (app && app.checked) || (em && em.checked);
+        lb.textContent = _vfBusy ? 'กำลังอัปโหลด...' : (ready ? 'อัปโหลด ' + ready + ' ไฟล์' + (notify ? ' และแจ้งผู้วิจัย' : '') : 'อัปโหลดไฟล์');
+      }
+    }
+
+    function vfDoUpload() {
+      if (_vfBusy) return;
+      var code = _vfCurrentProject;
+      if (!code) { showToast('ไม่พบรหัสโครงการ', 'error'); return; }
+      var todo = _vfStaged.filter(function(x) { return x.status === 'ready'; });
+      if (!todo.length) return;
+      var note = (document.getElementById('vf-upload-note') || {}).value || '';
+      var notifyApp = !!(document.getElementById('vf-upload-notify-app') || {}).checked;
+      var notifyEmail = !!(document.getElementById('vf-upload-notify-email') || {}).checked;
+      var resEl = document.getElementById('vf-upload-result'); if (resEl) resEl.innerHTML = '';
+      _vfBusy = true;
+      var uploadedIds = [], idx = 0;
+
+      function finish() {
+        _vfBusy = false;
+        var okCount = uploadedIds.length, failCount = todo.length - okCount;
+        function done(extraHtml, warn) {
+          vfRenderStage();
+          if (resEl) resEl.innerHTML = '<div class="vf-up-result ' + (warn || failCount ? 'warn' : 'ok') + '">' +
+            '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> แนบไฟล์สำเร็จ ' + okCount + ' ไฟล์' +
+            (failCount ? ' · ไม่สำเร็จ ' + failCount + ' ไฟล์' : '') + (extraHtml || '') + '</div>';
+          if (okCount) {
+            var noteEl = document.getElementById('vf-upload-note'); if (noteEl) noteEl.value = '';
+            // รีเฟรชรายการไฟล์ด้านบน โดยคงผลลัพธ์/คิวไว้
+            viewProjectFiles(code, null, true);
+          }
+        }
+        if (!okCount) { done('', true); return; }
+        if (!notifyApp && !notifyEmail) { done('', false); return; }
+        if (resEl) resEl.innerHTML = '<div class="vf-up-result warn"><span class="spin-sm dark"></span> กำลังแจ้งผู้วิจัย...</div>';
+        google.script.run
+          .withSuccessHandler(function(r) {
+            var parts = [], warn = false;
+            if (!r || !r.success) { parts.push('<br><i class="ti ti-alert-triangle ti-warn" aria-hidden="true"></i> แจ้งผู้วิจัยไม่สำเร็จ: ' + esc((r && r.message) || '')); warn = true; }
+            else {
+              if (notifyApp) parts.push(r.appNotified ? '<br><i class="ti ti-bell" aria-hidden="true"></i> แจ้งเตือนในระบบแล้ว' : '<br><i class="ti ti-alert-triangle ti-warn" aria-hidden="true"></i> แจ้งเตือนในระบบไม่สำเร็จ');
+              if (notifyEmail) {
+                if (r.emailSent) parts.push('<br><i class="ti ti-mail" aria-hidden="true"></i> ส่งอีเมลแล้ว' + (r.emailTo ? ' (' + esc(r.emailTo) + ')' : ''));
+                else { parts.push('<br><i class="ti ti-alert-triangle ti-warn" aria-hidden="true"></i> ส่งอีเมลไม่สำเร็จ' + (r.emailError ? ': ' + esc(r.emailError) : '')); warn = true; }
+              }
+            }
+            done(parts.join(''), warn);
+          })
+          .withFailureHandler(function(e) { done('<br><i class="ti ti-alert-triangle ti-warn" aria-hidden="true"></i> แจ้งผู้วิจัยไม่สำเร็จ: ' + esc(e && e.message ? e.message : ''), true); })
+          .adminNotifyResultFiles(S.user.sessionId, code, uploadedIds, note, notifyApp, notifyEmail, S.user.username);
+      }
+
+      function next() {
+        if (idx >= todo.length) { finish(); return; }
+        var it = todo[idx++];
+        var ext = String(it.file.name).split('.').pop().toLowerCase();
+        it.status = 'busy'; vfRenderStage();
         var reader = new FileReader();
-        reader.onerror = function() { _vfUploading--; fail('อ่านไฟล์ไม่สำเร็จ'); };
+        reader.onerror = function() { it.status = 'err'; it.msg = 'อ่านไฟล์ไม่สำเร็จ'; next(); };
         reader.onload = function(ev) {
           var b64 = String(ev.target.result).split(',')[1];
-          var mime = file.type || VF_UPLOAD_MIME[ext] || '';
+          var mime = it.file.type || VF_UPLOAD_MIME[ext] || '';
           google.script.run
             .withSuccessHandler(function(r) {
-              _vfUploading--;
-              if (r && r.success) {
-                row.innerHTML = '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i><span class="vf-up-name">' + esc(file.name) + ' — แนบสำเร็จ</span>';
-                if (_vfUploading === 0) {
-                  showToast('แนบไฟล์แจ้งผลสำเร็จ');
-                  // รีโหลดรายการไฟล์ (คงช่องอัปโหลดและข้อความหมายเหตุไว้)
-                  setTimeout(function() { var q = document.getElementById('vf-upload-queue'); if (q) q.innerHTML = ''; viewProjectFiles(code); }, 700);
-                }
-              } else {
-                fail((r && r.message) || 'อัปโหลดไม่สำเร็จ');
-              }
+              if (r && r.success) { it.status = 'ok'; uploadedIds.push(r.fileId); }
+              else { it.status = 'err'; it.msg = (r && r.message) || 'อัปโหลดไม่สำเร็จ'; }
+              next();
             })
-            .withFailureHandler(function(e) { _vfUploading--; fail(e && e.message ? e.message : 'เกิดข้อผิดพลาด'); })
-            .adminAttachResultFile(S.user.sessionId, b64, file.name, mime, code, S.user.username, note, notify);
+            .withFailureHandler(function(e) { it.status = 'err'; it.msg = e && e.message ? e.message : 'เกิดข้อผิดพลาด'; next(); })
+            .adminAttachResultFile(S.user.sessionId, b64, it.file.name, mime, code, S.user.username);
         };
-        reader.readAsDataURL(file);
-      });
+        reader.readAsDataURL(it.file);
+      }
+      vfUpdateUploadUi();
+      next();
     }
 
     function vfDeleteResultFile(fileId, fileName) {
@@ -6923,7 +7059,7 @@ function doSubmitExtraFiles() {
       if (!dz) return;
       ['dragenter', 'dragover'].forEach(function(ev) { dz.addEventListener(ev, function(e) { e.preventDefault(); dz.classList.add('drag'); }); });
       ['dragleave', 'drop'].forEach(function(ev) { dz.addEventListener(ev, function(e) { e.preventDefault(); dz.classList.remove('drag'); }); });
-      dz.addEventListener('drop', function(e) { vfHandleUpload(e.dataTransfer.files); });
+      dz.addEventListener('drop', function(e) { vfStageFiles(e.dataTransfer.files); });
     });
 
     // ════════════════════════════════════════
