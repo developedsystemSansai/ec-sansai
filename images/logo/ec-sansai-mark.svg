@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="EC Sansai">
+<path d="M47 52.5C41.5 56.5 37 58.6 32 60.6 19 54.6 9.5 44.5 9.5 30.5V13L32 5l22.5 8v17" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="32" cy="21" r="6.6" fill="var(--ec-navy,#112844)"/>
+<path d="M14.5 26.5c7 4.4 13 3.8 17.5 11.5 4.5-7.7 10.5-7.1 17.5-11.5-1 12-7 19.5-17.5 27C21.5 46 15.5 38.5 14.5 26.5z" fill="var(--ec-navy,#112844)"/>
+<path d="M16 33.5c-2.4 8.6 2.2 16 10 21 1.2-9-2.6-17.2-10-21z" fill="var(--ec-gold,#b58a2a)"/>
+<path d="M40 44.5l6.2 6.2L58 35.5" fill="none" stroke="var(--ec-knock,#ffffff)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M40 44.5l6.2 6.2L58 35.5" fill="none" stroke="var(--ec-green,#1b5e3e)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>

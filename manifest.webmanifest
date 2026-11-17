@@ -1,0 +1,88 @@
+{
+  "name": "EC Sansai — ระบบยื่นจริยธรรมการวิจัยในมนุษย์",
+  "short_name": "EC Sansai",
+  "description": "คณะกรรมการจริยธรรมการวิจัยในมนุษย์ โรงพยาบาลสันทราย",
+  "lang": "th",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "theme_color": "#0b1f35",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "ยื่นโครงการวิจัย",
+      "short_name": "ยื่นโครงการ",
+      "url": "app.html",
+      "icons": [
+        {
+          "src": "images/icons/shortcut-project.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "ติดตามสถานะโครงการ",
+      "short_name": "ติดตามสถานะ",
+      "url": "tracking.html",
+      "icons": [
+        {
+          "src": "images/icons/shortcut-tracking.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "เตรียมเอกสาร",
+      "short_name": "เอกสาร",
+      "url": "documents.html",
+      "icons": [
+        {
+          "src": "images/icons/shortcut-documents.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "มาตรฐานการวิจัย / SOP",
+      "short_name": "มาตรฐาน",
+      "url": "standards.html",
+      "icons": [
+        {
+          "src": "images/icons/shortcut-standards.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

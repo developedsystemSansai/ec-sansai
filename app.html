@@ -177,6 +177,13 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ec-brand:start -->
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b1f35">
+<!-- ec-brand:end -->
     <title>EC Online Submission — Sansai</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1700,9 +1707,118 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
 .ti-users{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0' /%3E %3Cpath d='M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2' /%3E %3Cpath d='M16 3.13a4 4 0 0 1 0 7.75' /%3E %3Cpath d='M21 21v-2a4 4 0 0 0 -3 -3.85' /%3E %3C/svg%3E")}
 .ti-x{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M18 6l-12 12' /%3E %3Cpath d='M6 6l12 12' /%3E %3C/svg%3E")}
 </style>
+<style id="ec-icons-css">
+.ec-ic{display:inline-block;width:1.25em;height:1.25em;flex:none;vertical-align:-.25em;overflow:visible}
+/* Brand duotone icons: navy stays the brand navy; the row's hover/active surface is the pale navy tint,
+   so the knock-out gaps use that tint. span.icon beats the later .icon{opacity:.75} rule without !important. */
+.sidebar-nav a span.icon{opacity:1;width:20px;height:20px}
+.sidebar-nav .ec-ic{width:20px;height:20px;--ec-navy:#112844;--ec-knock:#fff}
+.sidebar-nav a:hover .ec-ic,.sidebar-nav a.active .ec-ic{--ec-knock:var(--navy-pale,#eef3f9)}
+/* mobile bottom nav (inherits the item colour, so the active tab reads) + "more" sheet */
+.bottom-nav-item .bn-icon .ec-ic{width:22px;height:22px;--ec-navy:currentColor;--ec-knock:#fff}
+.more-menu-item .more-menu-item-icon .ec-ic{width:22px;height:22px;--ec-navy:#112844;--ec-knock:#fff}
+</style>
 </head>
 
     <body>
+<!-- ec-sprite:start -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false" id="ec-sprite">
+<symbol id="ec-home" viewBox="0 0 48 48">
+<path d="M4.5 22.5 24 6.5l19.5 16" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 26v12a3 3 0 0 0 3 3h22a3 3 0 0 0 3-3V26" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="19" y="28" width="10" height="13.5" rx="2.5" fill="var(--ec-gold,#b58a2a)"/></symbol>
+<symbol id="ec-researcher" viewBox="0 0 48 48">
+<circle cx="21" cy="12.5" r="8" fill="var(--ec-navy,#112844)"/>
+<path d="M3 42c0-9.5 7-15.5 16-15.5 5 0 9 2 11.5 5.5V42z" fill="var(--ec-navy,#112844)"/>
+<path d="M36 27h7" fill="none" stroke="var(--ec-green,#1b5e3e)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M37.5 27.5v6.2L32 42.5a2.4 2.4 0 0 0 2 3.5h12a2.4 2.4 0 0 0 2-3.5l-5.5-8.8v-6.2z" fill="var(--ec-green,#1b5e3e)" stroke="var(--ec-knock,#ffffff)" stroke-width="2.4" stroke-linejoin="round"/>
+<circle cx="38" cy="40" r="1.3" fill="var(--ec-knock,#ffffff)"/><circle cx="42.5" cy="42.3" r="1.1" fill="var(--ec-knock,#ffffff)"/><circle cx="40.5" cy="37" r="1" fill="var(--ec-knock,#ffffff)"/></symbol>
+<symbol id="ec-project" viewBox="0 0 48 48">
+<path d="M12 5h17l10 10v24a3 3 0 0 1-3 3H12a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3z" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 5v7a3 3 0 0 0 3 3h7" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.5 17h9M15.5 24h12M15.5 31h7" fill="none" stroke="var(--ec-green,#1b5e3e)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="36.5" cy="36.5" r="9" fill="var(--ec-green,#1b5e3e)" stroke="var(--ec-knock,#ffffff)" stroke-width="2.4"/>
+<path d="M36.5 31.5v10M31.5 36.5h10" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></symbol>
+<symbol id="ec-documents" viewBox="0 0 48 48">
+<path d="M15 13V9a3 3 0 0 1 3-3h13l10 10v17a3 3 0 0 1-3 3h-3" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M7 17a3 3 0 0 1 3-3h13.5l9.5 9.5V40a3 3 0 0 1-3 3H10a3 3 0 0 1-3-3z" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.5 28h10M13.5 34h13.5M13.5 40h13.5" fill="none" stroke="var(--ec-gold,#b58a2a)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ec-doc-review" viewBox="0 0 48 48">
+<path d="M30 42H12a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3h17l10 10v9" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 5v7a3 3 0 0 0 3 3h7" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.5 16h9M15.5 23h7M15.5 30h4" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="30" cy="30" r="8" fill="none" stroke="var(--ec-gold,#b58a2a)" stroke-width="3.8"/>
+<path d="M36 36l7 7" fill="none" stroke="var(--ec-gold,#b58a2a)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ec-committee" viewBox="0 0 48 48">
+<circle cx="8.5" cy="19" r="5" fill="var(--ec-navy,#112844)"/><circle cx="39.5" cy="19" r="5" fill="var(--ec-navy,#112844)"/>
+<path d="M1.5 38c0-5.5 3-9.5 8-10.5l3 .7c-3.2 2.4-5 5.8-5 9.8z" fill="var(--ec-navy,#112844)"/>
+<path d="M46.5 38c0-5.5-3-9.5-8-10.5l-3 .7c3.2 2.4 5 5.8 5 9.8z" fill="var(--ec-navy,#112844)"/>
+<circle cx="24" cy="14" r="7.5" fill="var(--ec-green,#1b5e3e)" stroke="var(--ec-knock,#ffffff)" stroke-width="2.4"/>
+<path d="M11 41c0-8.5 5.5-14 13-14s13 5.5 13 14z" fill="var(--ec-green,#1b5e3e)" stroke="var(--ec-knock,#ffffff)" stroke-width="2.4" stroke-linejoin="round"/></symbol>
+<symbol id="ec-meeting" viewBox="0 0 48 48">
+<circle cx="24" cy="9" r="5" fill="var(--ec-navy,#112844)"/>
+<path d="M15.5 23c0-5.5 3.5-9 8.5-9s8.5 3.5 8.5 9z" fill="var(--ec-navy,#112844)"/>
+<circle cx="8.5" cy="16" r="4.2" fill="var(--ec-navy,#112844)"/><circle cx="39.5" cy="16" r="4.2" fill="var(--ec-navy,#112844)"/>
+<path d="M3 34c-1-5 0-9 3.5-10.5l7 .5 4 6.5z" fill="var(--ec-navy,#112844)"/>
+<path d="M45 34c1-5 0-9-3.5-10.5l-7 .5-4 6.5z" fill="var(--ec-navy,#112844)"/>
+<path d="M15 27.5h18a2.5 2.5 0 0 1 2.2 1.3l5.5 9.5a2.5 2.5 0 0 1-2.2 3.7H9.5a2.5 2.5 0 0 1-2.2-3.7l5.5-9.5A2.5 2.5 0 0 1 15 27.5z" fill="var(--ec-navy,#112844)" stroke="var(--ec-knock,#ffffff)" stroke-width="2.2" stroke-linejoin="round"/></symbol>
+<symbol id="ec-approve" viewBox="0 0 48 48">
+<path d="M24 4.5 8.5 10.5v12.5c0 10 6.5 17.2 15.5 20.5 9-3.3 15.5-10.5 15.5-20.5V10.5z" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16 24l6 6 11-12.5" fill="none" stroke="var(--ec-green,#1b5e3e)" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ec-amend" viewBox="0 0 48 48">
+<path d="M20 42H12a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3h17l10 10v7" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 5v7a3 3 0 0 0 3 3h7" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.5 17h10M15.5 24h8M15.5 31h5" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M27.2 32.2a7.6 7.6 0 0 1 12.7-3" fill="none" stroke="var(--ec-gold,#b58a2a)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M40.5 24.8l.2 6.2-6-1.6z" fill="var(--ec-gold,#b58a2a)"/>
+<path d="M41 36.8a7.6 7.6 0 0 1-12.7 3" fill="none" stroke="var(--ec-gold,#b58a2a)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M27.7 44.2l-.2-6.2 6 1.6z" fill="var(--ec-gold,#b58a2a)"/></symbol>
+<symbol id="ec-tracking" viewBox="0 0 48 48">
+<path d="M36.5 14.5A17.5 17.5 0 1 0 31 40.5" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22 14.5V26l7 4.5" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M31 41c6-2.5 10-8.5 10-16" fill="none" stroke="var(--ec-green,#1b5e3e)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M33.5 25.5 41 15l6.5 10.5z" fill="var(--ec-green,#1b5e3e)"/></symbol>
+<symbol id="ec-report" viewBox="0 0 48 48">
+<path d="M12 5h17l10 10v24a3 3 0 0 1-3 3H12a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3z" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 5v7a3 3 0 0 0 3 3h7" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.5 17h8M15.5 22.5h6M15.5 28h4" fill="none" stroke="var(--ec-green,#1b5e3e)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="16" y="33" width="4.4" height="6" rx="1.2" fill="var(--ec-green,#1b5e3e)"/>
+<rect x="23" y="29.5" width="4.4" height="9.5" rx="1.2" fill="var(--ec-green,#1b5e3e)"/>
+<rect x="30" y="24" width="4.4" height="15" rx="1.2" fill="var(--ec-green,#1b5e3e)"/></symbol>
+<symbol id="ec-training" viewBox="0 0 48 48">
+<circle cx="9" cy="9" r="4.6" fill="var(--ec-navy,#112844)"/>
+<path d="M3 27v-5.5c0-4 2.5-6.5 6-6.5s6 2 6 5.5V27z" fill="var(--ec-navy,#112844)"/>
+<path d="M13 19.5 21.5 13.5" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 6.5h21.5v19h-12" fill="none" stroke="var(--ec-gold,#b58a2a)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="9.5" cy="34" r="3.9" fill="var(--ec-navy,#112844)"/><circle cx="24" cy="34" r="3.9" fill="var(--ec-navy,#112844)"/><circle cx="38.5" cy="34" r="3.9" fill="var(--ec-navy,#112844)"/>
+<path d="M2 45.5a7.5 7.5 0 0 1 15 0zM16.5 45.5a7.5 7.5 0 0 1 15 0zM31 45.5a7.5 7.5 0 0 1 15 0z" fill="var(--ec-navy,#112844)"/></symbol>
+<symbol id="ec-standards" viewBox="0 0 48 48">
+<path d="M24 12.5C18.5 8.8 11 8.6 4.8 10.6V35c6.4-1.9 13.7-1.5 19.2 2.5 5.5-4 12.8-4.4 19.2-2.5V10.6C37 8.6 29.5 8.8 24 12.5zM24 12.5V37.5" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10.5 18.5c3.5-.8 7-.6 9.5.8M10.5 24.5c3.5-.8 7-.6 9.5.8M10.5 30.5c3.5-.8 7-.6 9.5.8" fill="none" stroke="var(--ec-green,#1b5e3e)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M37.5 18.5c-3.5-.8-7-.6-9.5.8M37.5 24.5c-3.5-.8-7-.6-9.5.8M37.5 30.5c-3.5-.8-7-.6-9.5.8" fill="none" stroke="var(--ec-green,#1b5e3e)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ec-notification" viewBox="0 0 48 48">
+<path d="M24 5.5c-1.5 0-2.6 1.1-2.6 2.6C14.8 9.6 12 14.6 12 21.5v5.5l-3.9 6.2c-.8 1.3.1 3 1.7 3h28.4c1.6 0 2.5-1.7 1.7-3L36 27v-5.5c0-6.9-2.8-11.9-9.4-13.4 0-1.5-1.1-2.6-2.6-2.6z" fill="var(--ec-navy,#112844)"/>
+<path d="M18.5 39.5a5.5 5.5 0 0 0 11 0z" fill="var(--ec-navy,#112844)"/>
+<circle cx="37" cy="11" r="8.2" fill="var(--ec-gold,#b58a2a)" stroke="var(--ec-knock,#ffffff)" stroke-width="2.2"/>
+<path d="M34.6 9.4 37.8 7.4V15" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ec-bell" viewBox="0 0 48 48">
+<path d="M24 5.5c-1.5 0-2.6 1.1-2.6 2.6C14.8 9.6 12 14.6 12 21.5v5.5l-3.9 6.2c-.8 1.3.1 3 1.7 3h28.4c1.6 0 2.5-1.7 1.7-3L36 27v-5.5c0-6.9-2.8-11.9-9.4-13.4 0-1.5-1.1-2.6-2.6-2.6z" fill="var(--ec-navy,#112844)"/>
+<path d="M18.5 39.5a5.5 5.5 0 0 0 11 0z" fill="var(--ec-navy,#112844)"/></symbol>
+<symbol id="ec-security" viewBox="0 0 48 48">
+<path d="M14 21v-7a10 10 0 0 1 20 0v7" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="7" y="20" width="34" height="23" rx="4.5" fill="var(--ec-navy,#112844)"/>
+<circle cx="24" cy="29.5" r="3.8" fill="var(--ec-gold,#b58a2a)"/>
+<path d="M21.8 31.5h4.4l1 7.5h-6.4z" fill="var(--ec-gold,#b58a2a)"/></symbol>
+<symbol id="ec-settings" viewBox="0 0 48 48">
+<defs><mask id="ec-gear-hole"><rect width="48" height="48" fill="#fff"/><circle cx="24" cy="24" r="8.6" fill="#000"/></mask></defs>
+<g fill="var(--ec-navy,#112844)" mask="url(#ec-gear-hole)"><rect x="20.2" y="2" width="7.6" height="9" rx="1.8" transform="rotate(0 24 24)"/><rect x="20.2" y="2" width="7.6" height="9" rx="1.8" transform="rotate(45 24 24)"/><rect x="20.2" y="2" width="7.6" height="9" rx="1.8" transform="rotate(90 24 24)"/><rect x="20.2" y="2" width="7.6" height="9" rx="1.8" transform="rotate(135 24 24)"/><rect x="20.2" y="2" width="7.6" height="9" rx="1.8" transform="rotate(180 24 24)"/><rect x="20.2" y="2" width="7.6" height="9" rx="1.8" transform="rotate(225 24 24)"/><rect x="20.2" y="2" width="7.6" height="9" rx="1.8" transform="rotate(270 24 24)"/><rect x="20.2" y="2" width="7.6" height="9" rx="1.8" transform="rotate(315 24 24)"/><circle cx="24" cy="24" r="16"/></g>
+<circle cx="24" cy="24" r="5.2" fill="var(--ec-gold,#b58a2a)"/></symbol>
+<symbol id="ec-mark" viewBox="0 0 64 64">
+<path d="M47 52.5C41.5 56.5 37 58.6 32 60.6 19 54.6 9.5 44.5 9.5 30.5V13L32 5l22.5 8v17" fill="none" stroke="var(--ec-navy,#112844)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="32" cy="21" r="6.6" fill="var(--ec-navy,#112844)"/>
+<path d="M14.5 26.5c7 4.4 13 3.8 17.5 11.5 4.5-7.7 10.5-7.1 17.5-11.5-1 12-7 19.5-17.5 27C21.5 46 15.5 38.5 14.5 26.5z" fill="var(--ec-navy,#112844)"/>
+<path d="M16 33.5c-2.4 8.6 2.2 16 10 21 1.2-9-2.6-17.2-10-21z" fill="var(--ec-gold,#b58a2a)"/>
+<path d="M40 44.5l6.2 6.2L58 35.5" fill="none" stroke="var(--ec-knock,#ffffff)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M40 44.5l6.2 6.2L58 35.5" fill="none" stroke="var(--ec-green,#1b5e3e)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+<!-- ec-sprite:end -->
+
+
+
+
 
     <div id="loading-overlay" style="display:none;">
       <div class="spinner"></div>
@@ -2547,26 +2663,26 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       <div class="app-body">
         <aside class="sidebar">
           <nav class="sidebar-nav" id="sidebar-nav">
-            <a onclick="showPage('dashboard')" id="nav-dashboard" class="active"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>หน้าหลัก</a>
-            <a onclick="showPage('accept')" id="nav-accept" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>ต้องตอบรับ<span class="badge-count orange" id="badge-accept" style="display:none">0</span></a>
-            <a onclick="showPage('evaluate')" id="nav-evaluate" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>ต้องประเมิน<span class="badge-count" id="badge-evaluate" style="display:none">0</span></a>
-            <a onclick="showPage('meeting')" id="nav-meeting" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-3"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/></svg></span>การประชุม</a>
-            <a onclick="showPage('staff-projects')" id="nav-staff-projects" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>จัดการโครงการ</a>
+            <a onclick="showPage('dashboard')" id="nav-dashboard" class="active"><span class="icon" aria-hidden="true"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-home"/></svg></span>หน้าหลัก</a>
+            <a onclick="showPage('accept')" id="nav-accept" style="display:none"><span class="icon" aria-hidden="true"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-bell"/></svg></span>ต้องตอบรับ<span class="badge-count orange" id="badge-accept" style="display:none">0</span></a>
+            <a onclick="showPage('evaluate')" id="nav-evaluate" style="display:none"><span class="icon" aria-hidden="true"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-doc-review"/></svg></span>ต้องประเมิน<span class="badge-count" id="badge-evaluate" style="display:none">0</span></a>
+            <a onclick="showPage('meeting')" id="nav-meeting" style="display:none"><span class="icon" aria-hidden="true"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-meeting"/></svg></span>การประชุม</a>
+            <a onclick="showPage('staff-projects')" id="nav-staff-projects" style="display:none"><span class="icon" aria-hidden="true"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-approve"/></svg></span>จัดการโครงการ</a>
             <div class="sidebar-divider"></div>
-            <a onclick="showPage('history')" id="nav-history"><span class="icon"><i class="ti ti-folders" aria-hidden="true"></i></span>ประวัติงานวิจัย</a>
-            <a onclick="showPage('my-projects')" id="nav-my-projects" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>โครงการของฉัน</a>
-            <a onclick="showPage('submit')" id="nav-submit" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span>ยื่นโครงการใหม่</a>
-            <a onclick="showPage('documents')" id="nav-documents" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>ดาวน์โหลดแบบฟอร์ม</a>
+            <a onclick="showPage('history')" id="nav-history"><span class="icon"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-tracking"/></svg></span>ประวัติงานวิจัย</a>
+            <a onclick="showPage('my-projects')" id="nav-my-projects" style="display:none"><span class="icon" aria-hidden="true"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-researcher"/></svg></span>โครงการของฉัน</a>
+            <a onclick="showPage('submit')" id="nav-submit" style="display:none"><span class="icon" aria-hidden="true"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-project"/></svg></span>ยื่นโครงการใหม่</a>
+            <a onclick="showPage('documents')" id="nav-documents" style="display:none"><span class="icon" aria-hidden="true"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-standards"/></svg></span>ดาวน์โหลดแบบฟอร์ม</a>
             <div class="sidebar-divider"></div>
-            <a onclick="showPage('users')" id="nav-users" style="display:none"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>จัดการผู้ใช้<span class="badge-count red" id="badge-pending-users" style="display:none">0</span></a>
+            <a onclick="showPage('users')" id="nav-users" style="display:none"><span class="icon" aria-hidden="true"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-committee"/></svg></span>จัดการผู้ใช้<span class="badge-count red" id="badge-pending-users" style="display:none">0</span></a>
             <div class="sidebar-divider"></div>
     <a onclick="showPage('minutes')" id="nav-minutes" style="display:none">
-      <span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>รายงานการประชุม</a>
+      <span class="icon" aria-hidden="true"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-documents"/></svg></span>รายงานการประชุม</a>
     <a onclick="showPage('research-reports')" id="nav-research-reports" style="display:none">
-      <span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>รายงานผลการวิจัย
+      <span class="icon" aria-hidden="true"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-report"/></svg></span>รายงานผลการวิจัย
       <span class="badge-count orange" id="badge-rpt" style="display:none">0</span></a>
             <div class="sidebar-divider"></div>
-            <a onclick="showPage('profile')" id="nav-profile"><span class="icon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>ข้อมูลส่วนตัว</a>
+            <a onclick="showPage('profile')" id="nav-profile"><span class="icon" aria-hidden="true"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-settings"/></svg></span>ข้อมูลส่วนตัว</a>
           </nav>
         </aside>
         <main class="content">
@@ -3266,12 +3382,12 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
 
       <!-- BOTTOM NAV -->
       <nav class="bottom-nav" id="bottom-nav">
-        <button class="bottom-nav-item active" id="bn-dashboard" onclick="showPage('dashboard')"><span class="bn-icon"><i class="ti ti-home" aria-hidden="true"></i></span>หน้าหลัก</button>
-        <button class="bottom-nav-item" id="bn-accept" onclick="showPage('accept')" style="display:none"><span class="bn-icon"><i class="ti ti-download" aria-hidden="true"></i></span>ตอบรับ</button>
-        <button class="bottom-nav-item" id="bn-evaluate" onclick="showPage('evaluate')" style="display:none"><span class="bn-icon"><i class="ti ti-edit" aria-hidden="true"></i></span>ประเมิน</button>
-        <button class="bottom-nav-item" id="bn-submit" onclick="showPage('submit')" style="display:none"><span class="bn-icon"><i class="ti ti-upload" aria-hidden="true"></i></span>ยื่น</button>
+        <button class="bottom-nav-item active" id="bn-dashboard" onclick="showPage('dashboard')"><span class="bn-icon"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-home"/></svg></span>หน้าหลัก</button>
+        <button class="bottom-nav-item" id="bn-accept" onclick="showPage('accept')" style="display:none"><span class="bn-icon"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-bell"/></svg></span>ตอบรับ</button>
+        <button class="bottom-nav-item" id="bn-evaluate" onclick="showPage('evaluate')" style="display:none"><span class="bn-icon"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-doc-review"/></svg></span>ประเมิน</button>
+        <button class="bottom-nav-item" id="bn-submit" onclick="showPage('submit')" style="display:none"><span class="bn-icon"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-project"/></svg></span>ยื่น</button>
     <button class="bottom-nav-item" id="bn-research-reports" onclick="showPage('research-reports')" style="display:none">
-      <span class="bn-icon"><i class="ti ti-chart-bar" aria-hidden="true"></i><span class="bottom-nav-badge" id="bn-badge-rpt" style="display:none">0</span></span>รายงาน
+      <span class="bn-icon"><svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-report"/></svg><span class="bottom-nav-badge" id="bn-badge-rpt" style="display:none">0</span></span>รายงาน
     </button>
         <button class="bottom-nav-item" id="bn-more" onclick="toggleMoreMenu()"><span class="bn-icon"><i class="ti ti-menu-2" aria-hidden="true"></i></span>เพิ่มเติม</button>
       </nav>
@@ -5041,7 +5157,7 @@ function syncMoreMenu(){
   });
   // รายการเสริมที่ไม่ได้อยู่ใน sidebar
   var extra=[
-    {label:'แจ้งเตือน', icon:'<i class="ti ti-bell" aria-hidden="true"></i>', fn:'openNotifPanel()'}
+    {label:'แจ้งเตือน', icon:'<svg class="ec-ic" aria-hidden="true" focusable="false"><use href="#ec-bell"/></svg>', fn:'openNotifPanel()'}
   ];
   extra.forEach(function(x){
     var btn=document.createElement('button');
