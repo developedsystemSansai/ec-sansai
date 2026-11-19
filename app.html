@@ -549,7 +549,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     .badge-count.red    { background: var(--red); }
 
     /* ── CONTENT ── */
-    .content { flex: 1; padding: 24px; max-width: none; width: 100%; }
+    .content { flex: 1; min-width: 0; padding: 24px; max-width: none; width: 100%; } /* min-width:0 → <main> หดตามจอ ไม่ถูกดันกว้างด้วยแถว/ตารางที่ยาว */
 
     /* ── STAT CARDS ── */
     .stat-grid {
@@ -595,7 +595,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       border-radius: var(--radius);
       box-shadow: var(--shadow-sm);
       border: 1px solid var(--border);
-      overflow: hidden; margin-bottom: 20px;
+      overflow-x: auto; overflow-y: hidden; /* ตารางกว้างกว่าจอ → เลื่อนในการ์ด ไม่ถูกตัดทิ้ง */ margin-bottom: 20px;
     }
     .table-card-header {
       border-left: 3px solid var(--gold);
@@ -856,7 +856,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       font-family: 'Noto Serif Thai', 'Sarabun', serif; font-size: var(--text-sm);
       font-weight: 700; color: var(--navy-dark); min-width: 130px;
     }
-    .project-row-title { flex: 1; font-size: var(--text-sm); color: var(--text-dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .project-row-title { flex: 1; min-width: 0; font-size: var(--text-sm); color: var(--text-dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .project-row-pi     { font-size: var(--text-xs); color: var(--text-light); min-width: 110px; text-align: right; }
     .project-row-status { min-width: 100px; text-align: right; }
     .project-row-action { min-width: 88px; text-align: right; }
