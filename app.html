@@ -79,6 +79,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         getAssignedProjects:         function(sid,cu)           { return callGAS('getAssignedProjects',       {sessionId:sid, committeeUsername:cu}); },
         getAllAssignmentsOverview:   function(sid,cu)           { return callGAS('getAllAssignmentsOverview', {sessionId:sid, callerUsername:cu}); },
         adminSkipAcceptanceForAssignment: function(sid,cu,pc,commUser) { return callGAS('adminSkipAcceptanceForAssignment', {sessionId:sid, callerUsername:cu, projectCode:pc, committeeUsername:commUser}); },
+        adminMarkEvaluatedByDocument: function(sid,cu,pc,commUser,note) { return callGAS('adminMarkEvaluatedByDocument', {sessionId:sid, callerUsername:cu, projectCode:pc, committeeUsername:commUser, note:note||''}); },
+        adminCloseEvaluation: function(sid,cu,pc,note) { return callGAS('adminCloseEvaluation', {sessionId:sid, callerUsername:cu, projectCode:pc, note:note||''}); },
         submitEvaluation:            function(pl)               { return callGAS('submitEvaluation',          {payload:pl}); },
         submitAcceptance:            function(pl)               { return callGAS('submitAcceptance',          {payload:pl}); },
         getEvaluationHistory:        function(sid,cu)           { return callGAS('getEvaluationHistory',      {sessionId:sid, committeeUsername:cu}); },
@@ -4889,6 +4891,31 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       </div>
     </div>
 
+    <!-- Modal: แอดมิน/เจ้าหน้าที่ — บันทึกว่าประเมินแล้ว (เอกสาร) / ปิดการประเมิน -->
+    <div class="modal-overlay" id="modal-eval-manual">
+      <div class="modal" style="max-width:480px">
+        <div class="modal-header">
+          <h3 id="evm-title"><i class="ti ti-file-text" aria-hidden="true"></i> บันทึกว่าประเมินแล้ว (เอกสาร)</h3>
+          <button class="modal-close" onclick="closeModal('modal-eval-manual')"><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+          <div style="font-size:13px;color:var(--text-mid);margin-bottom:4px">โครงการ</div>
+          <div style="font-weight:700;margin-bottom:2px" id="evm-code"></div>
+          <div style="font-size:13px;color:var(--text-dark);margin-bottom:12px" id="evm-title-th"></div>
+          <div id="evm-committee-row" style="font-size:13px;margin-bottom:12px"><span style="color:var(--text-mid)">กรรมการ:</span> <strong id="evm-committee"></strong></div>
+          <div class="alert alert-info" id="evm-explain" style="margin-bottom:14px"></div>
+          <div class="form-group">
+            <label for="evm-note">หมายเหตุ (ไม่บังคับ)</label>
+            <textarea id="evm-note" class="form-control" rows="3" maxlength="500" placeholder="เช่น ได้รับแบบประเมินจากผู้ประสานงานเมื่อวันที่ ..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('modal-eval-manual')">ยกเลิก</button>
+          <button class="btn btn-primary" id="evm-submit" onclick="confirmEvalManual()"><i class="ti ti-circle-check" aria-hidden="true"></i> <span id="evm-submit-label">ยืนยัน</span></button>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal: ส่งอีเมลแจ้งผู้ใช้ -->
     <div class="modal-overlay" id="modal-send-email" onclick="if(event.target===this)closeModal('modal-send-email')">
       <div class="modal" style="max-width:500px">
@@ -5429,6 +5456,47 @@ function showForgotMessage(type, text) {
           else showToast('ไม่สำเร็จ: '+((res||{}).message||''),'error');
         }).catch(function(e){ showToast('เกิดข้อผิดพลาด: '+(e.message||''),'error'); });
     }
+        var _evmMode='', _evmCode='', _evmCommittee='', _evmBusy=false;
+        // แอดมิน/เจ้าหน้าที่: mode 'doc' = บันทึกว่ากรรมการท่านนี้ประเมินแล้วด้วยเอกสาร, mode 'close' = ปิดการประเมินทั้งโครงการ (เช่น ส่งผลรับรองไปแล้ว)
+        function openEvalManualModal(mode, projectCode, committeeUsername, committeeName, titleTh){
+          if(!(S._isAdmin||S._isStaff)) return;
+          _evmMode=mode; _evmCode=String(projectCode||''); _evmCommittee=String(committeeUsername||''); _evmBusy=false;
+          var isDoc=(mode==='doc');
+          var pend=(S.assignments||[]).filter(function(r){ return String(r.project_code||'').trim()===_evmCode && (r.eval_status||'รอประเมิน')==='รอประเมิน'; });
+          document.getElementById('evm-title').innerHTML=isDoc
+            ?'<i class="ti ti-file-text" aria-hidden="true"></i> บันทึกว่าประเมินแล้ว (เอกสาร)'
+            :'<i class="ti ti-lock" aria-hidden="true"></i> ปิดการประเมิน';
+          document.getElementById('evm-code').textContent=_evmCode;
+          document.getElementById('evm-title-th').textContent=titleTh||'';
+          document.getElementById('evm-committee-row').style.display=isDoc?'block':'none';
+          document.getElementById('evm-committee').textContent=committeeName||committeeUsername||'';
+          document.getElementById('evm-explain').textContent=isDoc
+            ?'ใช้เมื่อกรรมการส่งแบบประเมินมาเป็นเอกสารแล้ว ระบบจะนับว่ากรรมการท่านนี้ส่งประเมินแล้ว ไม่ต้องเข้ามากดประเมินในระบบอีก'
+            :'ใช้เมื่อส่งผลการรับรองของโครงการนี้ไปแล้ว ระบบจะปิดรายการประเมินที่ค้างอยู่ทั้งหมดของโครงการ ('+pend.length+' รายการ) โดยไม่เปลี่ยนสถานะโครงการ';
+          document.getElementById('evm-note').value='';
+          document.getElementById('evm-submit-label').textContent=isDoc?'บันทึกว่าประเมินแล้ว':'ปิดการประเมิน';
+          document.getElementById('evm-submit').disabled=false;
+          openModal('modal-eval-manual');
+        }
+        function confirmEvalManual(){
+          if(_evmBusy||!_evmCode) return;
+          _evmBusy=true;
+          var btn=document.getElementById('evm-submit'); btn.disabled=true;
+          var note=String(document.getElementById('evm-note').value||'').trim();
+          var m=getM();
+          var req=(_evmMode==='doc')
+            ?m.adminMarkEvaluatedByDocument(S.user.sessionId, S.user.username, _evmCode, _evmCommittee, note)
+            :m.adminCloseEvaluation(S.user.sessionId, S.user.username, _evmCode, note);
+          req.then(function(res){
+            _evmBusy=false; btn.disabled=false;
+            if(res&&res.success){
+              closeModal('modal-eval-manual');
+              showToast(_evmMode==='doc'?'บันทึกว่าประเมินแล้ว (เอกสาร) เรียบร้อย':'ปิดการประเมินเรียบร้อย','success');
+              loadAssignments();
+              try{ loadStaffProjects(); }catch(e){}
+            } else showToast('ไม่สำเร็จ: '+((res||{}).message||'ไม่ทราบสาเหตุ'),'error');
+          }).catch(function(e){ _evmBusy=false; btn.disabled=false; showToast('เกิดข้อผิดพลาด: '+(e.message||''),'error'); });
+        }
         function _buildVerifyTable(elId, rows){
       var el=document.getElementById(elId); if(!el) return;
       if(!rows.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon"><i class="ti ti-inbox" aria-hidden="true"></i></div><p>ไม่มีรายการ</p></div>'; return; }
@@ -5457,6 +5525,12 @@ function showForgotMessage(type, text) {
       rows.forEach(function(r,i){
         var rc=escAttr(r.project_code||''); var rt=escAttr(r.title_th||'');
         var btn=mode==='accept'?'<button class="btn btn-sm btn-accent" onclick="openAcceptModal(\''+rc+'\',\''+rt+'\')"><i class="ti ti-download" aria-hidden="true"></i> ตอบรับ</button>':'<button class="btn btn-sm btn-primary" onclick="openEvalModal(\''+rc+'\',\''+rt+'\',\''+escAttr(r.committee_username||'')+'\',\''+escAttr(r.committee_name||r.committee_username||'')+'\')"><i class="ti ti-edit" aria-hidden="true"></i> ประเมิน</button>';
+        if(mode==='eval'&&showCommittee){
+          var ecu=escAttr(r.committee_username||''), ecn=escAttr(r.committee_name||r.committee_username||'');
+          btn='<div style="display:flex;gap:6px;flex-wrap:wrap">'+btn
+            +'<button class="btn btn-sm btn-outline" onclick="openEvalManualModal(\'doc\',\''+rc+'\',\''+ecu+'\',\''+ecn+'\',\''+rt+'\')" title="กรรมการส่งแบบประเมินมาเป็นเอกสารแล้ว"><i class="ti ti-file-text" aria-hidden="true"></i> บันทึกว่าประเมินแล้ว (เอกสาร)</button>'
+            +'<button class="btn btn-sm btn-outline" onclick="openEvalManualModal(\'close\',\''+rc+'\',\'\',\'\',\''+rt+'\')" title="ส่งผลรับรองไปแล้ว ปิดรายการประเมินที่ค้างของโครงการนี้"><i class="ti ti-lock" aria-hidden="true"></i> ปิดการประเมิน</button></div>';
+        }
         html+='<tr><td>'+(i+1)+'</td><td><strong>'+esc(r.project_code||'-')+'</strong></td><td>'+esc(r.title_th||'-')+'</td><td>'+esc(r.pi_name||'-')+'</td>'+(showCommittee?'<td>'+esc(r.committee_username||'-')+'</td>':'')+'<td>'+(r.deadline?formatDate(r.deadline):'-')+'</td><td>'+btn+'</td></tr>';
       });
       el.innerHTML=html+'</tbody></table>';
