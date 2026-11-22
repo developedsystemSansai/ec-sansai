@@ -279,6 +279,19 @@ button{font-family:inherit;cursor:pointer}
 .mlb-header{background:var(--n900);padding:.9rem 1.25rem;
   font-family:var(--ffs);font-size:.9rem;font-weight:600;color:#fff;
   display:flex;align-items:center;gap:.6rem;border-bottom:2px solid var(--g500)}
+/* Office hours & location (under meeting schedule) */
+.office-box{margin-top:2rem;background:var(--white);border:1px solid var(--u200);border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(11,31,53,.07)}
+.office-hd{background:var(--n900);padding:.9rem 1.25rem;font-family:var(--ffs);font-size:.9rem;font-weight:600;color:#fff;display:flex;align-items:center;gap:.6rem;border-bottom:2px solid var(--g500)}
+.office-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.office-col{padding:1.15rem 1.25rem;border-left:1px solid var(--u100)}
+.office-col:first-child{border-left:none}
+.office-lbl{display:flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:700;letter-spacing:.04em;color:var(--g700);margin-bottom:.55rem}
+.office-lbl svg{flex:0 0 auto}
+.office-col p{margin:0 0 .3rem;font-size:.88rem;line-height:1.65;color:var(--n800)}
+.office-col p strong{color:var(--n900)}
+.office-col a{color:var(--n700);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}
+.office-col a:hover{color:var(--g700)}
+@media (max-width:640px){.office-col{border-left:none;border-top:1px solid var(--u100)}.office-col:first-child{border-top:none}}
 .mlb-body{max-height:380px;overflow-y:auto}
 .mlb-body::-webkit-scrollbar{width:4px}
 .mlb-body::-webkit-scrollbar-track{background:transparent}
@@ -1572,6 +1585,28 @@ html,body{max-width:100%;overflow-x:clip}
               <span></span>กำลังโหลดข้อมูล...
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="office-box rev" id="office-info" aria-labelledby="office-h">
+      <div class="office-hd" id="office-h"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg><span data-en="Office Hours &amp; Location">เวลาทำการและสถานที่ตั้งสำนักงาน</span></div>
+      <div class="office-grid">
+        <div class="office-col">
+          <div class="office-lbl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg><span data-en="OFFICE HOURS">เวลาทำการ</span></div>
+          <p><strong data-en="Tuesday – Friday">วันอังคาร – ศุกร์</strong></p>
+          <p data-en="08.30 – 16.00">08.30 – 16.00 น.</p>
+        </div>
+        <div class="office-col">
+          <div class="office-lbl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span data-en="LOCATION">สถานที่ตั้ง</span></div>
+          <p><strong data-en="Outpatient Building, 5th Floor">อาคารผู้ป่วยนอก ชั้น 5</strong></p>
+          <p data-en="Quality Development &amp; Service System Unit (in front of the photocopy room)">กลุ่มงานพัฒนาคุณภาพและระบบบริการ (หน้าห้องถ่ายเอกสาร)</p>
+          <p data-en="Human Research Ethics Committee">คณะกรรมการจริยธรรมการวิจัยในมนุษย์</p>
+          <p data-en="201 Moo 11, Chiang Mai–Phrao Rd., Nong Han, San Sai, Chiang Mai 50290">เลขที่ 201 หมู่ 11 ถนนเชียงใหม่–พร้าว ตำบลหนองหาร อำเภอสันทราย จังหวัดเชียงใหม่ 50290</p>
+        </div>
+        <div class="office-col">
+          <div class="office-lbl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><span data-en="CONTACT">ติดต่อ</span></div>
+          <p><a href="tel:+6653921199,168">053 921 199 ต่อ 168</a></p>
+          <p><a href="mailto:sireetorn.wa@sansaihospital.go.th">sireetorn.wa@sansaihospital.go.th</a></p>
         </div>
       </div>
     </div>
