@@ -33,6 +33,10 @@
   })();
   var SOFT = !!(script && script.getAttribute('data-consent') === 'soft');
   var ANALYTICS_MANUAL = !!(script && script.getAttribute('data-analytics-manual') === 'true');
+  // data-decline-redirect="index.html" -> โหมดกดครั้งเดียว: ปุ่ม "ยอมรับ" คือการให้ความยินยอม (ไม่มีช่องติ๊ก)
+  // และถ้ากด "ไม่ยอมรับ" จะพากลับไปหน้านั้นทันที
+  var DECLINE_URL = (script && script.getAttribute('data-decline-redirect')) || '';
+  var ONE_CLICK = !!DECLINE_URL;
 
   function gasUrl() {
     if (window.EC_CONFIG && window.EC_CONFIG.GAS_URL) return window.EC_CONFIG.GAS_URL;
@@ -270,11 +274,13 @@
       '</div>' +
       '<div class="ecg-ft" id="ecg-ft">' +
         '<div class="ecg-err" id="ecg-err" role="alert"></div>' +
-        '<label class="ecg-chk"><input type="checkbox" id="ecg-agree"' + (settings ? ' checked' : '') + '><span>ข้าพเจ้าได้อ่านและยอมรับ <b>นโยบายความเป็นส่วนตัว (PDPA)</b> และ <b>เงื่อนไขการใช้งาน</b> ข้างต้น รวมถึงเงื่อนไขการเผยแพร่ผลงานวิจัยหลังปิดโครงการ</span></label>' +
+        ((ONE_CLICK && !settings)
+          ? '<p id="ecg-note" style="margin:0 0 10px;font-size:13px;line-height:1.6;color:#44546a">การกดปุ่ม <b>“ยอมรับและเข้าใช้งาน”</b> ถือว่าท่านได้อ่านและยอมรับ <b>นโยบายความเป็นส่วนตัว (PDPA)</b> และ <b>เงื่อนไขการใช้งาน</b> ข้างต้น รวมถึงเงื่อนไขการเผยแพร่ผลงานวิจัยหลังปิดโครงการ หากไม่ยอมรับ ระบบจะพาท่านกลับหน้าแรก</p>'
+          : '<label class="ecg-chk"><input type="checkbox" id="ecg-agree"' + (settings ? ' checked' : '') + '><span>ข้าพเจ้าได้อ่านและยอมรับ <b>นโยบายความเป็นส่วนตัว (PDPA)</b> และ <b>เงื่อนไขการใช้งาน</b> ข้างต้น รวมถึงเงื่อนไขการเผยแพร่ผลงานวิจัยหลังปิดโครงการ</span></label>') +
         '<div class="ecg-act">' +
           (settings ? '<button class="ecg-btn ecg-danger" id="ecg-withdraw" type="button">ถอนความยินยอม</button><button class="ecg-btn ecg-sec2" id="ecg-close" type="button">ปิด</button>'
-                    : (SOFT ? '<button class="ecg-btn ecg-sec2" id="ecg-close" type="button">กลับไปอ่านนโยบายต่อ</button>' : '<button class="ecg-btn ecg-sec2" id="ecg-decline" type="button">ไม่ยอมรับ</button>')) +
-          '<button class="ecg-btn ecg-pri" id="ecg-accept" type="button"' + (settings ? '' : ' disabled') + '>' + (settings ? 'บันทึกการตั้งค่า' : 'ยอมรับและเข้าใช้งาน') + '</button>' +
+                    : (SOFT ? '<button class="ecg-btn ecg-sec2" id="ecg-close" type="button">กลับไปอ่านนโยบายต่อ</button>' : '<button class="ecg-btn ecg-sec2" id="ecg-decline" type="button">' + (ONE_CLICK ? 'ไม่ยอมรับ (กลับหน้าแรก)' : 'ไม่ยอมรับ') + '</button>')) +
+          '<button class="ecg-btn ecg-pri" id="ecg-accept" type="button"' + ((settings || ONE_CLICK) ? '' : ' disabled') + '>' + (settings ? 'บันทึกการตั้งค่า' : 'ยอมรับและเข้าใช้งาน') + '</button>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -355,6 +361,7 @@
     if (agree && state.mode !== 'settings') agree.addEventListener('change', function () { accept.disabled = !agree.checked; });
     if (agree && state.mode === 'settings') agree.disabled = true; // ตั้งค่า: ยินยอมอยู่แล้ว (ถอนผ่านปุ่มถอนเท่านั้น)
     if (decline) decline.addEventListener('click', function () {
+      if (ONE_CLICK) { window.location.replace(DECLINE_URL); return; }
       root.querySelector('#ecg-main').hidden = true; root.querySelector('#ecg-ft').hidden = true; root.querySelector('#ecg-lead').hidden = true;
       root.querySelector('#ecg-decl').hidden = false; var b = root.querySelector('#ecg-back'); if (b) b.focus();
     });
@@ -365,7 +372,7 @@
     if (closeB) closeB.addEventListener('click', closeGate);
 
     if (accept) accept.addEventListener('click', function () {
-      if (state.mode !== 'settings' && !(agree && agree.checked)) return;
+      if (state.mode !== 'settings' && !ONE_CLICK && !(agree && agree.checked)) return;
       accept.disabled = true; var label = accept.textContent; accept.textContent = 'กำลังบันทึก…'; showErr('');
       getIp(function (ip) {
         post('recordPdpaConsent', {

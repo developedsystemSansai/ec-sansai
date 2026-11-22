@@ -2,6 +2,8 @@
     <html lang="th">
     <head>
         <script src="config.js"></script>
+<script src="consent-gate.js" data-analytics-manual="true" data-decline-redirect="index.html"></script>
+        <style>#privacy-banner,#privacy-modal-overlay { display: none !important; } /* แทนที่ด้วย consent-gate.js */</style>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <!--
       GAS API Bridge — วาง Deployment URL ตรงนี้
@@ -2072,13 +2074,6 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     </select>
     <div class="hint-text"><i class="ti ti-alert-triangle ti-warn" aria-hidden="true"></i> สิทธิ์จะมีผลหลังผู้ดูแลระบบอนุมัติ</div>
   </div>
-
-  <label style="display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:13.5px;line-height:1.7;cursor:pointer">
-    <input type="checkbox" id="reg-accept-terms" style="margin-top:4px;width:18px;height:18px;flex:0 0 auto">
-    <span>ข้าพเจ้ายอมรับ <a href="privacy-policy.html" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว (PDPA)</a> และเงื่อนไขการใช้งาน
-      รวมถึง <a href="privacy-policy.html#publication" target="_blank" rel="noopener">เงื่อนไขการเผยแพร่ผลงานวิจัยหลังปิดโครงการ</a>
-      (สรุปผลฉบับย่อเป็น Infographic เผยแพร่บนเว็บไซต์ โดยไม่ระบุตัวตนอาสาสมัคร) <span class="req">*</span></span>
-  </label>
 
   <div style="display:flex; gap:10px; margin-top:20px">
     <button class="btn-back-login" style="flex:1" onclick="regGoStep(2)"><i class="ti ti-arrow-left" aria-hidden="true"></i> ย้อนกลับ</button>
@@ -11269,15 +11264,17 @@ async function uploadToGoogleDrive(file) {
   var lname = document.getElementById('reg-lname').value.trim();
   
   var ethicsStatus = document.getElementById('reg-ethics-training').value;
-  var termsBox = document.getElementById('reg-accept-terms');
-  if (!termsBox || !termsBox.checked) {
-    showRegError('กรุณายอมรับนโยบายความเป็นส่วนตัวและเงื่อนไขการใช้งานก่อนลงทะเบียน');
+  // ความยินยอม PDPA กดครั้งเดียวที่ด่านหน้าแรก (consent-gate.js) -> ใช้ผลนั้นเป็น acceptTerms
+  var consentOk = !!(window.ECConsent && window.ECConsent.isGranted());
+  if (!consentOk) {
+    showRegError('กรุณายอมรับนโยบายความเป็นส่วนตัว (PDPA) และเงื่อนไขการใช้งานก่อนลงทะเบียน');
+    if (window.ECConsent) window.ECConsent.open();
     return;
   }
   hideRegError();
 
   var payload = {
-    acceptTerms: true,
+    acceptTerms: consentOk,
     username: document.getElementById('reg-username').value.trim(),
     email: document.getElementById('reg-email').value.trim(),
     password: document.getElementById('reg-pass').value,
