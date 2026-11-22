@@ -2073,6 +2073,13 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
     <div class="hint-text"><i class="ti ti-alert-triangle ti-warn" aria-hidden="true"></i> สิทธิ์จะมีผลหลังผู้ดูแลระบบอนุมัติ</div>
   </div>
 
+  <label style="display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:13.5px;line-height:1.7;cursor:pointer">
+    <input type="checkbox" id="reg-accept-terms" style="margin-top:4px;width:18px;height:18px;flex:0 0 auto">
+    <span>ข้าพเจ้ายอมรับ <a href="privacy-policy.html" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว (PDPA)</a> และเงื่อนไขการใช้งาน
+      รวมถึง <a href="privacy-policy.html#publication" target="_blank" rel="noopener">เงื่อนไขการเผยแพร่ผลงานวิจัยหลังปิดโครงการ</a>
+      (สรุปผลฉบับย่อเป็น Infographic เผยแพร่บนเว็บไซต์ โดยไม่ระบุตัวตนอาสาสมัคร) <span class="req">*</span></span>
+  </label>
+
   <div style="display:flex; gap:10px; margin-top:20px">
     <button class="btn-back-login" style="flex:1" onclick="regGoStep(2)"><i class="ti ti-arrow-left" aria-hidden="true"></i> ย้อนกลับ</button>
     <button class="btn-register" id="btn-submit-reg" style="flex:2" onclick="submitRegister()"><i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> ลงทะเบียน</button>
@@ -11262,8 +11269,15 @@ async function uploadToGoogleDrive(file) {
   var lname = document.getElementById('reg-lname').value.trim();
   
   var ethicsStatus = document.getElementById('reg-ethics-training').value;
-  
+  var termsBox = document.getElementById('reg-accept-terms');
+  if (!termsBox || !termsBox.checked) {
+    showRegError('กรุณายอมรับนโยบายความเป็นส่วนตัวและเงื่อนไขการใช้งานก่อนลงทะเบียน');
+    return;
+  }
+  hideRegError();
+
   var payload = {
+    acceptTerms: true,
     username: document.getElementById('reg-username').value.trim(),
     email: document.getElementById('reg-email').value.trim(),
     password: document.getElementById('reg-pass').value,
