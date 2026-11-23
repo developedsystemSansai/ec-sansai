@@ -1625,6 +1625,15 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
 <style id="icons-local">
 .ti{display:inline-block;width:1em;height:1em;flex:none;vertical-align:-.125em;background-color:currentColor;-webkit-mask:var(--ti) center/contain no-repeat;mask:var(--ti) center/contain no-repeat;font-style:normal;line-height:1}
 .ti-ok{color:#1b5e3e}.ti-warn{color:#b7791f}.ti-err{color:#b91c1c}
+/* Full Board icons */
+.ti-send{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 14l11 -11'/%3E%3Cpath d='M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5'/%3E%3C/svg%3E")}
+.ti-calendar-event{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z'/%3E%3Cpath d='M16 3v4'/%3E%3Cpath d='M8 3v4'/%3E%3Cpath d='M4 11h16'/%3E%3Cpath d='M8 15h2v2h-2z'/%3E%3C/svg%3E")}
+.ti-checks{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 12l5 5l10 -10'/%3E%3Cpath d='M2 12l5 5m5 -5l5 -5'/%3E%3C/svg%3E")}
+.ti-square-off{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 4h10a2 2 0 0 1 2 2v10m-.584 3.412a2 2 0 0 1 -1.416 .588h-12a2 2 0 0 1 -2 -2v-12c0 -.552 .224 -1.052 .586 -1.414'/%3E%3Cpath d='M3 3l18 18'/%3E%3C/svg%3E")}
+.ti-brand-line{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10.663c0 -4.224 -4.041 -7.663 -9 -7.663s-9 3.439 -9 7.663c0 3.783 3.201 6.958 7.527 7.56c1.053 .239 .932 .644 .696 2.133c-.039 .238 -.184 .932 .777 .512c.96 -.42 5.18 -3.201 7.073 -5.48c1.304 -1.504 1.927 -3.029 1.927 -4.715v-.01z'/%3E%3C/svg%3E")}
+.ti-mail-off{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5h10a2 2 0 0 1 2 2v10m-2 2h-14a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2'/%3E%3Cpath d='M3 7l9 6l.565 -.377m2.435 -1.623l6 -4'/%3E%3Cpath d='M3 3l18 18'/%3E%3C/svg%3E")}
+.ti-player-skip-forward{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 5v14l12 -7z'/%3E%3Cpath d='M20 5v14'/%3E%3C/svg%3E")}
+.ti-database{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 6m-8 0a8 3 0 1 0 16 0a8 3 0 1 0 -16 0'/%3E%3Cpath d='M4 6v6a8 3 0 0 0 16 0v-6'/%3E%3Cpath d='M4 12v6a8 3 0 0 0 16 0v-6'/%3E%3C/svg%3E")}
 .ti-alert-triangle{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M12 9v4' /%3E %3Cpath d='M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z' /%3E %3Cpath d='M12 16h.01' /%3E %3C/svg%3E")}
 .ti-arrow-back-up{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M9 14l-4 -4l4 -4' /%3E %3Cpath d='M5 10h11a4 4 0 1 1 0 8h-1' /%3E %3C/svg%3E")}
 .ti-arrow-down{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M12 5l0 14' /%3E %3Cpath d='M18 13l-6 6' /%3E %3Cpath d='M6 13l6 6' /%3E %3C/svg%3E")}
@@ -4440,7 +4449,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <option value="ผ่านตรวจเอกสาร">ผ่านตรวจเอกสาร</option>
           </optgroup>
           <optgroup label="ขั้นตอนพิจารณาโดยกรรมการ">
-            <option value="พิจารณาเข้าสู่ Full Board">พิจารณาเข้าสู่ Full Board (ส่งไฟล์ให้กรรมการทุกคน)</option>
+            <option value="พิจารณาเข้าสู่ Full Board">🔴 พิจารณาเข้าสู่ Full Board (ส่งไฟล์ให้กรรมการทุกคน)</option>
             <option value="รอตอบรับ">รอตอบรับ</option>
             <option value="รอประเมิน">รอประเมิน</option>
             <option value="รอผลพิจารณา">รอผลพิจารณา</option>
@@ -4470,14 +4479,19 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       <!-- Full Board: เลือกไฟล์ + การประชุม (แสดงเมื่อเลือกสถานะ "พิจารณาเข้าสู่ Full Board") -->
       <div id="us-fb-panel" style="display:none;margin-bottom:20px;border:1.5px solid #f5bcb8;background:#fff8f7;border-radius:12px;padding:14px 16px">
         <div style="font-weight:700;font-size:14px;color:#b71c1c;margin-bottom:4px"><i class="ti ti-send" aria-hidden="true"></i> ส่งให้กรรมการทุกคนอ่านก่อนวันประชุม</div>
-        <div style="font-size:12px;color:var(--text-light);margin-bottom:10px">เมื่อบันทึก ระบบจะตั้งประเภทเป็น Full Board และส่งอีเมล / แจ้งเตือนในระบบ / LINE พร้อมลิงก์ไฟล์ที่ติ๊กเลือก</div>
+        <div style="font-size:12px;color:var(--text-light);margin-bottom:12px">เมื่อบันทึก ระบบจะตั้งประเภทเป็น Full Board และส่งให้กรรมการทุกคนผ่านช่องทางด้านล่าง พร้อมลิงก์ไฟล์ที่ติ๊กเลือก</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;font-size:12px">
+          <span style="background:#fff;border:1px solid #f5bcb8;border-radius:20px;padding:3px 10px"><i class="ti ti-mail" aria-hidden="true" style="color:#b71c1c"></i> อีเมล</span>
+          <span style="background:#fff;border:1px solid #f5bcb8;border-radius:20px;padding:3px 10px"><i class="ti ti-bell" aria-hidden="true" style="color:#b71c1c"></i> แจ้งเตือนในระบบ</span>
+          <span style="background:#fff;border:1px solid #f5bcb8;border-radius:20px;padding:3px 10px"><i class="ti ti-brand-line" aria-hidden="true" style="color:#b71c1c"></i> LINE</span>
+        </div>
         <div class="field-group" style="margin-bottom:10px">
-          <label for="us-fb-meeting" style="font-size:13px;font-weight:700">การประชุม</label>
+          <label for="us-fb-meeting" style="font-size:13px;font-weight:700"><i class="ti ti-calendar-event" aria-hidden="true" style="color:#b71c1c"></i> การประชุม</label>
           <select id="us-fb-meeting" class="form-control"><option value="">ใกล้ที่สุดที่ยังไม่เสร็จสิ้น (อัตโนมัติ)</option></select>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <span style="font-size:13px;font-weight:700">ไฟล์ที่จะส่ง (<span id="us-fb-selcount">0</span>/<span id="us-fb-total">0</span>)</span>
-          <span style="font-size:12px"><a href="#" onclick="usFbToggleAll(true);return false">เลือกทั้งหมด</a> · <a href="#" onclick="usFbToggleAll(false);return false">ไม่เลือก</a></span>
+          <span style="font-size:13px;font-weight:700"><i class="ti ti-paperclip" aria-hidden="true" style="color:#b71c1c"></i> ไฟล์ที่จะส่ง (<span id="us-fb-selcount">0</span>/<span id="us-fb-total">0</span>)</span>
+          <span style="font-size:12px"><a href="#" onclick="usFbToggleAll(true);return false"><i class="ti ti-checks" aria-hidden="true"></i> เลือกทั้งหมด</a> &nbsp; <a href="#" onclick="usFbToggleAll(false);return false"><i class="ti ti-square-off" aria-hidden="true"></i> ไม่เลือก</a></span>
         </div>
         <div id="us-fb-files" style="max-height:200px;overflow:auto;background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:6px 10px;font-size:13px"></div>
       </div>
@@ -5092,17 +5106,17 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
           <button class="modal-close" onclick="closeModal('modal-fullboard-send')"><i class="ti ti-x" aria-hidden="true"></i></button>
         </div>
         <div class="modal-body">
-          <div style="font-size:13px;color:var(--text-light);margin-bottom:6px">โครงการที่จะส่ง (<span id="fb-count">0</span>):</div>
+          <div style="font-size:13px;color:var(--text-light);margin-bottom:6px"><i class="ti ti-clipboard-list" aria-hidden="true"></i> โครงการที่จะส่ง (<span id="fb-count">0</span>):</div>
           <div id="fb-list" style="max-height:160px;overflow:auto;border:1px solid var(--border,#ddd);border-radius:8px;padding:8px 10px;font-size:13px;margin-bottom:14px"></div>
           <div class="field-group">
-            <label for="fb-meeting">การประชุม</label>
+            <label for="fb-meeting"><i class="ti ti-calendar-event" aria-hidden="true"></i> การประชุม</label>
             <select id="fb-meeting" class="form-control"><option value="">ใกล้ที่สุดที่ยังไม่เสร็จสิ้น (อัตโนมัติ)</option></select>
           </div>
           <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;margin-top:10px;cursor:pointer">
             <input type="checkbox" id="fb-force" style="margin-top:3px">
-            <span>ส่งซ้ำแม้กรรมการบางท่านเคยได้รับแล้ว<br><small style="color:var(--text-light)">ปกติระบบจะข้ามคนที่ได้รับแล้ว และลองส่งใหม่เฉพาะคนที่อีเมลล้มเหลว</small></span>
+            <span><i class="ti ti-refresh" aria-hidden="true"></i> ส่งซ้ำแม้กรรมการบางท่านเคยได้รับแล้ว<br><small style="color:var(--text-light)">ปกติระบบจะข้ามคนที่ได้รับแล้ว และลองส่งใหม่เฉพาะคนที่อีเมลล้มเหลว</small></span>
           </label>
-          <div style="font-size:12px;color:var(--text-light);margin-top:10px">ส่งถึงกรรมการที่ใช้งานอยู่ทุกคน ทางอีเมล แจ้งเตือนในระบบ และ LINE (เฉพาะที่ผูกบัญชี)</div>
+          <div style="font-size:12px;color:var(--text-light);margin-top:10px"><i class="ti ti-users" aria-hidden="true"></i> ส่งถึงกรรมการที่ใช้งานอยู่ทุกคน ทางอีเมล แจ้งเตือนในระบบ และ LINE (เฉพาะที่ผูกบัญชี)</div>
           <div id="fb-result" style="margin-top:12px;font-size:13px"></div>
         </div>
         <div class="modal-footer">
@@ -6263,18 +6277,23 @@ function _renderCommitteeCheckboxes(committees) {
           var files = (res && res.success) ? (res.data || []).filter(function(f) { return f.file_id; }) : [];
           document.getElementById('us-fb-total').textContent = files.length;
           if (!files.length) {
-            box.innerHTML = '<div style="padding:8px;color:var(--text-light)">' + ((res && res.success) ? 'ยังไม่มีไฟล์ในโครงการนี้ — กรรมการจะดูเอกสารในระบบ' : 'โหลดไฟล์ไม่สำเร็จ') + '</div>';
+            box.innerHTML = '<div class="empty-state" style="padding:16px"><div class="empty-icon" style="font-size:32px"><i class="ti ti-inbox" aria-hidden="true"></i></div><p style="font-size:13px">' + ((res && res.success) ? 'ยังไม่มีไฟล์ในโครงการนี้ — กรรมการจะดูเอกสารในระบบ' : 'โหลดไฟล์ไม่สำเร็จ') + '</p></div>';
             usFbCount();
             return;
           }
           box.innerHTML = files.map(function(f) {
             var typeLabel = (typeof VF_TYPE_LABEL !== 'undefined' && VF_TYPE_LABEL[f.file_type || 'other']) || f.file_type || '';
-            return '<label style="display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px solid #f0f0f0;cursor:pointer">'
-              + '<input type="checkbox" class="us-fb-chk" value="' + esc(f.file_id) + '" checked onchange="usFbCount()" style="margin-top:3px">'
-              + '<span style="flex:1;word-break:break-all">' + esc(f.file_name || '-')
-              + (typeLabel ? ' <small style="color:var(--text-light)">· ' + esc(typeLabel) + '</small>' : '')
-              + (f.project_code && f.project_code !== code ? ' <small style="color:var(--gold)">· ' + esc(f.project_code) + '</small>' : '')
-              + '</span></label>';
+            var ext = String(f.file_name || '').split('.').pop().toLowerCase();
+            var icoColor = ext === 'pdf' ? '#d93025' : (ext === 'doc' || ext === 'docx') ? '#1a5fb4' : (ext === 'xls' || ext === 'xlsx') ? '#2d8a52' : (['jpg','jpeg','png','gif'].indexOf(ext) !== -1) ? '#7b3fa0' : '#666';
+            return '<label style="display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid #f0f0f0;cursor:pointer">'
+              + '<input type="checkbox" class="us-fb-chk" value="' + esc(f.file_id) + '" checked onchange="usFbCount()">'
+              + '<span style="font-size:22px;line-height:1;color:' + icoColor + '">' + vfFileIcon_(f.file_name) + '</span>'
+              + '<span style="flex:1;min-width:0;word-break:break-all">' + esc(f.file_name || '-')
+              + '<br><small style="color:var(--text-light)">'
+              + (typeLabel ? '<i class="ti ti-tag" aria-hidden="true"></i> ' + esc(typeLabel) + ' &nbsp;' : '')
+              + (f.file_size ? '<i class="ti ti-database" aria-hidden="true"></i> ' + formatFileSize(parseInt(f.file_size)) + ' &nbsp;' : '')
+              + (f.project_code && f.project_code !== code ? '<span style="color:var(--gold)"><i class="ti ti-pencil" aria-hidden="true"></i> ' + esc(f.project_code) + '</span>' : '')
+              + '</small></span></label>';
           }).join('');
           usFbCount();
         })
@@ -12213,13 +12232,15 @@ function showPage(page) {
           if (r.quotaExceeded) quota = true;
           var line = '<div style="padding:6px 0;border-top:1px solid var(--border,#eee)"><strong>' + esc(r.projectCode) + '</strong> ';
           if (!r.success) {
+            line = line.replace('<strong>', '<i class="ti ti-circle-x" aria-hidden="true" style="color:#b71c1c"></i> <strong>');
             line += '<span style="color:#b71c1c">' + esc(r.message || 'ส่งไม่สำเร็จ') + '</span>';
           } else {
-            line += 'อีเมล ' + (r.emailed || 0) + ' · LINE ' + (r.lineSent || 0) + ' · กรรมการ ' + (r.committees || 0) + ' ท่าน';
-            if (r.skippedAlreadySent) line += ' · ข้าม (เคยส่งแล้ว) ' + r.skippedAlreadySent;
-            if (r.noEmail && r.noEmail.length) line += '<br><small style="color:#856404">ไม่มีอีเมล: ' + esc(r.noEmail.join(', ')) + '</small>';
-            if (r.failed && r.failed.length) line += '<br><small style="color:#b71c1c">ส่งอีเมลไม่สำเร็จ: ' + esc(r.failed.join(', ')) + ' (กดส่งอีกครั้งเพื่อลองใหม่)</small>';
-            (r.warnings || []).forEach(function(w) { line += '<br><small style="color:#856404">⚠ ' + esc(w) + '</small>'; });
+            line = line.replace('<strong>', '<i class="ti ti-circle-check ti-ok" aria-hidden="true"></i> <strong>');
+            line += '<i class="ti ti-mail" aria-hidden="true"></i> ' + (r.emailed || 0) + ' &nbsp;<i class="ti ti-brand-line" aria-hidden="true"></i> ' + (r.lineSent || 0) + ' &nbsp;<i class="ti ti-users" aria-hidden="true"></i> ' + (r.committees || 0) + ' ท่าน';
+            if (r.skippedAlreadySent) line += ' &nbsp;<i class="ti ti-player-skip-forward" aria-hidden="true"></i> ข้าม (เคยส่งแล้ว) ' + r.skippedAlreadySent;
+            if (r.noEmail && r.noEmail.length) line += '<br><small style="color:#856404"><i class="ti ti-mail-off" aria-hidden="true"></i> ไม่มีอีเมล: ' + esc(r.noEmail.join(', ')) + '</small>';
+            if (r.failed && r.failed.length) line += '<br><small style="color:#b71c1c"><i class="ti ti-circle-x" aria-hidden="true"></i> ส่งอีเมลไม่สำเร็จ: ' + esc(r.failed.join(', ')) + ' (กดส่งอีกครั้งเพื่อลองใหม่)</small>';
+            (r.warnings || []).forEach(function(w) { line += '<br><small style="color:#856404"><i class="ti ti-alert-triangle" aria-hidden="true"></i> ' + esc(w) + '</small>'; });
           }
           html += line + '</div>';
         });
