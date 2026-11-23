@@ -62,6 +62,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         updateProjectStatus:         function(sid,pc,ns,su,note){ return callGAS('updateProjectStatus',        {sessionId:sid, projectCode:pc, newStatus:ns, staffUsername:su, note:note}); },
         verifyProjectDocuments:      function(sid,pc,d,su,note){ return callGAS('verifyProjectDocuments',     {sessionId:sid, projectCode:pc, decision:d, staffUsername:su, note:note}); },
         setProjectType:              function(sid,pc,nt,cu)     { return callGAS('setProjectType',             {sessionId:sid, projectCode:pc, newType:nt, callerUsername:cu}); },
+        sendFullBoardToCommittee:    function(sid,pcs,mid,cu,force) { return callGAS('sendFullBoardToCommittee',  {sessionId:sid, projectCodes:pcs, meetingId:mid||'', callerUsername:cu, force:force===true}); },
         reviewRevisionByAdmin:       function(sid,pl,su)       { return callGAS('reviewRevisionByAdmin',      {sessionId:sid, payload:pl, staffUsername:su}); },
         submitRevision:              function(pl)               { return callGAS('submitRevision',             {payload:pl}); },
         setExtraUploadAccess:        function(sid,pl,au)        { return callGAS('setExtraUploadAccess',      {sessionId:sid, payload:pl, adminUsername:au}); },
@@ -2919,6 +2920,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
               <div class="section-title" style="margin-bottom:0"><i class="ti ti-chart-bar" aria-hidden="true"></i> โครงการทั้งหมดในระบบ</div>
               <div style="display:flex; gap:8px">
                 <button class="btn btn-blue" onclick="openQuickAssignModal()"><i class="ti ti-clipboard-list" aria-hidden="true"></i> มอบหมายโครงการ</button>
+                <button class="btn btn-outline" onclick="openFullBoardSendModal()" title="ส่งโครงการ Full Board ให้กรรมการทุกคนอ่านก่อนวันประชุม"><i class="ti ti-send" aria-hidden="true"></i> ส่ง Full Board ให้กรรมการ</button>
                 <button class="btn btn-sm btn-outline" onclick="loadStaffProjects()"><i class="ti ti-refresh" aria-hidden="true"></i></button>
               </div>
             </div>
@@ -5063,6 +5065,34 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         </div>
       </div>
     </div>
+
+    <!-- ส่งโครงการ Full Board ให้กรรมการทุกคนอ่านก่อนประชุม -->
+    <div class="modal-overlay" id="modal-fullboard-send" onclick="if(event.target===this)closeModal('modal-fullboard-send')">
+      <div class="modal" style="max-width:560px">
+        <div class="modal-header">
+          <h3><i class="ti ti-send" aria-hidden="true"></i> ส่งโครงการ Full Board ให้กรรมการอ่าน</h3>
+          <button class="modal-close" onclick="closeModal('modal-fullboard-send')"><i class="ti ti-x" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+          <div style="font-size:13px;color:var(--text-light);margin-bottom:6px">โครงการที่จะส่ง (<span id="fb-count">0</span>):</div>
+          <div id="fb-list" style="max-height:160px;overflow:auto;border:1px solid var(--border,#ddd);border-radius:8px;padding:8px 10px;font-size:13px;margin-bottom:14px"></div>
+          <div class="field-group">
+            <label for="fb-meeting">การประชุม</label>
+            <select id="fb-meeting" class="form-control"><option value="">ใกล้ที่สุดที่ยังไม่เสร็จสิ้น (อัตโนมัติ)</option></select>
+          </div>
+          <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;margin-top:10px;cursor:pointer">
+            <input type="checkbox" id="fb-force" style="margin-top:3px">
+            <span>ส่งซ้ำแม้กรรมการบางท่านเคยได้รับแล้ว<br><small style="color:var(--text-light)">ปกติระบบจะข้ามคนที่ได้รับแล้ว และลองส่งใหม่เฉพาะคนที่อีเมลล้มเหลว</small></span>
+          </label>
+          <div style="font-size:12px;color:var(--text-light);margin-top:10px">ส่งถึงกรรมการที่ใช้งานอยู่ทุกคน ทางอีเมล แจ้งเตือนในระบบ และ LINE (เฉพาะที่ผูกบัญชี)</div>
+          <div id="fb-result" style="margin-top:12px;font-size:13px"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeModal('modal-fullboard-send')">ปิด</button>
+          <button class="btn btn-primary" id="fb-send-btn" onclick="doSendFullBoard()"><i class="ti ti-send" aria-hidden="true"></i> ส่งให้กรรมการ</button>
+        </div>
+      </div>
+    </div>
     <script>
 
     // ════════════════════════
@@ -5800,7 +5830,10 @@ function renderStaffProjectsTable(projects) {
     // "แก้ไขครั้งที่ N" ที่ผู้วิจัยไม่กลับมาส่งแก้ไข) ไม่มีทางเปลี่ยนสถานะเองได้เลยจากหน้านี้ ต้องเข้าไปแก้ที่
     // ชีตโดยตรง — จัดกลุ่มปุ่มนี้เป็น secondary action (btn-outline) คู่กับปุ่ม "ไฟล์" เพื่อไม่ให้แย่งความ
     // สำคัญกับปุ่ม action หลักของแต่ละสถานะ (ส่งกรรมการ/ตรวจเอกสาร/แจ้งผล ฯลฯ) แต่ยังกดถึงได้เสมอ
-    var extraBtns = '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + code + '\', this)"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>'
+    var fbBtn = (String(p.project_type || '').trim().toLowerCase() === 'fullboard' && (S._isAdmin || S._isStaff))
+      ? '<button class="btn btn-sm btn-accent" onclick="openFullBoardSendModal(\'' + code + '\')" title="ส่งโครงการนี้ให้กรรมการทุกคนอ่านก่อนวันประชุม"><i class="ti ti-send" aria-hidden="true"></i> ส่งให้กรรมการอ่าน</button> '
+      : '';
+    var extraBtns = fbBtn + '<button class="btn btn-sm btn-outline" onclick="viewProjectFiles(\'' + code + '\', this)"><i class="ti ti-paperclip" aria-hidden="true"></i> ไฟล์</button>'
       + ' <button class="btn btn-sm btn-outline" onclick="openUpdateStatusModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="เปลี่ยนสถานะโครงการด้วยตนเอง (ใช้เมื่อจำเป็น)"><i class="ti ti-chart-bar" aria-hidden="true"></i> เปลี่ยนสถานะ</button>'
       + ' <button class="btn btn-sm ' + (p.extra_upload_open ? 'btn-accent' : 'btn-outline') + '" onclick="openExtraUploadAdminModal(\'' + code + '\',\'' + title + '\',' + (p.extra_upload_open ? 'true' : 'false') + ',\'' + escAttr(p.extra_upload_until || '') + '\')" title="เปิดให้ผู้วิจัยแนบไฟล์เพิ่ม (ไม่เปลี่ยนสถานะ)"><i class="ti ti-' + (p.extra_upload_open ? 'lock-open' : 'paperclip') + '" aria-hidden="true"></i> ' + (p.extra_upload_open ? 'เปิดรับอยู่' : 'เปิดรับไฟล์') + '</button>'
       + (canRestoreRevision ? ' <button class="btn btn-sm btn-accent" onclick="openRestoreRevisionModal(\'' + code + '\',\'' + title + '\',\'' + escAttr(status) + '\')" title="สถานะถูกเปลี่ยนผิด — คืนเป็น แก้ไขครั้งที่ N เพื่อให้ผู้วิจัยยื่นไฟล์แก้ไขได้"><i class="ti ti-rotate-clockwise-2" aria-hidden="true"></i> ตั้งเป็นแก้ไข</button>' : '')
@@ -11971,6 +12004,114 @@ function showPage(page) {
           showToast(e.message || 'เกิดข้อผิดพลาด', 'error');
         })
         .setProjectType(S.user.sessionId, _srtCurrentCode, _srtSelectedType, S.user.username);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ส่งโครงการ Full Board ให้กรรมการทุกคนอ่านก่อนวันประชุม
+    // ═══════════════════════════════════════════════════════════════
+    var _fbCodes = [];
+    var _fbSending = false;
+
+    function openFullBoardSendModal(code) {
+      var list = S.staffProjects || [];
+      if (code) {
+        _fbCodes = [code];
+      } else {
+        // ทุกโครงการ Full Board ที่ยังไม่ได้ผลสุดท้าย (ไม่รวมรอบแก้ไข _fix)
+        _fbCodes = list.filter(function(p) {
+          var st = String(p.status || '');
+          return String(p.project_type || '').trim().toLowerCase() === 'fullboard'
+            && String(p.project_code || '').indexOf('_fix') === -1
+            && st.indexOf('รับรอง') === -1 && st.indexOf('ไม่รับรอง') === -1;
+        }).map(function(p) { return p.project_code; });
+      }
+      if (!_fbCodes.length) { showToast('ไม่พบโครงการ Full Board ที่รอส่ง', 'warning'); return; }
+
+      document.getElementById('fb-count').textContent = _fbCodes.length;
+      document.getElementById('fb-list').innerHTML = _fbCodes.map(function(c) {
+        var p = list.find(function(x) { return x.project_code === c; }) || {};
+        return '<div><strong>' + esc(c) + '</strong> ' + esc(p.title_th || '') + '</div>';
+      }).join('');
+      document.getElementById('fb-result').innerHTML = '';
+      document.getElementById('fb-force').checked = false;
+      var btn = document.getElementById('fb-send-btn');
+      btn.disabled = false; btn.innerHTML = '<i class="ti ti-send" aria-hidden="true"></i> ส่งให้กรรมการ';
+
+      var sel = document.getElementById('fb-meeting');
+      sel.innerHTML = '<option value="">ใกล้ที่สุดที่ยังไม่เสร็จสิ้น (อัตโนมัติ)</option>';
+      google.script.run
+        .withSuccessHandler(function(res) {
+          ((res && res.data) || []).filter(function(m) { return String(m.status || '').trim() !== 'เสร็จสิ้น'; })
+            .sort(function(a, b) { return new Date(a.meeting_date) - new Date(b.meeting_date); })
+            .forEach(function(m) {
+              var d = new Date(m.meeting_date);
+              var ds = isNaN(d.getTime()) ? String(m.meeting_date || '') : d.toLocaleDateString('th-TH', {day:'numeric', month:'short', year:'numeric'});
+              var o = document.createElement('option');
+              o.value = m.meeting_id;
+              o.textContent = ds + (m.title ? ' — ' + m.title : '') + (m.location ? ' (' + m.location + ')' : '');
+              sel.appendChild(o);
+            });
+        })
+        .withFailureHandler(function() {})
+        .getMeetings(S.user.sessionId, S.user.username);
+
+      openModal('modal-fullboard-send');
+    }
+
+    function doSendFullBoard() {
+      if (_fbSending || !_fbCodes.length) return;
+      var meetingId = document.getElementById('fb-meeting').value;
+      var force = document.getElementById('fb-force').checked;
+      var btn = document.getElementById('fb-send-btn');
+      var out = document.getElementById('fb-result');
+      var chunks = [];
+      for (var i = 0; i < _fbCodes.length; i += 10) chunks.push(_fbCodes.slice(i, i + 10));
+
+      _fbSending = true;
+      btn.disabled = true; btn.innerHTML = '<span class="spin-sm"></span> กำลังส่ง...';
+      out.innerHTML = '';
+      var all = [], errMsg = '';
+
+      function next(k) {
+        if (k >= chunks.length) return finish();
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.results) all = all.concat(res.results);
+            else errMsg = (res && res.message) || 'เกิดข้อผิดพลาด';
+            if (res && res.success === false && !res.results) return finish();
+            next(k + 1);
+          })
+          .withFailureHandler(function(e) { errMsg = (e && e.message) || 'เกิดข้อผิดพลาด'; finish(); })
+          .sendFullBoardToCommittee(S.user.sessionId, chunks[k], meetingId, S.user.username, force);
+      }
+
+      function finish() {
+        _fbSending = false;
+        btn.disabled = false; btn.innerHTML = '<i class="ti ti-send" aria-hidden="true"></i> ส่งอีกครั้ง';
+        var html = '';
+        if (errMsg) html += '<div style="color:#b71c1c;margin-bottom:6px">' + esc(errMsg) + '</div>';
+        var okN = 0, quota = false;
+        all.forEach(function(r) {
+          if (r.success) okN++;
+          if (r.quotaExceeded) quota = true;
+          var line = '<div style="padding:6px 0;border-top:1px solid var(--border,#eee)"><strong>' + esc(r.projectCode) + '</strong> ';
+          if (!r.success) {
+            line += '<span style="color:#b71c1c">' + esc(r.message || 'ส่งไม่สำเร็จ') + '</span>';
+          } else {
+            line += 'อีเมล ' + (r.emailed || 0) + ' · LINE ' + (r.lineSent || 0) + ' · กรรมการ ' + (r.committees || 0) + ' ท่าน';
+            if (r.skippedAlreadySent) line += ' · ข้าม (เคยส่งแล้ว) ' + r.skippedAlreadySent;
+            if (r.noEmail && r.noEmail.length) line += '<br><small style="color:#856404">ไม่มีอีเมล: ' + esc(r.noEmail.join(', ')) + '</small>';
+            if (r.failed && r.failed.length) line += '<br><small style="color:#b71c1c">ส่งอีเมลไม่สำเร็จ: ' + esc(r.failed.join(', ')) + ' (กดส่งอีกครั้งเพื่อลองใหม่)</small>';
+            (r.warnings || []).forEach(function(w) { line += '<br><small style="color:#856404">⚠ ' + esc(w) + '</small>'; });
+          }
+          html += line + '</div>';
+        });
+        if (quota) html = '<div style="color:#856404;margin-bottom:6px">โควตาอีเมลรายวันของ Google หมด — คนที่ยังไม่ได้รับจะถูกส่งเมื่อกดส่งอีกครั้งในวันถัดไป</div>' + html;
+        out.innerHTML = html;
+        if (all.length) showToast('ส่งสำเร็จ ' + okN + '/' + all.length + ' โครงการ', okN ? undefined : 'error');
+      }
+
+      next(0);
     }
 
 
