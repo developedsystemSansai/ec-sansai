@@ -217,6 +217,11 @@ button{font-family:inherit;cursor:pointer}
 
 /* doc list */
 .dm-list{display:flex;flex-direction:column;gap:6px}
+.dm-font{display:flex;gap:.85rem;align-items:flex-start;margin:0 0 1rem;padding:.9rem 1.1rem;background:#fff7e0;border:1.5px solid var(--g400,#d9a93a);border-radius:12px}
+.dm-font-ico{flex:none;width:38px;height:38px;border-radius:8px;background:var(--g50,#fdf3d6);color:var(--g700,#8a6212);display:flex;align-items:center;justify-content:center;font-size:20px}
+.dm-font-tx{display:flex;flex-direction:column;gap:.2rem;font-size:.92rem;line-height:1.55;color:var(--n700,#333)}
+.dm-font-tx strong{font-size:1rem;color:var(--n900,#1a1a1a)}
+.dm-font-tx span{color:var(--n600,#555)}
 .dm-item{display:flex;align-items:center;gap:.75rem;background:var(--u50);
   border:1px solid var(--u100);border-radius:5px;padding:.85rem 1rem;
   text-decoration:none;transition:border-color .15s,box-shadow .15s,background .15s}
@@ -305,6 +310,8 @@ button{font-family:inherit;cursor:pointer}
 </style>
 <script defer src="https://sandtools.vercel.app/t.js" data-site="ppucg5v4xb"></script>
 <style id="icons-local">
+.ti-download{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2'/%3E%3Cpath d='M7 11l5 5l5 -5'/%3E%3Cpath d='M12 4l0 12'/%3E%3C/svg%3E")}
+.ti-typography{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20l3 0'/%3E%3Cpath d='M14 20l7 0'/%3E%3Cpath d='M6.9 15l6.9 0'/%3E%3Cpath d='M10.2 6.3l5.8 13.7'/%3E%3Cpath d='M5 20l6 -16l2 0l7 16'/%3E%3C/svg%3E")}
 .ti{display:inline-block;width:1em;height:1em;flex:none;vertical-align:-.125em;background-color:currentColor;-webkit-mask:var(--ti) center/contain no-repeat;mask:var(--ti) center/contain no-repeat;font-style:normal;line-height:1}
 .ti-ok{color:#1b5e3e}.ti-warn{color:#b7791f}.ti-err{color:#b91c1c}
 .ti-alert-circle{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E %3Cpath d='M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0' /%3E %3Cpath d='M12 8v4' /%3E %3Cpath d='M12 16h.01' /%3E %3C/svg%3E")}
@@ -607,7 +614,7 @@ button{font-family:inherit;cursor:pointer}
     <div class="sec-head rev">
       <div class="sec-eye" style="color:var(--g600)">แบบฟอร์มดาวน์โหลด</div>
       <h2 class="sec-ttl" id="dl-h">แบบฟอร์ม IS.01 – IS.09 และเอกสารประกอบ</h2>
-      <p class="sec-dsc">ดาวน์โหลดแบบฟอร์มได้โดยตรงจาก Google Docs — บันทึกสำเนา (File → Make a copy) ก่อนกรอกข้อมูล</p>
+      <p class="sec-dsc">ดาวน์โหลดไฟล์ Word (.docx) ไปกรอกในเครื่องของท่านโดยตรง — ไม่ต้องเปิดผ่าน Google Docs</p>
     </div>
 
     <div class="dl-panel rev">
@@ -622,6 +629,15 @@ button{font-family:inherit;cursor:pointer}
             <div class="dl-stat"><strong>9</strong><span>เอกสารบังคับ</span></div>
             <div class="dl-stat"><strong>9</strong><span>เอกสารเพิ่มเติม</span></div>
           </div>
+        </div>
+      </div>
+
+      <!-- ข้อกำหนดฟอนต์ -->
+      <div class="dm-font" role="note">
+        <div class="dm-font-ico" aria-hidden="true"><i class="ti ti-typography"></i></div>
+        <div class="dm-font-tx">
+          <strong>ข้อกำหนดการจัดทำเอกสาร: ใช้ฟอนต์ TH SarabunPSK ขนาด 16</strong>
+          <span>กรุณาดาวน์โหลดไฟล์ไปกรอกด้วย Microsoft Word (หรือโปรแกรมที่ติดตั้งฟอนต์ TH SarabunPSK ไว้) แล้วตั้งฟอนต์ TH SarabunPSK ขนาด 16 ทั้งฉบับ — Google Docs ไม่มีฟอนต์ TH SarabunPSK จึงไม่ควรกรอกผ่าน Google Docs</span>
         </div>
       </div>
 
@@ -649,56 +665,56 @@ button{font-family:inherit;cursor:pointer}
           <div class="dm-notice">
             <i class="ti ti-alert-circle" aria-hidden="true"></i>
             <p>เอกสารทุกรายการด้านล่างเป็น<strong>เอกสารบังคับ</strong> ต้องแนบให้ครบทุกฉบับก่อนยื่น
-              รายการที่ไม่มีปุ่มเปิดต้องจัดทำโดยผู้วิจัย / หน่วยงานเอง</p>
+              รายการที่ไม่มีปุ่มดาวน์โหลดต้องจัดทำโดยผู้วิจัย / หน่วยงานเอง</p>
           </div>
           <div class="dm-list">
-            <a class="dm-item" href="https://docs.google.com/document/d/1Meb-7MeuPW-GwcmUJYlw-VcEwbPTD0dM/edit" target="_blank" rel="noopener">
+            <a class="dm-item" href="https://drive.google.com/uc?export=download&id=1Meb-7MeuPW-GwcmUJYlw-VcEwbPTD0dM" download rel="noopener">
               <div class="dm-ico req" aria-hidden="true"><i class="ti ti-file-description"></i></div>
               <div class="dm-info">
                 <div class="dm-code">IS.09</div>
                 <div class="dm-title">แบบเสนอโครงการวิจัย (Research Proposal)</div>
               </div>
-              <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+              <span class="btn-dm-open"><i class="ti ti-download" aria-hidden="true"></i> ดาวน์โหลด (.docx)</span>
             </a>
-            <a class="dm-item" href="https://docs.google.com/document/d/1dNOuCPj9AkPcKqtNJyJoDd2G9B9Udt_o/edit" target="_blank" rel="noopener">
+            <a class="dm-item" href="https://drive.google.com/uc?export=download&id=1dNOuCPj9AkPcKqtNJyJoDd2G9B9Udt_o" download rel="noopener">
               <div class="dm-ico req" aria-hidden="true"><i class="ti ti-clipboard-check"></i></div>
               <div class="dm-info">
                 <div class="dm-code">IS.01</div>
                 <div class="dm-title">แบบยื่นขอรับการพิจารณาจริยธรรมการวิจัย</div>
               </div>
-              <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+              <span class="btn-dm-open"><i class="ti ti-download" aria-hidden="true"></i> ดาวน์โหลด (.docx)</span>
             </a>
-            <a class="dm-item" href="https://docs.google.com/document/d/1TrO-xB70lYFo7uAWwnKTzoe0e7cHYhw6/edit" target="_blank" rel="noopener">
+            <a class="dm-item" href="https://drive.google.com/uc?export=download&id=1TrO-xB70lYFo7uAWwnKTzoe0e7cHYhw6" download rel="noopener">
               <div class="dm-ico req" aria-hidden="true"><i class="ti ti-checklist"></i></div>
               <div class="dm-info">
                 <div class="dm-code">IS.02</div>
                 <div class="dm-title">แบบฟอร์มการประเมินตนเองโดยผู้วิจัย</div>
               </div>
-              <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+              <span class="btn-dm-open"><i class="ti ti-download" aria-hidden="true"></i> ดาวน์โหลด (.docx)</span>
             </a>
-            <a class="dm-item" href="https://docs.google.com/document/d/1A7HZKWhI0IkeLmmAXHcw6nYiDgEZxP2p/edit" target="_blank" rel="noopener">
+            <a class="dm-item" href="https://drive.google.com/uc?export=download&id=1A7HZKWhI0IkeLmmAXHcw6nYiDgEZxP2p" download rel="noopener">
               <div class="dm-ico req" aria-hidden="true"><i class="ti ti-scale"></i></div>
               <div class="dm-info">
                 <div class="dm-code">IS.03</div>
                 <div class="dm-title">แบบฟอร์มเปิดเผยการมีผลประโยชน์ทับซ้อน</div>
               </div>
-              <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+              <span class="btn-dm-open"><i class="ti ti-download" aria-hidden="true"></i> ดาวน์โหลด (.docx)</span>
             </a>
-            <a class="dm-item" href="https://docs.google.com/document/d/1REmHOc7s_QE_D_t7I6Yal36uOv1hXOtE/edit" target="_blank" rel="noopener">
+            <a class="dm-item" href="https://drive.google.com/uc?export=download&id=1REmHOc7s_QE_D_t7I6Yal36uOv1hXOtE" download rel="noopener">
               <div class="dm-ico req" aria-hidden="true"><i class="ti ti-users"></i></div>
               <div class="dm-info">
                 <div class="dm-code">IS.04</div>
                 <div class="dm-title">เอกสารข้อมูลคำอธิบายสำหรับผู้รับการวิจัย</div>
               </div>
-              <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+              <span class="btn-dm-open"><i class="ti ti-download" aria-hidden="true"></i> ดาวน์โหลด (.docx)</span>
             </a>
-            <a class="dm-item" href="https://docs.google.com/document/d/12nOtioaUO0ARW7HdX3KnoJQvmTkmPD2J/edit" target="_blank" rel="noopener">
+            <a class="dm-item" href="https://drive.google.com/uc?export=download&id=12nOtioaUO0ARW7HdX3KnoJQvmTkmPD2J" download rel="noopener">
               <div class="dm-ico req" aria-hidden="true"><i class="ti ti-writing"></i></div>
               <div class="dm-info">
                 <div class="dm-code">IS.05</div>
                 <div class="dm-title">เอกสารแสดงความยินยอมเข้าร่วมในโครงการวิจัย (ICF)</div>
               </div>
-              <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+              <span class="btn-dm-open"><i class="ti ti-download" aria-hidden="true"></i> ดาวน์โหลด (.docx)</span>
             </a>
             <div class="dm-item disabled">
               <div class="dm-ico nil" aria-hidden="true"><i class="ti ti-tool"></i></div>
@@ -729,32 +745,32 @@ button{font-family:inherit;cursor:pointer}
               หากโครงการไม่มีกลุ่มเป้าหมายดังกล่าวไม่ต้องแนบ</p>
           </div>
           <div class="dm-list">
-            <a class="dm-item" href="https://docs.google.com/document/d/1UPT1L_lKdcPlRTZtGrIkQKBBat42XYg5/edit" target="_blank" rel="noopener">
+            <a class="dm-item" href="https://drive.google.com/uc?export=download&id=1UPT1L_lKdcPlRTZtGrIkQKBBat42XYg5" download rel="noopener">
               <div class="dm-ico opt" aria-hidden="true"><i class="ti ti-mood-kid"></i></div>
               <div class="dm-info">
                 <div class="dm-code">IS.06</div>
                 <div class="dm-title">เอกสารสำหรับเด็กอายุ 7–12 ปี</div>
                 <div class="dm-sub">แนบเมื่อโครงการมีกลุ่มตัวอย่างเป็นเด็ก</div>
               </div>
-              <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+              <span class="btn-dm-open"><i class="ti ti-download" aria-hidden="true"></i> ดาวน์โหลด (.docx)</span>
             </a>
-            <a class="dm-item" href="https://docs.google.com/document/d/1VFxmrSRZjyvd9SsOk_bkv4AHF2UPc0v0/edit" target="_blank" rel="noopener">
+            <a class="dm-item" href="https://drive.google.com/uc?export=download&id=1VFxmrSRZjyvd9SsOk_bkv4AHF2UPc0v0" download rel="noopener">
               <div class="dm-ico opt" aria-hidden="true"><i class="ti ti-writing-sign"></i></div>
               <div class="dm-info">
                 <div class="dm-code">IS.07</div>
                 <div class="dm-title">เอกสารแสดงความยินยอมสำหรับเด็ก</div>
                 <div class="dm-sub">ใช้ร่วมกับ IS.06</div>
               </div>
-              <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+              <span class="btn-dm-open"><i class="ti ti-download" aria-hidden="true"></i> ดาวน์โหลด (.docx)</span>
             </a>
-            <a class="dm-item" href="https://docs.google.com/document/d/1u3dRk2NcLSic82VVmaNoFthYkSY3MpV7/edit" target="_blank" rel="noopener">
+            <a class="dm-item" href="https://drive.google.com/uc?export=download&id=1u3dRk2NcLSic82VVmaNoFthYkSY3MpV7" download rel="noopener">
               <div class="dm-ico opt" aria-hidden="true"><i class="ti ti-user-check"></i></div>
               <div class="dm-info">
                 <div class="dm-code">IS.08</div>
                 <div class="dm-title">เอกสารแสดงความยินยอมสำหรับผู้แทน</div>
                 <div class="dm-sub">แนบเมื่อผู้รับการวิจัยไม่สามารถให้ความยินยอมด้วยตนเอง</div>
               </div>
-              <span class="btn-dm-open"><i class="ti ti-external-link" aria-hidden="true"></i> เปิด</span>
+              <span class="btn-dm-open"><i class="ti ti-download" aria-hidden="true"></i> ดาวน์โหลด (.docx)</span>
             </a>
             <div class="dm-item disabled">
               <div class="dm-ico nil" aria-hidden="true"><i class="ti ti-award"></i></div>
@@ -818,7 +834,7 @@ button{font-family:inherit;cursor:pointer}
       <!-- footer hint -->
       <div class="dl-ftr">
         <i class="ti ti-brand-google-drive" aria-hidden="true"></i>
-        <span>เปิดใน Google Docs — เลือก <strong>File → Make a copy</strong> เพื่อบันทึกสำเนาก่อนกรอกข้อมูล</span>
+        <span>ดาวน์โหลดแล้วกรอกด้วย Word — ตั้งฟอนต์ <strong>TH SarabunPSK ขนาด 16</strong> ทั้งฉบับ</span>
       </div>
     </div>
 
