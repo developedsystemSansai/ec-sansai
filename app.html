@@ -63,6 +63,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         verifyProjectDocuments:      function(sid,pc,d,su,note){ return callGAS('verifyProjectDocuments',     {sessionId:sid, projectCode:pc, decision:d, staffUsername:su, note:note}); },
         setProjectType:              function(sid,pc,nt,cu)     { return callGAS('setProjectType',             {sessionId:sid, projectCode:pc, newType:nt, callerUsername:cu}); },
         sendFullBoardToCommittee:    function(sid,pcs,mid,cu,force) { return callGAS('sendFullBoardToCommittee',  {sessionId:sid, projectCodes:pcs, meetingId:mid||'', callerUsername:cu, force:force===true}); },
+        promoteToFullBoard:          function(sid,pc,fids,mid,cu,note) { return callGAS('promoteToFullBoard',        {sessionId:sid, projectCode:pc, fileIds:fids||[], meetingId:mid||'', callerUsername:cu, note:note||''}); },
         reviewRevisionByAdmin:       function(sid,pl,su)       { return callGAS('reviewRevisionByAdmin',      {sessionId:sid, payload:pl, staffUsername:su}); },
         submitRevision:              function(pl)               { return callGAS('submitRevision',             {payload:pl}); },
         setExtraUploadAccess:        function(sid,pl,au)        { return callGAS('setExtraUploadAccess',      {sessionId:sid, payload:pl, adminUsername:au}); },
@@ -2931,6 +2932,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
                 <option>รอพิจารณา</option>
                 <option>ผ่านตรวจเอกสาร</option>
                 <option>เอกสารไม่ครบ</option>
+                <option>พิจารณาเข้าสู่ Full Board</option>
                 <option>รอตอบรับ</option>
                 <option>รอประเมิน</option>
                 <option>รอผลพิจารณา</option>
@@ -4430,7 +4432,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         <label style="display: block; font-size: 14px; font-weight: 700; color: var(--text-mid); margin-bottom: 8px;">
           สถานะใหม่ <span style="color: #d93025;">*</span>
         </label>
-        <select id="us-status" class="form-control" style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--navy-light); border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 15px; background: white;">
+        <select id="us-status" class="form-control" onchange="usOnStatusChange()" style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--navy-light); border-radius: 10px; font-family: 'Sarabun', sans-serif; font-size: 15px; background: white;">
           <option value="" disabled>-- เลือกสถานะใหม่ --</option>
           <optgroup label="ขั้นตอนตรวจเอกสาร">
             <option value="รอพิจารณา">รอพิจารณา</option>
@@ -4438,6 +4440,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
             <option value="ผ่านตรวจเอกสาร">ผ่านตรวจเอกสาร</option>
           </optgroup>
           <optgroup label="ขั้นตอนพิจารณาโดยกรรมการ">
+            <option value="พิจารณาเข้าสู่ Full Board">พิจารณาเข้าสู่ Full Board (ส่งไฟล์ให้กรรมการทุกคน)</option>
             <option value="รอตอบรับ">รอตอบรับ</option>
             <option value="รอประเมิน">รอประเมิน</option>
             <option value="รอผลพิจารณา">รอผลพิจารณา</option>
@@ -4464,6 +4467,21 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
         </div>
       </div>
       
+      <!-- Full Board: เลือกไฟล์ + การประชุม (แสดงเมื่อเลือกสถานะ "พิจารณาเข้าสู่ Full Board") -->
+      <div id="us-fb-panel" style="display:none;margin-bottom:20px;border:1.5px solid #f5bcb8;background:#fff8f7;border-radius:12px;padding:14px 16px">
+        <div style="font-weight:700;font-size:14px;color:#b71c1c;margin-bottom:4px"><i class="ti ti-send" aria-hidden="true"></i> ส่งให้กรรมการทุกคนอ่านก่อนวันประชุม</div>
+        <div style="font-size:12px;color:var(--text-light);margin-bottom:10px">เมื่อบันทึก ระบบจะตั้งประเภทเป็น Full Board และส่งอีเมล / แจ้งเตือนในระบบ / LINE พร้อมลิงก์ไฟล์ที่ติ๊กเลือก</div>
+        <div class="field-group" style="margin-bottom:10px">
+          <label for="us-fb-meeting" style="font-size:13px;font-weight:700">การประชุม</label>
+          <select id="us-fb-meeting" class="form-control"><option value="">ใกล้ที่สุดที่ยังไม่เสร็จสิ้น (อัตโนมัติ)</option></select>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:13px;font-weight:700">ไฟล์ที่จะส่ง (<span id="us-fb-selcount">0</span>/<span id="us-fb-total">0</span>)</span>
+          <span style="font-size:12px"><a href="#" onclick="usFbToggleAll(true);return false">เลือกทั้งหมด</a> · <a href="#" onclick="usFbToggleAll(false);return false">ไม่เลือก</a></span>
+        </div>
+        <div id="us-fb-files" style="max-height:200px;overflow:auto;background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:6px 10px;font-size:13px"></div>
+      </div>
+
       <!-- หมายเหตุ (optional) -->
       <div class="field-group" style="margin-bottom: 16px;">
         <label style="display: block; font-size: 14px; font-weight: 700; color: var(--text-mid); margin-bottom: 8px;">
@@ -6218,13 +6236,111 @@ function _renderCommitteeCheckboxes(committees) {
       }
       sel.value = matched ? currentStatus : '';
       document.getElementById('us-note').value='';
+      _usFbLoadedFor = '';
+      usOnStatusChange();
       openModal('modal-update-status');
     }
+    var US_FB_STATUS = 'พิจารณาเข้าสู่ Full Board';
+    var _usFbLoadedFor = '';
+
+    function usOnStatusChange() {
+      var panel = document.getElementById('us-fb-panel');
+      if (!panel) return;
+      var isFb = val('us-status') === US_FB_STATUS;
+      panel.style.display = isFb ? 'block' : 'none';
+      if (!isFb) return;
+      var code = val('us-project-code');
+      if (_usFbLoadedFor === code) return;
+      _usFbLoadedFor = code;
+
+      var box = document.getElementById('us-fb-files');
+      box.innerHTML = '<div style="padding:8px;color:var(--text-light)"><span class="spin-sm dark" style="width:12px;height:12px;display:inline-block;vertical-align:-2px;margin-right:6px"></span>กำลังโหลดไฟล์...</div>';
+      document.getElementById('us-fb-total').textContent = '0';
+      document.getElementById('us-fb-selcount').textContent = '0';
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          var files = (res && res.success) ? (res.data || []).filter(function(f) { return f.file_id; }) : [];
+          document.getElementById('us-fb-total').textContent = files.length;
+          if (!files.length) {
+            box.innerHTML = '<div style="padding:8px;color:var(--text-light)">' + ((res && res.success) ? 'ยังไม่มีไฟล์ในโครงการนี้ — กรรมการจะดูเอกสารในระบบ' : 'โหลดไฟล์ไม่สำเร็จ') + '</div>';
+            usFbCount();
+            return;
+          }
+          box.innerHTML = files.map(function(f) {
+            var typeLabel = (typeof VF_TYPE_LABEL !== 'undefined' && VF_TYPE_LABEL[f.file_type || 'other']) || f.file_type || '';
+            return '<label style="display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px solid #f0f0f0;cursor:pointer">'
+              + '<input type="checkbox" class="us-fb-chk" value="' + esc(f.file_id) + '" checked onchange="usFbCount()" style="margin-top:3px">'
+              + '<span style="flex:1;word-break:break-all">' + esc(f.file_name || '-')
+              + (typeLabel ? ' <small style="color:var(--text-light)">· ' + esc(typeLabel) + '</small>' : '')
+              + (f.project_code && f.project_code !== code ? ' <small style="color:var(--gold)">· ' + esc(f.project_code) + '</small>' : '')
+              + '</span></label>';
+          }).join('');
+          usFbCount();
+        })
+        .withFailureHandler(function() { box.innerHTML = '<div style="padding:8px;color:#b71c1c">โหลดไฟล์ไม่สำเร็จ</div>'; })
+        .getUploadedFiles(S.user.sessionId, code, S.user.username);
+
+      var sel = document.getElementById('us-fb-meeting');
+      sel.innerHTML = '<option value="">ใกล้ที่สุดที่ยังไม่เสร็จสิ้น (อัตโนมัติ)</option>';
+      google.script.run
+        .withSuccessHandler(function(res) {
+          ((res && res.data) || []).filter(function(m) { return String(m.status || '').trim() !== 'เสร็จสิ้น'; })
+            .sort(function(a, b) { return new Date(a.meeting_date) - new Date(b.meeting_date); })
+            .forEach(function(m) {
+              var d = new Date(m.meeting_date);
+              var ds = isNaN(d.getTime()) ? String(m.meeting_date || '') : d.toLocaleDateString('th-TH', {day:'numeric', month:'short', year:'numeric'});
+              var o = document.createElement('option');
+              o.value = m.meeting_id;
+              o.textContent = ds + (m.title ? ' — ' + m.title : '') + (m.location ? ' (' + m.location + ')' : '');
+              sel.appendChild(o);
+            });
+        })
+        .withFailureHandler(function() {})
+        .getMeetings(S.user.sessionId, S.user.username);
+    }
+    function usFbCount() {
+      var n = document.querySelectorAll('.us-fb-chk:checked').length;
+      var el = document.getElementById('us-fb-selcount'); if (el) el.textContent = n;
+    }
+    function usFbToggleAll(on) {
+      document.querySelectorAll('.us-fb-chk').forEach(function(c) { c.checked = on; });
+      usFbCount();
+    }
+
     function doUpdateProjectStatus() {
   var code = val('us-project-code');
   var status = val('us-status');
   var note = val('us-note');
   if (!code || !status) { showToast('ข้อมูลไม่ครบ', 'error'); return; }
+  // "พิจารณาเข้าสู่ Full Board" → เปลี่ยนสถานะ + ตั้งประเภท + ส่งไฟล์ที่เลือกให้กรรมการทุกคน
+  if (status === US_FB_STATUS) {
+    var fileIds = Array.prototype.map.call(document.querySelectorAll('.us-fb-chk:checked'), function(c) { return c.value; });
+    var total = document.querySelectorAll('.us-fb-chk').length;
+    if (total && !fileIds.length && !confirm('ยังไม่ได้เลือกไฟล์ใดเลย — ต้องการส่งโดยไม่แนบไฟล์หรือไม่?')) return;
+    if (!confirm('ยืนยันเปลี่ยนสถานะเป็น "พิจารณาเข้าสู่ Full Board" และส่งให้กรรมการทุกคน?')) return;
+    var fbBtn = document.querySelector('#modal-update-status .btn-primary');
+    fbBtn.classList.add('btn-loading'); fbBtn.disabled = true;
+    getM().promoteToFullBoard(S.user.sessionId, code, fileIds, val('us-fb-meeting'), S.user.username, note)
+      .then(function(res) {
+        fbBtn.classList.remove('btn-loading'); fbBtn.disabled = false;
+        if (res && res.success) {
+          closeModal('modal-update-status');
+          _usFbLoadedFor = '';
+          var r = res.send || {};
+          showToast('เปลี่ยนสถานะแล้ว — อีเมล ' + (r.emailed || 0) + ' · LINE ' + (r.lineSent || 0) + ' · กรรมการ ' + (r.committees || 0) + ' ท่าน');
+          if (r.failed && r.failed.length) showToast('ส่งอีเมลไม่สำเร็จ ' + r.failed.length + ' ท่าน (โควตา/อีเมลผิด) — ใช้ปุ่ม "ส่งให้กรรมการอ่าน" เพื่อลองใหม่', 'warning');
+          loadStaffProjects();
+        } else {
+          showToast((res && res.message) || 'เกิดข้อผิดพลาด', 'error');
+        }
+      })
+      .catch(function(e) {
+        fbBtn.classList.remove('btn-loading'); fbBtn.disabled = false;
+        showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+      });
+    return;
+  }
   // "รับรองมีข้อแก้ไข" ต้องตั้งเลขรอบ/ผลพิจารณา/แจ้งผู้วิจัยด้วย — ส่งต่อไปหน้าต่างเฉพาะ แทนการเปลี่ยนแค่ข้อความสถานะ
   if (status === 'รับรองมีข้อแก้ไข') {
     var infoEl = document.getElementById('us-project-info');
@@ -11765,6 +11881,7 @@ function showPage(page) {
       }
       var map = {
   'ผ่านตรวจเอกสาร':    'pill-green',
+  'พิจารณาเข้าสู่ Full Board': 'pill-red',
   'เอกสารไม่ครบ':       'pill-red',
   'รับรองมีข้อแก้ไข':   'pill-orange',
   'รอแจ้งผล':           'pill-blue',
