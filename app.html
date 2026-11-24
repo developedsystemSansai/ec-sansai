@@ -3534,7 +3534,7 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
               <div style="margin-top:16px; padding-top:16px; border-top:2px dashed var(--border)">
                 <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:10px">
                   <label style="font-size:13px; font-weight:700; color:var(--text-mid)"><i class="ti ti-paperclip" aria-hidden="true"></i> แนบไฟล์แบบประเมิน <span style="font-size:11px; font-weight:400; color:var(--text-light)">(ถ้ามี)</span></label>
-                  <a href="https://drive.google.com/drive/folders/1c31ocq1ERHjbUY2CFwCwqoO0YiQqJLa9?usp=sharing" target="_blank" class="btn btn-sm btn-outline" style="font-size:12px"><i class="ti ti-arrow-down" aria-hidden="true"></i> ดาวน์โหลดแบบฟอร์มการอ่าน</a>
+                  <span style="display:inline-flex;gap:6px;flex-wrap:wrap"><a href="https://drive.google.com/drive/folders/1c31ocq1ERHjbUY2CFwCwqoO0YiQqJLa9?usp=sharing" target="_blank" class="btn btn-sm btn-outline" style="font-size:12px"><i class="ti ti-arrow-down" aria-hidden="true"></i> ดาวน์โหลดแบบฟอร์มการอ่าน</a> <a href="forms/EC-committee-review-report.docx" download class="btn btn-sm btn-outline" style="font-size:12px"><i class="ti ti-arrow-down" aria-hidden="true"></i> ดาวน์โหลดแบบฟอร์มรายงานผลการพิจารณา</a></span>
                 </div>
                 <input type="file" class="form-control" id="eval-file-input" accept=".pdf,.docx,.doc" multiple onchange="handleEvalFileUpload(this)" style="font-size:13px">
                 <div class="hint-text" style="margin-top:4px">รองรับ PDF, Word | แนบได้หลายไฟล์</div>
@@ -4564,8 +4564,8 @@ var body = JSON.stringify(Object.assign({ action: action, origin: window.locatio
       
       <!-- ปุ่มดาวน์โหลดแบบฟอร์ม -->
       <div style="margin-bottom:16px">
-        <a href="https://docs.google.com/document/d/1Tgyjsnh40rVa2zv7ZsVXGwNzFEmEqjsY/edit?usp=drive_link" 
-           target="_blank" class="btn btn-sm btn-blue">
+        <a href="forms/EC-amendment-response.docx" download
+           class="btn btn-sm btn-blue">
           <i class="ti ti-arrow-down" aria-hidden="true"></i> ดาวน์โหลดแบบฟอร์มระบุรายละเอียดการแก้ไข
         </a>
       </div>
@@ -9176,6 +9176,8 @@ function doQuickAssign(){
       {no:9,code:'IS.09',title:'ฟอร์มแบบเสนอโครงการวิจัย',type:'proposal',required:true,url:'https://docs.google.com/document/d/1Meb-7MeuPW-GwcmUJYlw-VcEwbPTD0dM/edit'},
       {no:6,code:'IS.06',title:'เอกสารสำหรับเด็กอายุ 7-12 ปี',type:'child_info_7_12',required:false,url:'https://docs.google.com/document/d/1UPT1L_lKdcPlRTZtGrIkQKBBat42XYg5/edit'},
       {no:7,code:'IS.07',title:'เอกสารแสดงความยินยอมสำหรับเด็ก',type:'child_consent_7_12',required:false,url:'https://docs.google.com/document/d/1VFxmrSRZjyvd9SsOk_bkv4AHF2UPc0v0/edit'},
+      {no:10,code:'แก้ไข',title:'แบบแสดงส่วนแก้ไขเพิ่มเติมตามข้อเสนอแนะของคณะกรรมการ',type:'amendment_response',required:false,other:true,url:'forms/EC-amendment-response.docx'},
+      {no:11,code:'กรรมการ',title:'แบบรายงานผลการพิจารณาจริยธรรมการวิจัยในมนุษย์',type:'committee_review_report',required:false,other:true,staffOnly:true,url:'forms/EC-committee-review-report.docx'},
       {no:8,code:'IS.08',title:'เอกสารแสดงความยินยอมสำหรับผู้แทน',type:'guardian_consent',required:false,url:'https://docs.google.com/document/d/1u3dRk2NcLSic82VVmaNoFthYkSY3MpV7/edit'}
     ];
 
@@ -9350,15 +9352,17 @@ function sendNotifyResult() {
     // ════════════════════════════════════════
     function renderDocumentPage(){
       var mainDocs=DOCUMENT_LINKS.filter(function(d){ return d.required; });
-      var specialDocs=DOCUMENT_LINKS.filter(function(d){ return !d.required&&d.no>=6&&d.no<=8; });
-      function renderDocCard(d){ return '<div class="doc-card"><div class="doc-no">'+d.no+'</div><div class="doc-title"><strong>'+esc(d.code)+'</strong> '+esc(d.title)+(d.required?'':' <small>กรณีที่เกี่ยวข้อง</small>')+'</div><a href="'+esc(d.url)+'" target="_blank" class="btn btn-sm btn-primary"><i class="ti ti-arrow-down" aria-hidden="true"></i> ดาวน์โหลด</a></div>'; }
+      var specialDocs=DOCUMENT_LINKS.filter(function(d){ return !d.required&&!d.other&&d.no>=6&&d.no<=8; });
+      function renderDocCard(d){ return '<div class="doc-card"><div class="doc-no">'+d.no+'</div><div class="doc-title"><strong>'+esc(d.code)+'</strong> '+esc(d.title)+(d.required||d.other?'':' <small>กรณีที่เกี่ยวข้อง</small>')+'</div><a href="'+esc(d.url)+'" target="_blank" class="btn btn-sm btn-primary"><i class="ti ti-arrow-down" aria-hidden="true"></i> ดาวน์โหลด</a></div>'; }
       var mainEl=document.getElementById('doc-list-main');
       var spEl=document.getElementById('doc-list-special');
       var otherEl=document.getElementById('doc-list-other');
+      var isStaffUser=!!(S.user&&((S.user.roles||[S.role]).some(function(r){return r==='staff'||r==='admin';})));
+      var extraDocs=DOCUMENT_LINKS.filter(function(d){ return d.other&&(!d.staffOnly||isStaffUser); });
       if(mainEl) mainEl.innerHTML=mainDocs.map(renderDocCard).join('');
       if(spEl) spEl.innerHTML=specialDocs.map(renderDocCard).join('');
       // Other documents info
-      if(otherEl) otherEl.innerHTML=
+      if(otherEl) otherEl.innerHTML=extraDocs.map(renderDocCard).join('')+
         '<div class="alert alert-info"><i class="ti ti-info-circle" aria-hidden="true"></i> <div>เอกสารเพิ่มเติมที่ต้องเตรียม (ไม่มีแบบฟอร์ม — จัดทำเอง):</div></div>'+
         ['ประวัติผู้วิจัยหลัก (CV)','หลักฐานผ่านการอบรม GCP/ICH','เครื่องมือที่ใช้ในการวิจัย','หนังสือนำส่งจากหน่วยงาน','แบบเก็บข้อมูลการวิจัย','แบบสอบถาม / แบบสัมภาษณ์','หนังสืออนุมัติจากคณะกรรมการอื่น (ถ้ามี)','สัญญา/ข้อตกลงกับผู้สนับสนุน (ถ้ามี)'].map(function(t,i){
           return '<div class="doc-card"><div class="doc-no" style="background:var(--text-light)">'+(i+1)+'</div><div class="doc-title">'+esc(t)+'<small>จัดเตรียมเอง</small></div></div>';
